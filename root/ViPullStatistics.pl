@@ -8,7 +8,8 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9";
+$Util::script_version = "0.9.1";
+$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
 Opts::validate();
@@ -52,6 +53,34 @@ my $vcenter_fqdn = $vcenterserver;
 
 $vcenter_fqdn =~ s/[ .]/_/g;
 my $vcenter_name = lc ($vcenter_fqdn);
+
+my $perfMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->perfManager));
+my %perfCntr = map { $_->groupInfo->key . "." . $_->nameInfo->key . "." . $_->rollupType->val => $_ } @{$perfMgr->perfCounter};
+
+sub QuickQueryPerf {
+	my ($query_entity_view, $query_group, $query_counter, $query_rollup, $query_instance) = @_;
+	my $perfKey = $perfCntr{"$query_group.$query_counter.$query_rollup"}->key;
+	
+	my @metricIDs = ();
+	my $metricId = PerfMetricId->new(counterId => $perfKey, instance => $query_instance);
+	push @metricIDs,$metricId;
+	
+	my $perfQuerySpec = PerfQuerySpec->new(entity => $query_entity_view, maxSample => 15, intervalId => 20, metricId => \@metricIDs);
+	my $metrics = $perfMgr->QueryPerf(querySpec => [$perfQuerySpec]);
+  
+	foreach(@$metrics) {
+		my $perfValues = $_->value;
+			foreach(@$perfValues) {
+				my $values = $_->value;
+				my $sum;
+				foreach (@$values) { $sum += $_; }
+				my $perfavg = $sum/15;
+				$perfavg =~ s/\.\d+$//;
+				return $perfavg;
+			}
+	}
+	
+}
 
 # retreive datacenter(s) list
 my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name']);
@@ -103,7 +132,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 		}
 		my $cluster_datastores = $cluster_view->datastore;
 		foreach my $cluster_datastore (@$cluster_datastores) {
-			my $cluster_datastore_view = Vim::get_view(mo_ref => $cluster_datastore, properties => ['summary']);
+			my $cluster_datastore_view = Vim::get_view(mo_ref => $cluster_datastore, properties => ['summary','iormConfiguration','host']);
 			if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
 				my $shared_datastore_name = lc ($cluster_datastore_view->summary->name);
 				$shared_datastore_name =~ s/[ .]/_/g;
@@ -118,7 +147,31 @@ foreach my $datacentre_view (@$datacentres_views) {
 						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
 					},
 				};
-				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);		
+				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
+				
+				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
+					foreach(@{$cluster_datastore_view->host}) {
+						if ($_->mountInfo->accessible and $_->mountInfo->mounted) {
+						
+						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['name']);
+						
+						my @vmpath = split("/", $_->mountInfo->path);
+						my $uuid = $vmpath[-1];
+						
+						my $DsNormalizedDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', $uuid);
+						my $DsdatastoreIops = QuickQueryPerf($_->key, 'datastore', 'datastoreIops', 'average', $uuid);
+						
+						my $DsQuickQueryPerf_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $DsNormalizedDatastoreLatency,
+								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,								
+							},
+						};						
+						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
+						last;
+						}
+					}
+				}				
 			}
 		}
 		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.dnsConfig.hostName', 'runtime', 'summary'], filter => {'runtime.connectionState' => "connected"});
