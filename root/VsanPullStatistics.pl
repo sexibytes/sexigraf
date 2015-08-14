@@ -72,6 +72,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 				if ($host_view->runtime->connectionState->val eq "connected") {
 				
 					my $host_vsan_view = Vim::get_view(mo_ref => $host_view->{'configManager.vsanInternalSystem'});
+					
 					my $host_vsan_stats = $host_vsan_view->QueryVsanStatistics(labels => ['dom']);
 					my $host_vsan_stats_json = from_json($host_vsan_stats);
 					
@@ -112,7 +113,39 @@ foreach my $datacentre_view (@$datacentres_views) {
 							value => $host_vsan_stats_json_sched->{$schedkey},
 							time => time(),
 							);
-						}		
+						}
+					}
+					
+					my $host_vsan_lsom = $host_vsan_view->QueryVsanStatistics(labels => ['lsom']);
+					my $host_vsan_lsom_json = from_json($host_vsan_lsom);
+					
+					if ($host_vsan_lsom_json) {
+						my $host_vsan_lsom_json_disks = $host_vsan_lsom_json->{'lsom.disks'};
+						my $host_name = lc ($host_view->{'config.network.dnsConfig.hostName'});
+
+						foreach my $lsomkey (keys %{ $host_vsan_lsom_json_disks }) {
+							if ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} ne "NA") {
+								my $lsomkeyCapacityUsed = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacityUsed};
+								my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
+								my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
+								
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed",
+								value => $lsomkeyCapacityUsed,
+								time => time(),
+								);
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity",
+								value => $lsomkeyCapacity,
+								time => time(),
+								);
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed",
+								value => $lsomkeyCapacityUsedPercent,
+								time => time(),
+								);								
+							}
+						}
 					}
 				}
 			}
