@@ -2,7 +2,11 @@
   "id": null,
   "title": "Cluster SNMP Network",
   "originalTitle": "Cluster SNMP Network",
-  "tags": [],
+  "tags": [
+    "network",
+	"vmk",
+	"vmnic"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
