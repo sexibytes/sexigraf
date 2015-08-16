@@ -2,7 +2,9 @@
   "id": null,
   "title": "Cluster RAM Stats All",
   "originalTitle": "Cluster RAM Stats All",
-  "tags": [],
+  "tags": [
+    "RAM"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
