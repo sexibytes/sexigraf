@@ -9,12 +9,12 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "100px",
       "panels": [
         {
           "content": "<div class=\"text-center\" style=\"background-color: #939393; padding: 10px 0 20px 0\">\n<img src=\"img/logo_transparent_200x.png\" width=\"170px\"> \n</div>",
-          "editable": true,
+          "editable": false,
           "id": 1,
           "mode": "html",
           "span": 12,
@@ -24,11 +24,11 @@
           "type": "text"
         }
       ],
-      "title": "New row"
+      "title": ""
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
@@ -37,7 +37,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -103,14 +103,14 @@
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -177,11 +177,11 @@
           ]
         }
       ],
-      "title": "New row"
+      "title": ""
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
@@ -192,7 +192,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -250,11 +250,11 @@
           ]
         }
       ],
-      "title": "New row"
+      "title": ""
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
@@ -265,7 +265,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -332,7 +332,7 @@
           ]
         }
       ],
-      "title": "New row"
+      "title": ""
     }
   ],
   "nav": [
@@ -342,10 +342,6 @@
       "notice": false,
       "now": true,
       "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
         "5m",
         "15m",
         "30m",
@@ -355,7 +351,6 @@
       ],
       "status": "Stable",
       "time_options": [
-        "5m",
         "15m",
         "1h",
         "6h",
