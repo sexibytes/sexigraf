@@ -1,0 +1,506 @@
+{
+  "id": null,
+  "title": "Cluster Quickstats All",
+  "originalTitle": "Cluster Quickstats All",
+  "tags": [
+    "CPU",
+    "RAM",
+    "HDD",
+    "VM"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "150px",
+      "panels": [
+        {
+          "aliasColors": {
+            "cpu.usage": "#BF1B00",
+            "mem.usage": "#1F78C1"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": 100,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": 100,
+            "rightMin": 0,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "leftYAxisLabel": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "rightYAxisLabel": "",
+          "scopedVars": {
+            "cluster": {
+              "text": "cluster",
+              "value": "cluster"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, #A), 'cpu.usage')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), 'mem.usage')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "cpu/ram usage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "percent"
+          ]
+        },
+        {
+          "aliasColors": {
+            "active": "#CCA300",
+            "ballooned": "#EAB839",
+            "private": "#052B51",
+            "shared": "#508642",
+            "zipped": "#6ED0E0"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 6,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": 0,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "hideEmpty": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": false,
+            "sort": null,
+            "sortDesc": null,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "cluster": {
+              "text": "cluster",
+              "value": "cluster"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "active",
+              "fill": 0,
+              "linewidth": 2,
+              "stack": false
+            }
+          ],
+          "span": 3,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.shared, 'shared')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.ballooned, 'ballooned')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.compressed, 0.0009765625), 'zipped')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.swapped, 'swapped')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'active')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "memory quickstats",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "mbytes",
+            "mbytes"
+          ]
+        },
+        {
+          "aliasColors": {
+            "capacity": "#BF1B00",
+            "commited": "#052B51",
+            "provisioned": "#E5AC0E",
+            "total": "#BF1B00",
+            "uncommitted": "#E5AC0E",
+            "used": "#052B51"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": 0,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "cluster": {
+              "text": "cluster",
+              "value": "cluster"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "capacity",
+              "stack": false
+            }
+          ],
+          "span": 3,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), 'capacity')"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)"
+            },
+            {
+              "hide": false,
+              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), #B), 'used')"
+            },
+            {
+              "hide": false,
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.uncommitted), 'uncommitted')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "shared datastores usage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "percent"
+          ]
+        },
+        {
+          "aliasColors": {
+            "vm.on": "#BA43A9",
+            "vm.registered": "#1F78C1"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 4,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "cluster": {
+              "text": "cluster",
+              "value": "cluster"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 'vm.registered')"
+            },
+            {
+              "target": "alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Cluster VM count",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        }
+      ],
+      "repeat": "cluster",
+      "scopedVars": {
+        "cluster": {
+          "text": "cluster",
+          "value": "cluster"
+        }
+      },
+      "showTitle": true,
+      "title": "$cluster"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "15m",
+        "1h",
+        "2h",
+        "3h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*"
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*"
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "All",
+            "value": "*"
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 6,
+  "version": 4,
+  "links": []
+}
