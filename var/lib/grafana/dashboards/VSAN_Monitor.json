@@ -1,0 +1,746 @@
+{
+  "id": null,
+  "title": "VSAN Monitor",
+  "originalTitle": "VSAN Monitor",
+  "tags": [
+    "VSAN",
+    "HDD",
+    "SSD"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": 0,
+            "threshold1": 20000,
+            "threshold1Color": "rgba(216, 200, 27, 0.15)",
+            "threshold2": 30000,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": false
+          },
+          "id": 2,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount)",
+              "textEditor": false
+            },
+            {
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readLatencySumUs), #A), 'read')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeLatencySumUs), #B), 'write')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(transformNull(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteLatencySumUs), #C), 0), 'recoveryWrite')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Latencies",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "µs",
+            "µs"
+          ]
+        },
+        {
+          "aliasColors": {
+            "readPerSec": "#6ED0E0",
+            "reads": "#6ED0E0",
+            "recoveryWrites": "#EF843C",
+            "writePerSec": "#E24D42",
+            "writes": "#E24D42"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount), 1), 'reads')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount), 1), 'writes')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount), 1), 'recoveryWrites')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IOPS",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {
+            "Reads": "#65C5DB",
+            "RecoveryWrites": "#EF843C",
+            "Writes": "#E24D42"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 17,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readBytes), 1), 'Reads')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeBytes), 1), 'Writes')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteBytes), 1), 'RecoveryWrites')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Bandwidth",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "Bps",
+            "Bps"
+          ]
+        },
+        {
+          "aliasColors": {
+            "readCong": "#CCA300",
+            "readCongestion": "#CCA300",
+            "recoveryWriteCong": "#890F02",
+            "recoveryWriteCongestion": "#890F02",
+            "writeCong": "#C15C17",
+            "writeCongestion": "#C15C17"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": 15,
+            "threshold1Color": "rgba(216, 200, 27, 0.15)",
+            "threshold2": 20,
+            "threshold2Color": "rgba(234, 112, 112, 0.14)"
+          },
+          "id": 13,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCongestionSum), #A), 'readCong')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCongestionSum), #B), 'writeCong')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCongestionSum), #B), 'recoveryWriteCong')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Congestion",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {
+            "OIO": "#967302",
+            "divideSeries(derivative(esx.vsan.compmgr.stats.numOIOSum),derivative(esx.vsan.compmgr.stats.ioCount))": "#705DA0",
+            "readPerSec": "#BA43A9"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 9,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.ioCount)",
+              "textEditor": false
+            },
+            {
+              "target": "alias(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.numOIOSum), #A), 'OIO')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Outstanding IO",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {
+            "read": "#5195CE",
+            "recoveryWrite": "#806EB7",
+            "write": "#D683CE"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": 0,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 28,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "esx"
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount)",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scale(stdev(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readLatencySumUs), #A), 2, 0), 0.001), 'read')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scale(stdev(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeLatencySumUs), #B), 2, 0), 0.001), 'write')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(transformNull(scale(stdev(divideSeries(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteLatencySumUs), #C), 2, 0), 0.001), 0), 'recoveryWrite')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Latency StdDev",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "none",
+            "none"
+          ]
+        }
+      ],
+      "repeat": "hostname",
+      "scopedVars": {
+        "hostname": {
+          "text": "esx",
+          "value": "esx"
+        }
+      },
+      "showTitle": true,
+      "title": "$hostname"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "1h",
+        "2h",
+        "3h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*",
+          "tags": []
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*",
+          "tags": []
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "None",
+          "value": "",
+          "isNone": true,
+          "tags": []
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "None",
+            "value": "",
+            "isNone": true,
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*",
+          "tags": []
+        },
+        "datasource": null,
+        "hideLabel": false,
+        "includeAll": true,
+        "label": "esx",
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "hostname",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "client",
+          "value": "client"
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "layer",
+        "options": [
+          {
+            "selected": true,
+            "text": "client",
+            "value": "client"
+          },
+          {
+            "selected": false,
+            "text": "compmgr",
+            "value": "compmgr"
+          },
+          {
+            "selected": false,
+            "text": "owner",
+            "value": "owner"
+          }
+        ],
+        "query": "client,compmgr,owner",
+        "refresh_on_load": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 6,
+  "version": 33,
+  "links": []
+}
