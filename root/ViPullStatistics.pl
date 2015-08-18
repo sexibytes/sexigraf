@@ -8,7 +8,7 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9.1";
+$Util::script_version = "0.9.2";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -151,10 +151,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 				
 				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
 					foreach(@{$cluster_datastore_view->host}) {
-						if ($_->mountInfo->accessible and $_->mountInfo->mounted) {
 						
-						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['name']);
-						
+						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
+					
+						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
+							
 						my @vmpath = split("/", $_->mountInfo->path);
 						my $uuid = $vmpath[-1];
 						
