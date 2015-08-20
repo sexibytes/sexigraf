@@ -8,7 +8,7 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9.2";
+$Util::script_version = "0.9.3";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -58,7 +58,7 @@ my $perfMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->perfManager))
 my %perfCntr = map { $_->groupInfo->key . "." . $_->nameInfo->key . "." . $_->rollupType->val => $_ } @{$perfMgr->perfCounter};
 
 sub QuickQueryPerf {
-	my ($query_entity_view, $query_group, $query_counter, $query_rollup, $query_instance) = @_;
+	my ($query_entity_view, $query_group, $query_counter, $query_rollup, $query_instance, $query_limit) = @_;
 	my $perfKey = $perfCntr{"$query_group.$query_counter.$query_rollup"}->key;
 	
 	my @metricIDs = ();
@@ -73,8 +73,14 @@ sub QuickQueryPerf {
 			foreach(@$perfValues) {
 				my $values = $_->value;
 				my $sum;
-				foreach (@$values) { $sum += $_; }
-				my $perfavg = $sum/15;
+				my $count = 0;
+				foreach (@$values) {
+					if ($_ < $query_limit) {
+						$sum += $_;
+						$count += 1;
+					}
+				}
+				my $perfavg = $sum/$count;
 				$perfavg =~ s/\.\d+$//;
 				return $perfavg;
 			}
@@ -118,7 +124,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.numVmotions", $cluster_view->summary->numVmotions,
 				},
 			};
-			$graphite->send(path => "vmw.", data => $cluster_root_pool_view_h);
+			#$graphite->send(path => "vmw.", data => $cluster_root_pool_view_h);
 		}
 		if (my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime'])) {
 			my $cluster_vm_views_on = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime'], filter => {'runtime.powerState' => "poweredOn"});
@@ -128,7 +134,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.on", scalar(@$cluster_vm_views_on),
 				},
 			};
-			$graphite->send(path => "vmw.", data => $cluster_vm_views_h);
+			#$graphite->send(path => "vmw.", data => $cluster_vm_views_h);
 		}
 		my $cluster_datastores = $cluster_view->datastore;
 		foreach my $cluster_datastore (@$cluster_datastores) {
@@ -147,7 +153,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
 					},
 				};
-				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
+				#$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
 				
 				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
 					foreach(@{$cluster_datastore_view->host}) {
@@ -159,8 +165,8 @@ foreach my $datacentre_view (@$datacentres_views) {
 						my @vmpath = split("/", $_->mountInfo->path);
 						my $uuid = $vmpath[-1];
 						
-						my $DsNormalizedDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', $uuid);
-						my $DsdatastoreIops = QuickQueryPerf($_->key, 'datastore', 'datastoreIops', 'average', $uuid);
+						my $DsNormalizedDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', $uuid, 30000000);
+						my $DsdatastoreIops = QuickQueryPerf($_->key, 'datastore', 'datastoreIops', 'average', $uuid, 500000);
 						
 						my $DsQuickQueryPerf_h = {
 							time() => {
@@ -168,7 +174,8 @@ foreach my $datacentre_view (@$datacentres_views) {
 								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,								
 							},
 						};						
-						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
+						#$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
+						print $shared_datastore_name . " : " . $DsdatastoreIops . "\n";
 						last;
 						}
 					}
@@ -186,7 +193,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->summary->quickStats->overallMemoryUsage,						
 				},
 			};
-			$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
+			#$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
 		}
 	}
 }
@@ -197,7 +204,7 @@ my $vcenter_exec_duration_h = {
 		"$vcenter_name.ha" . ".exec.duration", $exec_duration,
 	},
 };
-$graphite->send(path => "vi.", data => $vcenter_exec_duration_h);
+#$graphite->send(path => "vi.", data => $vcenter_exec_duration_h);
 
 # disconnect from the server
 # Util::disconnect();
