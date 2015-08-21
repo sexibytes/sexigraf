@@ -175,7 +175,6 @@ foreach my $datacentre_view (@$datacentres_views) {
 							},
 						};						
 						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
-						print $shared_datastore_name . " : " . $DsdatastoreIops . "\n";
 						last;
 						}
 					}
