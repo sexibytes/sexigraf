@@ -8,7 +8,7 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9.3";
+$Util::script_version = "0.9.4";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -156,7 +156,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
 				
 				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
-					foreach(@{$cluster_datastore_view->host}) {
+					foreach (@{$cluster_datastore_view->host}) {
 						
 						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
 					
@@ -181,15 +181,30 @@ foreach my $datacentre_view (@$datacentres_views) {
 				}				
 			}
 		}
-		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.dnsConfig.hostName', 'runtime', 'summary'], filter => {'runtime.connectionState' => "connected"});
+		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary'], filter => {'runtime.connectionState' => "connected"});
 		foreach my $cluster_host_view (@$cluster_hosts_views) {
 			my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
+					
+			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
+				my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
+				my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
+				my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
+				
+				my $cluster_host_vmnic_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesRx", $NetbytesRx,
+						"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesTx", $NetbytesTx,						
+					},
+				};
+				$graphite->send(path => "vmw.", data => $cluster_host_vmnic_h);	
+			}
+			
 			my $cluster_host_view_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedCpuFairness", $cluster_host_view->summary->quickStats->distributedCpuFairness,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedMemoryFairness", $cluster_host_view->summary->quickStats->distributedMemoryFairness,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallCpuUsage", $cluster_host_view->summary->quickStats->overallCpuUsage,
-					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->summary->quickStats->overallMemoryUsage,						
+					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->summary->quickStats->overallMemoryUsage,
 				},
 			};
 			$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
