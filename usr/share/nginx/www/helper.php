@@ -19,13 +19,13 @@ function isVsanEnabled($inputvcenter) {
 #	return (preg_match("/^[^#].*VsanPullStatistics\.pl --server ($inputvcenter) .* --sessionfile.*$/m", file_get_contents($crontabFile)) == 1 ? true : false);
 }
 
-function enableVi($inputvcenter) { shell_exec("sudo /var/www/addViCrontab.sh " . $inputvcenter); }
+function enableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addViCrontab.sh " . $inputvcenter); }
 
-function enableVsan($inputvcenter) { shell_exec("sudo /var/www/addVsanCrontab.sh " . $inputvcenter); }
+function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addVsanCrontab.sh " . $inputvcenter); }
 
-function disableVi($inputvcenter) { shell_exec("sudo /var/www/removeViCrontab.sh " . $inputvcenter); }
+function disableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvcenter); }
 
-function disableVsan($inputvcenter) { shell_exec("sudo /var/www/removeVsanCrontab.sh " . $inputvcenter); }
+function disableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeVsanCrontab.sh " . $inputvcenter); }
 
 function humanFileSize($size,$unit="") {
         if( (!$unit && $size >= 1<<30) || $unit == "GB")
@@ -63,6 +63,35 @@ function rcopy($src, $dest){
                 else if(!$f->isDot() && $f->isDir())
                      	rcopy($f->getRealPath(), "$dest/$f");
         }
+}
+
+function php_file_tree_dir($directory, $first_call = true) {
+	$file = scandir($directory);
+	natcasesort($file);
+	$files = $dirs = array();
+	foreach($file as $this_file) {
+		if( is_dir("$directory/$this_file" ) ) $dirs[] = $this_file; else $files[] = $this_file;
+	}
+	$file = array_merge($dirs, $files);
+	
+	if( count($file) > 2 ) { 
+		$php_file_tree = "<ul";
+		if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
+		$php_file_tree .= ">";
+		foreach( $file as $this_file ) {
+			if( $this_file != "." && $this_file != ".." ) {
+				if( is_dir("$directory/$this_file") ) {
+					$php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$directory/$this_file\"> <a href=\"#\">" . htmlspecialchars($this_file) . "</a>";
+					$php_file_tree .= php_file_tree_dir("$directory/$this_file" , false);
+					$php_file_tree .= "</li>";
+				} else {
+					$php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$directory/$this_file\"> " . htmlspecialchars($this_file) . " (". humanFileSize(filesize("$directory/$this_file")) . ")</li>";
+				}
+			}
+		}
+		$php_file_tree .= "</ul>";
+	}
+	return $php_file_tree;
 }
 
 ?>

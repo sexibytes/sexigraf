@@ -79,7 +79,6 @@ require("helper.php");
 		</form></tr>
 	      </tbody>
 	    </table>
-	</div>
 <?php
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		switch ($_POST["submit"]) {
@@ -173,5 +172,6 @@ require("helper.php");
 		}
 	}
 ?>
+	</div>
 </body>
 </html>

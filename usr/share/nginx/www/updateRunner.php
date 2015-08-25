@@ -30,11 +30,11 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
                 switch ($_POST["submit"]) {
                         case "upgrade-confirmed":
 			echo "<pre>";
-			$tmpFolder = trim(shell_exec('mktemp -d'));
-			echo "Unpacking SexiGraf Update Package in $tmpFolder\n";
-			echo "Executing /bin/tar --verbose --extract --file=\"".$dir.$_POST['input-file']."\" --directory=$tmpFolder 2>&1\n";
-			echo shell_exec("/bin/tar --verbose --extract --file=\"".$dir.$_POST['input-file']."\" --directory=$tmpFolder 2>&1");
-			if (file_exists($tmpFolder."\\updateRunner.sh")) {
+			#$tmpFolder = trim(shell_exec('mktemp -d'));
+			unlinkRecursive("/tmp/sexigraf-update/");
+			echo "Unpacking SexiGraf Update Package in /tmp/sexigraf-update/\n";
+			echo shell_exec("/usr/bin/unzip \"".$dir.$_POST['input-file']."\" -d /tmp/sexigraf-update/ 2>&1");
+			if (file_exists("/tmp/sexigraf-update/sexigraf-master/updateRunner.sh")) {
 				#echo "Updating Logstash configuration\n";
 				#unlinkRecursive("/etc/logstash/conf.d/");
 				#rcopy("$tmpFolder/logstash","/etc/logstash");
@@ -55,12 +55,14 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
 				#echo shell_exec("/etc/init.d/node-app restart --force");
 				#echo shell_exec("/etc/init.d/rsyslog restart");
 				$SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH) : "Unknown");
-				echo 'Current version of SexiGraf is: '.$SexiGrafVersion.'<br />';
+				#echo 'Current version of SexiGraf is: '.$SexiGrafVersion.'<br />';
+				chmod("/tmp/sexigraf-update/sexigraf-master/updateRunner.sh", 0755);
+				echo shell_exec("sudo /tmp/sexigraf-update/sexigraf-master/updateRunner.sh");
 			} else {
 				echo "!!! Missing mandatory file. Please check package integrity.\n";
 			}
-			echo "Purging temporary folder $tmpFolder";
-			unlinkRecursive($tmpFolder);
+			echo "Purging temporary folder /tmp/sexigraf-update/";
+			#unlinkRecursive("/tmp/sexigraf-update/");
 			echo "</pre>";
 		}
 	}
