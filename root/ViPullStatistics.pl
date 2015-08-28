@@ -8,7 +8,8 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9.5";
+$Data::Dumper::Indent = 1;
+$Util::script_version = "0.9.6";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -193,17 +194,20 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 			}
 			
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
-				my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
-				my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
-				my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
-				
-				my $cluster_host_vmnic_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesRx", $NetbytesRx,
-						"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesTx", $NetbytesTx,						
-					},
-				};
-				$graphite->send(path => "vmw.", data => $cluster_host_vmnic_h);	
+				if ($cluster_host_vmnic->linkSpeed) {
+					my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
+					my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
+					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
+					
+					my $cluster_host_vmnic_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesRx", $NetbytesRx,
+							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesTx", $NetbytesTx,
+							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.linkSpeed", $cluster_host_vmnic->linkSpeed->speedMb,
+						},
+					};
+					$graphite->send(path => "vmw.", data => $cluster_host_vmnic_h);
+				}
 			}
 			
 			my $cluster_host_view_h = {
@@ -277,17 +281,20 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 			}
 			
 			foreach my $StandaloneResourceVMHost_vmnic (@{$StandaloneResourceVMHost[0][0]->{'config.network.pnic'}}) {
-				my $NetbytesRx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesRx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
-				my $NetbytesTx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesTx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
-				my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
-				
-				my $StandaloneResourceVMHost_vmnic_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx", $NetbytesRx,
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx", $NetbytesTx,						
-					},
-				};
-				$graphite->send(path => "esx.", data => $StandaloneResourceVMHost_vmnic_h);
+				if ($StandaloneResourceVMHost_vmnic->linkSpeed) {
+					my $NetbytesRx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesRx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
+					my $NetbytesTx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesTx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
+					my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
+					
+					my $StandaloneResourceVMHost_vmnic_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx", $NetbytesRx,
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx", $NetbytesTx,
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.linkSpeed", $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb,
+						},
+					};
+					$graphite->send(path => "esx.", data => $StandaloneResourceVMHost_vmnic_h);
+				}
 			}
 			
 			if (my $Standalone_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $StandaloneResourceVMHost[0][0], properties => ['runtime'])) {
