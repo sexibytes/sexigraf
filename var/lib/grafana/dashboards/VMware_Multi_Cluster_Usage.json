@@ -36,7 +36,7 @@
           "links": [],
           "maxDataPoints": 100,
           "minSpan": 2,
-          "nullPointMode": "connected",
+          "nullPointMode": "null",
           "nullText": null,
           "postfix": "",
           "postfixFontSize": "110%",
