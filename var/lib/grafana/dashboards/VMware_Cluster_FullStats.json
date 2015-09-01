@@ -25,7 +25,6 @@
       "panels": [
         {
           "aliasColors": {
-            "cluster.cpu.usage": "#E24D42",
             "cpu.usage": "#BF1B00",
             "mem.usage": "#1F78C1"
           },
@@ -382,8 +381,6 @@
         },
         {
           "aliasColors": {
-            "cluster.vm.on": "#70DBED",
-            "cluster.vm.registered": "#447EBC",
             "vmotion.count": "#1F78C1"
           },
           "bars": true,
@@ -449,8 +446,6 @@
         },
         {
           "aliasColors": {
-            "cluster.vm.on": "#BA43A9",
-            "cluster.vm.registered": "#447EBC",
             "vm.on": "#1F78C1",
             "vm.registered": "#BA43A9"
           },
@@ -562,8 +557,7 @@
             {
               "alias": "guest",
               "fill": 0,
-              "stack": false,
-              "zindex": 3
+              "stack": false
             }
           ],
           "span": 6,
@@ -653,8 +647,7 @@
             {
               "alias": "demand",
               "fill": 0,
-              "stack": false,
-              "zindex": 3
+              "stack": false
             }
           ],
           "span": 6,
@@ -770,7 +763,7 @@
         }
       ],
       "showTitle": false,
-      "title": "$vcenter.$datacentre.$cluster"
+      "title": "$cluster"
     },
     {
       "title": "IORM",
