@@ -64,7 +64,7 @@
             "cluster": {
               "text": "cluster",
               "value": "",
-              "selected": true
+              "selected": false
             }
           },
           "seriesOverrides": [],
@@ -143,7 +143,7 @@
             "cluster": {
               "text": "cluster",
               "value": "",
-              "selected": true
+              "selected": false
             }
           },
           "seriesOverrides": [],
@@ -180,7 +180,7 @@
         "cluster": {
           "text": "cluster",
           "value": "",
-          "selected": true
+          "selected": false
         }
       },
       "showTitle": true,
@@ -228,10 +228,10 @@
   "templating": {
     "list": [
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
@@ -241,7 +241,8 @@
         "options": [
           {
             "text": "All",
-            "value": "{}"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.*",
@@ -250,10 +251,10 @@
         "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
@@ -263,7 +264,8 @@
         "options": [
           {
             "text": "All",
-            "value": "{}"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -273,10 +275,10 @@
         "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
@@ -286,7 +288,8 @@
         "options": [
           {
             "text": "All",
-            "value": "{}"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
