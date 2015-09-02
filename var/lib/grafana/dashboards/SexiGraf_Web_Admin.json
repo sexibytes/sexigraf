@@ -1,6 +1,6 @@
 {
-  "title": "Web Admin",
-  "originalTitle": "Web Admin",
+  "title": "SexiGraf Web Admin",
+  "originalTitle": "SexiGraf Web Admin",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -24,13 +24,13 @@
           "type": "text"
         }
       ],
-      "title": "Row"
+      "title": "Web Admin"
     }
   ],
   "nav": [
     {
       "collapse": false,
-      "enable": true,
+      "enable": false,
       "notice": false,
       "now": true,
       "refresh_intervals": [
