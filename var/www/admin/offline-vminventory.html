@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Offline Inventory</title>
+		
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/sexigraf.css"/>
+
+                <script type="text/javascript" src="js/jquery.min.js"></script>
+                <script type="text/javascript" src="js/bootstrap.min.js"></script>
+                <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+                <script type="text/javascript" src="js/dataTables.bootstrap.min.js"></script>
+                <script type="text/javascript" src="js/jszip.min.js"></script>
+                <script type="text/javascript" src="js/dataTables.autoFill.min.js"></script>
+                <script type="text/javascript" src="js/autoFill.bootstrap.min.js"></script>
+                <script type="text/javascript" src="js/dataTables.buttons.min.js"></script>
+                <script type="text/javascript" src="js/buttons.bootstrap.min.js"></script>
+                <script type="text/javascript" src="js/buttons.colVis.min.js"></script>
+                <script type="text/javascript" src="js/buttons.html5.min.js"></script>
+	</head>
+	<body>
+	<div id="purgeLoading" style="display:block;">
+        	<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading inventory...
+        </div>
+	<div id="wrapper" style="width:98%; padding:10px; display:none;">
+		<div>Show/Hide column: 
+			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="0" data-column="0">VM</button> 
+			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="1" data-column="1">vCenter</button> 
+			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="2" data-column="2">Cluster</button> 
+			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="3" data-column="3">Host</button> 
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="4" data-column="4">vmx Path</button> 
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="5" data-column="5">Portgroup</button> 
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="6" data-column="6">IP</button> 
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="7" data-column="7">NumCPU</button> 
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="8" data-column="8">MemoryMB</button>
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="9" data-column="9">CommitedGB</button>
+			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="10" data-column="10">ProvisionnedGB</button>
+			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="11" data-column="11">Datastore</button>
+		</div><br />
+		<div name="export-button">Export in: </div>
+		<hr />
+		<table id="inventory" class="display" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>VM</th>
+					<th>vCenter</th>
+					<th>Cluster</th>
+					<th>Host</th>
+					<th>vmx Path</th>
+					<th>Portgroup</th>
+					<th>IP</th>
+					<th>NumCPU</th>
+					<th>MemoryMB</th>
+					<th>CommitedGB</th>
+					<th>ProvisionnedGB</th>
+					<th>Datastore</th>
+				</tr>
+			</thead>
+<! --- *vmname
+- *vcenter
+- *cluster
+- *host
+- host/cluster ressource available
+- *datastore home
+- datastore home freespace
+- taille commited
+- taille provisionned
+- *portgroup name
+- *ip addresses
+- guestid
+- numcpu
+- memory
+- limit
+- reservation
+- vmx path -->
+
+			<tbody>
+				
+			</tbody>
+		</table>
+		<div class="generated">Page generated @ 2015-09-01 19:06</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready( function () {
+			var table = $('#inventory').DataTable( {
+			        "columnDefs": [ { "targets": [ 4, 5, 6, 7, 8, 9, 10 ], "visible": false } ]
+			    }
+			);
+			new $.fn.dataTable.Buttons( table, { buttons: [ 'csv', 'excel' ] } );
+			table.buttons().container().appendTo( $(document.getElementsByName('export-button')) );
+			$('button.toggle-vis').on( 'click', function (e) {
+        			e.preventDefault();
+			        var column = table.column( $(this).attr('data-column') );
+			        column.visible( ! column.visible() );
+				var nodeList = document.getElementsByName( $(this).attr('data-column') );
+				var regexMatch = new RegExp("btn-success","g");
+				if (nodeList[0].className.match(regexMatch)) {
+				   	nodeList[0].className = "btn btn-danger btn-xs toggle-vis btn-no-outline";
+				} else {
+					nodeList[0].className = "btn btn-success btn-xs toggle-vis btn-no-outline";
+				}
+			} );
+		 } );
+                 document.getElementById("wrapper").style.display = "block";
+                 document.getElementById("purgeLoading").style.display = "none";
+	</script>
+</body>
+</html>
