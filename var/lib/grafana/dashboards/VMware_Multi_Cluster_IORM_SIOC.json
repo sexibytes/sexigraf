@@ -1,7 +1,7 @@
 {
   "id": null,
-  "title": "Multi Cluster IORM/SIOC",
-  "originalTitle": "Multi Cluster IORM/SIOC",
+  "title": "VMware Multi Cluster IORM Stats",
+  "originalTitle": "VMware Multi Cluster IORM Stats",
   "tags": [
     "HDD",
     "IORM"
@@ -56,8 +56,7 @@
           "scopedVars": {
             "cluster": {
               "text": "cluster",
-              "value": "",
-              "selected": false
+              "value": ""
             }
           },
           "seriesOverrides": [
@@ -77,12 +76,12 @@
           "targets": [
             {
               "target": "aliasByNode(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 7)",
-              "textEditor": false
+              "textEditor": true
             },
             {
               "hide": false,
               "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'MaxNormalizedDatastoreLatency')",
-              "textEditor": false
+              "textEditor": true
             }
           ],
           "timeFrom": null,
@@ -96,7 +95,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "?s",
+            "µs",
             "short"
           ]
         },
@@ -132,7 +131,7 @@
           "lines": false,
           "linewidth": 2,
           "links": [],
-          "nullPointMode": "connected",
+          "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -140,8 +139,7 @@
           "scopedVars": {
             "cluster": {
               "text": "cluster",
-              "value": "",
-              "selected": false
+              "value": ""
             }
           },
           "seriesOverrides": [
@@ -179,8 +177,7 @@
       "scopedVars": {
         "cluster": {
           "text": "cluster",
-          "value": "",
-          "selected": false
+          "value": ""
         }
       },
       "showTitle": true,
@@ -220,7 +217,7 @@
     }
   ],
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "templating": {
@@ -274,10 +271,8 @@
       {
         "allFormat": "wildcard",
         "current": {
-          "tags": [],
           "text": "All",
-          "value": "*",
-		  "selected": true
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
@@ -300,8 +295,7 @@
         "allFormat": "wildcard",
         "current": {
           "text": "All",
-          "value": "*",
-		  "selected": true
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
