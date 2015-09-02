@@ -107,7 +107,7 @@ require("helper.php");
 					echo '	<div class="alert alert-success" role="alert">
 		<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 		<span class="sr-only">Success:</span>';
-					echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . $_POST["input-username"] . " --password " . $_POST["input-password"]);
+					echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . $_POST["input-username"] . " --password " . escapeshellcmd($_POST["input-password"]));
 					echo '	</div>';
 					echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
 				}

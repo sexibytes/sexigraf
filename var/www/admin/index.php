@@ -9,10 +9,10 @@ require("header.php");
 				<div class="panel panel-primary">
                         		<div class="panel-heading">
                             			<div class="row">
-                                			<div class="col-xs-3">
+                                			<div class="col-xs-6">
 				                                <i class="glyphicon glyphicon-briefcase" style="font-size: 4em;"></i>
                                 			</div>
- 		                                	<div class="col-xs-9 text-right">
+ 		                                	<div class="col-xs-6 text-right">
                                     				<div class="huge">Credential Store</div>
                                 			</div>
                             			</div>
@@ -29,16 +29,16 @@ require("header.php");
                     		<div class="panel panel-green">
                         		<div class="panel-heading">
                             			<div class="row">
-                                			<div class="col-xs-3">
+                                			<div class="col-xs-6">
                                     				<i class="glyphicon glyphicon-hdd" style="font-size: 4em;"></i>
                                 			</div>
-                                			<div class="col-xs-9 text-right">
+                                			<div class="col-xs-6 text-right">
                                     				<div class="huge">Package Updater</div>
                                 			</div>
                             			</div>
                         		</div>
                         		<div class="panel-footer">
-                            			<span class="pull-left">This section is dedicated to the update process of SexiGraf. Once you have downloaded an update package, go on this section to give your appliance the State-Of-The-Art code!</span>
+                            			<span class="pull-left">Here you'll find the update process of SexiGraf. Once you have downloaded an update package, go on this section to give your appliance the State-Of-The-Art code!</span>
                             			<div class="clearfix"></div>
                         		</div>
                     		</div>
@@ -49,10 +49,10 @@ require("header.php");
                                 <div class="panel panel-yellow">
                                         <div class="panel-heading">
                                                 <div class="row">
-                                                        <div class="col-xs-3">
+                                                        <div class="col-xs-6">
                                                                 <i class="glyphicon glyphicon-trash" style="font-size: 4em;"></i>
                                                         </div>
-                                                        <div class="col-xs-9 text-right">
+                                                        <div class="col-xs-6 text-right">
                                                                 <div class="huge">Whisper Purge</div>
                                                         </div>
                                                 </div>

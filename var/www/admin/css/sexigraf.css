@@ -14,6 +14,7 @@ body {
 #files { margin-top: 20px;}
 .fileinput-button { margin-bottom: 50px; }
 .btn-norm { width: 114px; }
+.btn-no-outline { outline: 5px auto; }
 .dropdown-menu li { margin-left: 5px; }
 .dropdown-menu { min-width: 120px; }
 #uploadCase { margin-bottom: 0px; }
@@ -106,7 +107,7 @@ body {
   height: 350px;
   overflow-y: scroll;
 }
-.huge { font-size: 40px; }
+.huge { font-size: 30px; }
 .panel-green { border-color: #5cb85c; }
 .panel-green .panel-heading {
   border-color: #5cb85c;
@@ -143,4 +144,19 @@ body {
   font-style: normal;
   font-weight: 400;
   src: local('Pirata One'), local('PirataOne-Regular'), url('../fonts/PirataOne.woff2') format('woff2');
+}
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(../images/preloader.gif) center no-repeat #fff;
+}
+.generated {
+  font-style: italic;
+  font-size: 14px;
 }
