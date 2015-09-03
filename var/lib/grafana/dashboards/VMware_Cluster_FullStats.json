@@ -748,7 +748,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "distributed memory fairness",
+          "title": "distributed fairness",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
