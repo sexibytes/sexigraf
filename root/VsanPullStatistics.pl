@@ -8,7 +8,7 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9";
+$Util::script_version = "0.9.1";
 
 Opts::parse();
 Opts::validate();
@@ -142,6 +142,27 @@ foreach my $datacentre_view (@$datacentres_views) {
 								$graphite->send(
 								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed",
 								value => $lsomkeyCapacityUsedPercent,
+								time => time(),
+								);								
+							}
+							elsif ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} eq "NA") {
+								my $lsomkeyRCmiss = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{miss};
+								my $lsomkeyRCquotaEvictions = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{quotaEvictions};
+								my $lsomkeyRCreadIoCount = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{readIoCount};
+								
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".miss",
+								value => $lsomkeyRCmiss,
+								time => time(),
+								);
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".quotaEvictions",
+								value => $lsomkeyRCquotaEvictions,
+								time => time(),
+								);
+								$graphite->send(
+								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".readIoCount",
+								value => $lsomkeyRCreadIoCount,
 								time => time(),
 								);								
 							}
