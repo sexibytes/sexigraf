@@ -1,7 +1,7 @@
 <?php
 
 $crontabFile = "/tmp/crontab";
-$crontabPath = "/etc/cron.d2/";
+$crontabPath = "/etc/cron.d/";
 
 #function isViEnabled($inputvcenter) {
 #	global $crontabFile;
