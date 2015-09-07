@@ -1,7 +1,10 @@
 {
   "title": "SexiGraf VI Offline Inventory",
   "originalTitle": "SexiGraf VI Offline Inventory",
-  "tags": [],
+  "tags": [
+    "VI",
+    "VM"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": false,
