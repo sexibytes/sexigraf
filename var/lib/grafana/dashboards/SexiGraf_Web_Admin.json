@@ -1,7 +1,10 @@
 {
   "title": "SexiGraf Web Admin",
   "originalTitle": "SexiGraf Web Admin",
-  "tags": [],
+  "tags": [
+    "VI",
+    "VSAN",
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": false,
