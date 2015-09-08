@@ -1,4 +1,5 @@
 @charset "UTF-8";
+body, html{ height: 100%; }
 p {
   font-weight:bold;
   padding-top:10px;
@@ -159,4 +160,10 @@ body {
 .generated {
   font-style: italic;
   font-size: 14px;
+}
+#purgeLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
