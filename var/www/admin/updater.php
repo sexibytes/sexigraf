@@ -3,7 +3,7 @@ session_start();
 $title = "SexiGraf Package Updater";
 require("header.php");
 require("helper.php");
-$dir = "/usr/share/nginx/www/files/";
+$dir = "/var/www/admin/files/";
 ?>
     <div class="container"><br/>
 	    <div class="panel panel-default">
@@ -118,8 +118,6 @@ $dir = "/usr/share/nginx/www/files/";
                                 echo '<script type="text/javascript">setTimeout(function(){ location.replace("updater.php"); }, 1000);</script>';
                         break;
                 }
-                #echo "<pre>submit: " . $_POST["submit"] . "\n";
-                #echo "input-file: " . $_POST["input-file"] . "</pre>\n";
         	if (isset($errorUploadHappened) and ($errorUploadHappened)) {
                 	echo '  <div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
