@@ -1,6 +1,7 @@
 <?php 
 session_start();
 $title = "SexiGraf Package Update Runner";
+$xmlPath = "/tmp/sexigraf-update/sexigraf-master/updateRunner.xml";
 require("header.php");
 require("helper.php");
 $dir = '/var/www/admin/files/';
@@ -33,10 +34,13 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
 			unlinkRecursive("/tmp/sexigraf-update/");
 			echo "Unpacking SexiGraf Update Package in /tmp/sexigraf-update/\n";
 			echo shell_exec("/usr/bin/unzip \"".$dir.$_POST['input-file']."\" -d /tmp/sexigraf-update/ 2>&1");
-			if (file_exists("/tmp/sexigraf-update/sexigraf-master/updateRunner.sh")) {
+			if (file_exists($xmlPath)) {
 				$SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH) : "Unknown");
-				chmod("/tmp/sexigraf-update/sexigraf-master/updateRunner.sh", 0755);
-				echo shell_exec("sudo /tmp/sexigraf-update/sexigraf-master/updateRunner.sh");
+				$domXML = new DomDocument();
+				$domXML->load($xmlPath);
+				$listeCommands = $domXML->getElementsByTagName('command');
+				foreach($listeCommands as $command2Run)
+        				echo shell_exec("sudo '" . $command2Run->firstChild->nodeValue . "'");
 			} else {
 				echo "!!! Missing mandatory file. Please check package integrity.\n";
 			}
