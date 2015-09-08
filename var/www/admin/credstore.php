@@ -126,6 +126,8 @@ require("helper.php");
                                 echo '  </div>';
                                 break;
 			case "delete-vcentry-confirmed":
+                		disableVi($_POST["input-vcenter"]);
+                		disableVsan($_POST["input-vcenter"]);
 	                        echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
