@@ -39,8 +39,12 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
 				$domXML = new DomDocument();
 				$domXML->load($xmlPath);
 				$listeCommands = $domXML->getElementsByTagName('command');
-				foreach($listeCommands as $command2Run)
-        				echo shell_exec("sudo '" . $command2Run->firstChild->nodeValue . "'");
+				foreach($listeCommands as $command2Run){
+                                        $command2sudo = $command2Run->firstChild->nodeValue;
+                                        echo $command2sudo . "\n";
+                                        echo shell_exec("sudo $command2sudo");
+                                }
+
 			} else {
 				echo "!!! Missing mandatory file. Please check package integrity.\n";
 			}
