@@ -1,4 +1,5 @@
 #!/bin/bash
-uname -a
-cat /etc/debian_version
-uptime
+cp -ru ./etc/* /etc/
+cp -ru ./root/* /root/
+cp -ru ./usr/* /usr/
+cp -ru ./var/* /var/
