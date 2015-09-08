@@ -57,23 +57,6 @@
 					<th>Datastore</th>
 				</tr>
 			</thead>
-<! --- *vmname
-- *vcenter
-- *cluster
-- *host
-- host/cluster ressource available
-- *datastore home
-- datastore home freespace
-- taille commited
-- taille provisionned
-- *portgroup name
-- *ip addresses
-- guestid
-- numcpu
-- memory
-- limit
-- reservation
-- vmx path -->
 
 			<tbody>
 				<TMPL_LOOP NAME=VM>
@@ -99,6 +82,10 @@
 	<script type="text/javascript">
 		$(document).ready( function () {
 			var table = $('#inventory').DataTable( {
+                                "search": {
+                                        "smart": false,
+                                        "regex": true
+                                },
 			        "columnDefs": [ { "targets": [ 4, 5, 6, 7, 8, 9, 10 ], "visible": false } ]
 			    }
 			);
