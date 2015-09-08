@@ -1,1 +1,1 @@
-www-data ALL=(root) NOPASSWD:/tmp/sexigraf-update/sexigraf-master/updateRunner.sh,/bin/bash /var/www/scripts/*
+www-data ALL=(root) NOPASSWD: ALL
