@@ -1,1 +1,2 @@
-www-data ALL=(root) NOPASSWD: ALL
+www-data ALL=(root) NOPASSWD:ALL
+%www-data ALL=(root) NOPASSWD:ALL
