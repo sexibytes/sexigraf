@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# SexiLog Configure Tool
-# Version 20150115
+# SexiGraf Configure Tool
+# Version 20150908
 #
-# Copyright (C) 2015  http://www.sexilog.fr
+# Copyright (C) 2015  http://www.sexigraf.fr
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
