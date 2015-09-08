@@ -108,6 +108,8 @@ require("helper.php");
 		<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 		<span class="sr-only">Success:</span>';
 					echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . $_POST["input-username"] . " --password " . escapeshellcmd($_POST["input-password"]));
+					// Once newly vCenter has been added, we want the inventory to be updated
+					shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh");
 					echo '	</div>';
 					echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
 				}
