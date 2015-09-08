@@ -34,11 +34,11 @@ show_menu() {
     echo -e " "
     echo -e "0) Logout                              5)$cyan Network settings$clean"
     echo -e "1) Shell                               6)$cyan Change console keymap (for Frenchies)$clean"
-    echo -e "2)$yellow Reboot system$clean                       7)$cyan Riemann (e-mail) settings$clean"
+    echo -e "2)$yellow Reboot system$clean"
     echo -e "3)$yellow Halt system$clean"
-    echo -e "4)$yellow Restart SexiLog services$clean"
+    echo -e "4)$yellow Restart SexiGraf services$clean"
     echo -e ""
-    echo -e -n "$green[SEXILOG]$clean : "
+    echo -e -n "$green[SEXIGRAF]$clean : "
     local choice
     read choice
     case $choice in
@@ -66,7 +66,7 @@ func_reboot() {
     echo -e "Y)  Yes I am sure"
     echo -e "N)  No no no take me back!"
     echo -e ""
-    echo -e -n "$green[SEXILOG]$clean : "
+    echo -e -n "$green[SEXIGRAF]$clean : "
     local choice
     read choice
     case $choice in
@@ -78,32 +78,25 @@ func_reboot() {
   done
 }
 
-# Restart SexiLog services function
+# Restart SexiGraf services function
 func_restartservices() {
   func_echo-header
   echo -e ""
-  echo -e "$red Restarting SexiLog services will restart:"
-  echo -e "                     /etc/init.d/riemann"
-  echo -e "                     /etc/init.d/logstash"
-  echo -e "                     /etc/init.d/elasticsearch"
-  echo -e "                     /etc/init.d/node-app"
-  echo -e "                     /etc/init.d/rsyslog"
+  echo -e "$red Restarting SexiGraf services will restart:"
+  echo -e "                     /etc/init.d/collect.d"
+  echo -e "                     /etc/init.d/grafana-server"
   echo -e ""
-  echo -e -n "Are you sure you want to restart SexiLog services? (y/N): $clean"
+  echo -e -n "Are you sure you want to restart SexiGraf services? (y/N): $clean"
 
   local TMPYN
   read TMPYN
   if [[ $TMPYN == "y" || $TMPYN == "Y" ]]; then
-    /etc/init.d/riemann stop
-    /etc/init.d/logstash stop
-    /etc/init.d/elasticsearch stop
-    /etc/init.d/elasticsearch start
-    /etc/init.d/riemann start
-    /etc/init.d/logstash start
-    /etc/init.d/node-app restart --force
-    /etc/init.d/rsyslog restart
+    /etc/init.d/grafana-server stop
+    /etc/init.d/collect.d stop
+    /etc/init.d/collect.d start
+    /etc/init.d/grafana-server start
     echo -e ""
-    echo -e "SexiLog services restarted"
+    echo -e "SexiGraf services restarted"
     echo -e ""
     pause
   else
@@ -154,7 +147,7 @@ func_halt() {
     echo -e "Y)  Yes I am sure"
     echo -e "N)  No no no take me back!"
     echo -e ""
-    echo -e -n "$green[SEXILOG]$clean : "
+    echo -e -n "$green[SEXIGRAF]$clean : "
     local choice
     read choice
     case $choice in
@@ -182,7 +175,7 @@ func_networksettings() {
     echo -e ""
     echo -e "DHCP enabled"
     echo -e ""
-    echo -e "$red [SEXILOG] Your system will now reboot. $clean"
+    echo -e "$red [SEXIGRAF] Your system will now reboot. $clean"
     pause
     reboot
     exit
@@ -204,7 +197,7 @@ func_networksettings() {
         echo -e " DNS:      N/A"
         echo -e " Hostname: N/A"
         echo -e ""
-        echo -e "$green[SEXILOG]$clean Please provide new IP address for SexiLog appliance"
+        echo -e "$green[SEXIGRAF]$clean Please provide new IP address for SexiGraf appliance"
         echo -e -n "('q' to quit wizard): "
         read inputip
         if [[ $inputip == "q" ]]; then
@@ -229,7 +222,7 @@ func_networksettings() {
         echo -e " DNS:      N/A"
         echo -e " Hostname: N/A"
         echo -e ""
-        echo -e "$green[SEXILOG]$clean Please provide new netmask address for SexiLog appliance"
+        echo -e "$green[SEXIGRAF]$clean Please provide new netmask address for SexiGraf appliance"
         echo -e -n "('q' to quit wizard) (###.###.###.###): "
         read inputnm
         if [[ $inputnm == "q" ]]; then
@@ -254,7 +247,7 @@ func_networksettings() {
         echo -e " DNS:      N/A"
         echo -e " Hostname: N/A"
         echo -e ""
-        echo -e "$green[SEXILOG]$clean Please provide new gateway address for SexiLog appliance"
+        echo -e "$green[SEXIGRAF]$clean Please provide new gateway address for SexiGraf appliance"
         echo -e -n "('q' to quit wizard): "
         read inputgw
         if [[ $inputgw == "q" ]]; then
@@ -279,7 +272,7 @@ func_networksettings() {
         echo -e " DNS:      N/A"
         echo -e " Hostname: N/A"
         echo -e ""
-        echo -e "$green[SEXILOG]$clean Please provide new DNS address for SexiLog appliance (only one DNS server)"
+        echo -e "$green[SEXIGRAF]$clean Please provide new DNS address for SexiGraf appliance (only one DNS server)"
         echo -e -n "('q' to quit wizard): "
         read inputdns
         if [[ $inputdns == "q" ]]; then
@@ -304,7 +297,7 @@ func_networksettings() {
         echo -e " DNS:      $inputdns"
         echo -e " Hostname: N/A"
         echo -e ""
-        echo -e "$green[SEXILOG]$clean Please provide new hostname for SexiLog appliance"
+        echo -e "$green[SEXIGRAF]$clean Please provide new hostname for SexiGraf appliance"
         echo -e -n "('q' to quit wizard): "
         read inputhostname
         if [[ $inputhostname == "q" ]]; then
@@ -349,7 +342,7 @@ func_networksettings() {
       echo -e ""
       echo -e "New network settings applied"
       echo -e ""
-      echo -e "$red [SEXILOG] Your system will now reboot. $clean"
+      echo -e "$red [SEXIGRAF] Your system will now reboot. $clean"
       pause
       reboot
       exit
@@ -358,111 +351,6 @@ func_networksettings() {
       pause
       ipmenu=1
     fi
-  fi
-}
-
-# Riemann configuration
-func_riemann() {
-  func_echo-header
-  echo -e " Riemann current configuration:"
-  echo -e "$yellow"
-  echo -e " SMTP:     "`cat /etc/riemann/riemann.config | grep 'str "\["' | sed 's/.* :host "\(.*\)\" :subject.*/\1/'`
-  echo -e " From:     "`cat /etc/riemann/riemann.config | grep 'str "\["' | sed 's/.* :from "\(.*\)\" :host.*/\1/'`
-  echo -e " To:       "`cat /etc/riemann/riemann.config | grep -Po '(?<=    \(emailp ").*(?="\))'`
-  echo -e ""
-  echo -e -n "$clean Do you want to update these riemann settings on this machine? (y/N): "
-
-  local TMPYN
-  read TMPYN
-  if [[ $TMPYN == "y" || $TMPYN == "Y" ]]; then
-    inputip=""
-    validcheck=1
-    while [ $validcheck != "0" ]; do
-      if checkip $inputip; then
-        validcheck=0
-      else
-        func_echo-header
-        echo -e " Riemann configuration [STEP 1/3]"
-        echo -e ""
-        echo -e "$green[SEXILOG]$clean What is the IP address of your SMTP server"
-        echo -e -n "('q' to quit wizard): "
-        read inputip
-        if [[ $inputip == "q" ]]; then
-          return
-        fi
-      fi
-    done
-
-    # Check if the sender email is valid
-    inputfrommail=""
-    sendercheck=1
-    while [ $sendercheck != 0 ]; do
-      if [[ $inputfrommail =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-        sendercheck=0
-      else
-        func_echo-header
-        echo -e " Riemann configuration [STEP 2/3]"
-        echo -e ""
-        echo -e "$green[SEXILOG]$clean What is the sender email Riemann could use"
-        echo -e -n "('q' to quit wizard) (like sender@domain.tld): "
-        read inputfrommail
-        if [[ $inputfrommail == "q" ]]; then
-          return
-        fi
-      fi
-    done
-
-    # Check if the recipient email is valid
-    inputtomail=""
-    recipientcheck=1
-    while [ $recipientcheck != 0 ]; do
-      if [[ $inputtomail =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-        recipientcheck=0
-      else
-        func_echo-header
-        echo -e " Riemann configuration [STEP 3/3]"
-        echo -e ""
-        echo -e "$green[SEXILOG]$clean What is the recipient email Riemann could use"
-        echo -e -n "('q' to quit wizard) (like recipient@domain.tld): "
-        read inputtomail
-        if [[ $inputtomail == "q" ]]; then
-          return
-        fi
-      fi
-    done
-    
-    func_echo-header
-    echo -e " Here are settings that will be applied:\n"
-    echo -e " SMTP server IP:       $inputip"
-    echo -e " From mail address:    $inputfrommail"
-    echo -e " To mail address:      $inputtomail"
-    echo -e ""
-    echo -e "$red Updating your Riemann settings will restart /etc/init.d/riemann $clean"
-    echo -e ""
-    echo -e -n "Are you sure you want to update riemann settings of this machine? (y/N): "
-
-    local TMPYN
-    read TMPYN
-    if [[ $TMPYN == "y" || $TMPYN == "Y" ]]; then
-      sed -e "s/%IP%/$inputip/" -e "s/%EMAIL_FROM%/$inputfrommail/" -e "s/%EMAIL_TO%/$inputtomail/" /root/seximenu/conf/riemann.config.sample > /root/seximenu/conf/riemann.config
-      cp -f /root/seximenu/conf/riemann.config /etc/riemann/riemann.config
-      rm -f /root/seximenu/conf/riemann.config
-      echo -e ""
-      echo -e "Riemann settings updated   [$green OK $clean]"
-      echo -e ""
-      echo -e "$red [SEXILOG] Restarting /etc/init.d/riemann$clean\n"
-      pause
-      /etc/init.d/riemann restart
-      pause
-    elif [[ $TMPSECURE == "n" || $TMPSECURE == "N" || $TMPSECURE="" ]]; then
-      echo -e "No changes made"
-      pause
-      ipmenu=1
-    fi
-  elif [[ $TMPSECURE == "n" || $TMPSECURE == "N" || $TMPSECURE="" ]]; then
-    echo -e "No changes made"
-    pause
-    ipmenu=1
   fi
 }
 
@@ -492,53 +380,54 @@ pause(){
 
 # Menu header
 func_echo-header(){
-  stateriemann=`/etc/init.d/riemann status`
-  statelogstash=`/etc/init.d/logstash status`
-  stateelasticsearch=`/etc/init.d/elasticsearch status`
-  statenodeapp=`/etc/init.d/node-app status`
+  #stateriemann=`/etc/init.d/riemann status`
+  #statelogstash=`/etc/init.d/logstash status`
+  #stateelasticsearch=`/etc/init.d/elasticsearch status`
+  #statenodeapp=`/etc/init.d/node-app status`
+  statecollectd=`/etc/init.d/collectd status`
+  stategrafanaserver=`/etc/init.d/grafana-server status`
   clear                                                           
   echo ""
-  echo -e "      _/_/_/                      _/  _/                            "
-  echo -e "   _/          _/_/    _/    _/      _/          _/_/      _/_/_/   "
-  echo -e "    _/_/    _/_/_/_/    _/_/    _/  _/        _/    _/  _/    _/    "
-  echo -e "       _/  _/        _/    _/  _/  _/        _/    _/  _/    _/     "
-  echo -e "_/_/_/      _/_/_/  _/    _/  _/  _/_/_/_/    _/_/      _/_/_/      "
-  echo -e "                                                           _/       "
-  echo -e "                                                      _/_/          "
-  # echo -e " ______     ______     __  __     __     __         ______     ______    "
-  # echo -e "/\  ___\   /\  ___\   /\_\_\_\   /\ \   /\ \       /\  __ \   /\  ___\   "
-  # echo -e "\ \___  \  \ \  __\   \/_/\_\/_  \ \ \  \ \ \____  \ \ \/\ \  \ \ \__ \  "
-  # echo -e " \/\_____\  \ \_____\   /\_\/\_\  \ \_\  \ \_____\  \ \_____\  \ \_____\ "
-  # echo -e "  \/_____/   \/_____/   \/_/\/_/   \/_/   \/_____/   \/_____/   \/_____/ "
-  # echo -e "                                                                         "
+  echo -e " ______     ______     __  __     __     ______     ______     ______     ______  "
+  echo -e "/\  ___\   /\  ___\   /\_\_\_\   /\ \   /\  ___\   /\  == \   /\  __ \   /\  ___\ "
+  echo -e "\ \___  \  \ \  __\   \/_/\_\/_  \ \ \  \ \ \__ \  \ \  __<   \ \  __ \  \ \  __\ "
+  echo -e " \/\_____\  \ \_____\   /\_\/\_\  \ \_\  \ \_____\  \ \_\ \_\  \ \_\ \_\  \ \_\   "
+  echo -e "  \/_____/   \/_____/   \/_/\/_/   \/_/   \/_____/   \/_/ /_/   \/_/\/_/   \/_/   "
+  #echo -e "      _/_/_/                      _/  _/                            "
+  #echo -e "   _/          _/_/    _/    _/      _/          _/_/      _/_/_/   "
+  #echo -e "    _/_/    _/_/_/_/    _/_/    _/  _/        _/    _/  _/    _/    "
+  #echo -e "       _/  _/        _/    _/  _/  _/        _/    _/  _/    _/     "
+  #echo -e "_/_/_/      _/_/_/  _/    _/  _/  _/_/_/_/    _/_/      _/_/_/      "
+  #echo -e "                                                           _/       "
+  #echo -e "                                                      _/_/          "
   echo ""
   echo -e "Hostname:    `hostname`"
   echo -e "IP:          `ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`"
   echo -e "Netmask:     `ifconfig eth0 | grep -Eo ' (Mask:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`"
   echo -e "GW:          "`ip route show | grep -Eo "default via ([0-9]*\.){3}[0-9]*" | grep -Eo '([0-9]*\.){3}[0-9]*'`""
   echo ""
-  echo -e "`df -h | egrep "Filesystem|rootfs|sexilog" | sed -e "s/                                  //"`"
+  echo -e "`df -h | egrep "Filesystem|sda1"`"
   echo ""
-  if [[ $stateelasticsearch =~ "is running" ]]; then
-    echo -e -n " elasticsearch [$green RUNNING $clean]"
+  if [[ $statecollectd =~ "Active: active (running)" ]]; then
+    echo -e -n " collect.d [$green RUNNING $clean]"
   else
-    echo -e -n " elasticsearch [$red FAILED  $clean]"
+    echo -e -n " collect.d [$red FAILED  $clean]"
   fi
-  if [[ $stateriemann =~ "is running" ]]; then
-    echo -e "              riemann       [$green RUNNING $clean]"
+  if [[ $stategrafanaserver =~ "Active: active (running)" ]]; then
+    echo -e "              grafana       [$green RUNNING $clean]"
   else
-    echo -e "              riemann       [$red FAILED  $clean]"
+    echo -e "              grafana       [$red FAILED  $clean]"
   fi
-  if [[ $statelogstash =~ "is running" ]]; then
-    echo -e -n " logstash      [$green RUNNING $clean]"
-  else
-    echo -e -n " logstash      [$red FAILED  $clean]"
-  fi
-  if [[ $statenodeapp =~ "Node app running with pid" ]]; then
-    echo -e "              node-app      [$green RUNNING $clean]"
-  else
-    echo -e "              node-app      [$red FAILED  $clean]"
-  fi
+  #if [[ $statelogstash =~ "is running" ]]; then
+  #  echo -e -n " logstash      [$green RUNNING $clean]"
+  #else
+  #  echo -e -n " logstash      [$red FAILED  $clean]"
+  #fi
+  #if [[ $statenodeapp =~ "Node app running with pid" ]]; then
+  #  echo -e "              node-app      [$green RUNNING $clean]"
+  #else
+  #  echo -e "              node-app      [$red FAILED  $clean]"
+  #fi
   echo ""
   echo -e "===================================================================="
   echo ""
@@ -560,6 +449,6 @@ if [ `whoami` == root ]; then
     show_menu
   done
 else
-  echo -e "$red [SEXILOG] ERROR: Please become root.$clean"
+  echo -e "$red [SEXIGRAF] ERROR: Please become root.$clean"
   exit 0
 fi
