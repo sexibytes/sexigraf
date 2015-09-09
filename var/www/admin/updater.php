@@ -28,7 +28,7 @@ $dir = "/var/www/admin/files/";
 			<div class="row">
 	                    <div class="col-sm-3"><h4 id="uploadCase"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span><span class="sr-only">Warning:</span> Select file to upload &gt;&gt;&gt;</h4></div>
         	            <div class="col-sm-6"><input type="file" name="fileToUpload" id="fileToUpload"></div>
-                	    <div class="col-sm-3"><button name="submit" class="btn btn-warning btn-xs" value="uploading">Upload</button></div>
+                	    <div class="col-sm-3"><button name="submit" class="btn btn-warning btn-xs" value="uploading">Upload Package</button></div>
 			</div>
 		   </div>
 	    </form>
