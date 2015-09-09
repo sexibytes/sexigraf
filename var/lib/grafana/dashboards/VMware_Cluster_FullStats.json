@@ -381,7 +381,7 @@
         },
         {
           "aliasColors": {
-            "vmotion.count": "#1F78C1"
+            "vmotion.count": "#052B51"
           },
           "bars": true,
           "datasource": null,
