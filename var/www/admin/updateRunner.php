@@ -15,7 +15,7 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
 			echo '            <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
-                Current version of SexiGraf is: <strong>' . (file_exists('/etc/sexigraf_version') ? file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH) : "Unknown") . '</strong>
+                Current version of SexiGraf is: <strong>' . $SexiGrafVersion . '</strong>
             </div>
 	    <div class="alert alert-warning" role="warning">
                 <h4><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
@@ -32,25 +32,61 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
                         case "upgrade-confirmed":
 			echo "<pre>";
 			unlinkRecursive("/tmp/sexigraf-update/");
-			echo "Unpacking SexiGraf Update Package in /tmp/sexigraf-update/\n";
-			echo shell_exec("/usr/bin/unzip \"".$dir.$_POST['input-file']."\" -d /tmp/sexigraf-update/ 2>&1");
+			$messageOutput = "Starting update process on " . (new DateTime())->format('Y-m-d H:i:s') . "\n";
+			$tempMessageOutput = shell_exec("/usr/bin/unzip \"".$dir.$_POST['input-file']."\" -d /tmp/sexigraf-update/ 2>&1");
 			if (file_exists($xmlPath)) {
-				$SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH) : "Unknown");
 				$domXML = new DomDocument();
 				$domXML->load($xmlPath);
 				$listeCommands = $domXML->getElementsByTagName('command');
+				$SexiGrafNewVersion = $domXML->getElementsByTagName("version")->item(0)->nodeValue;
+				$messageOutput .= "Updating from version " . trim($SexiGrafVersion) . " to version $SexiGrafNewVersion\n";
+				$messageOutput .= "Unpacking SexiGraf Update Package in /tmp/sexigraf-update/\n";
+				$messageOutput .= $tempMessageOutput;
+				$errorInCommand = false;
 				foreach($listeCommands as $command2Run){
+					$outputCommand = [];
+					$returnError = "";
                                         $command2sudo = $command2Run->firstChild->nodeValue;
-                                        echo $command2sudo . "\n";
-                                        echo shell_exec("sudo $command2sudo");
+                                        exec("sudo $command2sudo", $outputCommand, $returnError);
+					if ($returnError) {
+						$messageOutput .= "[ERROR] Command run with errors: $command2sudo\n";
+						$errorInCommand = true;
+					} else {
+						$messageOutput .= "[INFO] Command run successfully: $command2sudo\n";
+					}
+					$messageOutput .= implode("\n", $outputCommand) . "\n";
                                 }
-
 			} else {
-				echo "!!! Missing mandatory file. Please check package integrity.\n";
+				$messageOutput .= "!!! Missing mandatory file. Please check package integrity.\n";
 			}
-			echo "Purging temporary folder /tmp/sexigraf-update/";
+			$messageOutput .= "Purging temporary folder /tmp/sexigraf-update/";
 			unlinkRecursive("/tmp/sexigraf-update/");
+			echo $messageOutput;
 			echo "</pre>";
+			$updateLog = fopen("update.log", "w");
+			fwrite($updateLog, $messageOutput);
+			fclose($updateLog);
+			if ($errorInCommand) {
+				echo ' <div class="alert alert-danger" role="danger">
+                <h4><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                There was some errors during the update process!</h4>
+                Some errors occured during update of your SexiGraf appliance. This shouldn\'t happen, but don\'t worry, we are here to help you!<br />
+                If you want, you can take a look above to the report that can point you to the right direction, or you can send it to us at plot &lt;at&gt; sexigraf.fr
+                <p>You can fin update log <a href="update.log" target="_blank">here</a>, you can use the following button to send us an email with the details, we\'ll look into it and get back to you.</p>
+                <form class="form" action="" method="post">
+                        <p><a class="btn btn-danger" href="mailto:plot@sexigraf.fr?subject=Error during upgrade&body=Please Find attached update error log."><i class="glyphicon glyphicon-remove-sign"></i> Send Support Mail</a></p>
+        </div>';
+			} else {
+                                echo ' <div class="alert alert-success" role="success">
+                <h4><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                Update completed successfully!</h4>
+                <p>The update of your SexiGraf appliance completed successfully, you are now using version ' . $SexiGrafNewVersion . '!</p>
+                <form class="form" action="" method="post">
+                        <p><a class="btn btn-success" href="index.php"><i class="glyphicon glyphicon-home"></i> Go Home</a></p>
+        </div>';
+			}
 		}
 	}
 ?>
