@@ -19,7 +19,7 @@
       "panels": [
         {
           "aliasColors": {
-            "numVmotions": "#1F78C1"
+            "numVmotions": "#052B51"
           },
           "bars": true,
           "datasource": null,
