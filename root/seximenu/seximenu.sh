@@ -49,7 +49,6 @@ show_menu() {
       4) func_restartservices ;;
       5) func_networksettings ;;
       6) func_keymap ;;
-      7) func_riemann ;;
       *) echo -e "Error \"$choice\" is not an option..." && sleep 2
     esac
   done
@@ -380,10 +379,7 @@ pause(){
 
 # Menu header
 func_echo-header(){
-  #stateriemann=`/etc/init.d/riemann status`
-  #statelogstash=`/etc/init.d/logstash status`
-  #stateelasticsearch=`/etc/init.d/elasticsearch status`
-  #statenodeapp=`/etc/init.d/node-app status`
+  statecarboncache=`/etc/init.d/carbon-cache status`
   statecollectd=`/etc/init.d/collectd status`
   stategrafanaserver=`/etc/init.d/grafana-server status`
   clear                                                           
@@ -408,26 +404,21 @@ func_echo-header(){
   echo ""
   echo -e "`df -h | egrep "Filesystem|sda1"`"
   echo ""
-  if [[ $statecollectd =~ "Active: active (running)" ]]; then
-    echo -e -n " collect.d [$green RUNNING $clean]"
+  if [[ $statecarboncache =~ "Active: active (running)" ]]; then
+    echo -e -n " carbon-cache  [$green RUNNING $clean]"
   else
-    echo -e -n " collect.d [$red FAILED  $clean]"
+    echo -e -n " carbon-cache  [$red FAILED  $clean]"
+  fi
+  if [[ $statecollectd =~ "Active: active (running)" ]]; then
+    echo -e "                 collect.d [$green RUNNING $clean]"
+  else
+    echo -e "                 collect.d [$red FAILED  $clean]"
   fi
   if [[ $stategrafanaserver =~ "Active: active (running)" ]]; then
-    echo -e "              grafana       [$green RUNNING $clean]"
+    echo -e -n " grafana       [$green RUNNING $clean]"
   else
-    echo -e "              grafana       [$red FAILED  $clean]"
+    echo -e -n " grafana       [$red FAILED  $clean]"
   fi
-  #if [[ $statelogstash =~ "is running" ]]; then
-  #  echo -e -n " logstash      [$green RUNNING $clean]"
-  #else
-  #  echo -e -n " logstash      [$red FAILED  $clean]"
-  #fi
-  #if [[ $statenodeapp =~ "Node app running with pid" ]]; then
-  #  echo -e "              node-app      [$green RUNNING $clean]"
-  #else
-  #  echo -e "              node-app      [$red FAILED  $clean]"
-  #fi
   echo ""
   echo -e "===================================================================="
   echo ""
