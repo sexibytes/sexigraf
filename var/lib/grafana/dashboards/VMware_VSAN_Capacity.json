@@ -163,7 +163,7 @@
     }
   ],
   "time": {
-    "from": "now-7d",
+    "from": "now-1d",
     "to": "now"
   },
   "templating": {
