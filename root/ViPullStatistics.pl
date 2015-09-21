@@ -9,7 +9,7 @@ use Data::Dumper;
 use Net::Graphite;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.6";
+$Util::script_version = "0.9.7";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -183,7 +183,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 				}				
 			}
 		}
-		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary'], filter => {'runtime.connectionState' => "connected"});
+		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
 		foreach my $cluster_host_view (@$cluster_hosts_views) {
 			my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
 				if ($host_name eq "localhost") {
@@ -210,6 +210,18 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 				}
 			}
 			
+			my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
+			my $cluster_host_view_status_val;
+				if ($cluster_host_view_status eq "green") {
+					$cluster_host_view_status_val = 1;
+				} elsif ($cluster_host_view_status eq "yellow") {
+					$cluster_host_view_status_val = 2;
+				} elsif ($cluster_host_view_status eq "red") {
+					$cluster_host_view_status_val = 3;
+				} elsif ($cluster_host_view_status eq "gray") {
+					$cluster_host_view_status_val = 0;
+				}
+			
 			my $cluster_host_view_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedCpuFairness", $cluster_host_view->summary->quickStats->distributedCpuFairness,
@@ -217,6 +229,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallCpuUsage", $cluster_host_view->summary->quickStats->overallCpuUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->summary->quickStats->overallMemoryUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.Uptime", $cluster_host_view->summary->quickStats->uptime,
+					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallStatus", $cluster_host_view_status_val,
 				},
 			};
 			$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
@@ -229,7 +242,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 		if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
 			
 			my $StandaloneResourcePool = Vim::get_view(mo_ref => $StandaloneComputeResource->resourcePool, properties => ['summary.quickStats']);
-			my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['config.network.dnsConfig.hostName', 'config.network.vnic', 'config.network.pnic']);
+			my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['config.network.dnsConfig.hostName', 'config.network.vnic', 'config.network.pnic', 'overallStatus']);
 			my $StandaloneResourceDatastores = Vim::get_views(mo_ref_array => $StandaloneComputeResource->datastore, properties => ['summary']);
 			
 			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost[0][0]->{'config.network.dnsConfig.hostName'};
@@ -239,6 +252,18 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 				$StandaloneResourceVMHostVmk0Ip =~ s/[ .]/_/g;
 				$StandaloneResourceVMHostName = $StandaloneResourceVMHostVmk0Ip;
 			}
+			
+			my $StandaloneResourceVMHost_status = $StandaloneResourceVMHost[0][0]->{'overallStatus'}->val;
+			my $StandaloneResourceVMHost_status_val;
+				if ($StandaloneResourceVMHost_status eq "green") {
+					$StandaloneResourceVMHost_status_val = 1;
+				} elsif ($StandaloneResourceVMHost_status eq "yellow") {
+					$StandaloneResourceVMHost_status_val = 2;
+				} elsif ($StandaloneResourceVMHost_status eq "red") {
+					$StandaloneResourceVMHost_status_val = 3;
+				} elsif ($StandaloneResourceVMHost_status eq "gray") {
+					$StandaloneResourceVMHost_status_val = 0;
+				}			
 			
 			my $StandaloneComputeResource_h = {
 				time() => {
@@ -256,7 +281,8 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.effective", $StandaloneComputeResource->summary->effectiveMemory,
 					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.total", $StandaloneComputeResource->summary->totalMemory,
 					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.effective", $StandaloneComputeResource->summary->effectiveCpu,
-					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total", $StandaloneComputeResource->summary->totalCpu,					
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total", $StandaloneComputeResource->summary->totalCpu,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.overallStatus", $StandaloneResourceVMHost_status_val,
 				},
 			};
 			$graphite->send(path => "esx.", data => $StandaloneComputeResource_h);
