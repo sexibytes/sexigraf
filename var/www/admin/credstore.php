@@ -93,7 +93,7 @@ require("helper.php");
 				} elseif (shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list --server " . $_POST["input-vcenter"] . " | grep " . $_POST["input-vcenter"] . " | wc -l") > 0) {
                                 	$errorHappened = true;
                                 	$errorMessage = "vCenter IP or FQDN is already in credential store, duplicate entry is not supported.";
-				} elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
+				} elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
 		                        $errorHappened = true;
 	        	                $errorMessage = "Bad username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
 				}
