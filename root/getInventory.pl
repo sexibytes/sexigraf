@@ -65,7 +65,7 @@ sub sexiprocess {
 			if (defined($sessionfile)) {
 			        Vim::save_session(session_file => $sessionfile);
 			}
-			my %h_cluster = ("domain-c000" => "n/a");
+			my %h_cluster = ("domain-c000" => "N/A");
 			my %h_host = ();
 			my %h_hostcluster = ();
 			my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name', 'host']);
@@ -94,8 +94,8 @@ sub sexiprocess {
 				my @vm_ip_string = ();
 				my @vm_mac = ();
 				foreach (@$vnics) { 
-					($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "n/a");
-					($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "n/a");
+					($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "N/A");
+					($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "N/A");
 					if ($_->ipConfig) {
 						my $ips = $_->ipConfig->ipAddress;
 						foreach (@$ips) { 
@@ -104,7 +104,7 @@ sub sexiprocess {
 							}
 						}
 					} else {
-						push(@vm_ip_string, "n/a");
+						push(@vm_ip_string, "N/A");
 					}
 				}
 				my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
@@ -116,8 +116,8 @@ sub sexiprocess {
 					VMXPATH => $vm_view->{'summary.config.vmPathName'},
 					PORTGROUP => join(',', @vm_pg_string),
 					IP => join(',', @vm_ip_string),
-					NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "n/a"),
-					MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "n/a"),
+					NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "N/A"),
+					MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "N/A"),
 					COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
 					PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
 					DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1],
