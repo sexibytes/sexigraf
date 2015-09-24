@@ -56,7 +56,13 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/.*\\.vm/",
+              "points": true,
+              "lines": false
+            }
+          ],
           "span": 12,
           "stack": false,
           "steppedLine": false,
