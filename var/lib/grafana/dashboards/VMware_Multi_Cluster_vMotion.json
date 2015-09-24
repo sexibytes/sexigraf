@@ -74,7 +74,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(summarize(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), '30m', 'sum', false), 5)",
+              "target": "aliasByNode(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 5)",
               "textEditor": false
             }
           ],
