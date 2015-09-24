@@ -83,8 +83,7 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
                 <span class="sr-only">Success:</span>
                 Update completed successfully!</h4>
                 <p>The update of your SexiGraf appliance completed successfully, you are now using version ' . $SexiGrafNewVersion . '!</p>
-                <form class="form" action="" method="post">
-                        <p><a class="btn btn-success" href="index.php"><i class="glyphicon glyphicon-home"></i> Go Home</a></p>
+                <p><a class="btn btn-success" href="index.php"><i class="glyphicon glyphicon-home"></i> Go Home</a></p>
         </div>';
 			}
 		}
