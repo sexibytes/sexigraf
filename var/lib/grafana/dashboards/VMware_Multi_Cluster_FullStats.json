@@ -932,15 +932,15 @@
         "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
         "current": {
           "text": "None",
           "value": "",
           "isNone": true
         },
         "datasource": null,
-        "includeAll": false,
-        "multi": false,
+        "includeAll": true,
+        "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
