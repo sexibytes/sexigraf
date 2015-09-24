@@ -139,7 +139,7 @@
     }
   ],
   "time": {
-    "from": "now-1h",
+    "from": "now-1d",
     "to": "now"
   },
   "templating": {
