@@ -19,7 +19,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">SexiGraf Web Admin</a>
+                <a class="navbar-brand" href="index.php">Web Toolbox</a>
             </div>
             <ul class="nav navbar-top-links navbar-right">
 		<li class="dropdown">
