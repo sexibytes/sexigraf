@@ -21,7 +21,7 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
+      "height": "200px",
       "panels": [
         {
           "aliasColors": {
@@ -767,7 +767,7 @@
     },
     {
       "title": "IORM",
-      "height": "250px",
+      "height": "200px",
       "editable": true,
       "collapse": false,
       "panels": [
