@@ -36,7 +36,7 @@ $dir = "/var/www/admin/files/";
 	if ($handle = opendir($dir)) {
 		echo '		<table role="presentation" class="table table-striped"><tbody class="files">';
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != "..") {
+			if ($file != "." && $file != ".." && $file != ".gitignore") {
 				echo '		<tr class="template-download fade in">';
 				echo '        <td><span class="preview"></span></td>';
 				echo '        <td><p class="name">'.$file.'</p></td>';
