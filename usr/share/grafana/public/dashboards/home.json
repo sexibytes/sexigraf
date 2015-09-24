@@ -13,7 +13,7 @@
       "height": "100px",
       "panels": [
         {
-          "content": "<div class=\"text-center\" style=\"background-color: #939393; padding: 10px 0 20px 0\">\n<img src=\"img/logo_transparent_200x.png\" width=\"170px\"> \n</div>",
+          "content": "<div class=\"text-center\" style=\"padding: 10px 0 20px 0\">\n<img src=\"img/sexigraf-banner.png\" width=\"600px\"> \n</div>",
           "editable": false,
           "id": 1,
           "mode": "html",
