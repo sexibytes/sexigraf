@@ -18,7 +18,7 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
+      "height": "200px",
       "panels": [
         {
           "aliasColors": {
@@ -464,7 +464,7 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
+      "height": "200px",
       "panels": [
         {
           "aliasColors": {
@@ -589,7 +589,7 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
+      "height": "200px",
       "panels": [
         {
           "aliasColors": {},
