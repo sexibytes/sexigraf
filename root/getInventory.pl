@@ -18,30 +18,6 @@ use POSIX qw(strftime);
 $Util::script_version = "0.1";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
-#Log::Log4perl::init('/etc/log4perl.conf');
-#my $logger = Log::Log4perl->get_logger('sexigraf.getInventory');
-
-#my $filename = "/var/www/.vmware/credstore/vicredentials.xml";
-#my $s_item : shared;
-#my @server_list;
-#my @listVM : shared = ();
-#my $fileOutput = '/var/www/admin/inv.html';
-#my $template = HTML::Template->new(filename => '/var/www/admin/template/inventory.tmpl');
-
-#VMware::VICredStore::init (filename => $filename) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
-#my @threads;
-#@server_list = VMware::VICredStore::get_hosts ();
-#foreach $s_item (@server_list) {
-#	my $threadVC = threads->new(\&sexiprocess, \@listVM, $s_item);
-#	$logger->info("[INFO] Process created for vCenter $s_item with id " . $threadVC->tid());
-#	push(@threads, $threadVC);
-#}
-
-#foreach (@threads) {
-#	$_->join();
-#	$logger->info("[INFO] Process " . $_->tid() . " terminated");
-#}
-
 sub sexiprocess {
 	my $logger = Log::Log4perl->get_logger('sexigraf.getInventory');
 	my $u_item;
@@ -116,7 +92,9 @@ sub sexiprocess {
 				my $vnics = $vm_view->guest->net;
 				my @vm_pg_string = ();
 				my @vm_ip_string = ();
+				my @vm_mac = ();
 				foreach (@$vnics) { 
+					($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "n/a");
 					($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "n/a");
 					if ($_->ipConfig) {
 						my $ips = $_->ipConfig->ipAddress;
@@ -142,7 +120,8 @@ sub sexiprocess {
 					MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "n/a"),
 					COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
 					PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
-					DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1]
+					DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1],
+					MAC => join(',', @vm_mac)
 				);
 				push( @{$listVM_ref}, \%h_vm );
 			}
