@@ -1,0 +1,1370 @@
+{
+  "id": null,
+  "title": "VMware FlambX",
+  "originalTitle": "VMware FlambX",
+  "tags": [
+    "pipotronic",
+    "reporting"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {
+            "CPU_Usage": "#BF1B00"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": 100,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CPU_Usage",
+              "color": "#BF1B00"
+            }
+          ],
+          "span": 8,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.cpu.usage)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.cpu.total)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#A, #C)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#B, #D)"
+            },
+            {
+              "target": "alias(asPercent(#E, #F), 'CPU_Usage')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CPU",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "hertz",
+          "id": 2,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000))",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(esx.*.*.$esx.quickstats.cpu.total, 1000000))",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "CPU Capacity",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 12,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.runtime.vm.total)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "# VMs",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {
+            "RAM_Active": "#508642",
+            "RAM_Usage": "#CCA300"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": 100,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "RAM_Active",
+              "fill": 0
+            }
+          ],
+          "span": 8,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.usage)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.53674e-7))"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(esx.*.*.$esx.quickstats.mem.total, 9.53674e-7))"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#A, #B)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#C, #D)"
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(#E, #F), 'RAM_Usage')"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.guest)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#H, #I)"
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(#J, #F), 'RAM_Active')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RAM",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "id": 5,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.total)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "RAM Capacity",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "mbytes",
+          "id": 9,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.shared)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.shared)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "TPS Saving",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": 100,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 7,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "HDD_Usage",
+              "color": "#1F78C1"
+            }
+          ],
+          "span": 8,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.freeSpace)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.capacity)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#A, #B)"
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(#C, #D)"
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), #E), #F), 'HDD_Usage')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "HDD",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "id": 13,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.capacity)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "HDD Capacity",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "id": 8,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.uncommitted)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.uncommitted)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "HDD uncommitted",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 3,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "IOPS",
+              "color": "#F9934E"
+            }
+          ],
+          "span": 8,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "alias(sumSeries(removeAboveValue(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.datastoreIops, 50000)), 'IOPS')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IOPS",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "none",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "µs",
+          "id": 15,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": false,
+              "target": "averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.sizeNormalizedDatastoreLatency)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": "",
+          "title": "~Latency",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 16,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": false,
+              "target": "countSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": "",
+          "title": "# Datastore",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 3,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "vmotion",
+              "color": "#705DA0"
+            }
+          ],
+          "span": 8,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "alias(sumSeries(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions)), 'vmotion')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "VMotion",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "none",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 11,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": false,
+              "target": "sumSeries(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions))",
+              "textEditor": false
+            }
+          ],
+          "thresholds": "",
+          "title": "# VMotion",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "total"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 3,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.*.overallCpuUsage)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "countSeries(esx.*.*.$esx.quickstats.cpu.usage)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "# ESXi",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 17,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 3,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/bytesRx/",
+              "color": "#629E51",
+              "lines": false
+            },
+            {
+              "alias": "/bytesTx/",
+              "bars": false,
+              "color": "#0A50A1"
+            }
+          ],
+          "span": 8,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesRx, 1024))",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytesRx, 1024))",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesTx, 1024))",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytesTx, 1024))",
+              "textEditor": false
+            },
+            {
+              "target": "alias(sumSeries(#A, #B), 'bytesRx')"
+            },
+            {
+              "target": "alias(sumSeries(#C, #D), 'bytesTx')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "VMNIC Bandwidth",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "Bps",
+            "short"
+          ]
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "Bps",
+          "id": 19,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.linkSpeed), 100000)",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "scale(sumSeries(esx.*.*.$esx.net.*.linkSpeed), 100000)",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "Net Capacity",
+          "type": "singlestat",
+          "valueFontSize": "70%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "Bps",
+          "id": 18,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "hide": true,
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytes*, 1024))",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytes*, 1024))",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
+            }
+          ],
+          "thresholds": "",
+          "title": "Avg Bandwidth",
+          "type": "singlestat",
+          "valueFontSize": "70%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        }
+      ],
+      "showTitle": false,
+      "title": ""
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "1d",
+        "2d",
+        "3d",
+        "4d",
+        "5d",
+        "6d",
+        "7d",
+        "15d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-1d",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "All",
+          "value": "{}"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "{}",
+            "selected": true
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "All",
+          "value": "{}"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "{}",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "All",
+          "value": "{}"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "All",
+            "value": "{}",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "esx",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "esx.*.*.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 6,
+  "version": 4,
+  "links": []
+}
