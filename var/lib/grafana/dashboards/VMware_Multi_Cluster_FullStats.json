@@ -772,7 +772,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "?s",
+            "µs",
             "short"
           ]
         },
@@ -871,7 +871,6 @@
         "6h",
         "12h",
         "24h",
-        "36h",
         "2d",
         "3d",
         "7d",
@@ -901,13 +900,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*",
-            "selected": true
-          },
-          {
-            "text": "prd-vpx-01_infra_adm",
-            "value": "prd-vpx-01_infra_adm",
-            "selected": false
+            "value": "*"
           }
         ],
         "query": "vmw.*",
@@ -929,13 +922,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*",
-            "selected": true
-          },
-          {
-            "text": "gcs",
-            "value": "gcs",
-            "selected": false
+            "value": "*"
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -945,27 +932,22 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allFormat": "glob",
         "current": {
-          "text": "All",
-          "value": "*",
-          "tags": []
+          "text": "None",
+          "value": "",
+          "isNone": true
         },
         "datasource": null,
-        "includeAll": true,
-        "multi": true,
+        "includeAll": false,
+        "multi": false,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
           {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          },
-          {
-            "text": "cluster",
+            "text": "None",
             "value": "",
-            "selected": false
+            "isNone": true
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
@@ -979,8 +961,8 @@
   "annotations": {
     "list": []
   },
-  "refresh": "5m",
+  "refresh": false,
   "schemaVersion": 6,
-  "version": 1,
+  "version": 4,
   "links": []
 }
