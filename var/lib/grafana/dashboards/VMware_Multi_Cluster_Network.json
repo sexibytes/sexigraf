@@ -1,0 +1,293 @@
+{
+  "id": null,
+  "title": "VMware Multi Cluster Network",
+  "originalTitle": "VMware Multi Cluster Network",
+  "tags": [
+    "vmnic"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.15)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": false
+          },
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 3,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeat": "vmnic",
+          "scopedVars": {
+            "hostname": {
+              "text": "esx",
+              "value": "",
+              "selected": false
+            },
+            "vmnic": {
+              "text": "vmnic",
+              "value": "",
+              "selected": false
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/bytesRx/",
+              "color": "#629E51",
+              "lines": false
+            },
+            {
+              "alias": "/bytesTx/",
+              "bars": false,
+              "color": "#0A50A1"
+            }
+          ],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "aliasByNode(scale(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.net.$vmnic.bytes*, 1024), 8)",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "$vmnic",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "Bps",
+            "none"
+          ]
+        }
+      ],
+      "repeat": "hostname",
+      "scopedVars": {
+        "hostname": {
+          "text": "esx",
+          "value": "",
+          "selected": false
+        }
+      },
+      "showTitle": true,
+      "title": "$hostname"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "15m",
+        "1h",
+        "2h",
+        "3h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "3d",
+        "7d",
+        "15d",
+        "30d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "None",
+          "value": "",
+          "isNone": true
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "None",
+            "value": "",
+            "isNone": true,
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "All",
+          "value": "{}"
+        },
+        "datasource": null,
+        "hideLabel": false,
+        "includeAll": true,
+        "label": "esx",
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "hostname",
+        "options": [
+          {
+            "text": "All",
+            "value": "{}",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vmnic",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.net.*",
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 6,
+  "version": 16,
+  "links": []
+}
