@@ -32,7 +32,7 @@
                         <li><a href="credstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> vSphere Credential Store</a></li>
                         <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
                         <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Whisper Purge</a></li>
-                        </li>
+                        <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
                     </ul>
                 </li>
             </ul>
