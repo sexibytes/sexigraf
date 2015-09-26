@@ -9,7 +9,7 @@ use Data::Dumper;
 use Net::Graphite;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.7";
+$Util::script_version = "0.9.8";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -143,7 +143,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 			my $cluster_datastore_view = Vim::get_view(mo_ref => $cluster_datastore, properties => ['summary','iormConfiguration','host']);
 			if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
 				my $shared_datastore_name = lc ($cluster_datastore_view->summary->name);
-				$shared_datastore_name =~ s/[ .]/_/g;
+				$shared_datastore_name =~ s/[ .()]/_/g;
 				my $shared_datastore_uncommitted = 0;
 				if ($cluster_datastore_view->summary->uncommitted) {
 					$shared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
@@ -290,7 +290,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 			foreach my $StandaloneResourceDatastore (@$StandaloneResourceDatastores) {
 				if ($StandaloneResourceDatastore->summary->accessible) {
 					my $StandaloneResourceDatastore_name = lc ($StandaloneResourceDatastore->summary->name);
-					$StandaloneResourceDatastore_name =~ s/[ .]/_/g;
+					$StandaloneResourceDatastore_name =~ s/[ .()]/_/g;
 					my $StandaloneResourceDatastore_uncommitted = 0;
 					if ($StandaloneResourceDatastore->summary->uncommitted) {
 						$StandaloneResourceDatastore_uncommitted = $StandaloneResourceDatastore->summary->uncommitted;
