@@ -31,9 +31,9 @@
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": 0,
-            "threshold1": null,
+            "threshold1": 70,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
+            "threshold2": 75,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 4,
