@@ -7,9 +7,10 @@ use VMware::VIRuntime;
 use JSON;
 use Data::Dumper;
 use Net::Graphite;
+use List::Util qw[shuffle max];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.8";
+$Util::script_version = "0.9.9";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -158,7 +159,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
 				
 				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
-					foreach (@{$cluster_datastore_view->host}) {
+					foreach (shuffle @{$cluster_datastore_view->host}) {
 						
 						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
 					
@@ -173,14 +174,37 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 						my $DsQuickQueryPerf_h = {
 							time() => {
 								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $DsNormalizedDatastoreLatency,
-								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,								
+								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,
 							},
 						};						
 						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
 						last;
 						}
 					}
-				}				
+				} else {
+					foreach (shuffle @{$cluster_datastore_view->host}) {
+						
+						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
+					
+						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
+							
+						my @vmpath = split("/", $_->mountInfo->path);
+						my $uuid = $vmpath[-1];
+						
+						my $WriteDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalWriteLatency', 'average', $uuid, 30000) * 1000;
+						my $ReadDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalReadLatency', 'average', $uuid, 30000) * 1000;
+						my $sizeNormalizedDatastoreLatency = max($ReadDatastoreLatency,$WriteDatastoreLatency);
+
+						my $DsQuickQueryPerf_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency
+							},
+						};						
+						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
+						last;
+						}
+					}
+				}
 			}
 		}
 		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
