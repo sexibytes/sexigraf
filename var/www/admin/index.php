@@ -18,7 +18,7 @@ require("header.php");
                             			</div>
                         		</div>
                             		<div class="panel-footer">
-                                		<span class="pull-left">On this section, you'll be able to manage your VMware Credential Store. This store is used to set up your vCenter information to allow SexiGraf query what's needed</span>
+                                		<span class="pull-left">In this section, you'll be able to manage your VMware Credential Store. This store is used to set up your vCenter information to allow SexiGraf query what's needed.</span>
                                 		<div class="clearfix"></div>
                             		</div>
                     		</div>
@@ -53,12 +53,12 @@ require("header.php");
                                                                 <i class="glyphicon glyphicon-trash" style="font-size: 4em;"></i>
                                                         </div>
                                                         <div class="col-xs-9 text-right">
-                                                                <div class="huge">Whisper Purge</div>
+                                                                <div class="huge">Stats Remover</div>
                                                         </div>
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">Whisper purge page will let you manage local whisper data *.wsp file(s). It can be useful to remove from web-ui some corrupted and/or unwanted files.</span>
+                                                <span class="pull-left">The Stats Remover page will let you manage Graphite data (Whisper files). It can be useful to remove from web-ui the legacy or orphaned stats (i.e. after datastore removal).</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
@@ -78,7 +78,7 @@ require("header.php");
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">The Static Offline Inventory is automatically schedule to be updated every 6 hours. If you want to force a refresh, you can use this section to perform update</span>
+                                                <span class="pull-left">The Static Offline Inventory is automatically schedule to be updated every 6 hours. If you want to force a refresh, you can use this section to perform update.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
