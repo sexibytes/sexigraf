@@ -365,7 +365,7 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 my $exec_duration = time - $exec_start;
 my $vcenter_exec_duration_h = {
 	time() => {
-		"$vcenter_name.ha" . ".exec.duration", $exec_duration,
+		"$vcenter_name.vi" . ".exec.duration", $exec_duration,
 	},
 };
 $graphite->send(path => "vi.", data => $vcenter_exec_duration_h);
