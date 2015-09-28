@@ -68,7 +68,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(vi.*.ha.exec.duration, 1, 2)",
+              "target": "aliasByNode(vi.*.vi.exec.duration, 1, 2)",
               "textEditor": false
             },
             {
