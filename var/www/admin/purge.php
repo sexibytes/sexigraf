@@ -1,6 +1,6 @@
 <?php 
 session_start();
-$title = "SexiGraf vSphere Credential Store";
+$title = "Stats Remover";
 require("header.php");
 require("helper.php");
 ?>
