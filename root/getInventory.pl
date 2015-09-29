@@ -158,7 +158,7 @@ foreach (@threads) {
 }
 
 $template->param( VM => \@listVM );
-$template->param( GENERATED => "Page generated @ " . (strftime "%F %R", localtime) );
+$template->param( GENERATED => "Page generated @ " . (strftime "%F %R %Z", localtime) );
 open(my $fh, '>', $fileOutput);
 $template->output(print_to => $fh);
 close($fh);
