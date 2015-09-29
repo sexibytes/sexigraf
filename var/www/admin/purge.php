@@ -10,7 +10,7 @@ require("helper.php");
                 	<div class="panel-body"><ul>
                         	<li>This page can be used to purge old and/or unwanted whisper data objects.</li>
 				<li style="color:red;"><strong><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Beware as this operation cannot be undone, so there is a risk of DATA LOSS if you don't know what you're doing. <span class="glyphicon glyphicon-alert" aria-hidden="true"></span></strong></li>
-                        	<li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and <a href="http://www.sexigraf.fr/rtfm/">documentation</a> for more information.</li>
+                        	<li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                     	</ul></div>
 	        </div>
             	<h2><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> SexiGraf Stats Remover</h2>
