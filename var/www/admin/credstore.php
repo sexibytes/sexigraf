@@ -9,7 +9,7 @@ require("helper.php");
 			<div class="panel-heading"><h3 class="panel-title">Credential Store Notes</h3></div>
                 	<div class="panel-body"><ul>
                         	<li>The credential store is used to store credential that will be used for vCenter query, it use vSphere SDK Credential Store Library</li>
-                        	<li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and <a href="http://www.sexigraf.fr/rtfm/">documentation</a> for more information.</li>
+                        	<li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                     	</ul></div>
 	        </div>
             	<h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf Credential Store</h2>
