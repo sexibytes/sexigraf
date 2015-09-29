@@ -12,7 +12,7 @@ $dir = "/var/www/admin/files/";
 	            <ul>
 	                <li>The maximum file size for uploads in this package updater <strong>500 KB</strong></li>
 	                <li>Use this page to upload SexiGraf Update Package files (<strong>SUP</strong>)</li>
-	                <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and <a href="http://www.sexigraf.fr/rtfm/">documentation</a> for more information.</li>
+	                <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
 	            </ul>
 	        </div>
 	    </div>
