@@ -22,6 +22,8 @@
             </div>
             <ul class="nav navbar-top-links navbar-right">
 		<li class="dropdown">
+                    <a class="dropdown-toggle" href="index.php"><i class="glyphicon glyphicon-home"></i></a>
+		<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
                         <i class="glyphicon glyphicon-tasks"></i>  <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 0.8em;"></i>
                     </a>
