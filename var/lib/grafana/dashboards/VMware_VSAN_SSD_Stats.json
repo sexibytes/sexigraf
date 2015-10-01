@@ -74,11 +74,11 @@
           "targets": [
             {
               "hide": true,
-              "target": "vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbSize"
+              "target": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbSize"
             },
             {
               "hide": false,
-              "target": "alias(absolute(offset(asPercent(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbFreeSpace, #A), -100)), 'WB Fill Rate')",
+              "target": "alias(absolute(offset(asPercent(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbFreeSpace, #A), -100)), 'WB Fill Rate')",
               "textEditor": false
             }
           ],
@@ -153,7 +153,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5, 10)"
+              "target": "aliasByNode(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5, 10)"
             }
           ],
           "timeFrom": null,
@@ -231,11 +231,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.readIoCount), 1), 'reads')",
+              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.readIoCount), 1), 'reads')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.writeIoCount), 1), 'writes')",
+              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.writeIoCount), 1), 'writes')",
               "textEditor": false
             }
           ],
@@ -317,10 +317,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), 1), 'reads')"
+              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), 1), 'reads')"
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), 1), 'writes')"
+              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), 1), 'writes')"
             }
           ],
           "timeFrom": null,
@@ -407,7 +407,7 @@
             "selected": true
           }
         ],
-        "query": "vmw.*",
+        "query": "vsan.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -431,7 +431,7 @@
             "selected": true
           }
         ],
-        "query": "vmw.$vcenter.*",
+        "query": "vsan.$vcenter.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -457,7 +457,7 @@
             "selected": true
           }
         ],
-        "query": "vmw.$vcenter.$datacentre.*",
+        "query": "vsan.$vcenter.$datacentre.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -481,7 +481,7 @@
             "selected": true
           }
         ],
-        "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -506,7 +506,7 @@
             "selected": true
           }
         ],
-        "query": "vmw.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
