@@ -8,7 +8,7 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 
-$Util::script_version = "0.9.4";
+$Util::script_version = "0.9.5";
 
 Opts::parse();
 Opts::validate();
@@ -85,7 +85,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 						foreach my $compmgrkey (keys %{ $host_vsan_stats_json_compmgr }) {
 							$graphite->send(
-							path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.stats." . "$compmgrkey",
+							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.stats." . "$compmgrkey",
 							value => $host_vsan_stats_json_compmgr->{$compmgrkey},
 							time => time(),
 							);
@@ -93,7 +93,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 						
 						foreach my $clientkey (keys %{ $host_vsan_stats_json_client }) {
 							$graphite->send(
-							path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.stats." . "$clientkey",
+							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.stats." . "$clientkey",
 							value => $host_vsan_stats_json_client->{$clientkey},
 							time => time(),
 							);
@@ -101,7 +101,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 						
 						foreach my $ownerkey (keys %{ $host_vsan_stats_json_owner }) {
 							$graphite->send(
-							path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.owner.stats." . "$ownerkey",
+							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.owner.stats." . "$ownerkey",
 							value => $host_vsan_stats_json_owner->{$ownerkey},
 							time => time(),
 							);
@@ -109,7 +109,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 						
 						foreach my $schedkey (keys %{ $host_vsan_stats_json_sched }) {
 							$graphite->send(
-							path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
+							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
 							value => $host_vsan_stats_json_sched->{$schedkey},
 							time => time(),
 							);
@@ -129,21 +129,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
 								my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
 								
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed",
-								value => $lsomkeyCapacityUsed,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity",
-								value => $lsomkeyCapacity,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed",
-								value => $lsomkeyCapacityUsedPercent,
-								time => time(),
-								);								
+								my $host_vsan_lsom_json_disks_h = {
+									time() => {
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
+									},
+								};
+								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
 							}
 							elsif ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} eq "NA") {
 								my $lsomkeyMiss = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{miss};
@@ -155,46 +148,19 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $lsomkeyBytesRead = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{bytesRead};
 								my $lsomkeyBytesWritten = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{bytesWritten};
 								
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".miss",
-								value => $lsomkeyMiss,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".quotaEvictions",
-								value => $lsomkeyQuotaEvictions,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".readIoCount",
-								value => $lsomkeyReadIoCount,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".wbSize",
-								value => $lsomkeyWBsize,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".wbFreeSpace",
-								value => $lsomkeyWBfreeSpace,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".writeIoCount",
-								value => $lsomkeyWBwriteIoCount,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesRead",
-								value => $lsomkeyBytesRead,
-								time => time(),
-								);
-								$graphite->send(
-								path => "vmw." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesWritten",
-								value => $lsomkeyBytesWritten,
-								time => time(),
-								);
+								my $host_vsan_lsom_json_ssd_h = {
+									time() => {
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".miss", $lsomkeyMiss,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".quotaEvictions", $lsomkeyQuotaEvictions,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".readIoCount", $lsomkeyReadIoCount,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".wbSize", $lsomkeyWBsize,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".wbFreeSpace", $lsomkeyWBfreeSpace,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".writeIoCount", $lsomkeyWBwriteIoCount,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesRead", $lsomkeyBytesRead,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesWritten", $lsomkeyBytesWritten,
+									},
+								};
+								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_ssd_h);								
 							}
 						}
 					}
