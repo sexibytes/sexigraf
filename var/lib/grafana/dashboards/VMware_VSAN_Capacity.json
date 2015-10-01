@@ -90,17 +90,17 @@
           "targets": [
             {
               "hide": false,
-              "target": "alias(minSeries(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'min')",
+              "target": "alias(minSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'min')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'avg')",
+              "target": "alias(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'avg')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'max')",
+              "target": "alias(maxSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'max')",
               "textEditor": false
             }
           ],
@@ -185,7 +185,7 @@
             "value": "*"
           }
         ],
-        "query": "vmw.*",
+        "query": "vsan.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -208,7 +208,7 @@
             "value": "*"
           }
         ],
-        "query": "vmw.$vcenter.*",
+        "query": "vsan.$vcenter.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -233,7 +233,7 @@
             "isNone": true
           }
         ],
-        "query": "vmw.$vcenter.$datacentre.*",
+        "query": "vsan.$vcenter.$datacentre.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -258,7 +258,7 @@
             "value": "*"
           }
         ],
-        "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
