@@ -133,6 +133,15 @@ body {
 }
 .panel-yellow a { color: #f0ad4e; }
 .panel-yellow a:hover { color: #df8a13; }
+.panel-grey { border-color: #777777; }
+.panel-grey .panel-heading {
+  border-color: #777777;
+  color: #fff;
+  background-color: #777777;
+}
+.panel-grey a { color: #777777; }
+.panel-grey a:hover { color: #777777; }
+
 .glyphicon-custom { padding-right: 10px; }
 @font-face {
   font-family: 'Droid Sans';
