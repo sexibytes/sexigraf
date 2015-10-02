@@ -231,7 +231,7 @@ console.log(e);
  */
 
 $tail = new PHPTail(array(
-    "SexiGraf Inventory" => "/var/log/sexigraf/getInventory.log",
+    "VI Offline Inventory" => "/var/log/sexigraf/getInventory.log",
 ));
 
 /**
