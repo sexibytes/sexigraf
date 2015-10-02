@@ -34,6 +34,7 @@
                         <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
                         <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Stats Remover</a></li>
                         <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
+                        <li><a href="showlog.php"><i class="glyphicon glyphicon-search glyphicon-custom"></i> Log Viewer</a></li>
                     </ul>
                 </li>
             </ul>
