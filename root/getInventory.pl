@@ -9,8 +9,8 @@ use Data::Dumper;
 use Net::Graphite;
 use HTML::Template;
 use URI::URL;
-use threads;
-use threads::shared;
+#use threads;
+#use threads::shared;
 use Log::Log4perl qw(:easy);
 use Number::Bytes::Human qw(format_bytes);
 use POSIX qw(strftime);
@@ -56,10 +56,10 @@ sub sexiprocess {
 			if (defined($sessionfile) and -e $sessionfile) {
 			        eval { Vim::load_session(service_url => $url, session_file => $sessionfile); };
 			        if ($@) {
-			                Vim::login(service_url => $url, user_name => $u_item, password => $password);
+			                Vim::login(service_url => $url, user_name => $u_item, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $u_item");
 			        }
 			} else {
-			        Vim::login(service_url => $url, user_name => $u_item, password => $password);
+			        Vim::login(service_url => $url, user_name => $u_item, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $u_item");
 			}
 
 			if (defined($sessionfile)) {
@@ -137,25 +137,29 @@ Log::Log4perl::init('/etc/log4perl.conf');
 my $logger = Log::Log4perl->get_logger('sexigraf.getInventory');
 
 my $filename = "/var/www/.vmware/credstore/vicredentials.xml";
-my $s_item : shared;
+#my $s_item : shared;
+my $s_item;
 my @server_list;
-my @listVM : shared = ();
+#my @listVM : shared = ();
+my @listVM = ();
 my $fileOutput = '/var/www/admin/offline-vminventory.html';
 my $template = HTML::Template->new(filename => '/var/www/admin/template/inventory.tmpl');
 
 VMware::VICredStore::init (filename => $filename) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
-my @threads;
+#my @threads;
 @server_list = VMware::VICredStore::get_hosts ();
 foreach $s_item (@server_list) {
-	my $threadVC = threads->new(\&sexiprocess, \@listVM, $s_item);
-	$logger->info("[INFO] Process created for vCenter $s_item with id " . $threadVC->tid());
-	push(@threads, $threadVC);
+	#my $threadVC = threads->new(\&sexiprocess, \@listVM, $s_item);
+	$logger->info("[INFO] Start processing vCenter $s_item");
+	sexiprocess(\@listVM, $s_item);
+	#push(@threads, $threadVC);
+	$logger->info("[INFO] End processing vCenter $s_item");
 }
 
-foreach (@threads) {
-	$_->join();
-	$logger->info("[INFO] Process " . $_->tid() . " terminated");
-}
+#foreach (@threads) {
+#	$_->join();
+#	$logger->info("[INFO] Process " . $_->tid() . " terminated");
+#}
 
 $template->param( VM => \@listVM );
 $template->param( GENERATED => "Page generated @ " . (strftime "%F %R %Z", localtime) );
