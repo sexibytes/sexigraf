@@ -15,7 +15,7 @@ use Log::Log4perl qw(:easy);
 use Number::Bytes::Human qw(format_bytes);
 use POSIX qw(strftime);
 
-$Util::script_version = "0.1";
+$Util::script_version = "0.2";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 sub sexiprocess {
@@ -133,7 +133,20 @@ sub sexiprocess {
 	$logger->info("[INFO] Successfully retrieve " . scalar @$vm_views . " VM for vCenter server $s_item in ${exec_duration}s");
 }
 
-Log::Log4perl::init('/etc/log4perl.conf');
+BEGIN {
+        Log::Log4perl::init('/etc/log4perl.conf');
+	$SIG{__WARN__} = sub {
+		   my $logger = get_logger('sexigraf.getInventory');
+		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		   $logger->warn("WARN @_");
+	   };		
+	$SIG{__DIE__} = sub {
+		   my $logger = get_logger('sexigraf.getInventory');
+		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		   $logger->fatal("DIE @_");
+	   };
+}
+
 my $logger = Log::Log4perl->get_logger('sexigraf.getInventory');
 
 my $filename = "/var/www/.vmware/credstore/vicredentials.xml";
