@@ -82,7 +82,7 @@ func_restartservices() {
   func_echo-header
   echo -e ""
   echo -e "$red Restarting SexiGraf services will restart:"
-  echo -e "                     /etc/init.d/collect.d"
+  echo -e "                     /etc/init.d/collectd"
   echo -e "                     /etc/init.d/grafana-server"
   echo -e ""
   echo -e -n "Are you sure you want to restart SexiGraf services? (y/N): $clean"
@@ -91,8 +91,8 @@ func_restartservices() {
   read TMPYN
   if [[ $TMPYN == "y" || $TMPYN == "Y" ]]; then
     /etc/init.d/grafana-server stop
-    /etc/init.d/collect.d stop
-    /etc/init.d/collect.d start
+    /etc/init.d/collectd stop
+    /etc/init.d/collectd start
     /etc/init.d/grafana-server start
     echo -e ""
     echo -e "SexiGraf services restarted"
@@ -403,9 +403,9 @@ func_echo-header(){
     echo -e -n " carbon-cache  [$red FAILED  $clean]"
   fi
   if [[ $statecollectd =~ "Active: active (running)" ]]; then
-    echo -e "                 collect.d [$green RUNNING $clean]"
+    echo -e "                 collectd [$green RUNNING $clean]"
   else
-    echo -e "                 collect.d [$red FAILED  $clean]"
+    echo -e "                 collectd [$red FAILED  $clean]"
   fi
   if [[ $stategrafanaserver =~ "Active: active (running)" ]]; then
     echo -e -n " grafana       [$green RUNNING $clean]"
