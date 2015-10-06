@@ -1,2 +1,2 @@
 # SexiGraf
-SexiGraf is a vSphere centric Graphite VMware appliance with a Grafana frontend.
+SexiGraf is a vSphere centric Graphite appliance with a Grafana frontend.
