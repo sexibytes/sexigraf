@@ -78,7 +78,7 @@
             },
             {
               "hide": false,
-              "target": "alias(scale(summarize(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), maxSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), '2h', 'avg', false),$scale),'vm.left')",
+              "target": "alias(scale(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), maxSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on),$scale),'vm.left')",
               "textEditor": true
             }
           ],
@@ -155,7 +155,7 @@
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 5, 6)"
             },
             {
-              "target": "alias(summarize(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), '2h', 'avg', false),'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on),'vm.left')",
               "textEditor": true
             }
           ],
