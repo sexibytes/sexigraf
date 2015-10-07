@@ -2,7 +2,11 @@
   "id": null,
   "title": "VMware All Cluster Capacity Planning",
   "originalTitle": "VMware All Cluster Capacity Planning",
-  "tags": [],
+  "tags": [
+    "CPU",
+    "RAM",
+    "HDD"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
