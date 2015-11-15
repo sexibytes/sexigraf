@@ -4,11 +4,13 @@
 use strict;
 use warnings;
 use VMware::VIRuntime;
+use VMware::VICredStore;
 use JSON;
 use Data::Dumper;
 use Net::Graphite;
+use Log::Log4perl qw(:easy);
 
-$Util::script_version = "0.9.7";
+$Util::script_version = "0.9.8";
 
 Opts::parse();
 Opts::validate();
@@ -18,8 +20,12 @@ my $vcenterserver = Opts::get_option('server');
 my $username = Opts::get_option('username');
 my $password = Opts::get_option('password');
 my $sessionfile = Opts::get_option('sessionfile');
+my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
+my $logger = Log::Log4perl->get_logger('sexigraf.VsanDisksPullStatistics');
+VMware::VICredStore::init (filename => $credstorefile) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
+my @user_list = VMware::VICredStore::get_usernames (server => $vcenterserver);
 
 # set graphite target
 my $graphite = Net::Graphite->new(
@@ -33,18 +39,46 @@ my $graphite = Net::Graphite->new(
 	return_connect_error  => 0,                # if true, forward connect error to caller
 );
 
-# handling sessionfile if missing or expired
-if (defined($sessionfile) and -e $sessionfile) {
-	eval { Vim::load_session(service_url => $url, session_file => $sessionfile); };
-	if ($@) {
-		Vim::login(service_url => $url, user_name => $username, password => $password);
-	}
-} else {
-	Vim::login(service_url => $url, user_name => $username, password => $password);
+BEGIN {
+        Log::Log4perl::init('/etc/log4perl.conf');
+	$SIG{__WARN__} = sub {
+		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
+		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		   $logger->warn("WARN @_");
+	   };		
+	$SIG{__DIE__} = sub {
+		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
+		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		   $logger->fatal("DIE @_");
+	   };
 }
 
-if (defined($sessionfile)) {
-	Vim::save_session(session_file => $sessionfile);
+$logger->info("[INFO] Start processing vCenter $vcenterserver");
+
+# handling sessionfile if missing or expired
+if (scalar @user_list == 0) {
+	$logger->logdie ("[ERROR] No credential store user detected for $vcenterserver");
+} elsif (scalar @user_list > 1) {
+	$logger->logdie ("[ERROR] Multiple credential store user detected for $vcenterserver");
+} else {
+		foreach my $username (@user_list) {
+			$logger->info("[INFO] Login to vCenter $vcenterserver");
+			$password = VMware::VICredStore::get_password (server => $vcenterserver, username => $username);
+			$url = "https://" . $vcenterserver . "/sdk";
+			if (defined($sessionfile) and -e $sessionfile) {
+					eval { Vim::load_session(service_url => $url, session_file => $sessionfile); };
+					if ($@) {
+							Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username");
+					}
+			} else {
+					Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username");
+			}
+
+			if (defined($sessionfile)) {
+					Vim::save_session(session_file => $sessionfile);
+					$logger->info("[INFO] vCenter $vcenterserver session file saved");
+			}
+		}
 }
 
 # retreive vcenter hostname
@@ -56,14 +90,22 @@ my $vcenter_name = lc ($vcenter_fqdn);
 # retreive datacenter(s) list
 my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name']);
 
+$logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
+
 foreach my $datacentre_view (@$datacentres_views) {	
 	my $datacentre_name = lc ($datacentre_view->name);
 	$datacentre_name =~ s/[ .]/_/g;
+	
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx', 'summary', 'datastore', 'host'], begin_entity => $datacentre_view);
+	
+	$logger->info("[INFO] Processing vCenter $vcenterserver clusters");
+	
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
 		$cluster_name =~ s/[ .]/_/g;
 		if($cluster_view->configurationEx->vsanConfigInfo->enabled) {
+		
+		$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name");
 		
 			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem', 'runtime']);
 
@@ -215,6 +257,8 @@ my $vcenter_exec_duration_h = {
 	},
 };
 $graphite->send(path => "vi.", data => $vcenter_exec_duration_h);
+
+$logger->info("[INFO] End processing vCenter $vcenterserver");
 
 # disconnect from the server
 # Util::disconnect();
