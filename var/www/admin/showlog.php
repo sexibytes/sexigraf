@@ -232,6 +232,8 @@ console.log(e);
 
 $tail = new PHPTail(array(
     "VI Offline Inventory" => "/var/log/sexigraf/getInventory.log",
+    "VSAN Statistics" => "/var/log/sexigraf/VsanDisksPullStatistics.log",
+    "VI Statistics" => "/var/log/sexigraf/ViPullStatistics.log",
 ));
 
 /**
