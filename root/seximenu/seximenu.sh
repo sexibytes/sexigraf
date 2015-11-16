@@ -1,8 +1,6 @@
 #!/bin/bash
 #
 # SexiGraf Configure Tool
-# Version 20150924
-#
 # Copyright (C) 2015  http://www.sexigraf.fr
 #
 # This program is free software: you can redistribute it and/or modify
@@ -84,16 +82,22 @@ func_restartservices() {
   echo -e "$red Restarting SexiGraf services will restart:"
   echo -e "                     /etc/init.d/collectd"
   echo -e "                     /etc/init.d/grafana-server"
+  echo -e "                     /etc/init.d/carbon-cache"
+  echo -e "                     /etc/init.d/apache2"
   echo -e ""
   echo -e -n "Are you sure you want to restart SexiGraf services? (y/N): $clean"
 
   local TMPYN
   read TMPYN
   if [[ $TMPYN == "y" || $TMPYN == "Y" ]]; then
+    /etc/init.d/apache2 stop
     /etc/init.d/grafana-server stop
     /etc/init.d/collectd stop
+    /etc/init.d/carbon-cache stop
+    /etc/init.d/carbon-cache start
     /etc/init.d/collectd start
     /etc/init.d/grafana-server start
+    /etc/init.d/apache2 start
     echo -e ""
     echo -e "SexiGraf services restarted"
     echo -e ""
@@ -382,6 +386,7 @@ func_echo-header(){
   statecarboncache=`/etc/init.d/carbon-cache status`
   statecollectd=`/etc/init.d/collectd status`
   stategrafanaserver=`/etc/init.d/grafana-server status`
+  stateapache2=`/etc/init.d/apache2 status`
   clear                                                           
   echo ""
   echo -e "    _|_|_|                      _|    _|_|_|                          _|_|  "
@@ -411,6 +416,11 @@ func_echo-header(){
     echo -e -n " grafana       [$green RUNNING $clean]"
   else
     echo -e -n " grafana       [$red FAILED  $clean]"
+  fi
+  if [[ $stateapache2 =~ "Active: active (running)" ]]; then
+    echo -e "                 apache2  [$green RUNNING $clean]"
+  else
+    echo -e "                 apache2  [$red FAILED  $clean]"
   fi
   echo ""
   echo -e "===================================================================="
