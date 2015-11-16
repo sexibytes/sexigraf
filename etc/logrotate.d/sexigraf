@@ -5,5 +5,5 @@
   compress
   delaycompress
   notifempty
-  create 640 root root
+  create 600 www-data www-data
 }
