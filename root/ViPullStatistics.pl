@@ -372,7 +372,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 			}
 			
 			foreach my $StandaloneResourceVMHost_vmnic (@{$StandaloneResourceVMHost[0][0]->{'config.network.pnic'}}) {
-				if ($StandaloneResourceVMHost_vmnic->linkSpeed) {
+				if ($StandaloneResourceVMHost_vmnic->linkSpeed && $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb >= 100) {
 					my $NetbytesRx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesRx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
 					my $NetbytesTx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesTx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
 					my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
