@@ -193,53 +193,54 @@ console.log(e);
 </script>
 </head>
 <body>
-    <div id="wrapper">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                    </button>
-            </div>
-            <p class="navbar-text navbar-left" style="padding-top: 0px;" id="current"></p>
-            <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
-                                    <i class="glyphicon glyphicon-file"></i>  <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 0.8em;"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                            <?php foreach ($this->log as $title => $f): ?>
-                                            <li><a class="file" href="#<?php echo $title;?>"><?php echo $title;?></a></li>
-                                            <?php endforeach;?>
-                            </ul>
-                    </li>
-                    <li><i class="glyphicon glyphicon-option-vertical" style="color: #BBB;"></i></li>
-                    <li>
-                            <a class="dropdown-toggle" href="index.php"><i class="glyphicon glyphicon-home"></i></a>
-                    </li>
-                    <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
-                                    <i class="glyphicon glyphicon-tasks"></i>  <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 0.8em;"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                    <li><a href="index.php"><i class="glyphicon glyphicon-map-marker glyphicon-custom"></i> Summary</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="credstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> vSphere Credential Store</a></li>
-                                    <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
-                                    <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Stats Remover</a></li>
-                                    <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
-                                    <li><a href="showlog.php"><i class="glyphicon glyphicon-search glyphicon-custom"></i> Log Viewer</a></li>
-                            </ul>
-                    </li>
-       </ul>
-    </nav>
-    </div>
-    <div class="contents">
-        <div id="results" class="results"></div>
-    </div>
-    <script src="js/bootstrap.min.js"></script>
+        <div id="wrapper">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                        </button>
+                </div>
+                <p class="navbar-text navbar-left" style="padding-top: 0px;" id="current"></p>
+                <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
+                                        <i class="glyphicon glyphicon-file"></i>  <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 0.8em;"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                <?php foreach ($this->log as $title => $f): ?>
+                                                <li><a class="file" href="#<?php echo $title;?>"><?php echo $title;?></a></li>
+                                                <?php endforeach;?>
+                                </ul>
+                        </li>
+                        <li><i class="glyphicon glyphicon-option-vertical" style="color: #BBB;"></i></li>
+                        <li>
+                                <a class="dropdown-toggle" href="index.php"><i class="glyphicon glyphicon-home"></i></a>
+                        </li>
+                        <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
+                                        <i class="glyphicon glyphicon-tasks"></i>  <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 0.8em;"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                        <li><a href="index.php"><i class="glyphicon glyphicon-map-marker glyphicon-custom"></i> Summary</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="credstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> vSphere Credential Store</a></li>
+                                        <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
+                                        <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Stats Remover</a></li>
+                                        <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
+                                        <li><a href="showlog.php"><i class="glyphicon glyphicon-search glyphicon-custom"></i> Log Viewer</a></li>
+                                </ul>
+                        </li>
+           </ul>
+        </nav>
+        </div>
+
+        <div class="contents">
+                <div id="results" class="results"></div>
+        </div>
+        <script src="js/bootstrap.min.js"></script>
 </body>
 </html>
         <?php
