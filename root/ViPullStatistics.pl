@@ -306,8 +306,9 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 	foreach my $StandaloneComputeResource (@$StandaloneComputeResources) {
 		if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
 			
+			my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['config.network.dnsConfig.hostName', 'config.network.vnic', 'config.network.pnic', 'overallStatus', 'runtime.connectionState']);
+			if ($StandaloneResourceVMHost[0][0]->{'runtime.connectionState'}->val ne "connected") { next; }
 			my $StandaloneResourcePool = Vim::get_view(mo_ref => $StandaloneComputeResource->resourcePool, properties => ['summary.quickStats']);
-			my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['config.network.dnsConfig.hostName', 'config.network.vnic', 'config.network.pnic', 'overallStatus']);
 			my $StandaloneResourceDatastores = Vim::get_views(mo_ref_array => $StandaloneComputeResource->datastore, properties => ['summary']);
 			
 			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost[0][0]->{'config.network.dnsConfig.hostName'};
