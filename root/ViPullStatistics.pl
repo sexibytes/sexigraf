@@ -259,7 +259,9 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
 					my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
+					if (!defined($NetbytesRx)) { $NetbytesRx = 0; }
 					my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
+					if (!defined($NetbytesTx)) { $NetbytesTx = 0; }
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
 					
 					my $cluster_host_vmnic_h = {
