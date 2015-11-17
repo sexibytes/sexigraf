@@ -135,7 +135,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 	$datacentre_name =~ s/[ .]/_/g;
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx', 'summary', 'datastore', 'host'], begin_entity => $datacentre_view);
 	
-	$logger->info("[INFO] Processing vCenter $vcenterserver clusters");
+	$logger->info("[INFO] Processing vCenter $vcenterserver clusters in datacenter $datacentre_name");
 	
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
@@ -301,7 +301,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
 	my $StandaloneComputeResources = Vim::find_entity_views(view_type => 'ComputeResource', filter => {'summary.numHosts' => "1"}, properties => ['summary', 'resourcePool', 'host', 'datastore'], begin_entity => $datacentre_view);
 
-	$logger->info("[INFO] Processing vCenter $vcenterserver standalone hosts");
+	$logger->info("[INFO] Processing vCenter $vcenterserver standalone hosts in datacenter $datacentre_name");
 	
 	foreach my $StandaloneComputeResource (@$StandaloneComputeResources) {
 		if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
