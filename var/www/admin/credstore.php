@@ -134,6 +134,7 @@ require("helper.php");
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
                                 echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml remove --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"])) . "Refreshing...";
+                                shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                 echo '  </div>';
                                 echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
                                 break;
