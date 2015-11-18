@@ -96,7 +96,15 @@ require("helper.php");
                                 } elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
                                         $errorHappened = true;
                                         $errorMessage = "Bad username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
+                                } else {
+                                        # if input seems to be well-formated, we just need to test a connection query
+                                        exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), null, $return_var);
+                                        if ($return_var) {
+                                                $errorHappened = true;
+                                                $errorMessage = "Cannot complete login due to an incorrect user name or password";
+                                        }
                                 }
+
                                 if ($errorHappened) {
                                         echo '  <div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
