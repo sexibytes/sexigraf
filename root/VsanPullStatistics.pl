@@ -10,7 +10,9 @@ use Data::Dumper;
 use Net::Graphite;
 use Log::Log4perl qw(:easy);
 
-$Util::script_version = "0.9.8";
+$Data::Dumper::Indent = 1;
+$Util::script_version = "0.9.9";
+$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
 Opts::validate();
@@ -81,6 +83,12 @@ if (scalar @user_list == 0) {
 		}
 }
 
+sub getParent {
+        my ($parent) = @_;
+        if($parent->parent) { getParent($parent->parent); }
+		return $parent;
+}
+
 # retreive vcenter hostname
 my $vcenter_fqdn = $vcenterserver;
 
@@ -117,7 +125,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 				foreach(@$vmDevices) {
 					if($_->isa('VirtualDisk')) {
-						my @vmdkpath = split("/", $_->backing->fileName);
+						my $rootvmdk = $_->backing;
+						if ($_->backing->parent) {
+							$rootvmdk = getParent($_->backing->parent);
+						}
+						my @vmdkpath = split("/", $rootvmdk->fileName);
 						my $vmdk = substr($vmdkpath[-1], 0, -5);
 						$vmdk =~ s/[ .()]/_/g;
 						$VirtualDisks->{ $_->backing->backingObjectId } = $vmdk;
