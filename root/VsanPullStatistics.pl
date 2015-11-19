@@ -11,7 +11,7 @@ use Net::Graphite;
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.9";
+$Util::script_version = "0.9.11";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -125,14 +125,20 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 				foreach(@$vmDevices) {
 					if($_->isa('VirtualDisk')) {
-						my $rootvmdk = $_->backing;
-						if ($_->backing->parent) {
-							$rootvmdk = getParent($_->backing->parent);
-						}
-						my @vmdkpath = split("/", $rootvmdk->fileName);
+											
+						my @vmdkpath = split("/", $_->backing->fileName);
 						my $vmdk = substr($vmdkpath[-1], 0, -5);
 						$vmdk =~ s/[ .()]/_/g;
 						$VirtualDisks->{ $_->backing->backingObjectId } = $vmdk;
+						
+						if ($_->backing->parent) {
+							my $rootparent = getParent($_->backing->parent);
+							my @rootvmdkpath = split("/", $rootparent->fileName);
+							my $rootvmdk = substr($rootvmdkpath[-1], 0, -5);
+							$rootvmdk =~ s/[ .()]/_/g;
+							$VirtualDisks->{ $_->backing->backingObjectId . "_root"} = $rootparent->backingObjectId;
+							$VirtualDisks->{ $rootparent->backingObjectId} = $rootvmdk;
+						}
 					}
 				}
 			}
@@ -244,15 +250,28 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 						foreach my $dom_objects_key (keys %{ $host_vsan_dom_objects_json_stats }) {
 							if ($VirtualDisks->{$dom_objects_key}) {
-								my $host_vsan_dom_objects_json_stats_h = {
-									time() => {
-										"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readCount},
-										"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeCount},
-										"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readBytes},
-										"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeBytes},
-									},
-								};
-								$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h);
+								if ($VirtualDisks->{$dom_objects_key . "_root"}) {
+									my $root_dom_objects_key = $VirtualDisks->{$dom_objects_key . "_root"};
+									my $host_vsan_dom_objects_json_stats_h_snap = {
+										time() => {
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$root_dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readCount},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$root_dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeCount},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$root_dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readBytes},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$root_dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeBytes},
+										},
+									};
+									$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h_snap);
+								} else {
+									my $host_vsan_dom_objects_json_stats_h = {
+										time() => {
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readCount},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeCount", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeCount},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".readBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{readBytes},
+											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeBytes},
+										},
+									};
+									$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h);
+								}
 							}
 						}
 					}
