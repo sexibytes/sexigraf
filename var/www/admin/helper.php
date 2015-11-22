@@ -126,7 +126,7 @@ function php_file_tree_top_oldest($directory, $topn) {
         foreach ($data as $key => $value) {
                 if (++$i == $topn) break;
                 $time = date('Y-m-d H:i:s', $value['time']);
-                $php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$value[filename]\"> <strong>" . htmlspecialchars(str_replace($directory."/", "", $value[filename])) . "</strong> (". humanFileSize($value['size']) . " | $time)</li>";
+                $php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$value['filename']\"> <strong>" . htmlspecialchars(str_replace($directory."/", "", $value['filename'])) . "</strong> (". humanFileSize($value['size']) . " | $time)</li>";
         }
         $php_file_tree .= "</ul>";
         return $php_file_tree;
