@@ -58,7 +58,7 @@ require("header.php");
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">The Stats Remover page will let you manage Graphite data (Whisper files). It can be useful to remove from web-ui the legacy or orphaned stats (i.e. after datastore removal).</span>
+                                                <span class="pull-left">The House Cleaner page will let you manage Graphite data (Whisper files). It can be useful to remove from web-ui the legacy or orphaned stats (i.e. after datastore removal).</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
@@ -80,7 +80,7 @@ require("header.php");
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">The Static Offline Inventory is automatically schedule to be updated every 6 hours. If you want to force a refresh, you can use this section to perform update.</span>
+                                                <span class="pull-left">The VI Offline Inventory is automatically schedule to be updated every 6 hours. If you want to force a refresh, you can use this section to perform update.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
