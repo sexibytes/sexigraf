@@ -63,7 +63,8 @@ function php_file_tree_dir($directory, $first_call = true) {
         $file = scandir($directory);
         natcasesort($file);
         $files = $dirs = array();
-        foreach($file as $this_file) {
+        $php_file_tree = "";
+	foreach($file as $this_file) {
                 if( is_dir("$directory/$this_file" ) ) $dirs[] = $this_file; else $files[] = $this_file;
         }
         $file = array_merge($dirs, $files);
@@ -92,6 +93,7 @@ function php_file_tree($directory, $extension) {
         $file = scandir($directory);
         natcasesort($file);
         $files = array();
+	$php_file_tree = "";
         foreach($file as $this_file) {
                 if( !is_dir("$directory/$this_file") && pathinfo("$directory/$this_file", PATHINFO_EXTENSION) == $extension) $files[] = $this_file;
         }
@@ -111,7 +113,8 @@ function php_file_tree_top_oldest($directory, $topn) {
         $display = array('wsp');
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
         $data = array();
-        foreach($files as $file) {
+        $php_file_tree = "";
+	foreach($files as $file) {
                 $time = DateTime::createFromFormat('U', filemtime($file->getPathname()));
                 if(in_array($file->getExtension(), $display)) {
                         $data[] = array('filename' => $file->getPathname(), 'size' => $file->getSize(), 'time' => $time->getTimestamp());
@@ -126,7 +129,8 @@ function php_file_tree_top_oldest($directory, $topn) {
         foreach ($data as $key => $value) {
                 if (++$i == $topn) break;
                 $time = date('Y-m-d H:i:s', $value['time']);
-                $php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$value['filename']\"> <strong>" . htmlspecialchars(str_replace($directory."/", "", $value['filename'])) . "</strong> (". humanFileSize($value['size']) . " | $time)</li>";
+		$filenamevalue = $value['filename'];
+                $php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$filenamevalue\"> <strong>" . htmlspecialchars(str_replace($directory."/", "", $value['filename'])) . "</strong> (". humanFileSize($value['size']) . " | $time)</li>";
         }
         $php_file_tree .= "</ul>";
         return $php_file_tree;
