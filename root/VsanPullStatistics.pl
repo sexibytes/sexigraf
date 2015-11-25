@@ -63,30 +63,26 @@ if (scalar @user_list == 0) {
 } elsif (scalar @user_list > 1) {
 	$logger->logdie ("[ERROR] Multiple credential store user detected for $vcenterserver");
 } else {
-		foreach my $username (@user_list) {
-			$logger->info("[INFO] Login to vCenter $vcenterserver");
-			$password = VMware::VICredStore::get_password (server => $vcenterserver, username => $username);
-			$url = "https://" . $vcenterserver . "/sdk";
-			if (defined($sessionfile) and -e $sessionfile) {
-					eval { Vim::load_session(service_url => $url, session_file => $sessionfile); };
-					if ($@) {
-							Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username");
-					}
-			} else {
-					Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username");
-			}
+	foreach my $username (@user_list) {
+		$logger->info("[INFO] Login to vCenter $vcenterserver");
+		$password = VMware::VICredStore::get_password (server => $vcenterserver, username => $username);
+		$url = "https://" . $vcenterserver . "/sdk";
+		if (defined($sessionfile) and -e $sessionfile) {
+			eval { Vim::load_session(service_url => $url, session_file => $sessionfile); };
+			if ($@) { Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username"); }
+		} else { Vim::login(service_url => $url, user_name => $username, password => $password) or $logger->logdie ("[ERROR] Unable to connect to $url with username $username"); }
 
-			if (defined($sessionfile)) {
-					Vim::save_session(session_file => $sessionfile);
-					$logger->info("[INFO] vCenter $vcenterserver session file saved");
-			}
+		if (defined($sessionfile)) {
+			Vim::save_session(session_file => $sessionfile);
+			$logger->info("[INFO] vCenter $vcenterserver session file saved");
 		}
+	}
 }
 
 sub getParent {
         my ($parent) = @_;
         if($parent->parent) { getParent($parent->parent); }
-		return $parent;
+	return $parent;
 }
 
 # retreive vcenter hostname
