@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.10";
+$Util::script_version = "0.9.15";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -298,6 +298,52 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				},
 			};
 			$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
+		}
+		
+		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted'], filter => {'summary.runtime.powerState' => "poweredOn"});
+		
+		foreach my $cluster_vm_view (@$cluster_vm_views) {
+			my $cluster_vm_view_name = lc ($cluster_vm_view->name);
+			$cluster_vm_view_name =~ s/[ .()]/_/g;
+			
+			my $cluster_vm_view_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.overallCpuUsage", $cluster_vm_view->{'summary.quickStats.overallCpuUsage'},
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.overallCpuDemand", $cluster_vm_view->{'summary.quickStats.overallCpuDemand'},
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.HostMemoryUsage", $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'},
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.GuestMemoryUsage", $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'},
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.committed", $cluster_vm_view->{'summary.storage.committed'},
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.uncommitted", $cluster_vm_view->{'summary.storage.uncommitted'},
+				},
+			};
+			$graphite->send(path => "vmw.", data => $cluster_vm_view_h);
+			
+			if ($cluster_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
+				my $cluster_vm_view_ballooned_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.BalloonedMemory", $cluster_vm_view->{'summary.quickStats.balloonedMemory'},
+					},
+				};
+				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
+			}
+			
+			if ($cluster_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
+				my $cluster_vm_view_ballooned_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.CompressedMemory", $cluster_vm_view->{'summary.quickStats.compressedMemory'},
+					},
+				};
+				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
+			}
+			
+			if ($cluster_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
+				my $cluster_vm_view_ballooned_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.SwappedMemory", $cluster_vm_view->{'summary.quickStats.swappedMemory'},
+					},
+				};
+				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
+			}
 		}
 	}
 
