@@ -62,7 +62,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000), 5)",
+              "target": "aliasByNode(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000), 3, 5)",
               "textEditor": true
             }
           ],
@@ -125,7 +125,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 5)",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 3, 5)",
               "textEditor": true
             }
           ],
@@ -188,7 +188,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N), 5)",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N), 3, 5)",
               "textEditor": true
             }
           ],
@@ -251,7 +251,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 5)",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 3, 5)",
               "textEditor": true
             }
           ],
@@ -314,7 +314,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N), 5)",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N), 3, 5)",
               "textEditor": true
             }
           ],
