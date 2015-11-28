@@ -1,0 +1,868 @@
+{
+  "id": null,
+  "title": "VMware Multi Cluster Top N VM Stats",
+  "originalTitle": "VMware Cluster Top N VM Stats",
+  "tags": [
+    "VM",
+    "CPU",
+    "RAM",
+    "HDD"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": false,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000), 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "overallCpuUsage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "hertz",
+            "short"
+          ],
+          "links": []
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "HostMemoryUsage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "mbytes",
+            "short"
+          ],
+          "links": []
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N), 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "GuestMemoryUsage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "mbytes",
+            "short"
+          ],
+          "links": []
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "storage.uncommitted",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "links": []
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N), 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "storage.committed",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "links": []
+        }
+      ],
+      "title": "Row"
+    }
+  ],
+  "nav": [
+    {
+      "type": "timepicker",
+      "collapse": false,
+      "notice": false,
+      "enable": true,
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "now": true
+    }
+  ],
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          },
+          {
+            "text": "srvparvmmp22_fr_world_socgen",
+            "value": "srvparvmmp22_fr_world_socgen",
+            "selected": false
+          },
+          {
+            "text": "srvparvmmp26_fr_world_socgen",
+            "value": "srvparvmmp26_fr_world_socgen",
+            "selected": false
+          },
+          {
+            "text": "srvparvmmp32_fr_world_socgen",
+            "value": "srvparvmmp32_fr_world_socgen",
+            "selected": false
+          },
+          {
+            "text": "srvparvmmp36_fr_world_socgen",
+            "value": "srvparvmmp36_fr_world_socgen",
+            "selected": false
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          },
+          {
+            "text": "maint",
+            "value": "maint",
+            "selected": false
+          },
+          {
+            "text": "orion",
+            "value": "orion",
+            "selected": false
+          },
+          {
+            "text": "tigery",
+            "value": "tigery",
+            "selected": false
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "All",
+          "value": "{admo01,admt01,devo01,devo02,devo03,devo04,devo05,devo06,devo07,devo08,devt01,devt02,devt03,devt04,devt05,devt06,devt10,devt11,devt12,devt13,devt14,devt15,fr-oridev20,fr-oriprd20,fr-oriprd21,fr-oriprd40,fr-oriprd41,fr-oriprd60,fr-tigdev20,fr-tigdev21,fr-tigprd20,fr-tigprd21,fr-tigprd40,fr-tigprd41,fr-tigprd60,prdo01,prdo02,prdo03,prdo04,prdo05,prdo06,prdo09,prdo10,prdo11,prdo12,prdo13,prdo14,prdt01,prdt02,prdt03,prdt04,prdt05,prdt06,prdt09,prdt10,tst}"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "All",
+            "value": "{admo01,admt01,devo01,devo02,devo03,devo04,devo05,devo06,devo07,devo08,devt01,devt02,devt03,devt04,devt05,devt06,devt10,devt11,devt12,devt13,devt14,devt15,fr-oridev20,fr-oriprd20,fr-oriprd21,fr-oriprd40,fr-oriprd41,fr-oriprd60,fr-tigdev20,fr-tigdev21,fr-tigprd20,fr-tigprd21,fr-tigprd40,fr-tigprd41,fr-tigprd60,prdo01,prdo02,prdo03,prdo04,prdo05,prdo06,prdo09,prdo10,prdo11,prdo12,prdo13,prdo14,prdt01,prdt02,prdt03,prdt04,prdt05,prdt06,prdt09,prdt10,tst}",
+            "selected": true
+          },
+          {
+            "text": "admo01",
+            "value": "admo01",
+            "selected": false
+          },
+          {
+            "text": "admt01",
+            "value": "admt01",
+            "selected": false
+          },
+          {
+            "text": "devo01",
+            "value": "devo01",
+            "selected": false
+          },
+          {
+            "text": "devo02",
+            "value": "devo02",
+            "selected": false
+          },
+          {
+            "text": "devo03",
+            "value": "devo03",
+            "selected": false
+          },
+          {
+            "text": "devo04",
+            "value": "devo04",
+            "selected": false
+          },
+          {
+            "text": "devo05",
+            "value": "devo05",
+            "selected": false
+          },
+          {
+            "text": "devo06",
+            "value": "devo06",
+            "selected": false
+          },
+          {
+            "text": "devo07",
+            "value": "devo07",
+            "selected": false
+          },
+          {
+            "text": "devo08",
+            "value": "devo08",
+            "selected": false
+          },
+          {
+            "text": "devt01",
+            "value": "devt01",
+            "selected": false
+          },
+          {
+            "text": "devt02",
+            "value": "devt02",
+            "selected": false
+          },
+          {
+            "text": "devt03",
+            "value": "devt03",
+            "selected": false
+          },
+          {
+            "text": "devt04",
+            "value": "devt04",
+            "selected": false
+          },
+          {
+            "text": "devt05",
+            "value": "devt05",
+            "selected": false
+          },
+          {
+            "text": "devt06",
+            "value": "devt06",
+            "selected": false
+          },
+          {
+            "text": "devt10",
+            "value": "devt10",
+            "selected": false
+          },
+          {
+            "text": "devt11",
+            "value": "devt11",
+            "selected": false
+          },
+          {
+            "text": "devt12",
+            "value": "devt12",
+            "selected": false
+          },
+          {
+            "text": "devt13",
+            "value": "devt13",
+            "selected": false
+          },
+          {
+            "text": "devt14",
+            "value": "devt14",
+            "selected": false
+          },
+          {
+            "text": "devt15",
+            "value": "devt15",
+            "selected": false
+          },
+          {
+            "text": "fr-oridev20",
+            "value": "fr-oridev20",
+            "selected": false
+          },
+          {
+            "text": "fr-oriprd20",
+            "value": "fr-oriprd20",
+            "selected": false
+          },
+          {
+            "text": "fr-oriprd21",
+            "value": "fr-oriprd21",
+            "selected": false
+          },
+          {
+            "text": "fr-oriprd40",
+            "value": "fr-oriprd40",
+            "selected": false
+          },
+          {
+            "text": "fr-oriprd41",
+            "value": "fr-oriprd41",
+            "selected": false
+          },
+          {
+            "text": "fr-oriprd60",
+            "value": "fr-oriprd60",
+            "selected": false
+          },
+          {
+            "text": "fr-tigdev20",
+            "value": "fr-tigdev20",
+            "selected": false
+          },
+          {
+            "text": "fr-tigdev21",
+            "value": "fr-tigdev21",
+            "selected": false
+          },
+          {
+            "text": "fr-tigprd20",
+            "value": "fr-tigprd20",
+            "selected": false
+          },
+          {
+            "text": "fr-tigprd21",
+            "value": "fr-tigprd21",
+            "selected": false
+          },
+          {
+            "text": "fr-tigprd40",
+            "value": "fr-tigprd40",
+            "selected": false
+          },
+          {
+            "text": "fr-tigprd41",
+            "value": "fr-tigprd41",
+            "selected": false
+          },
+          {
+            "text": "fr-tigprd60",
+            "value": "fr-tigprd60",
+            "selected": false
+          },
+          {
+            "text": "prdo01",
+            "value": "prdo01",
+            "selected": false
+          },
+          {
+            "text": "prdo02",
+            "value": "prdo02",
+            "selected": false
+          },
+          {
+            "text": "prdo03",
+            "value": "prdo03",
+            "selected": false
+          },
+          {
+            "text": "prdo04",
+            "value": "prdo04",
+            "selected": false
+          },
+          {
+            "text": "prdo05",
+            "value": "prdo05",
+            "selected": false
+          },
+          {
+            "text": "prdo06",
+            "value": "prdo06",
+            "selected": false
+          },
+          {
+            "text": "prdo09",
+            "value": "prdo09",
+            "selected": false
+          },
+          {
+            "text": "prdo10",
+            "value": "prdo10",
+            "selected": false
+          },
+          {
+            "text": "prdo11",
+            "value": "prdo11",
+            "selected": false
+          },
+          {
+            "text": "prdo12",
+            "value": "prdo12",
+            "selected": false
+          },
+          {
+            "text": "prdo13",
+            "value": "prdo13",
+            "selected": false
+          },
+          {
+            "text": "prdo14",
+            "value": "prdo14",
+            "selected": false
+          },
+          {
+            "text": "prdt01",
+            "value": "prdt01",
+            "selected": false
+          },
+          {
+            "text": "prdt02",
+            "value": "prdt02",
+            "selected": false
+          },
+          {
+            "text": "prdt03",
+            "value": "prdt03",
+            "selected": false
+          },
+          {
+            "text": "prdt04",
+            "value": "prdt04",
+            "selected": false
+          },
+          {
+            "text": "prdt05",
+            "value": "prdt05",
+            "selected": false
+          },
+          {
+            "text": "prdt06",
+            "value": "prdt06",
+            "selected": false
+          },
+          {
+            "text": "prdt09",
+            "value": "prdt09",
+            "selected": false
+          },
+          {
+            "text": "prdt10",
+            "value": "prdt10",
+            "selected": false
+          },
+          {
+            "text": "tst",
+            "value": "tst",
+            "selected": false
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "type": "query"
+      },
+      {
+        "type": "query",
+        "datasource": null,
+        "refresh_on_load": false,
+        "name": "vm",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "includeAll": true,
+        "allFormat": "wildcard",
+        "multi": true,
+        "multiFormat": "glob",
+        "query": "vmw.$vcenter.$datacentre.$cluster.vm.*",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "regex": "",
+        "refresh": true
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "Average",
+          "value": "Average"
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "view",
+        "options": [
+          {
+            "selected": false,
+            "text": "Current",
+            "value": "Current"
+          },
+          {
+            "selected": true,
+            "text": "Average",
+            "value": "Average"
+          },
+          {
+            "selected": false,
+            "text": "Max",
+            "value": "Max"
+          }
+        ],
+        "query": "Current, Average, Max",
+        "refresh_on_load": false,
+        "type": "custom"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "10",
+          "value": "10",
+          "tags": []
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "N",
+        "options": [
+          {
+            "text": "5",
+            "value": "5",
+            "selected": false
+          },
+          {
+            "text": "10",
+            "value": "10",
+            "selected": true
+          },
+          {
+            "text": "15",
+            "value": "15",
+            "selected": false
+          },
+          {
+            "text": "20",
+            "value": "20",
+            "selected": false
+          }
+        ],
+        "query": "5,10,15,20",
+        "refresh_on_load": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "schemaVersion": 6,
+  "version": 17,
+  "links": []
+}
