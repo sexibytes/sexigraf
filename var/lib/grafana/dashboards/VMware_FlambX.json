@@ -120,7 +120,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "hertz",
@@ -346,7 +346,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "bytes",
@@ -404,7 +404,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "mbytes",
@@ -558,7 +558,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "bytes",
@@ -616,7 +616,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "bytes",
@@ -742,7 +742,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "µs",
@@ -1171,7 +1171,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "format": "Bps",
