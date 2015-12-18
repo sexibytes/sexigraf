@@ -9,6 +9,7 @@ require("helper.php");
                         <div class="panel-heading"><h3 class="panel-title">Credential Store Notes</h3></div>
                         <div class="panel-body"><ul>
                                 <li>The credential store is used to store credential that will be used for vCenter query, it use vSphere SDK Credential Store Library</li>
+                                <li><font style="color:red;"><i class="glyphicon glyphicon-alert"></i></font> Removing a vCenter from the credential store will <b><font style="color:red;">NOT delete any collected metrics</font></b>.</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
