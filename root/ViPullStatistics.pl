@@ -246,7 +246,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				}
 			}
 		}
-		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
+		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
 		foreach my $cluster_host_view (@$cluster_hosts_views) {
 			my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
 				if ($host_name eq "localhost") {
