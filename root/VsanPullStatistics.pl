@@ -11,7 +11,7 @@ use Net::Graphite;
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.11";
+$Util::script_version = "0.9.12";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -273,6 +273,31 @@ foreach my $datacentre_view (@$datacentres_views) {
 									$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h);
 								}
 							}
+						}
+					}
+					
+					my $host_vsan_disks = $host_vsan_view->QueryVsanStatistics(labels => ['disks']);
+					my $host_vsan_disks_json = from_json($host_vsan_disks);
+
+					if ($host_vsan_disks_json) {
+
+						my $host_vsan_disks_json_stats = $host_vsan_disks_json->{'disks.stats'};
+						my $host_name = lc ($host_view->{'config.network.dnsConfig.hostName'});
+
+						foreach my $naa (keys %{ $host_vsan_disks_json_stats }) {
+							my $host_vsan_disks_json_stats_latency = $host_vsan_disks_json_stats->{$naa}->{latency};
+							
+								my $host_vsan_disks_json_stats_latency_h = {
+									time() => {
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.totalTimeWrites", $host_vsan_disks_json_stats_latency->{totalTimeWrites},
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.totalTimeReads", $host_vsan_disks_json_stats_latency->{totalTimeReads},
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.queueTimeWrites", $host_vsan_disks_json_stats_latency->{queueTimeWrites},
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.queueTimeReads", $host_vsan_disks_json_stats_latency->{queueTimeReads},
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.readOps", $host_vsan_disks_json_stats->{$naa}->{readOps},
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.writeOps", $host_vsan_disks_json_stats->{$naa}->{writeOps},
+									},
+								};
+								$graphite->send(path => "vsan.", data => $host_vsan_disks_json_stats_latency_h);
 						}
 					}
 				}
