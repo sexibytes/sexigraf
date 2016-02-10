@@ -9,9 +9,10 @@ use JSON;
 use Data::Dumper;
 use Net::Graphite;
 use Log::Log4perl qw(:easy);
+use List::Util qw[shuffle sum first];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.12";
+$Util::script_version = "0.9.3";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -89,6 +90,27 @@ sub getParent {
 		return $parent;
 }
 
+sub getObj {
+	my ($obj, $keys, $ret) = @_;
+	
+	foreach my $key (keys %$obj) {
+		
+		if ($key eq 'attributes') {
+			foreach my $attr (keys %{$obj->{$key}}) {
+				if (grep $_ eq $attr, @$keys) {
+					push(@{$ret->{$attr}}, $obj->{$key}->{$attr});
+				}
+			}
+		}
+
+		if ($key =~ /^child-/) {
+			getObj($obj->{$key}, $keys, $ret);
+		}
+	}
+}
+
+my $fields = ['bytesToSync', 'recoveryETA'];
+
 # retreive vcenter hostname
 my $vcenter_fqdn = $vcenterserver;
 
@@ -139,6 +161,43 @@ foreach my $datacentre_view (@$datacentres_views) {
 							$VirtualDisks->{ $_->backing->backingObjectId . "_root"} = $rootparent->backingObjectId;
 							$VirtualDisks->{ $rootparent->backingObjectId} = $rootvmdk;
 						}
+					}
+				}
+			}
+			
+			foreach (shuffle @{$hosts_views}) {
+
+				if ($_->runtime->connectionState->val eq "connected") {
+			
+					my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
+					my $host_vsan_syncing_objects = $shuffle_host_vsan_view->QuerySyncingVsanObjects();
+					my $host_vsan_syncing_objects_json = from_json($host_vsan_syncing_objects);
+					my $host_vsan_syncing_objects_json_domobjs = $host_vsan_syncing_objects_json->{dom_objects};
+
+					if ($host_vsan_syncing_objects_json_domobjs) {
+					
+						my $vsan_bytesToSync = 0;
+						my $vsan_recoveryETA = 0;
+						my $vsan_sync_objs = 0;
+
+						foreach my $uuid (keys %$host_vsan_syncing_objects_json_domobjs) {
+							my $return = {};
+							getObj($host_vsan_syncing_objects_json_domobjs->{$uuid}->{'config'}->{'content'}, $fields, $return);
+
+							$vsan_bytesToSync += sum(@{$return->{bytesToSync}});
+							$vsan_recoveryETA += sum(@{$return->{recoveryETA}});
+							$vsan_sync_objs += @{$return->{bytesToSync}};
+						}
+						
+						my $vsan_syncing_objects_attributes_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.bytesToSync", $vsan_bytesToSync,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.recoveryETA", $vsan_recoveryETA,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.objectsToSync", $vsan_sync_objs,
+							},
+						};
+						$graphite->send(path => "vsan.", data => $vsan_syncing_objects_attributes_h);
+						last;
 					}
 				}
 			}
@@ -204,12 +263,13 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $lsomkeyCapacityUsed = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacityUsed};
 								my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
 								my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
-								
+								my $lsomkeySsdUuid = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd};
 								my $host_vsan_lsom_json_disks_h = {
 									time() => {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$lsomkeySsdUuid" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
 									},
 								};
 								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
@@ -223,7 +283,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $lsomkeyWBwriteIoCount = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{writeIoCount};
 								my $lsomkeyBytesRead = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{bytesRead};
 								my $lsomkeyBytesWritten = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{bytesWritten};
-								
+								my $lsomkeyCapacityUsed = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacityUsed};
+								my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
+
 								my $host_vsan_lsom_json_ssd_h = {
 									time() => {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".miss", $lsomkeyMiss,
@@ -234,6 +296,8 @@ foreach my $datacentre_view (@$datacentres_views) {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".writeIoCount", $lsomkeyWBwriteIoCount,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesRead", $lsomkeyBytesRead,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".bytesWritten", $lsomkeyBytesWritten,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
 									},
 								};
 								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_ssd_h);
