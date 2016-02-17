@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum first];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.3";
+$Util::script_version = "0.9.4";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -164,12 +164,18 @@ foreach my $datacentre_view (@$datacentres_views) {
 					}
 				}
 			}
-			
+
+			my $host_vsan_physical_disks_json;
+
 			foreach (shuffle @{$hosts_views}) {
 
 				if ($_->runtime->connectionState->val eq "connected") {
 			
 					my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
+					
+					my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
+					$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
+
 					my $host_vsan_syncing_objects = $shuffle_host_vsan_view->QuerySyncingVsanObjects();
 					my $host_vsan_syncing_objects_json = from_json($host_vsan_syncing_objects);
 					my $host_vsan_syncing_objects_json_domobjs = $host_vsan_syncing_objects_json->{dom_objects};
@@ -198,7 +204,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 						};
 						$graphite->send(path => "vsan.", data => $vsan_syncing_objects_attributes_h);
 						last;
-					}
+					}	
 				}
 			}
 			
@@ -264,12 +270,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
 								my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
 								my $lsomkeySsdUuid = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd};
+								my $vsan_cache_ssd_naa = $host_vsan_physical_disks_json->{$lsomkeySsdUuid}->{devName};
+								my @vsan_cache_ssd_clean_naa = split /[.:]/, $vsan_cache_ssd_naa;
 								my $host_vsan_lsom_json_disks_h = {
 									time() => {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
-										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$lsomkeySsdUuid" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
+										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$vsan_cache_ssd_clean_naa[1]" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
 									},
 								};
 								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
