@@ -57,6 +57,10 @@ BEGIN {
 	   };
 }
 
+$0 = "ViPullStatistics from $vcenterserver";
+my @np = `ps aux | grep "ViPullStatistics from $vcenterserver" | grep -v grep`;
+if (scalar @np > 1) {$logger->logdie ("[ERROR] ViPullStatistics from $vcenterserver is already running!")}
+
 $logger->info("[INFO] Start processing vCenter $vcenterserver");
 
 # handling sessionfile if missing or expired
