@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.15";
+$Util::script_version = "0.9.16";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -58,6 +58,11 @@ BEGIN {
 }
 
 $logger->info("[INFO] Start processing vCenter $vcenterserver");
+
+# handling multiple run
+$0 = "ViPullStatistics from $vcenterserver";
+my @np = `ps aux | grep "ViPullStatistics from $vcenterserver" | grep -v grep`;
+if (scalar @np > 1) {$logger->logdie ("[ERROR] ViPullStatistics from $vcenterserver is already running!")}
 
 # handling sessionfile if missing or expired
 if (scalar @user_list == 0) {
