@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum first];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.4";
+$Util::script_version = "0.9.5";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -55,6 +55,11 @@ BEGIN {
 		   $logger->fatal("DIE @_");
 	   };
 }
+
+# handling multiple run
+$0 = "VsanPullStatistics from $vcenterserver";
+my @np = `ps aux | grep "VsanPullStatistics from $vcenterserver" | grep -v grep`;
+if (scalar @np > 1) {$logger->logdie ("[ERROR] VsanPullStatistics from $vcenterserver is already running!")}
 
 $logger->info("[INFO] Start processing vCenter $vcenterserver");
 
