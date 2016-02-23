@@ -149,6 +149,17 @@ BEGIN {
 
 my $logger = Log::Log4perl->get_logger('sexigraf.getInventory');
 
+$0 = "getInventory from VICredStore";
+my $PullProcess = 0;
+foreach my $file (glob("/proc/[0-9]*/cmdline")) {
+        open FILE, "<$file";
+        if (grep(/^getInventory from VICredStore/, <FILE>) ) {
+                $PullProcess++;
+        }
+        close FILE;
+}
+if (scalar $PullProcess  > 1) {$logger->logdie ("[ERROR] getInventory from VICredStore is already running!")}
+
 my $filename = "/var/www/.vmware/credstore/vicredentials.xml";
 #my $s_item : shared;
 my $s_item;
