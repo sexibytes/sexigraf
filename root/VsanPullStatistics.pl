@@ -58,8 +58,15 @@ BEGIN {
 
 # handling multiple run
 $0 = "VsanPullStatistics from $vcenterserver";
-my @np = `ps aux | grep "VsanPullStatistics from $vcenterserver" | grep -v grep`;
-if (scalar @np > 1) {$logger->logdie ("[ERROR] VsanPullStatistics from $vcenterserver is already running!")}
+my $PullProcess = 0;
+foreach my $file (glob("/proc/[0-9]*/cmdline")) {
+        open FILE, "<$file";
+        if (grep(/^VsanPullStatistics from $vcenterserver/, <FILE>) ) {
+                $PullProcess++;
+        }
+        close FILE;
+}
+if (scalar $PullProcess  > 1) {$logger->logdie ("[ERROR] VsanPullStatistics from $vcenterserver is already running!")}
 
 $logger->info("[INFO] Start processing vCenter $vcenterserver");
 
