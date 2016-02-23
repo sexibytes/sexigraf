@@ -61,8 +61,16 @@ $logger->info("[INFO] Start processing vCenter $vcenterserver");
 
 # handling multiple run
 $0 = "ViPullStatistics from $vcenterserver";
-my @np = `ps aux | grep "ViPullStatistics from $vcenterserver" | grep -v grep`;
-if (scalar @np > 1) {$logger->logdie ("[ERROR] ViPullStatistics from $vcenterserver is already running!")}
+my $PullProcess = 0;
+foreach my $file (glob("/proc/[0-9]*/cmdline")) {
+        open FILE, "<$file";
+        if (grep(/^ViPullStatistics from $vcenterserver/, <FILE>) ) {
+                $PullProcess++;
+        }
+        close FILE;
+}
+if (scalar $PullProcess  > 1) {$logger->logdie ("[ERROR] ViPullStatistics from $vcenterserver is already running!")}
+
 
 # handling sessionfile if missing or expired
 if (scalar @user_list == 0) {
