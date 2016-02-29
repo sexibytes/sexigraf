@@ -57,8 +57,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "SSD",
-              "value": "",
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
               "selected": false
             }
           },
@@ -68,7 +68,7 @@
               "color": "#1F78C1"
             }
           ],
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -137,23 +137,24 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "SSD",
-              "value": "",
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
               "selected": false
             }
           },
           "seriesOverrides": [
             {
-              "alias": "/.*\\.quotaEvictions/",
+              "alias": "/.*/",
               "color": "#EF843C"
             }
           ],
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5, 10)"
+              "target": "aliasByNode(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5)",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
@@ -211,8 +212,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "SSD",
-              "value": "",
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
               "selected": false
             }
           },
@@ -226,7 +227,7 @@
               "color": "#E24D42"
             }
           ],
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -297,8 +298,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "SSD",
-              "value": "",
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
               "selected": false
             }
           },
@@ -312,7 +313,7 @@
               "color": "#BF1B00"
             }
           ],
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -337,13 +338,206 @@
             "Bps",
             "short"
           ]
+        },
+        {
+          "aliasColors": {
+            "capacity": "#7EB26D"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 7,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 4,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "ssd": {
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "selected": false
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "capacity",
+              "color": "#1F78C1",
+              "stack": false
+            },
+            {
+              "alias": "RcUsage",
+              "color": "#E24D42",
+              "fill": 4
+            },
+            {
+              "alias": "WbUsage",
+              "color": "#EAB839",
+              "fill": 4
+            }
+          ],
+          "span": 2,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.capacity, 10)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.capacityUsed, 'RcUsage')",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbSize",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.wbFreeSpace",
+              "textEditor": false
+            },
+            {
+              "target": "alias(diffSeries(#C, #D), 'WbUsage')"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real Usage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 4,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "ssd": {
+              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "selected": false
+            }
+          },
+          "seriesOverrides": [],
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.readIoCount)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), #A), 'read')",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.writeIoCount)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), #C), 'write')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IO Size",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ]
         }
       ],
       "repeat": "ssd",
       "scopedVars": {
         "ssd": {
-          "text": "SSD",
-          "value": "",
+          "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
+          "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
           "selected": false
         }
       },
@@ -521,6 +715,6 @@
   },
   "refresh": "1m",
   "schemaVersion": 6,
-  "version": 5,
+  "version": 7,
   "links": []
 }
