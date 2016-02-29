@@ -1,7 +1,7 @@
 {
   "id": null,
   "title": "VMware Multi Cluster Top N VM Stats",
-  "originalTitle": "VMware Cluster Top N VM Stats",
+  "originalTitle": "VMware Multi Cluster Top N VM Stats",
   "tags": [
     "VM",
     "CPU",
@@ -395,23 +395,8 @@
             "selected": true
           },
           {
-            "text": "srvparvmmp22_fr_world_socgen",
-            "value": "srvparvmmp22_fr_world_socgen",
-            "selected": false
-          },
-          {
-            "text": "srvparvmmp26_fr_world_socgen",
-            "value": "srvparvmmp26_fr_world_socgen",
-            "selected": false
-          },
-          {
-            "text": "srvparvmmp32_fr_world_socgen",
-            "value": "srvparvmmp32_fr_world_socgen",
-            "selected": false
-          },
-          {
-            "text": "srvparvmmp36_fr_world_socgen",
-            "value": "srvparvmmp36_fr_world_socgen",
+            "text": "veeam_schitz_org",
+            "value": "veeam_schitz_org",
             "selected": false
           }
         ],
@@ -439,18 +424,8 @@
             "selected": true
           },
           {
-            "text": "maint",
-            "value": "maint",
-            "selected": false
-          },
-          {
-            "text": "orion",
-            "value": "orion",
-            "selected": false
-          },
-          {
-            "text": "tigery",
-            "value": "tigery",
+            "text": "hypervisor_fr",
+            "value": "hypervisor_fr",
             "selected": false
           }
         ],
@@ -463,7 +438,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "{admo01,admt01,devo01,devo02,devo03,devo04,devo05,devo06,devo07,devo08,devt01,devt02,devt03,devt04,devt05,devt06,devt10,devt11,devt12,devt13,devt14,devt15,fr-oridev20,fr-oriprd20,fr-oriprd21,fr-oriprd40,fr-oriprd41,fr-oriprd60,fr-tigdev20,fr-tigdev21,fr-tigprd20,fr-tigprd21,fr-tigprd40,fr-tigprd41,fr-tigprd60,prdo01,prdo02,prdo03,prdo04,prdo05,prdo06,prdo09,prdo10,prdo11,prdo12,prdo13,prdo14,prdt01,prdt02,prdt03,prdt04,prdt05,prdt06,prdt09,prdt10,tst}"
+          "value": "{home,qa}"
         },
         "datasource": null,
         "includeAll": true,
@@ -473,287 +448,17 @@
         "options": [
           {
             "text": "All",
-            "value": "{admo01,admt01,devo01,devo02,devo03,devo04,devo05,devo06,devo07,devo08,devt01,devt02,devt03,devt04,devt05,devt06,devt10,devt11,devt12,devt13,devt14,devt15,fr-oridev20,fr-oriprd20,fr-oriprd21,fr-oriprd40,fr-oriprd41,fr-oriprd60,fr-tigdev20,fr-tigdev21,fr-tigprd20,fr-tigprd21,fr-tigprd40,fr-tigprd41,fr-tigprd60,prdo01,prdo02,prdo03,prdo04,prdo05,prdo06,prdo09,prdo10,prdo11,prdo12,prdo13,prdo14,prdt01,prdt02,prdt03,prdt04,prdt05,prdt06,prdt09,prdt10,tst}",
+            "value": "{home,qa}",
             "selected": true
           },
           {
-            "text": "admo01",
-            "value": "admo01",
+            "text": "home",
+            "value": "home",
             "selected": false
           },
           {
-            "text": "admt01",
-            "value": "admt01",
-            "selected": false
-          },
-          {
-            "text": "devo01",
-            "value": "devo01",
-            "selected": false
-          },
-          {
-            "text": "devo02",
-            "value": "devo02",
-            "selected": false
-          },
-          {
-            "text": "devo03",
-            "value": "devo03",
-            "selected": false
-          },
-          {
-            "text": "devo04",
-            "value": "devo04",
-            "selected": false
-          },
-          {
-            "text": "devo05",
-            "value": "devo05",
-            "selected": false
-          },
-          {
-            "text": "devo06",
-            "value": "devo06",
-            "selected": false
-          },
-          {
-            "text": "devo07",
-            "value": "devo07",
-            "selected": false
-          },
-          {
-            "text": "devo08",
-            "value": "devo08",
-            "selected": false
-          },
-          {
-            "text": "devt01",
-            "value": "devt01",
-            "selected": false
-          },
-          {
-            "text": "devt02",
-            "value": "devt02",
-            "selected": false
-          },
-          {
-            "text": "devt03",
-            "value": "devt03",
-            "selected": false
-          },
-          {
-            "text": "devt04",
-            "value": "devt04",
-            "selected": false
-          },
-          {
-            "text": "devt05",
-            "value": "devt05",
-            "selected": false
-          },
-          {
-            "text": "devt06",
-            "value": "devt06",
-            "selected": false
-          },
-          {
-            "text": "devt10",
-            "value": "devt10",
-            "selected": false
-          },
-          {
-            "text": "devt11",
-            "value": "devt11",
-            "selected": false
-          },
-          {
-            "text": "devt12",
-            "value": "devt12",
-            "selected": false
-          },
-          {
-            "text": "devt13",
-            "value": "devt13",
-            "selected": false
-          },
-          {
-            "text": "devt14",
-            "value": "devt14",
-            "selected": false
-          },
-          {
-            "text": "devt15",
-            "value": "devt15",
-            "selected": false
-          },
-          {
-            "text": "fr-oridev20",
-            "value": "fr-oridev20",
-            "selected": false
-          },
-          {
-            "text": "fr-oriprd20",
-            "value": "fr-oriprd20",
-            "selected": false
-          },
-          {
-            "text": "fr-oriprd21",
-            "value": "fr-oriprd21",
-            "selected": false
-          },
-          {
-            "text": "fr-oriprd40",
-            "value": "fr-oriprd40",
-            "selected": false
-          },
-          {
-            "text": "fr-oriprd41",
-            "value": "fr-oriprd41",
-            "selected": false
-          },
-          {
-            "text": "fr-oriprd60",
-            "value": "fr-oriprd60",
-            "selected": false
-          },
-          {
-            "text": "fr-tigdev20",
-            "value": "fr-tigdev20",
-            "selected": false
-          },
-          {
-            "text": "fr-tigdev21",
-            "value": "fr-tigdev21",
-            "selected": false
-          },
-          {
-            "text": "fr-tigprd20",
-            "value": "fr-tigprd20",
-            "selected": false
-          },
-          {
-            "text": "fr-tigprd21",
-            "value": "fr-tigprd21",
-            "selected": false
-          },
-          {
-            "text": "fr-tigprd40",
-            "value": "fr-tigprd40",
-            "selected": false
-          },
-          {
-            "text": "fr-tigprd41",
-            "value": "fr-tigprd41",
-            "selected": false
-          },
-          {
-            "text": "fr-tigprd60",
-            "value": "fr-tigprd60",
-            "selected": false
-          },
-          {
-            "text": "prdo01",
-            "value": "prdo01",
-            "selected": false
-          },
-          {
-            "text": "prdo02",
-            "value": "prdo02",
-            "selected": false
-          },
-          {
-            "text": "prdo03",
-            "value": "prdo03",
-            "selected": false
-          },
-          {
-            "text": "prdo04",
-            "value": "prdo04",
-            "selected": false
-          },
-          {
-            "text": "prdo05",
-            "value": "prdo05",
-            "selected": false
-          },
-          {
-            "text": "prdo06",
-            "value": "prdo06",
-            "selected": false
-          },
-          {
-            "text": "prdo09",
-            "value": "prdo09",
-            "selected": false
-          },
-          {
-            "text": "prdo10",
-            "value": "prdo10",
-            "selected": false
-          },
-          {
-            "text": "prdo11",
-            "value": "prdo11",
-            "selected": false
-          },
-          {
-            "text": "prdo12",
-            "value": "prdo12",
-            "selected": false
-          },
-          {
-            "text": "prdo13",
-            "value": "prdo13",
-            "selected": false
-          },
-          {
-            "text": "prdo14",
-            "value": "prdo14",
-            "selected": false
-          },
-          {
-            "text": "prdt01",
-            "value": "prdt01",
-            "selected": false
-          },
-          {
-            "text": "prdt02",
-            "value": "prdt02",
-            "selected": false
-          },
-          {
-            "text": "prdt03",
-            "value": "prdt03",
-            "selected": false
-          },
-          {
-            "text": "prdt04",
-            "value": "prdt04",
-            "selected": false
-          },
-          {
-            "text": "prdt05",
-            "value": "prdt05",
-            "selected": false
-          },
-          {
-            "text": "prdt06",
-            "value": "prdt06",
-            "selected": false
-          },
-          {
-            "text": "prdt09",
-            "value": "prdt09",
-            "selected": false
-          },
-          {
-            "text": "prdt10",
-            "value": "prdt10",
-            "selected": false
-          },
-          {
-            "text": "tst",
-            "value": "tst",
+            "text": "qa",
+            "value": "qa",
             "selected": false
           }
         ],
