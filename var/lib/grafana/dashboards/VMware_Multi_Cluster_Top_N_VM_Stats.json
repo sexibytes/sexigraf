@@ -393,11 +393,6 @@
             "text": "All",
             "value": "*",
             "selected": true
-          },
-          {
-            "text": "veeam_schitz_org",
-            "value": "veeam_schitz_org",
-            "selected": false
           }
         ],
         "query": "vmw.*",
@@ -422,11 +417,6 @@
             "text": "All",
             "value": "*",
             "selected": true
-          },
-          {
-            "text": "hypervisor_fr",
-            "value": "hypervisor_fr",
-            "selected": false
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -438,7 +428,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "{home,qa}"
+          "value": "{}"
         },
         "datasource": null,
         "includeAll": true,
@@ -448,18 +438,8 @@
         "options": [
           {
             "text": "All",
-            "value": "{home,qa}",
+            "value": "{}",
             "selected": true
-          },
-          {
-            "text": "home",
-            "value": "home",
-            "selected": false
-          },
-          {
-            "text": "qa",
-            "value": "qa",
-            "selected": false
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
