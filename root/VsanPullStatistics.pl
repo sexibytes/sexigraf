@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum first];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.5";
+$Util::script_version = "0.9.15";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -148,8 +148,10 @@ foreach my $datacentre_view (@$datacentres_views) {
 		if($cluster_view->configurationEx->vsanConfigInfo->enabled) {
 		
 		$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name");
-		
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem', 'runtime']);
+
+			my $cluster_view_uuid = $cluster_view->configurationEx->vsanConfigInfo->defaultConfig->uuid;
+			
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem', 'runtime', 'config.vsanHostConfig.clusterInfo.uuid'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => $cluster_view_uuid});
 
 			my $vm_views_device = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['config.hardware.device']);
 			my $VirtualDisks = {};
