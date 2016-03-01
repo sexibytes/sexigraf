@@ -64,22 +64,25 @@ $dir = "/var/www/admin/files/";
           </script>
 <?php
         if ($handle = opendir($dir)) {
-                echo '          <table role="presentation" class="table table-striped"><tbody class="files">';
-                while (false !== ($file = readdir($handle))) {
-                        if ($file != "." && $file != ".." && $file != ".gitignore") {
-                                echo '          <tr class="template-download fade in">';
-                                echo '        <td><span class="preview"></span></td>';
-                                echo '        <td><p class="name">'.$file.'</p></td>';
-                                echo '        <td><p class="size">'.humanFileSize(filesize($dir.$file),"KB").'</p></td>';
-                                echo '        <td style="width:220px"><form class="form" style="display:inline;" action="updater.php" method="post">';
-                                echo '            <input type="hidden" name="input-file" value="' . $file . '">';
-                                echo '            <button name="submit" class="btn btn-danger delete" style="width:95px" value="delete-file"><i class="glyphicon glyphicon-trash"></i> Delete</button></form>';
-                                echo '            <form class="form" style="display:inline;" action="updateRunner.php" method="post"><input type="hidden" name="input-file" value="' . $file . '"><button name="submit" class="btn btn-primary" style="width:95px" value="update-sexigraf"><i class="glyphicon glyphicon-cog"></i> Upgrade</button>';
-                                echo '        </form></td></tr>';
-                    }
+            echo '          <table role="presentation" class="table table-striped"><tbody class="files">';
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && $file != ".gitignore") {
+                    $tempMessageOutput = shell_exec("/usr/bin/unzip -c \"".$dir.$file."\" sexigraf-master/updateRunner.xml");
+                    preg_match('/\s*<version>(?<version>.*)<\/version>/', $tempMessageOutput, $matches);
+    				echo '		<tr class="template-download fade in">';
+    				echo '        <td><span class="preview"></span></td>';
+    				echo '        <td><p class="name">'.$file.'</p></td>';
+    				echo '        <td><p class="name">Version: ' . (($matches) ? $matches['version'] : 'Unknown') . '</p></td>';
+                    echo '        <td><p class="size">'.humanFileSize(filesize($dir.$file),"KB").'</p></td>';
+                    echo '        <td style="width:220px"><form class="form" style="display:inline;" action="updater.php" method="post">';
+                    echo '            <input type="hidden" name="input-file" value="' . $file . '">';
+                    echo '            <button name="submit" class="btn btn-danger delete" style="width:95px" value="delete-file"><i class="glyphicon glyphicon-trash"></i> Delete</button></form>';
+                    echo '            <form class="form" style="display:inline;" action="updateRunner.php" method="post"><input type="hidden" name="input-file" value="' . $file . '"><button name="submit" class="btn btn-primary" style="width:95px" value="update-sexigraf"><i class="glyphicon glyphicon-cog"></i> Upgrade</button>';
+                    echo '        </form></td></tr>';
                 }
-                closedir($handle);
-                echo '          </tbody></table>';
+            }
+            closedir($handle);
+            echo '          </tbody></table>';
         }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 switch ($_POST["submit"]) {
