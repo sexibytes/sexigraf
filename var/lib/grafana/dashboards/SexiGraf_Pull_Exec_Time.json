@@ -1,7 +1,7 @@
 {
   "id": null,
-  "title": "SexiGraf Pull Exec Time",
-  "originalTitle": "SexiGraf Pull Exec Time",
+  "title": "SexiGraf Pull Exec Time Copy",
+  "originalTitle": "SexiGraf Pull Exec Time Copy",
   "tags": [
     "admin",
     "VI",
@@ -53,16 +53,10 @@
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
-          "pointradius": 5,
-          "points": false,
+          "pointradius": 3,
+          "points": true,
           "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "/.*\\.vm/",
-              "points": true,
-              "lines": false
-            }
-          ],
+          "seriesOverrides": [],
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -143,6 +137,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 6,
+  "version": 0,
   "links": []
 }
