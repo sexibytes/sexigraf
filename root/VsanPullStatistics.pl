@@ -140,7 +140,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 	my $datacentre_name = lc ($datacentre_view->name);
 	$datacentre_name =~ s/[ .]/_/g;
 	
-	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx', 'summary', 'datastore', 'host'], begin_entity => $datacentre_view);
+	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx','host'], begin_entity => $datacentre_view);
 	
 	$logger->info("[INFO] Processing vCenter $vcenterserver clusters");
 	
@@ -153,7 +153,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 			my $cluster_view_uuid = $cluster_view->configurationEx->vsanConfigInfo->defaultConfig->uuid;
 			
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem', 'runtime', 'config.vsanHostConfig.clusterInfo.uuid'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => $cluster_view_uuid});
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime','config.vsanHostConfig.clusterInfo.uuid'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => $cluster_view_uuid});
 
 			my $vm_views_device = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['config.hardware.device']);
 			my $VirtualDisks = {};
