@@ -229,6 +229,7 @@
         "30d"
       ],
       "refresh_intervals": [
+        "5m",
         "15m",
         "1h",
         "2h",
