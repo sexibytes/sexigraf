@@ -57,8 +57,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -137,8 +137,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -212,8 +212,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -298,8 +298,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -381,8 +381,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -486,8 +486,8 @@
           "renderer": "flot",
           "scopedVars": {
             "ssd": {
-              "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-              "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+              "text": "SSD",
+              "value": "",
               "selected": false
             }
           },
@@ -536,8 +536,8 @@
       "repeat": "ssd",
       "scopedVars": {
         "ssd": {
-          "text": "5227302b-d31b-8cad-e85a-f22b446cab77",
-          "value": "5227302b-d31b-8cad-e85a-f22b446cab77",
+          "text": "SSD",
+          "value": "",
           "selected": false
         }
       },
