@@ -26,8 +26,8 @@ $dir = "/var/www/admin/files/";
                     <input type="hidden" name="MAX_FILE_SIZE" value="500000"/>
                     <div class="alert alert-warning" role="warning">
             			<div class="row">
-            				<div class="col-sm-2" style="margin-top: 7px;"><h4 id="uploadCase"><span class="glyphicon glyphicon-file" aria-hidden="true"></span><span class="sr-only">Warning:</span> Select file to upload</h4></div>
-            				<div class="col-sm-8">
+            				<div class="col-sm-3" style="margin-top: 7px;"><h4 id="uploadCase"><span class="glyphicon glyphicon-file" aria-hidden="true"></span><span class="sr-only">Warning:</span> Select file to upload</h4></div>
+            				<div class="col-sm-6">
                               <div class="input-group">
                                 <span class="input-group-btn">
                                   <span class="btn btn-warning btn-file">Browse&hellip; <input type="file" name="fileToUpload" id="fileToUpload"></span>
@@ -35,7 +35,7 @@ $dir = "/var/www/admin/files/";
                                 <input type="text" class="form-control" readonly>
                               </div>
                             </div>
-            				<div class="col-sm-2 text-right"><button name="submit" class="btn btn-warning" value="uploading" style="width:196px"><i class="glyphicon glyphicon-upload"></i> Upload Package</button></div>
+            				<div class="col-sm-3 text-right"><button name="submit" class="btn btn-warning" value="uploading" style="width:196px"><i class="glyphicon glyphicon-upload"></i> Upload Package</button></div>
             			</div>
             		</div>
             </form>
