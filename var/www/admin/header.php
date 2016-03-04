@@ -9,7 +9,7 @@
         <meta http-equiv="pragma" content="no-cache" />
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/sexigraf.css">
+        <link rel="stylesheet" href="css/sexigraf.css?ver=0.99b">
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/jquery.dropdown.js"></script>
         <script type="text/javascript" src="js/php_file_tree_jquery.js"></script>
