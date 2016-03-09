@@ -2,9 +2,14 @@
 <html>
 <head>
         <meta charset="utf-8">
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/sexigraf.css">
+        <link rel="stylesheet" href="css/sexigraf.css?ver=0.99b">
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/jquery.dropdown.js"></script>
         <script type="text/javascript" src="js/php_file_tree_jquery.js"></script>

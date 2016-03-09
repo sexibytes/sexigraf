@@ -1,43 +1,164 @@
 {
-  "title": "Home",
-  "tags": [],
-  "style": "light",
+  "id": null,
+  "title": "VMware VSAN Resync",
+  "originalTitle": "VMware VSAN Resync",
+  "tags": [
+    "VSAN"
+  ],
+  "style": "dark",
   "timezone": "browser",
-  "editable": false,
-  "hideControls": true,
+  "editable": true,
+  "hideControls": false,
   "sharedCrosshair": true,
   "rows": [
     {
       "collapse": false,
-      "editable": false,
-      "height": "100px",
+      "editable": true,
+      "height": "150px",
       "panels": [
         {
-          "content": "<div class=\"text-center\" style=\"padding: 10px 0 20px 0\">\n<img src=\"img/sexigraf-banner.png\" width=\"600px\"> \n</div>",
-          "editable": false,
-          "id": 1,
-          "mode": "html",
-          "span": 12,
-          "style": {},
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        }
-      ],
-      "title": ""
-    },
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
-        {
-          "aliasColors": {
-            "cpu-idle": "#508642"
-          },
+          "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": false,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "leftYAxisLabel": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 12,
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "bytesToSync",
+              "color": "#E5AC0E"
+            }
+          ],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.dom_objects.config.content.attributes.bytesToSync, 9)",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Bytes Left To Sync",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "none"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 12,
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "objectsToSync",
+              "color": "#1F78C1"
+            }
+          ],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.dom_objects.config.content.attributes.objectsToSync, 9)",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Objects Left To Sync",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "none",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
           "error": false,
           "fill": 1,
           "grid": {
@@ -54,147 +175,66 @@
           },
           "id": 2,
           "legend": {
-            "avg": true,
+            "avg": false,
             "current": false,
             "max": false,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
           "links": [],
+          "minSpan": 12,
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "recoveryETA",
+              "color": "#E24D42"
+            }
+          ],
           "span": 12,
-          "stack": true,
+          "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.{cpu-wait,cpu-nice,cpu-interrupt,cpu-nice,cpu-softirq,cpu-steal,cpu-system,cpu-user})",
-              "textEditor": true
+              "hide": true,
+              "target": "vsan.$vcenter.$datacentre.$cluster.vsan.dom_objects.config.content.attributes.objectsToSync",
+              "textEditor": false
             },
             {
-              "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.cpu-idle)"
+              "hide": false,
+              "target": "aliasByNode(transformNull(divideSeries(vsan.$vcenter.$datacentre.$cluster.vsan.dom_objects.config.content.attributes.recoveryETA, #A), 0), 9)",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "cpu",
+          "title": "Average ETA",
           "tooltip": {
             "shared": true,
-            "value_type": "individual"
+            "value_type": "cumulative"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "percent",
+            "s",
             "short"
           ]
-        }
-      ],
-      "title": "Row"
-    },
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": false,
+          "editable": true,
           "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 3,
-          "legend": {
-            "avg": true,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "target": "aliasByNode(collectd.sexigraf.memory.memory-used, 3)"
-            },
-            {
-              "target": "aliasByNode(collectd.sexigraf.memory.memory-cached, 3)"
-            },
-            {
-              "target": "aliasByNode(collectd.sexigraf.memory.memory-buffered, 3)"
-            },
-            {
-              "target": "aliasByNode(collectd.sexigraf.memory.memory-free, 3)"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "mem",
-          "tooltip": {
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "bytes",
-            "short"
-          ]
-        }
-      ],
-      "title": ""
-    },
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
-        {
-          "aliasColors": {
-            "longterm": "#EAB839",
-            "midterm": "#EF843C",
-            "shortterm": "#E24D42"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
+          "fill": 2,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -208,35 +248,43 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 4,
+          "leftYAxisLabel": "",
           "legend": {
-            "avg": true,
+            "avg": false,
             "current": false,
             "max": false,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
           "links": [],
+          "minSpan": 12,
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "recoveryRate",
+              "color": "#629E51"
+            }
+          ],
           "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(collectd.sexigraf.load.load.*, 4)"
+              "target": "alias(scaleToSeconds(absolute(removeAboveValue(derivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom_objects.config.content.attributes.bytesToSync), 0)), 1), 'recoveryRate')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "load",
+          "title": "Recovery Rate",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -245,94 +293,12 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
-            "short"
+            "Bps",
+            "none"
           ]
         }
       ],
-      "title": ""
-    },
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
-        {
-          "aliasColors": {
-            "df_complex-free": "#D683CE",
-            "df_complex-reserved": "#EA6460",
-            "df_complex-used": "#5195CE"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 5,
-          "legend": {
-            "avg": true,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-reserved, '5m', 'avg', false), 3)",
-              "textEditor": false
-            },
-            {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-used, '5m', 'avg', false), 3)",
-              "textEditor": false
-            },
-            {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-free, '5m', 'avg', false), 3)",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "df",
-          "tooltip": {
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "bytes",
-            "short"
-          ]
-        }
-      ],
-      "title": ""
+      "title": "Row"
     }
   ],
   "nav": [
@@ -342,6 +308,7 @@
       "notice": false,
       "now": true,
       "refresh_intervals": [
+        "1m",
         "5m",
         "15m",
         "30m",
@@ -351,13 +318,16 @@
       ],
       "status": "Stable",
       "time_options": [
-        "15m",
         "1h",
+        "2h",
+        "3h",
         "6h",
         "12h",
         "24h",
         "2d",
+        "3d",
         "7d",
+        "15d",
         "30d"
       ],
       "type": "timepicker"
@@ -368,11 +338,85 @@
     "to": "now"
   },
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vsan.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vsan.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "None",
+          "value": "",
+          "isNone": true
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "None",
+            "value": "",
+            "isNone": true,
+            "selected": true
+          }
+        ],
+        "query": "vsan.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
+      }
+    ]
   },
   "annotations": {
     "list": []
   },
+  "refresh": "1m",
   "schemaVersion": 6,
   "version": 0,
   "links": []

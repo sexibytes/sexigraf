@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <update>
-        <version>0.99a "City 17"</version>
+        <version>0.99b "Xen"</version>
         <commands>
                 <command>cp -ru /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
                 <command>cp -ru /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
