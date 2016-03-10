@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.21";
+$Util::script_version = "0.9.25";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
