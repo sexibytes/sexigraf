@@ -147,7 +147,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 			
 			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
 			
-			if ($hosts_views) {
+			if (@$hosts_views[0]) {
 			
 				my $vsan_cluster_uuid = @$hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
