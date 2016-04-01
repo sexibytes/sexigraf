@@ -72,21 +72,25 @@
           "targets": [
             {
               "hide": true,
+              "refId": "A",
               "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective",
               "textEditor": false
             },
             {
               "hide": true,
+              "refId": "B",
               "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
               "textEditor": false
             },
             {
               "hide": false,
+              "refId": "C",
               "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, #A), 'cpu.usage')",
               "textEditor": false
             },
             {
               "hide": false,
+              "refId": "D",
               "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
               "textEditor": false
             }
@@ -167,26 +171,32 @@
           "steppedLine": false,
           "targets": [
             {
+              "refId": "A",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
               "textEditor": false
             },
             {
+              "refId": "B",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.shared, 'shared')",
               "textEditor": false
             },
             {
+              "refId": "C",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.ballooned, 'ballooned')",
               "textEditor": false
             },
             {
+              "refId": "D",
               "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.compressed, 0.0009765625), 'zipped')",
               "textEditor": false
             },
             {
+              "refId": "E",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.swapped, 'swapped')",
               "textEditor": false
             },
             {
+              "refId": "F",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'active')",
               "textEditor": true
             }
@@ -271,19 +281,26 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)"
+              "refId": "A",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)",
+              "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), #A), 'used')"
+              "refId": "B",
+              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), #A), 'used')",
+              "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.uncommitted), 'uncommitted')"
+              "refId": "C",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.uncommitted), 'uncommitted')",
+              "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), 'capacity')",
+              "refId": "D",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), 'capacity')",
               "textEditor": false
             }
           ],
@@ -356,10 +373,12 @@
           "steppedLine": false,
           "targets": [
             {
+              "refId": "A",
               "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesRx, 1024)), 8)",
               "textEditor": true
             },
             {
+              "refId": "B",
               "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesTx, 1024)), 8)",
               "textEditor": false
             }
@@ -425,6 +444,7 @@
           "steppedLine": false,
           "targets": [
             {
+              "refId": "A",
               "target": "alias(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion.count')",
               "textEditor": false
             }
@@ -490,9 +510,11 @@
           "steppedLine": false,
           "targets": [
             {
+              "refId": "A",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')"
             },
             {
+              "refId": "B",
               "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')"
             }
           ],
@@ -566,27 +588,33 @@
           "targets": [
             {
               "hide": true,
+              "refId": "A",
               "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.5367431640625e-7)",
               "textEditor": false
             },
             {
               "hide": true,
+              "refId": "B",
               "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
               "textEditor": false
             },
             {
+              "refId": "C",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'guest')",
               "textEditor": false
             },
             {
+              "refId": "D",
               "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
               "textEditor": false
             },
             {
+              "refId": "E",
               "target": "alias(diffSeries(#B, #D), 'effective')",
               "textEditor": false
             },
             {
+              "refId": "F",
               "target": "alias(diffSeries(#A, #B), 'total')",
               "textEditor": false
             }
@@ -656,27 +684,33 @@
           "targets": [
             {
               "hide": true,
+              "refId": "A",
               "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000)",
               "textEditor": false
             },
             {
               "hide": true,
+              "refId": "B",
               "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective, 1000000)",
               "textEditor": false
             },
             {
+              "refId": "C",
               "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000), 'demand')",
               "textEditor": false
             },
             {
+              "refId": "D",
               "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000), 'usage')",
               "textEditor": false
             },
             {
+              "refId": "E",
               "target": "alias(diffSeries(#B, #D), 'effective')",
               "textEditor": false
             },
             {
+              "refId": "F",
               "target": "alias(diffSeries(#A, #B), 'total')",
               "textEditor": false
             }
@@ -740,9 +774,11 @@
           "targets": [
             {
               "hide": false,
+              "refId": "A",
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedCpuFairness, 5, 7)"
             },
             {
+              "refId": "B",
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedMemoryFairness, 5, 7)"
             }
           ],
@@ -766,74 +802,47 @@
       "title": "$cluster"
     },
     {
-      "title": "IORM",
-      "height": "200px",
-      "editable": true,
       "collapse": false,
+      "editable": true,
+      "height": "200px",
       "panels": [
         {
-          "title": "SIOC Normalized Datastores Latency",
-          "error": false,
-          "span": 6,
-          "editable": true,
-          "type": "graph",
-          "id": 11,
+          "aliasColors": {},
+          "bars": false,
           "datasource": null,
-          "renderer": "flot",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "µs",
-            "short"
-          ],
+          "editable": true,
+          "error": false,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
-            "rightMax": null,
             "leftMin": 0,
-            "rightMin": null,
             "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
             "threshold1": null,
-            "threshold2": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "lines": true,
-          "fill": 1,
-          "linewidth": 2,
-          "points": false,
-          "pointradius": 5,
-          "bars": false,
-          "stack": false,
-          "percentage": false,
+          "id": 11,
           "legend": {
-            "show": true,
-            "values": false,
-            "min": false,
-            "max": false,
+            "avg": false,
             "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
             "total": false,
-            "avg": false
+            "values": false
           },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": true
-          },
-          "timeFrom": null,
-          "timeShift": null,
-          "targets": [
-            {
-              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.sizeNormalizedDatastoreLatency), 'Avg')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.sizeNormalizedDatastoreLatency), 'Max')",
-              "textEditor": false
-            }
-          ],
-          "aliasColors": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
           "seriesOverrides": [
             {
               "alias": "Avg",
@@ -845,93 +854,115 @@
               "fill": 0
             }
           ],
-          "links": []
-        },
-        {
-          "title": "Aggregated Datastores IOPS",
-          "error": false,
           "span": 6,
-          "editable": true,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Avg')",
+              "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Max')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "SIOC Normalized Datastores Latency",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
           "type": "graph",
-          "id": 12,
-          "datasource": null,
-          "renderer": "flot",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "µs",
             "short"
-          ],
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
-            "rightMax": null,
             "leftMin": 0,
-            "rightMin": null,
             "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
             "threshold1": null,
-            "threshold2": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "lines": false,
-          "fill": 1,
-          "linewidth": 2,
-          "points": false,
-          "pointradius": 5,
-          "bars": true,
-          "stack": false,
-          "percentage": false,
+          "id": 12,
           "legend": {
-            "show": false,
-            "values": false,
-            "min": false,
-            "max": false,
+            "avg": false,
             "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
             "total": false,
-            "avg": false
+            "values": false
           },
+          "lines": false,
+          "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": true
-          },
-          "timeFrom": null,
-          "timeShift": null,
-          "targets": [
-            {
-              "target": "aliasByNode(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.datastoreIops), 7)",
-              "textEditor": true
-            }
-          ],
-          "aliasColors": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
           "seriesOverrides": [
             {
               "alias": "/.*/",
               "color": "#1F78C1"
             }
           ],
-          "links": []
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 'IOPS')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Aggregated Datastores IOPS",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
         }
       ],
-      "showTitle": true
+      "showTitle": true,
+      "title": "IORM"
     }
   ],
   "nav": [
     {
+      "type": "timepicker",
       "collapse": false,
-      "enable": true,
       "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
+      "enable": true,
       "status": "Stable",
       "time_options": [
         "15m",
@@ -947,7 +978,15 @@
         "15d",
         "30d"
       ],
-      "type": "timepicker"
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "now": true
     }
   ],
   "time": {
@@ -970,7 +1009,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
           }
         ],
         "query": "vmw.*",
@@ -992,7 +1031,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -1025,6 +1064,30 @@
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datastore",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
@@ -1033,6 +1096,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 4,
+  "version": 3,
   "links": []
 }
