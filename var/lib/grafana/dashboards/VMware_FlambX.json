@@ -745,7 +745,7 @@
           "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "Âµs",
+          "format": "µs",
           "id": 15,
           "interval": null,
           "links": [],
