@@ -745,7 +745,7 @@
           "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "µs",
+          "format": "Âµs",
           "id": 15,
           "interval": null,
           "links": [],
@@ -1277,8 +1277,7 @@
         "options": [
           {
             "text": "All",
-            "value": "{}",
-            "selected": true
+            "value": ""
           }
         ],
         "query": "vmw.*",
@@ -1290,7 +1289,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": ""
         },
         "datasource": null,
         "includeAll": true,
@@ -1300,8 +1299,7 @@
         "options": [
           {
             "text": "All",
-            "value": "{}",
-            "selected": true
+            "value": ""
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -1314,7 +1312,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": ""
         },
         "datasource": null,
         "includeAll": true,
@@ -1324,8 +1322,7 @@
         "options": [
           {
             "text": "All",
-            "value": "{}",
-            "selected": true
+            "value": ""
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
