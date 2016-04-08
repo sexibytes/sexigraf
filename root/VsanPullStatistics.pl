@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum];
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.25";
+$Util::script_version = "0.9.26";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -145,14 +145,12 @@ foreach my $datacentre_view (@$datacentres_views) {
 		$cluster_name =~ s/[ .]/_/g;
 		if(scalar $cluster_view->host > 1) {
 			
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
 			
 			if (@$hosts_views[0]) {
 			
 				my $vsan_cluster_uuid = @$hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
-				
-				$hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => $vsan_cluster_uuid});
 				
 				my $vm_views_device = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['config.hardware.device']);
 				my $VirtualDisks = {};
