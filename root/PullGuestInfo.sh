@@ -5,11 +5,11 @@ GUESTINFO=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|xml_grep 'Kind' 
 if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
 
         GUESTIP=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.ipaddress|awk -F'"' '{ print $4 }')
+        GUESTMASK=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.netmask|awk -F'"' '{ print $4 }')
+        GUESTGW=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.gateway|awk -F'"' '{ print $4 }')		
 
-        if [[ $GUESTIP =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        if [[ $GUESTIP =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] && [[ $GUESTMASK =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] && [[ $GUESTGW =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
 
-                GUESTMASK=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.netmask|awk -F'"' '{ print $4 }')
-                GUESTGW=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.gateway|awk -F'"' '{ print $4 }')
                 GUESTNS=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.dns|awk -F'"' '{ print $4 }')
                 GUESTDNS=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.domain|awk -F'"' '{ print $4 }')
                 GUESTNAME=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|grep guestinfo.hostname|awk -F'"' '{ print $4 }')
@@ -21,8 +21,18 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
                 echo " address $GUESTIP" >> /etc/network/interfaces
                 echo " netmask $GUESTMASK" >> /etc/network/interfaces
                 echo " gateway $GUESTGW" >> /etc/network/interfaces
-                echo " dns-nameservers $GUESTNS" >> /etc/network/interfaces
-                echo " dns-search $GUESTDNS" >> /etc/network/interfaces
+				
+				if [[ $GUESTNS =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+				
+					echo " dns-nameservers $GUESTNS" >> /etc/network/interfaces
+				
+				fi
+				
+				if [[ -t $GUESTDNS ]]; then
+					
+					echo " dns-search $GUESTDNS" >> /etc/network/interfaces
+				fi
+				
 
                 echo "127.0.0.1   localhost" > /etc/hosts
                 echo "$GUESTIP   $GUESTNAME" >> /etc/hosts
