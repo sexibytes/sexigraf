@@ -1009,7 +1009,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*",
+            "value": "*"
           }
         ],
         "query": "vmw.*",
@@ -1031,7 +1031,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*",
+            "value": "*"
           }
         ],
         "query": "vmw.$vcenter.*",
