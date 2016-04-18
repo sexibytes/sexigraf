@@ -11,8 +11,11 @@ use Net::Graphite;
 use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum];
 
-$Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.26";
+use VsanapiUtils;
+load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
+
+# $Data::Dumper::Indent = 1;
+$Util::script_version = "0.9.31";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -127,6 +130,18 @@ my $vcenter_fqdn = $vcenterserver;
 $vcenter_fqdn =~ s/[ .]/_/g;
 my $vcenter_name = lc ($vcenter_fqdn);
 
+my $service_content = Vim::get_service_content();
+my $apiType = $service_content->about->apiType;
+my $fullApiVersion = $service_content->about->apiVersion;
+my $majorApiVersion = (split /\./, $fullApiVersion)[0];
+$logger->info("[INFO] The Virtual Center $vcenterserver version is $fullApiVersion");
+my $vsan_cluster_space_report_system;
+
+if (int $majorApiVersion >= 6) {
+	my %vc_mos = get_vsan_vc_mos();
+	$vsan_cluster_space_report_system = $vc_mos{"vsan-cluster-space-report-system"};
+}
+
 # retreive datacenter(s) list
 my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name']);
 
@@ -142,6 +157,27 @@ foreach my $datacentre_view (@$datacentres_views) {
 	
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
+
+		if ($vsan_cluster_space_report_system) {
+			my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
+			my $VsanSpaceUsageReportObjList  = $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
+				foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
+						my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
+						my $VsanSpaceUsageReportObjType_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overheadB", $vsanObjType->overheadB,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType->physicalUsedB,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overReservedB", $vsanObjType->{'overReservedB'},
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.usedB", $vsanObjType->usedB,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType->temporaryOverheadB,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType->primaryCapacityB,
+								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
+							},
+						};
+						$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
+				}
+		}
+
 		$cluster_name =~ s/[ .]/_/g;
 		if(scalar $cluster_view->host > 1) {
 			
