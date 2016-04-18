@@ -71,32 +71,32 @@
           "targets": [
             {
               "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.readOps)",
+              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.readOps)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.writeOps)",
+              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.writeOps)",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.totalTimeReads), #A), 'tReads')",
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeReads), #A), 'tReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.totalTimeWrites), #B), 'tWrites')",
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeWrites), #B), 'tWrites')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.queueTimeReads), #A), 'qReads')",
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeReads), #A), 'qReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.$naa.queueTimeWrites), #B), 'qWrites')",
+              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeWrites), #B), 'qWrites')",
               "textEditor": false
             }
           ],
@@ -267,7 +267,7 @@
             "selected": true
           }
         ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.naa.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
