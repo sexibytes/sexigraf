@@ -22,13 +22,13 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
                 echo " netmask $GUESTMASK" >> /etc/network/interfaces
                 echo " gateway $GUESTGW" >> /etc/network/interfaces
 				
-				if [[ $GUESTNS =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+				if [[ $GUESTNS =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} ]]; then
 				
 					echo " dns-nameservers $GUESTNS" >> /etc/network/interfaces
 				
 				fi
 				
-				if [[ -t $GUESTDNS ]]; then
+				if [[ -n $GUESTDNS ]]; then
 					
 					echo " dns-search $GUESTDNS" >> /etc/network/interfaces
 				fi
