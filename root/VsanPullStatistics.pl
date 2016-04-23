@@ -15,7 +15,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.31";
+$Util::script_version = "0.9.40";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -136,7 +136,6 @@ my $fullApiVersion = $service_content->about->apiVersion;
 my $majorApiVersion = (split /\./, $fullApiVersion)[0];
 $logger->info("[INFO] The Virtual Center $vcenterserver version is $fullApiVersion");
 my $vsan_cluster_space_report_system;
-
 if (int $majorApiVersion >= 6) {
 	my %vc_mos = get_vsan_vc_mos();
 	$vsan_cluster_space_report_system = $vc_mos{"vsan-cluster-space-report-system"};
@@ -158,36 +157,50 @@ foreach my $datacentre_view (@$datacentres_views) {
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
 
-		if ($vsan_cluster_space_report_system) {
-			my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
-			my $VsanSpaceUsageReportObjList  = $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
-				foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
-						my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
-						my $VsanSpaceUsageReportObjType_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overheadB", $vsanObjType->overheadB,
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType->physicalUsedB,
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overReservedB", $vsanObjType->{'overReservedB'},
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.usedB", $vsanObjType->usedB,
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType->temporaryOverheadB,
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType->primaryCapacityB,
-								"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
-							},
-						};
-						$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
-				}
-		}
 
 		$cluster_name =~ s/[ .]/_/g;
 		if(scalar $cluster_view->host > 1) {
 			
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','configManager.advancedOption'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
 			
 			if (@$hosts_views[0]) {
 			
 				my $vsan_cluster_uuid = @$hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
-				
+			
+				my $advConfigurations = Vim::get_view(mo_ref => @$hosts_views[0]->{'configManager.advancedOption'});
+				my $advSupportedOptions = $advConfigurations->supportedOption();
+
+				foreach my $advSupportedOption (@$advSupportedOptions) {
+					if ($advSupportedOption->key eq "VSAN.DedupScope") {
+						if ($vsan_cluster_space_report_system) {
+							eval { $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view) };
+							if (!$@) {
+								my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
+								if ($VsanSpaceUsageReport) {
+								$logger->info("[INFO] VSAN cluster $cluster_name version is >= 6.2");
+								my $VsanSpaceUsageReportObjList  = $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
+									foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
+										my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
+										my $VsanSpaceUsageReportObjType_h = {
+											time() => {
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overheadB", $vsanObjType->overheadB,
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType->physicalUsedB,
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overReservedB", $vsanObjType->{'overReservedB'},
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.usedB", $vsanObjType->usedB,
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType->temporaryOverheadB,
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType->primaryCapacityB,
+												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
+											},
+										};
+										$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
+									}
+								}
+							}
+						}
+					}
+				}
+
 				my $vm_views_device = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['config.hardware.device']);
 				my $VirtualDisks = {};
 
