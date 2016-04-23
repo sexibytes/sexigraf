@@ -131,7 +131,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Objects Sum Bytes",
+          "title": "Objects Bytes Sum",
           "tooltip": {
             "shared": true,
             "value_type": "individual"
