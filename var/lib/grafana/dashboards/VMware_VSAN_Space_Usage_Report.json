@@ -17,7 +17,9 @@
       "height": "300px",
       "panels": [
         {
-          "aliasColors": {},
+          "aliasColors": {
+            "freeSpace": "#BF1B00"
+          },
           "bars": false,
           "datasource": null,
           "editable": true,
@@ -47,7 +49,7 @@
             "values": true
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "minSpan": 12,
           "nullPointMode": "null",
@@ -55,19 +57,31 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "freeSpace",
+              "color": "#BF1B00",
+              "fill": 1
+            }
+          ],
           "span": 12,
           "stack": true,
           "steppedLine": false,
           "targets": [
             {
+              "hide": false,
               "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.spaceDetail.spaceUsageByObjectType.*.usedB, 7)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.datastore.vsandatastore.summary.freeSpace, 7)",
               "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Used Bytes By Object Type",
+          "title": "Used Bytes by Object Type",
           "tooltip": {
             "shared": true,
             "value_type": "individual"
@@ -131,7 +145,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Objects Bytes Sum",
+          "title": "Bytes Sum by Usage Type",
           "tooltip": {
             "shared": true,
             "value_type": "individual"
@@ -265,6 +279,6 @@
   },
   "refresh": "1m",
   "schemaVersion": 6,
-  "version": 4,
+  "version": 7,
   "links": []
 }
