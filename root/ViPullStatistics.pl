@@ -122,10 +122,11 @@ sub QuickQueryPerf {
 		my $perfValues = $_->value;
 			foreach(@$perfValues) {
 				my $values = $_->value;
+				my @s_values = sort { $a <=> $b } @$values;
 				my $sum;
-				my $count = 0;
-				foreach (@$values) {
-					if ($_ < $query_limit) {
+				my $count;
+				foreach (@s_values) {
+					if (($_ < $query_limit) && ($count < 13)) {
 						$sum += $_;
 						$count += 1;
 					}
