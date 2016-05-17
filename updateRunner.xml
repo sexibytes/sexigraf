@@ -2,9 +2,9 @@
 <update>
         <version>0.99c "Citabel"</version>
         <commands>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/var/* /var/</command>
+                <command>cp -r --remove-destination /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
+                <command>cp -r --remove-destination /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
+                <command>cp -r --remove-destination /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>
+                <command>cp -r --remove-destination /tmp/sexigraf-update/sexigraf-master/var/* /var/</command>
         </commands>
 </update>
