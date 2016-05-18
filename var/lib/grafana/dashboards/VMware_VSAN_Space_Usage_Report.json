@@ -1,10 +1,8 @@
 {
   "id": null,
-  "title": "VMware VSAN NAA Latency",
-  "originalTitle": "VMware VSAN NAA Latency",
+  "title": "VMware VSAN Space Usage Report",
+  "originalTitle": "VMware VSAN Space Usage Report",
   "tags": [
-    "HDD",
-    "SSD",
     "VSAN"
   ],
   "style": "dark",
@@ -16,8 +14,86 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "200px",
+      "height": "300px",
       "panels": [
+        {
+          "aliasColors": {
+            "freeSpace": "#BF1B00"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "leftYAxisLabel": "",
+          "legend": {
+            "avg": true,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "minSpan": 12,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "freeSpace",
+              "color": "#BF1B00",
+              "fill": 1
+            }
+          ],
+          "span": 12,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.spaceDetail.spaceUsageByObjectType.*.usedB, 7)",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.datastore.vsandatastore.summary.freeSpace, 7)",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Used Bytes by Object Type",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "none"
+          ]
+        },
         {
           "aliasColors": {},
           "bars": false,
@@ -28,7 +104,7 @@
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
-            "leftMin": null,
+            "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": null,
@@ -37,86 +113,53 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 1,
+          "id": 2,
+          "leftYAxisLabel": "",
           "legend": {
-            "avg": false,
+            "avg": true,
             "current": false,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
           "links": [],
-          "minSpan": 3,
-          "nullPointMode": "connected",
+          "minSpan": 12,
+          "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "repeat": "naa",
-          "scopedVars": {
-            "naa": {
-              "text": "xxx",
-              "value": "",
-              "selected": false
-            }
-          },
           "seriesOverrides": [],
-          "span": 3,
+          "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.readOps)",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.writeOps)",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeReads), #A), 'tReads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeWrites), #B), 'tWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeReads), #A), 'qReads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeWrites), #B), 'qWrites')",
+              "target": "aliasByNode(sumSeriesWithWildcards(vsan.$vcenter.$datacentre.$cluster.vsan.spaceDetail.spaceUsageByObjectType.*.*, 7), 7)",
               "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "naa.$naa",
+          "title": "Bytes Sum by Usage Type",
           "tooltip": {
             "shared": true,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "µs",
-            "short"
+            "bytes",
+            "none"
           ]
         }
       ],
-      "title": "NAA latency"
+      "title": "Row"
     }
   ],
   "nav": [
@@ -165,7 +208,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
@@ -178,7 +221,6 @@
         "query": "vsan.*",
         "refresh": true,
         "refresh_on_load": false,
-        "regex": "",
         "type": "query"
       },
       {
@@ -189,7 +231,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
@@ -205,71 +247,26 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allFormat": "glob",
         "current": {
-          "text": "All",
-          "value": "*"
+          "text": "None",
+          "value": "",
+          "isNone": true
         },
         "datasource": null,
-        "includeAll": true,
+        "includeAll": false,
         "multi": false,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
           {
-            "text": "All",
-            "value": "*",
+            "text": "None",
+            "value": "",
+            "isNone": true,
             "selected": true
           }
         ],
         "query": "vsan.$vcenter.$datacentre.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "text": "All",
-          "value": "{}"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "esx",
-        "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
-        ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "wildcard",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "naa",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.*",
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
@@ -282,6 +279,6 @@
   },
   "refresh": "1m",
   "schemaVersion": 6,
-  "version": 13,
+  "version": 7,
   "links": []
 }

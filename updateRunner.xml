@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <update>
-        <version>0.99b1 "Xen"</version>
+        <version>0.99c "Citabel"</version>
         <commands>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>
-                <command>cp -ru /tmp/sexigraf-update/sexigraf-master/var/* /var/</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/var/* /var/</command>
         </commands>
 </update>
