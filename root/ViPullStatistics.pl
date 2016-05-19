@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.16";
+$Util::script_version = "0.9.21";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -123,8 +123,8 @@ sub QuickQueryPerf {
 			foreach(@$perfValues) {
 				my $values = $_->value;
 				my @s_values = sort { $a <=> $b } @$values;
-				my $sum;
-				my $count;
+				my $sum = 0;
+				my $count = 0;
 				foreach (@s_values) {
 					if (($_ < $query_limit) && ($count < 13)) {
 						$sum += $_;
@@ -234,7 +234,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 						last;
 						}
 					}
-				} else {
+				} elsif ($cluster_datastore_view->summary->type ne "vsan") {
 					foreach (shuffle @{$cluster_datastore_view->host}) {
 						
 						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
