@@ -425,7 +425,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "{}"
+          "value": "*"
         },
         "datasource": null,
         "includeAll": true,
@@ -435,7 +435,7 @@
         "options": [
           {
             "text": "All",
-            "value": "{}",
+            "value": "*",
             "selected": true
           }
         ],
