@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.16";
+$Util::script_version = "0.9.34";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -49,7 +49,7 @@ BEGIN {
 		   my $logger = get_logger('sexigraf.ViPullStatistics');
 		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
 		   $logger->warn("WARN @_");
-	   };		
+	   };
 	$SIG{__DIE__} = sub {
 		   my $logger = get_logger('sexigraf.ViPullStatistics');
 		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
@@ -110,21 +110,21 @@ my %perfCntr = map { $_->groupInfo->key . "." . $_->nameInfo->key . "." . $_->ro
 sub QuickQueryPerf {
 	my ($query_entity_view, $query_group, $query_counter, $query_rollup, $query_instance, $query_limit) = @_;
 	my $perfKey = $perfCntr{"$query_group.$query_counter.$query_rollup"}->key;
-	
+
 	my @metricIDs = ();
 	my $metricId = PerfMetricId->new(counterId => $perfKey, instance => $query_instance);
 	push @metricIDs,$metricId;
-	
+
 	my $perfQuerySpec = PerfQuerySpec->new(entity => $query_entity_view, maxSample => 15, intervalId => 20, metricId => \@metricIDs);
 	my $metrics = $perfMgr->QueryPerf(querySpec => [$perfQuerySpec]);
-  
+
 	foreach(@$metrics) {
 		my $perfValues = $_->value;
 			foreach(@$perfValues) {
 				my $values = $_->value;
 				my @s_values = sort { $a <=> $b } @$values;
-				my $sum;
-				my $count;
+				my $sum = 0;
+				my $count = 0;
 				foreach (@s_values) {
 					if (($_ < $query_limit) && ($count < 13)) {
 						$sum += $_;
@@ -136,7 +136,7 @@ sub QuickQueryPerf {
 				return $perfavg;
 			}
 	}
-	
+
 }
 
 # retreive datacenter(s) list
@@ -144,13 +144,13 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 
 $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
- foreach my $datacentre_view (@$datacentres_views) {	
+ foreach my $datacentre_view (@$datacentres_views) {
 	my $datacentre_name = lc ($datacentre_view->name);
 	$datacentre_name =~ s/[ .]/_/g;
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx', 'summary', 'datastore', 'host'], begin_entity => $datacentre_view);
-	
+
 	$logger->info("[INFO] Processing vCenter $vcenterserver clusters in datacenter $datacentre_name");
-	
+
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
 		$cluster_name =~ s/[ .]/_/g;
@@ -176,14 +176,15 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.effective", $cluster_view->summary->effectiveMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.total", $cluster_view->summary->totalMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.effective", $cluster_view->summary->effectiveCpu,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.total", $cluster_view->summary->totalCpu,					
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.total", $cluster_view->summary->totalCpu,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.numVmotions", $cluster_view->summary->numVmotions,
 				},
 			};
 			$graphite->send(path => "vmw.", data => $cluster_root_pool_view_h);
 		}
-		if (my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime'])) {
-			my $cluster_vm_views_on = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime'], filter => {'runtime.powerState' => "poweredOn"});
+		if (my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime.powerState'])) {
+			my $cluster_vm_views_on = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime.powerState'], filter => {'runtime.powerState' => "poweredOn"});
+
 			my $cluster_vm_views_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.total", scalar(@$cluster_vm_views),
@@ -210,40 +211,40 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					},
 				};
 				$graphite->send(path => "vmw.", data => $cluster_shared_datastore_view_h);
-				
+
 				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
 					foreach (shuffle @{$cluster_datastore_view->host}) {
-						
+
 						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
-					
+
 						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
-							
+
 						my @vmpath = split("/", $_->mountInfo->path);
 						my $uuid = $vmpath[-1];
-						
+
 						my $DsNormalizedDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', $uuid, 30000000);
 						my $DsdatastoreIops = QuickQueryPerf($_->key, 'datastore', 'datastoreIops', 'average', $uuid, 500000);
-						
+
 						my $DsQuickQueryPerf_h = {
 							time() => {
 								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $DsNormalizedDatastoreLatency,
 								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,
 							},
-						};						
+						};
 						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
 						last;
 						}
 					}
-				} else {
+				} elsif ($cluster_datastore_view->summary->type ne "vsan") {
 					foreach (shuffle @{$cluster_datastore_view->host}) {
-						
+
 						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
-					
+
 						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
-							
+
 						my @vmpath = split("/", $_->mountInfo->path);
 						my $uuid = $vmpath[-1];
-						
+
 						my $WriteDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalWriteLatency', 'average', $uuid, 30000) * 1000;
 						my $ReadDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalReadLatency', 'average', $uuid, 30000) * 1000;
 						my $sizeNormalizedDatastoreLatency = max($ReadDatastoreLatency,$WriteDatastoreLatency);
@@ -252,7 +253,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 							time() => {
 								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency
 							},
-						};						
+						};
 						$graphite->send(path => "vmw.", data => $DsQuickQueryPerf_h);
 						last;
 						}
@@ -260,7 +261,11 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				}
 			}
 		}
+
 		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
+
+		my $cluster_hosts_views_pcpus = 0;
+
 		foreach my $cluster_host_view (@$cluster_hosts_views) {
 			my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
 				if ($host_name eq "localhost") {
@@ -270,6 +275,8 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$host_name = $cluster_host_view_Vmk0_Ip;
 			}
 			
+			$cluster_hosts_views_pcpus += $cluster_host_view->summary->hardware->numCpuCores;
+
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
 					my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
@@ -277,7 +284,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
 					if (!defined($NetbytesTx)) { $NetbytesTx = 0; }
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
-					
+
 					my $cluster_host_vmnic_h = {
 						time() => {
 							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesRx", $NetbytesRx,
@@ -288,7 +295,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$graphite->send(path => "vmw.", data => $cluster_host_vmnic_h);
 				}
 			}
-			
+
 			my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
 			my $cluster_host_view_status_val;
 				if ($cluster_host_view_status eq "green") {
@@ -300,7 +307,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				} elsif ($cluster_host_view_status eq "gray") {
 					$cluster_host_view_status_val = 0;
 				}
-			
+
 			my $cluster_host_view_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedCpuFairness", $cluster_host_view->summary->quickStats->distributedCpuFairness,
@@ -311,15 +318,19 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallStatus", $cluster_host_view_status_val,
 				},
 			};
-			$graphite->send(path => "vmw.", data => $cluster_host_view_h);		
+			$graphite->send(path => "vmw.", data => $cluster_host_view_h);
 		}
+
+		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU'], filter => {'summary.runtime.powerState' => "poweredOn"});
 		
-		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted'], filter => {'summary.runtime.powerState' => "poweredOn"});
-		
+		my $cluster_vm_views_vcpus = 0;
+
 		foreach my $cluster_vm_view (@$cluster_vm_views) {
 			my $cluster_vm_view_name = lc ($cluster_vm_view->name);
 			$cluster_vm_view_name =~ s/[ .()]/_/g;
 			
+			$cluster_vm_views_vcpus += $cluster_vm_view->{'config.hardware.numCPU'};
+
 			my $cluster_vm_view_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.overallCpuUsage", $cluster_vm_view->{'summary.quickStats.overallCpuUsage'},
@@ -331,7 +342,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				},
 			};
 			$graphite->send(path => "vmw.", data => $cluster_vm_view_h);
-			
+
 			if ($cluster_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
 				my $cluster_vm_view_ballooned_h = {
 					time() => {
@@ -340,7 +351,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				};
 				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
 			}
-			
+
 			if ($cluster_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
 				my $cluster_vm_view_ballooned_h = {
 					time() => {
@@ -349,7 +360,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				};
 				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
 			}
-			
+
 			if ($cluster_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
 				my $cluster_vm_view_ballooned_h = {
 					time() => {
@@ -359,20 +370,30 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$graphite->send(path => "vmw.", data => $cluster_vm_view_ballooned_h);
 			}
 		}
+		
+		if ($cluster_vm_views_vcpus > 0 && $cluster_hosts_views_pcpus > 0) {
+			my $cluster_vcpus_pcpus_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.vCPUs", $cluster_vm_views_vcpus,
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.pCPUs", $cluster_hosts_views_pcpus,
+				},
+			};
+			$graphite->send(path => "vmw.", data => $cluster_vcpus_pcpus_h);			
+		}
 	}
 
 	my $StandaloneComputeResources = Vim::find_entity_views(view_type => 'ComputeResource', filter => {'summary.numHosts' => "1"}, properties => ['summary', 'resourcePool', 'host', 'datastore'], begin_entity => $datacentre_view);
 
 	$logger->info("[INFO] Processing vCenter $vcenterserver standalone hosts in datacenter $datacentre_name");
-	
+
 	foreach my $StandaloneComputeResource (@$StandaloneComputeResources) {
 		if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
-			
+
 			my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['config.network.dnsConfig.hostName', 'config.network.vnic', 'config.network.pnic', 'overallStatus', 'runtime.connectionState']);
 			if ($StandaloneResourceVMHost[0][0]->{'runtime.connectionState'}->val ne "connected") { next; }
 			my $StandaloneResourcePool = Vim::get_view(mo_ref => $StandaloneComputeResource->resourcePool, properties => ['summary.quickStats']);
 			my $StandaloneResourceDatastores = Vim::get_views(mo_ref_array => $StandaloneComputeResource->datastore, properties => ['summary']);
-			
+
 			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost[0][0]->{'config.network.dnsConfig.hostName'};
 			if ($StandaloneResourceVMHostName eq "localhost") {
 				my $StandaloneResourceVMHostVmk0 = $StandaloneResourceVMHost[0][0]->{'config.network.vnic'}[0];
@@ -380,7 +401,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$StandaloneResourceVMHostVmk0Ip =~ s/[ .]/_/g;
 				$StandaloneResourceVMHostName = $StandaloneResourceVMHostVmk0Ip;
 			}
-			
+
 			my $StandaloneResourceVMHost_status = $StandaloneResourceVMHost[0][0]->{'overallStatus'}->val;
 			my $StandaloneResourceVMHost_status_val;
 				if ($StandaloneResourceVMHost_status eq "green") {
@@ -391,8 +412,8 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$StandaloneResourceVMHost_status_val = 3;
 				} elsif ($StandaloneResourceVMHost_status eq "gray") {
 					$StandaloneResourceVMHost_status_val = 0;
-				}			
-			
+				}
+
 			my $StandaloneComputeResource_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.ballooned", $StandaloneResourcePool->{'summary.quickStats'}->balloonedMemory,
@@ -414,7 +435,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				},
 			};
 			$graphite->send(path => "esx.", data => $StandaloneComputeResource_h);
-			
+
 			foreach my $StandaloneResourceDatastore (@$StandaloneResourceDatastores) {
 				if ($StandaloneResourceDatastore->summary->accessible) {
 					my $StandaloneResourceDatastore_name = lc ($StandaloneResourceDatastore->summary->name);
@@ -433,13 +454,13 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$graphite->send(path => "esx.", data => $StandaloneResourceVMHost_datastore_view_h);
 				}
 			}
-			
+
 			foreach my $StandaloneResourceVMHost_vmnic (@{$StandaloneResourceVMHost[0][0]->{'config.network.pnic'}}) {
 				if ($StandaloneResourceVMHost_vmnic->linkSpeed && $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb >= 100) {
 					my $NetbytesRx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesRx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
 					my $NetbytesTx = QuickQueryPerf($StandaloneResourceVMHost[0][0], 'net', 'bytesTx', 'average', $StandaloneResourceVMHost_vmnic->device, 100000000);
 					my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
-					
+
 					my $StandaloneResourceVMHost_vmnic_h = {
 						time() => {
 							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx", $NetbytesRx,
@@ -450,7 +471,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$graphite->send(path => "esx.", data => $StandaloneResourceVMHost_vmnic_h);
 				}
 			}
-			
+
 			if (my $Standalone_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $StandaloneResourceVMHost[0][0], properties => ['runtime'])) {
 				my $Standalone_vm_views_on = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $StandaloneResourceVMHost[0][0], properties => ['runtime'], filter => {'runtime.powerState' => "poweredOn"});
 				my $Standalone_vm_views_h = {
@@ -460,10 +481,10 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					},
 				};
 				$graphite->send(path => "esx.", data => $Standalone_vm_views_h);
-			}			
-			
+			}
+
 		}
-	}	
+	}
 }
 
 my $exec_duration = time - $exec_start;
