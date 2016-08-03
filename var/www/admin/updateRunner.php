@@ -35,7 +35,7 @@ $SexiGrafVersion = (file_exists('/etc/sexigraf_version') ? file_get_contents('/e
 					$outputCommand = [];
 					$returnError = "";
           $command2sudo = $command2Run->firstChild->nodeValue;
-          //exec("sudo $command2sudo", $outputCommand, $returnError);
+          exec("sudo $command2sudo", $outputCommand, $returnError);
 					if ($returnError) {
 						$messageOutput .= "[ERROR] Command run with errors: $command2sudo\n";
 						$errorInCommand = true;
