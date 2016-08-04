@@ -74,7 +74,7 @@
               "textEditor": true
             },
             {
-              "target": "alias(scale(diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 100), maxSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective)), asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on)),$scale), 'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 100), maxSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective,$scale))), asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective,$scale))))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on)), 'vm.left')",
               "textEditor": true
             }
           ],
