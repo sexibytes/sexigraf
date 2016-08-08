@@ -10,7 +10,7 @@ $dir = "/var/www/admin/files/";
                 <div class="panel-heading"><h3 class="panel-title">Update Package Notes</h3></div>
                 <div class="panel-body">
                     <ul>
-                        <li>The maximum file size for uploads in this package updater <strong>2 MB</strong></li>
+                        <li>The maximum file size for uploads in this package updater <strong>100 MB</strong></li>
                         <li>Use this page to upload SexiGraf Update Package files (<strong>SUP</strong>)</li>
                         <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                     </ul>
@@ -23,7 +23,7 @@ $dir = "/var/www/admin/files/";
                 Current version of SexiGraf is: <strong><?php echo (file_exists('/etc/sexigraf_version') ? file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH) : "Unknown"); ?></strong>
             </div>
             <form action="updater.php" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="MAX_FILE_SIZE" value="2097152"/>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="104857600"/>
                     <div class="alert alert-warning" role="warning">
             			<div class="row">
             				<div class="col-sm-3" style="margin-top: 7px;"><h4 id="uploadCase"><span class="glyphicon glyphicon-file" aria-hidden="true"></span><span class="sr-only">Warning:</span> Select file to upload</h4></div>
