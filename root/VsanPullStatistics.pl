@@ -6,7 +6,7 @@ use warnings;
 use VMware::VIRuntime;
 use VMware::VICredStore;
 use JSON;
-# use Data::Dumper;
+use Data::Dumper;
 use Net::Graphite;
 use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum];
@@ -15,7 +15,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.40";
+$Util::script_version = "0.9.43";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -208,18 +208,17 @@ foreach my $datacentre_view (@$datacentres_views) {
 					my $vmDevices = $vm_view_device->{'config.hardware.device'};
 
 					foreach(@$vmDevices) {
-						if($_->isa('VirtualDisk')) {
-												
+						if($_->isa('VirtualDisk') && $_->backing->backingObjectId) {
 							my @vmdkpath = split("/", $_->backing->fileName);
 							my $vmdk = substr($vmdkpath[-1], 0, -5);
-							$vmdk =~ s/[ .()]/_/g;
+							$vmdk =~ s/[ .()?!+]/_/g;
 							$VirtualDisks->{ $_->backing->backingObjectId } = $vmdk;
 							
 							if ($_->backing->parent) {
 								my $rootparent = getParent($_->backing->parent);
 								my @rootvmdkpath = split("/", $rootparent->fileName);
 								my $rootvmdk = substr($rootvmdkpath[-1], 0, -5);
-								$rootvmdk =~ s/[ .()]/_/g;
+								$rootvmdk =~ s/[ .()?!+]/_/g;
 								$VirtualDisks->{ $_->backing->backingObjectId . "_root"} = $rootparent->backingObjectId;
 								$VirtualDisks->{ $rootparent->backingObjectId} = $rootvmdk;
 							}
@@ -331,16 +330,18 @@ foreach my $datacentre_view (@$datacentres_views) {
 									my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
 									my $lsomkeySsdUuid = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd};
 									my $vsan_cache_ssd_naa = $host_vsan_physical_disks_json->{$lsomkeySsdUuid}->{devName};
-									my @vsan_cache_ssd_clean_naa = split /[.:]/, $vsan_cache_ssd_naa;
-									my $host_vsan_lsom_json_disks_h = {
-										time() => {
-											"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
-											"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
-											"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
-											"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$vsan_cache_ssd_clean_naa[1]" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
-										},
-									};
-									$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
+										if ($vsan_cache_ssd_naa) {
+											my @vsan_cache_ssd_clean_naa = split /[.:]/, $vsan_cache_ssd_naa;
+											my $host_vsan_lsom_json_disks_h = {
+												time() => {
+													"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacityUsed", $lsomkeyCapacityUsed,
+													"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
+													"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.disks." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
+													"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$vsan_cache_ssd_clean_naa[1]" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
+												},
+											};
+											$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
+										}
 								}
 								elsif ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} eq "NA") {
 									my $lsomkeyMiss = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{aggStats}->{miss};
