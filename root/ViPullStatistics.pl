@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.36";
+$Util::script_version = "0.9.39";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -337,6 +337,13 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 			} else {
 				$cluster_vm_view_CpuUtilization = -1
 			}
+			
+			my $cluster_vm_view_MemUtilization;
+			if ($cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'} > 0) {
+				$cluster_vm_view_MemUtilization = $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'};
+			} else {
+				$cluster_vm_view_MemUtilization = -1
+			}			
 
 			my $cluster_vm_view_h = {
 				time() => {
@@ -347,6 +354,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.committed", $cluster_vm_view->{'summary.storage.committed'},
 					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.uncommitted", $cluster_vm_view->{'summary.storage.uncommitted'},
 					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".runtime.CpuUtilization", $cluster_vm_view_CpuUtilization,
+					"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".runtime.MemUtilization", $cluster_vm_view_MemUtilization,
 				},
 			};
 			$graphite->send(path => "vmw", data => $cluster_vm_view_h);
