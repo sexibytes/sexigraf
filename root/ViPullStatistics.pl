@@ -12,7 +12,7 @@ use List::Util qw[shuffle max];
 use Log::Log4perl qw(:easy);
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.39";
+$Util::script_version = "0.9.44";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -321,7 +321,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 			$graphite->send(path => "vmw", data => $cluster_host_view_h);
 		}
 
-		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'runtime.maxCpuUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU'], filter => {'summary.runtime.powerState' => "poweredOn"});
+		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU'], filter => {'summary.runtime.powerState' => "poweredOn"});
 		
 		my $cluster_vm_views_vcpus = 0;
 
@@ -339,8 +339,8 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 			}
 			
 			my $cluster_vm_view_MemUtilization;
-			if ($cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'} > 0) {
-				$cluster_vm_view_MemUtilization = $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'};
+			if ($cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $cluster_vm_view->{'runtime.maxMemoryUsage'} > 0) {
+				$cluster_vm_view_MemUtilization = $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $cluster_vm_view->{'runtime.maxMemoryUsage'};
 			} else {
 				$cluster_vm_view_MemUtilization = -1
 			}			
@@ -498,7 +498,72 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				};
 				$graphite->send(path => "esx", data => $Standalone_vm_views_h);
 			}
+			
+			my $standalone_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $StandaloneResourceVMHost[0][0] , properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU'], filter => {'summary.runtime.powerState' => "poweredOn"});
+			
+			my $standalone_vm_views_vcpus = 0;
 
+			foreach my $standalone_vm_view (@$standalone_vm_views) {
+				my $standalone_vm_view_name = lc ($standalone_vm_view->name);
+				$standalone_vm_view_name =~ s/[ .()]/_/g;
+				
+				$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
+				
+				my $standalone_vm_view_CpuUtilization;
+				if ($standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
+					$standalone_vm_view_CpuUtilization = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $standalone_vm_view->{'runtime.maxCpuUsage'};
+				} else {
+					$standalone_vm_view_CpuUtilization = -1
+				}
+				
+				my $standalone_vm_view_MemUtilization;
+				if ($standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
+					$standalone_vm_view_MemUtilization = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $standalone_vm_view->{'runtime.maxMemoryUsage'};
+				} else {
+					$standalone_vm_view_MemUtilization = -1
+				}			
+
+				my $standalone_vm_view_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuUsage", $standalone_vm_view->{'summary.quickStats.overallCpuUsage'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuDemand", $standalone_vm_view->{'summary.quickStats.overallCpuDemand'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.HostMemoryUsage", $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.GuestMemoryUsage", $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.committed", $standalone_vm_view->{'summary.storage.committed'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.uncommitted", $standalone_vm_view->{'summary.storage.uncommitted'},
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.CpuUtilization", $standalone_vm_view_CpuUtilization,
+						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.MemUtilization", $standalone_vm_view_MemUtilization,
+					},
+				};
+				$graphite->send(path => "esx", data => $standalone_vm_view_h);
+
+				if ($standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
+					my $standalone_vm_view_ballooned_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.BalloonedMemory", $standalone_vm_view->{'summary.quickStats.balloonedMemory'},
+						},
+					};
+					$graphite->send(path => "esx", data => $standalone_vm_view_ballooned_h);
+				}
+
+				if ($standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
+					my $standalone_vm_view_compressed_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.CompressedMemory", $standalone_vm_view->{'summary.quickStats.compressedMemory'},
+						},
+					};
+					$graphite->send(path => "esx", data => $standalone_vm_view_compressed_h);
+				}
+
+				if ($standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
+					my $standalone_vm_view_swapped_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.SwappedMemory", $standalone_vm_view->{'summary.quickStats.swappedMemory'},
+						},
+					};
+					$graphite->send(path => "esx", data => $standalone_vm_view_swapped_h);
+				}
+			}
 		}
 	}
 }
