@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.117";
+$Util::script_version = "0.9.119";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -107,7 +107,9 @@ my $vcenter_name = lc ($vcenter_fqdn);
 
 my $sessionMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->sessionManager));
 my $sessionList = $sessionMgr->sessionList;
-my $sessionCount = scalar(@$sessionList);
+if ($sessionList) {
+	my $sessionCount = scalar(@$sessionList);
+}
 
 my $perfMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->perfManager));
 my %perfCntr = map { $_->groupInfo->key . "." . $_->nameInfo->key . "." . $_->rollupType->val => $_ } @{$perfMgr->perfCounter};
@@ -962,11 +964,13 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 	}
 }
 
-my $vcenter_session_count_h = {
-	time() => {
-		"$vcenter_name.vi" . ".exec.sessionCount", $sessionCount,
-	},
-};
+if ($sessionList) {
+	my $vcenter_session_count_h = {
+		time() => {
+			"$vcenter_name.vi" . ".exec.sessionCount", $sessionCount,
+		},
+	};
+}
 $graphite->send(path => "vi", data => $vcenter_session_count_h);
 
 my $exec_duration = time - $exec_start;
