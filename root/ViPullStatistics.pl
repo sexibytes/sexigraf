@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.119";
+$Util::script_version = "0.9.120";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -105,10 +105,11 @@ my $vcenter_fqdn = $vcenterserver;
 $vcenter_fqdn =~ s/[ .]/_/g;
 my $vcenter_name = lc ($vcenter_fqdn);
 
+my $sessionCount;
 my $sessionMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->sessionManager));
 my $sessionList = $sessionMgr->sessionList;
 if ($sessionList) {
-	my $sessionCount = scalar(@$sessionList);
+	$sessionCount = scalar(@$sessionList);
 }
 
 my $perfMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->perfManager));
