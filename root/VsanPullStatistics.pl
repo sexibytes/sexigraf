@@ -6,16 +6,18 @@ use warnings;
 use VMware::VIRuntime;
 use VMware::VICredStore;
 use JSON;
-use Data::Dumper;
+# use Data::Dumper;
 use Net::Graphite;
 use Log::Log4perl qw(:easy);
 use List::Util qw[shuffle sum];
+use utf8;
+use Unicode::Normalize;
 
 use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.43";
+$Util::script_version = "0.9.64";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -149,6 +151,9 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 foreach my $datacentre_view (@$datacentres_views) {	
 	my $datacentre_name = lc ($datacentre_view->name);
 	$datacentre_name =~ s/[ .]/_/g;
+	$datacentre_name = NFD($datacentre_name);
+	$datacentre_name =~ s/[^[:ascii:]]//g;
+	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 	
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','host'], begin_entity => $datacentre_view);
 	
@@ -156,9 +161,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 	
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
-
-
 		$cluster_name =~ s/[ .]/_/g;
+		$cluster_name = NFD($cluster_name);
+		$cluster_name =~ s/[^[:ascii:]]//g;
+		$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+		
 		if(scalar $cluster_view->host > 1) {
 			
 			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','configManager.advancedOption'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
@@ -212,6 +219,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 							my @vmdkpath = split("/", $_->backing->fileName);
 							my $vmdk = substr($vmdkpath[-1], 0, -5);
 							$vmdk =~ s/[ .()?!+]/_/g;
+							$vmdk = NFD($vmdk);
+							$vmdk =~ s/[^[:ascii:]]//g;
+							$vmdk =~ s/[^A-Za-z0-9-_]/_/g;
 							$VirtualDisks->{ $_->backing->backingObjectId } = $vmdk;
 							
 							if ($_->backing->parent) {
@@ -219,6 +229,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my @rootvmdkpath = split("/", $rootparent->fileName);
 								my $rootvmdk = substr($rootvmdkpath[-1], 0, -5);
 								$rootvmdk =~ s/[ .()?!+]/_/g;
+								$rootvmdk = NFD($rootvmdk);
+								$rootvmdk =~ s/[^[:ascii:]]//g;
+								$rootvmdk =~ s/[^A-Za-z0-9-_]/_/g;
 								$VirtualDisks->{ $_->backing->backingObjectId . "_root"} = $rootparent->backingObjectId;
 								$VirtualDisks->{ $rootparent->backingObjectId} = $rootvmdk;
 							}
