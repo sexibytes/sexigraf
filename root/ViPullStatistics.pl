@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.120";
+$Util::script_version = "0.9.121";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -971,9 +971,10 @@ if ($sessionList) {
 			"$vcenter_name.vi" . ".exec.sessionCount", $sessionCount,
 		},
 	};
-}
-$graphite->send(path => "vi", data => $vcenter_session_count_h);
 
+	$graphite->send(path => "vi", data => $vcenter_session_count_h);
+}
+	
 my $exec_duration = time - $exec_start;
 my $vcenter_exec_duration_h = {
 	time() => {
