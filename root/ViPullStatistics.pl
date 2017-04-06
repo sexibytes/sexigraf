@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.121";
+$Util::script_version = "0.9.122";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -213,7 +213,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 	$datacentre_name =~ s/[ .]/_/g;
 	$datacentre_name = NFD($datacentre_name);
 	$datacentre_name =~ s/[^[:ascii:]]//g;
-	$datacentre_name =~ s/[^A-Za-z0-9]/_/g;
+	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 	
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','configurationEx', 'summary', 'datastore', 'host'], begin_entity => $datacentre_view);
 
@@ -224,7 +224,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 		$cluster_name =~ s/[ .]/_/g;
 		$cluster_name = NFD($cluster_name);
 		$cluster_name =~ s/[^[:ascii:]]//g;
-		$cluster_name =~ s/[^A-Za-z0-9]/_/g;
+		$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
 	
 		if (my $cluster_root_pool_view = Vim::find_entity_view(view_type => 'ResourcePool', filter => {name => qr/^Resources$/}, properties => ['summary.quickStats'], begin_entity => $cluster_view)) {
 			my $cluster_root_pool_quickStats = $cluster_root_pool_view->get_property('summary.quickStats');
@@ -276,7 +276,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$shared_datastore_name =~ s/[ .()]/_/g;
 				$shared_datastore_name = NFD($shared_datastore_name);
 				$shared_datastore_name =~ s/[^[:ascii:]]//g;
-				$shared_datastore_name =~ s/[^A-Za-z0-9]/_/g;
+				$shared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
 
 				my $shared_datastore_uncommitted = 0;
 				if ($cluster_datastore_view->summary->uncommitted) {
@@ -343,7 +343,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$unshared_datastore_name =~ s/[ .()]/_/g;
 				$unshared_datastore_name = NFD($unshared_datastore_name);
 				$unshared_datastore_name =~ s/[^[:ascii:]]//g;
-				$unshared_datastore_name =~ s/[^A-Za-z0-9]/_/g;
+				$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
 
 				my $unshared_datastore_uncommitted = 0;
 				if ($cluster_datastore_view->summary->uncommitted) {
@@ -472,14 +472,14 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$cluster_vm_view_name =~ s/[ .()]/_/g;
 				$cluster_vm_view_name = NFD($cluster_vm_view_name);
 				$cluster_vm_view_name =~ s/[^[:ascii:]]//g;
-				$cluster_vm_view_name =~ s/[^A-Za-z0-9]/_/g;
+				$cluster_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
 				
 				# my $cluster_vm_view_path = Util::get_inventory_path($cluster_vm_view, Vim::get_vim());
 
 				# my $cluster_vm_view_path_uni = NFD($cluster_vm_view_path); # Unicode normalization Form D (NFD), canonical decomposition.
 				# $cluster_vm_view_path_uni =~ s/[^[:ascii:]]//g; # Remove all non-ascii.
 				# $cluster_vm_view_path_uni =~ s/ - /_/g; # Replace all " - " with "_"
-				# $cluster_vm_view_path_uni =~ s/[^A-Za-z0-9]/_/g; # Replace all non-alphanumericals with _
+				# $cluster_vm_view_path_uni =~ s/[^A-Za-z0-9-_]/_/g; # Replace all non-alphanumericals with _
 				
 				$cluster_vm_views_vcpus += $cluster_vm_view->{'config.hardware.numCPU'};
 				$cluster_vm_views_vram += $cluster_vm_view->{'runtime.maxCpuUsage'};
@@ -687,7 +687,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$cluster_vm_view_off_name =~ s/[ .()]/_/g;
 				$cluster_vm_view_off_name = NFD($cluster_vm_view_off_name);
 				$cluster_vm_view_off_name =~ s/[^[:ascii:]]//g;
-				$cluster_vm_view_off_name =~ s/[^A-Za-z0-9]/_/g;			
+				$cluster_vm_view_off_name =~ s/[^A-Za-z0-9-_]/_/g;			
 				
 				my $cluster_vm_view_off_files = $cluster_vm_view_off->{'layoutEx.file'};
 				# http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
@@ -847,7 +847,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$StandaloneResourceDatastore_name =~ s/[ .()]/_/g;
 					$StandaloneResourceDatastore_name = NFD($StandaloneResourceDatastore_name);
 					$StandaloneResourceDatastore_name =~ s/[^[:ascii:]]//g;
-					$StandaloneResourceDatastore_name =~ s/[^A-Za-z0-9]/_/g;
+					$StandaloneResourceDatastore_name =~ s/[^A-Za-z0-9-_]/_/g;
 					my $StandaloneResourceDatastore_uncommitted = 0;
 					if ($StandaloneResourceDatastore->summary->uncommitted) {
 						$StandaloneResourceDatastore_uncommitted = $StandaloneResourceDatastore->summary->uncommitted;
@@ -902,7 +902,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				$standalone_vm_view_name =~ s/[ .()]/_/g;
 				$standalone_vm_view_name = NFD($standalone_vm_view_name);
 				$standalone_vm_view_name =~ s/[^[:ascii:]]//g;
-				$standalone_vm_view_name =~ s/[^A-Za-z0-9]/_/g;
+				$standalone_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
 				
 				$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
 				
