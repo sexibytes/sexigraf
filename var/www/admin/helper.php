@@ -60,29 +60,19 @@ function rcopy($src, $dest){
 }
 
 function php_file_tree_dir($directory, $first_call = true) {
-        $file = scandir($directory);
-        natcasesort($file);
-        $files = $dirs = array();
+	$directories = glob($directory."/*", GLOB_ONLYDIR);
+        natcasesort($directories);
         $php_file_tree = "";
-	foreach($file as $this_file) {
-                if( is_dir("$directory/$this_file" ) ) $dirs[] = $this_file; else $files[] = $this_file;
-        }
-        $file = array_merge($dirs, $files);
 
-        if( count($file) > 2 ) {
+        if( count($directories) > 2 ) {
                 $php_file_tree = "<ul";
                 if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
                 $php_file_tree .= ">";
-                foreach( $file as $this_file ) {
-                        if( $this_file != "." && $this_file != ".." ) {
-                                if( is_dir("$directory/$this_file") ) {
-                                        $php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$directory/$this_file\"> <a href=\"#\"><strong>" . htmlspecialchars($this_file) . "</strong></a>";
-                                        $php_file_tree .= php_file_tree_dir("$directory/$this_file" , false);
-                                        $php_file_tree .= "</li>";
-                                } else {
-                                        $php_file_tree .= "<li class=\"pft-file\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$directory/$this_file\"> <strong>" . htmlspecialchars($this_file) . "</strong> (". humanFileSize(filesize("$directory/$this_file")) . ")</li>";
-                                }
-                        }
+                foreach( $directories as $this_directory ) {
+			$displayedDirectory = str_replace($directory."/", "", $this_directory);
+			$php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$this_directory\"> <a href=\"#\"><strong>" . htmlspecialchars($displayedDirectory) . "</strong></a>";
+			$php_file_tree .= php_file_tree_dir("$this_directory" , false);
+			$php_file_tree .= "</li>";
                 }
                 $php_file_tree .= "</ul>";
         }
