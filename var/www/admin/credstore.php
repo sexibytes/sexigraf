@@ -76,6 +76,8 @@ require("helper.php");
                         <td><input type="text" class="form-control" name="input-vcenter" placeholder="vCenter IP or FQDN" aria-describedby="vcenter-label"></td>
                         <td><input type="text" class="form-control" name="input-username" placeholder="Username" aria-describedby="username-label"></td>
                         <td><input type="password" class="form-control" name="input-password" placeholder="Password" aria-describedby="password-label"></td>
+                        <td>&nbsp;*</td>
+                        <td>&nbsp;*</td>
                         <td><button name="submit" class="btn btn-success" value="addmodify">Add</button></td>
                 </form></tr>
               </tbody>

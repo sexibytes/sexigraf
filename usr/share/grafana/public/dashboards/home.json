@@ -10,25 +10,6 @@
     {
       "collapse": false,
       "editable": false,
-      "height": "100px",
-      "panels": [
-        {
-          "content": "<div class=\"text-center\" style=\"padding: 10px 0 20px 0\">\n<img src=\"img/sexigraf-banner.png\" width=\"600px\"> \n</div>",
-          "editable": false,
-          "id": 1,
-          "mode": "html",
-          "span": 12,
-          "style": {},
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        }
-      ],
-      "title": ""
-    },
-    {
-      "collapse": false,
-      "editable": false,
       "height": "200px",
       "panels": [
         {
