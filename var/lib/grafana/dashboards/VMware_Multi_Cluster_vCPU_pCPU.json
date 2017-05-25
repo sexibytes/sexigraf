@@ -1,11 +1,10 @@
 {
   "id": null,
-  "title": "VMware VSAN NAA Latency",
-  "originalTitle": "VMware VSAN NAA Latency Named",
+  "title": "VMware Multi Cluster vCPU/pCPU",
+  "originalTitle": "VMware Multi Cluster vCPU/pCPU",
   "tags": [
-    "HDD",
-    "SSD",
-    "VSAN"
+    "vCPU",
+    "pCPU"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -16,19 +15,22 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "200px",
+      "height": "150px",
       "panels": [
         {
-          "aliasColors": {},
+          "aliasColors": {
+            "numVmotions": "#052B51"
+          },
           "bars": false,
           "datasource": null,
+          "decimals": 0,
           "editable": true,
           "error": false,
           "fill": 0,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
-            "leftMin": null,
+            "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": null,
@@ -38,18 +40,18 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 1,
+          "leftYAxisLabel": "",
           "legend": {
             "avg": false,
             "current": false,
-            "hideEmpty": false,
             "max": false,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 3,
           "links": [],
           "minSpan": 3,
           "nullPointMode": "null",
@@ -57,72 +59,65 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "repeat": "naa",
+          "repeat": "cluster",
+          "rightYAxisLabel": "",
           "scopedVars": {
-            "naa": {
-              "selected": false,
-              "text": "",
-              "value": ""
+            "cluster": {
+              "text": "cluster",
+              "value": "",
+              "selected": false
             }
           },
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/vCPU/i",
+              "color": "#6D1F62"
+            }
+          ],
           "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.readOps)",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.writeOps)",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs",
               "textEditor": false
             },
             {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeReads), #A), 'tReads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.totalTimeWrites), #B), 'tWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeReads), #A), 'qReads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeWrites), #B), 'qWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "aliasByNode(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.writeOps, 0), 5)",
-              "textEditor": false
+              "target": "alias(divideSeries(#A, #B), '$cluster.vCPU/pCPU')"
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "naa.$naa",
+          "title": "$cluster",
           "tooltip": {
             "shared": true,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "µs",
-            "short"
+            "none",
+            "none"
           ]
         }
       ],
-      "title": "NAA latency"
+      "repeat": null,
+      "scopedVars": {
+        "cluster": {
+          "selected": true,
+          "text": "cluster",
+          "value": ""
+        }
+      },
+      "showTitle": false,
+      "title": "$cluster"
     }
   ],
   "nav": [
@@ -132,7 +127,6 @@
       "notice": false,
       "now": true,
       "refresh_intervals": [
-        "1m",
         "5m",
         "15m",
         "30m",
@@ -142,6 +136,7 @@
       ],
       "status": "Stable",
       "time_options": [
+        "15m",
         "1h",
         "2h",
         "3h",
@@ -152,7 +147,8 @@
         "3d",
         "7d",
         "15d",
-        "30d"
+        "30d",
+        " 90d"
       ],
       "type": "timepicker"
     }
@@ -171,7 +167,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
@@ -181,10 +177,9 @@
             "selected": true
           }
         ],
-        "query": "vsan.*",
+        "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
-        "regex": "",
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -195,7 +190,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
@@ -205,9 +200,10 @@
             "selected": true
           }
         ],
-        "query": "vsan.$vcenter.*",
+        "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
+        "regex": "",
         "type": "query"
       },
       {
@@ -218,7 +214,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
@@ -228,56 +224,9 @@
             "selected": true
           }
         ],
-        "query": "vsan.$vcenter.$datacentre.*",
+        "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "text": "All",
-          "value": "{}"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "esx",
-        "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
-        ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "wildcard",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "naa",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }
@@ -286,8 +235,8 @@
   "annotations": {
     "list": []
   },
-  "refresh": "1m",
+  "refresh": false,
   "schemaVersion": 6,
-  "version": 2,
+  "version": 6,
   "links": []
 }
