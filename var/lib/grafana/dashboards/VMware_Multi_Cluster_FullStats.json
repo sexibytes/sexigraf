@@ -491,7 +491,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(sumSeries(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions)), 'vmotion.count')",
+              "target": "alias(derivative(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions)), 'vmotion.count')",
               "textEditor": false
             }
           ],
@@ -818,7 +818,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)",
+              "target": "groupByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 3, 'sum')",
               "textEditor": false,
               "hide": false
             }
@@ -834,7 +834,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "kwatt",
             "short"
           ]
         }
