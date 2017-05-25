@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.129";
+$Util::script_version = "0.9.133";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -395,6 +395,9 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					$graphite->send(path => "vmw", data => $cluster_host_vmnic_h);
 				}
 			}
+			
+			my $cluster_host_view_power = QuickQueryPerf($cluster_host_view, 'power', 'power', 'average', '*', 1000000);
+			if (!defined($cluster_host_view_power)) { $cluster_host_view_power = 0; }
 
 			my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
 			my $cluster_host_view_status_val;
@@ -416,6 +419,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->summary->quickStats->overallMemoryUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.Uptime", $cluster_host_view->summary->quickStats->uptime,
 					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallStatus", $cluster_host_view_status_val,
+					"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".fatstats.power", $cluster_host_view_power,
 				},
 			};
 			$graphite->send(path => "vmw", data => $cluster_host_view_h);
@@ -508,7 +512,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name}) {
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name} = $cluster_vm_view_file->size;
-						if ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/) {
+						if ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
@@ -738,7 +742,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				foreach my $cluster_vm_view_off_file (@$cluster_vm_view_off_files) {
 					if (!$cluster_vm_views_off_files_dedup->{$cluster_vm_view_off_file->name}) {
 						$cluster_vm_views_off_files_dedup->{$cluster_vm_view_off_file->name} = $cluster_vm_view_off_file->size;
-						if ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/) {
+						if ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
 							$cluster_vm_views_off_files_dedup_total->{snapshotExtent} += $cluster_vm_view_off_file->size;
 							$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
 						} elsif ($cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
