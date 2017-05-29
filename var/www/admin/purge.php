@@ -15,22 +15,6 @@ require("helper.php");
                         </ul></div>
                 </div>
                 <h2><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> SexiGraf House Cleaner</h2>
-                <div class="panel panel-warning">
-                        <div class="panel-body"><ul>
-                        <form action="purge.php" method="post">
-                        Autopurge is currently
-                        <?php
-                        if (isAutopurgeEnabled()) {
-                                echo '                        <span style="color:#5cb85c;" aria-hidden="true">enabled</span>';
-                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-danger" value="disable-autopurge">Disable autopurge</button>';
-                        } else {
-                                echo '                        <span style="color:#d9534f;" aria-hidden="true">disabled</span>';
-                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button>';
-                        }
-                        ?>
-                        </form>
-                        </div>
-                </div>
                 <div id="purgeLoading" style="display:block;">
                         <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading filesystem...
                 </div>
@@ -71,6 +55,14 @@ require("helper.php");
                         break;
                 }
         } else {
+                switch ($_POST["submit"]) {
+                        case "enable-autopurge":
+                                enableAutopurge();
+                        break;
+                        case "disable-autopurge":
+                                disableAutopurge();
+                        break;
+                }
                 $topn = 50;
                 echo '                <div id="purgeTree" style="display:none;">
                 <form action="purge.php" method="post">
@@ -99,6 +91,22 @@ require("helper.php");
                 </script>';
         }
 ?>
+                <div class="panel panel-warning">
+                        <div class="panel-body"><ul>
+                        <form action="purge.php" method="post">
+                        Autopurge is currently
+                        <?php
+                        if (isAutopurgeEnabled()) {
+                                echo '                        <span style="color:#5cb85c;" aria-hidden="true">enabled</span>';
+                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-danger" value="disable-autopurge">Disable autopurge</button>';
+                        } else {
+                                echo '                        <span style="color:#d9534f;" aria-hidden="true">disabled</span>';
+                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button>';
+                        }
+                        ?>
+                        </form>
+                        </div>
+                </div>
         </div>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
