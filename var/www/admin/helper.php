@@ -13,6 +13,11 @@ function isVsanEnabled($inputvcenter) {
         return (file_exists($crontabPath . "vsan_" . str_replace(".", "_", $inputvcenter)));
 }
 
+function isAutopurgeEnabled() {
+        global $crontabPath;
+        return (file_exists($crontabPath . "graphite_autopurge"));
+}
+
 function enableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addViCrontab.sh " . $inputvcenter); }
 
 function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addVsanCrontab.sh " . $inputvcenter); }
@@ -20,6 +25,10 @@ function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts
 function disableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvcenter); }
 
 function disableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeVsanCrontab.sh " . $inputvcenter); }
+
+function enableAutopurge() { shell_exec("sudo /bin/bash /var/www/scripts/addAutopurgeCrontab.sh"); }
+
+function disableAutopurge() { shell_exec("sudo /bin/bash /var/www/scripts/removeAutopurgeCrontab.sh"); }
 
 function humanFileSize($size,$unit="") {
         if( (!$unit && $size >= 1<<30) || $unit == "GB")
