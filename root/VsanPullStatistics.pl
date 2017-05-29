@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.64";
+$Util::script_version = "0.9.73";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -300,6 +300,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 							my $host_vsan_stats_json_client = $host_vsan_query_vsan_stats_json->{'dom.client.stats'};
 							my $host_vsan_stats_json_owner = $host_vsan_query_vsan_stats_json->{'dom.owner.stats'};
 							my $host_vsan_stats_json_sched = $host_vsan_query_vsan_stats_json->{'dom.compmgr.schedStats'};
+							my $host_vsan_stats_json_cachestats = $host_vsan_query_vsan_stats_json->{'dom.client.cachestats'};
 
 							foreach my $compmgrkey (keys %{ $host_vsan_stats_json_compmgr }) {
 								$graphite->send(
@@ -329,6 +330,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 								$graphite->send(
 								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
 								value => $host_vsan_stats_json_sched->{$schedkey},
+								time => time(),
+								);
+							}
+							
+							foreach my $cachestats (keys %{ $host_vsan_stats_json_cachestats }) {
+								$graphite->send(
+								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.cachestats." . "$cachestats",
+								value => $host_vsan_stats_json_cachestats->{$cachestats},
 								time => time(),
 								);
 							}

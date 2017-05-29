@@ -35,10 +35,10 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": 100,
+            "leftMax": 180,
             "leftMin": 0,
             "rightLogBase": 1,
-            "rightMax": 100,
+            "rightMax": 110,
             "rightMin": 0,
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
@@ -93,6 +93,10 @@
               "refId": "D",
               "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
               "textEditor": false
+            },
+            {
+              "target": "alias(diffSeries(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), #C), #D), 'mem.allocated')",
+              "textEditor": true
             }
           ],
           "timeFrom": null,
@@ -460,7 +464,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "none",
             "short"
           ]
         },
@@ -796,6 +800,146 @@
             "short",
             "short"
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 13,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 3,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/vCPU/i",
+              "color": "#6D1F62"
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "refId": "A",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs"
+            },
+            {
+              "hide": true,
+              "refId": "B",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs"
+            },
+            {
+              "target": "alias(divideSeries(#B, #A), '$cluster.vCPU/pCPU')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "vCPU per pCPU ratio",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "refId": "A",
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "power usage",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "short"
+          ]
         }
       ],
       "showTitle": false,
@@ -959,10 +1103,18 @@
   ],
   "nav": [
     {
-      "type": "timepicker",
       "collapse": false,
-      "notice": false,
       "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
       "status": "Stable",
       "time_options": [
         "15m",
@@ -978,15 +1130,7 @@
         "15d",
         "30d"
       ],
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "now": true
+      "type": "timepicker"
     }
   ],
   "time": {
@@ -1009,7 +1153,8 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.*",
@@ -1031,7 +1176,8 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -1056,7 +1202,8 @@
           {
             "text": "None",
             "value": "",
-            "isNone": true
+            "isNone": true,
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
@@ -1096,6 +1243,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 3,
+  "version": 5,
   "links": []
 }
