@@ -50,13 +50,14 @@
           },
           "lines": true,
           "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -79,71 +80,7 @@
           "y_formats": [
             "hertz",
             "short"
-          ],
-          "links": []
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 2,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 3, 5)",
-              "textEditor": true
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "HostMemoryUsage",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "mbytes",
-            "short"
-          ],
-          "links": []
+          ]
         },
         {
           "aliasColors": {},
@@ -176,6 +113,7 @@
           },
           "lines": true,
           "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
@@ -205,8 +143,7 @@
           "y_formats": [
             "mbytes",
             "short"
-          ],
-          "links": []
+          ]
         },
         {
           "aliasColors": {},
@@ -227,7 +164,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 4,
+          "id": 2,
           "legend": {
             "avg": false,
             "current": false,
@@ -239,6 +176,7 @@
           },
           "lines": true,
           "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
@@ -251,13 +189,13 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 3, 5)",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 3, 5)",
               "textEditor": true
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "storage.uncommitted",
+          "title": "HostMemoryUsage",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -266,10 +204,9 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "bytes",
+            "mbytes",
             "short"
-          ],
-          "links": []
+          ]
         },
         {
           "aliasColors": {},
@@ -302,6 +239,7 @@
           },
           "lines": true,
           "linewidth": 2,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
@@ -331,8 +269,133 @@
           "y_formats": [
             "bytes",
             "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 3, 5)",
+              "textEditor": true
+            }
           ],
-          "links": []
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "storage.uncommitted",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "storage.delta",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ]
         }
       ],
       "title": "Row"
@@ -340,10 +403,20 @@
   ],
   "nav": [
     {
-      "type": "timepicker",
       "collapse": false,
-      "notice": false,
       "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "1h",
+        "2h",
+        "3h",
+        "6h",
+        "12h",
+        "24h"
+      ],
       "status": "Stable",
       "time_options": [
         "5m",
@@ -355,17 +428,7 @@
         "7d",
         "30d"
       ],
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h"
-      ],
-      "now": true
+      "type": "timepicker"
     }
   ],
   "time": {
@@ -425,7 +488,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": "*"
+          "value": "{}"
         },
         "datasource": null,
         "includeAll": true,
@@ -435,7 +498,7 @@
         "options": [
           {
             "text": "All",
-            "value": "*",
+            "value": "{}",
             "selected": true
           }
         ],
@@ -445,9 +508,15 @@
         "type": "query"
       },
       {
-        "type": "query",
+        "allFormat": "wildcard",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
         "datasource": null,
-        "refresh_on_load": false,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
         "name": "vm",
         "options": [
           {
@@ -456,17 +525,11 @@
             "selected": true
           }
         ],
-        "includeAll": true,
-        "allFormat": "wildcard",
-        "multi": true,
-        "multiFormat": "glob",
         "query": "vmw.$vcenter.$datacentre.$cluster.vm.*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
+        "refresh": true,
+        "refresh_on_load": false,
         "regex": "",
-        "refresh": true
+        "type": "query"
       },
       {
         "allFormat": "glob",
@@ -504,8 +567,8 @@
       {
         "allFormat": "glob",
         "current": {
-          "text": "10",
-          "value": "10",
+          "text": "15",
+          "value": "15",
           "tags": []
         },
         "datasource": null,
@@ -515,27 +578,32 @@
         "name": "N",
         "options": [
           {
+            "selected": false,
             "text": "5",
-            "value": "5",
-            "selected": false
+            "value": "5"
           },
           {
+            "selected": false,
             "text": "10",
-            "value": "10",
-            "selected": true
+            "value": "10"
           },
           {
+            "selected": true,
             "text": "15",
-            "value": "15",
-            "selected": false
+            "value": "15"
           },
           {
+            "selected": false,
             "text": "20",
-            "value": "20",
-            "selected": false
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "99",
+            "value": "99"
           }
         ],
-        "query": "5,10,15,20",
+        "query": "5,10,15,20,99",
         "refresh_on_load": false,
         "type": "custom"
       }
@@ -545,6 +613,6 @@
     "list": []
   },
   "schemaVersion": 6,
-  "version": 17,
+  "version": 1,
   "links": []
 }
