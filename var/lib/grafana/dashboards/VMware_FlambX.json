@@ -201,17 +201,9 @@
           },
           "targets": [
             {
-              "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total)",
+              "hide": false,
+              "target": "sumSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 0, 'search', 'replace'))",
               "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.runtime.vm.total)",
-              "textEditor": false
-            },
-            {
-              "target": "sumSeries(#A, #B)"
             }
           ],
           "thresholds": "",
@@ -816,7 +808,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "countSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "target": "countSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity, 0, 'search', 'replace'))",
               "textEditor": false
             }
           ],
@@ -983,17 +975,9 @@
           },
           "targets": [
             {
-              "hide": true,
-              "target": "countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.*.overallCpuUsage)",
+              "hide": false,
+              "target": "countSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.esx.*.*.overallCpuUsage, 0, 'search', 'replace'))",
               "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "countSeries(esx.*.*.$esx.quickstats.cpu.usage)",
-              "textEditor": false
-            },
-            {
-              "target": "sumSeries(#A, #B)"
             }
           ],
           "thresholds": "",
@@ -1277,7 +1261,8 @@
         "options": [
           {
             "text": "All",
-            "value": ""
+            "value": "{}",
+            "selected": true
           }
         ],
         "query": "vmw.*",
@@ -1289,7 +1274,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": ""
+          "value": "{}"
         },
         "datasource": null,
         "includeAll": true,
@@ -1299,7 +1284,8 @@
         "options": [
           {
             "text": "All",
-            "value": ""
+            "value": "{}",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -1312,7 +1298,7 @@
         "allFormat": "glob",
         "current": {
           "text": "All",
-          "value": ""
+          "value": "{}"
         },
         "datasource": null,
         "includeAll": true,
@@ -1322,7 +1308,8 @@
         "options": [
           {
             "text": "All",
-            "value": ""
+            "value": "{}",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
@@ -1353,7 +1340,8 @@
         "refresh": true,
         "refresh_on_load": false,
         "regex": "",
-        "type": "query"
+        "type": "query",
+        "hideLabel": false
       }
     ]
   },
@@ -1362,6 +1350,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 4,
+  "version": 1,
   "links": []
 }
