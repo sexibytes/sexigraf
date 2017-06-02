@@ -65,7 +65,13 @@
           "points": false,
           "renderer": "flot",
           "rightYAxisLabel": "",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "mem.allocated",
+              "fill": 0,
+              "stack": false
+            }
+          ],
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -95,8 +101,10 @@
               "textEditor": false
             },
             {
-              "target": "alias(diffSeries(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), #C), #D), 'mem.allocated')",
-              "textEditor": true
+              "hide": false,
+              "refId": "E",
+              "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,

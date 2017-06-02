@@ -64,29 +64,45 @@
           "points": false,
           "renderer": "flot",
           "rightYAxisLabel": "",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "mem.allocated",
+              "fill": 0,
+              "stack": false
+            }
+          ],
           "span": 6,
           "stack": true,
           "steppedLine": false,
           "targets": [
             {
               "hide": true,
+			  "refId": "A",
               "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective)",
               "textEditor": false
             },
             {
               "hide": true,
+			  "refId": "B",
               "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)",
               "textEditor": false
             },
             {
               "hide": false,
+			  "refId": "C",
               "target": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), #A), 'cpu.usage')",
               "textEditor": false
             },
             {
               "hide": false,
+			  "refId": "D",
               "target": "alias(diffSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), #B), #C), 'mem.usage')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "refId": "E",
+              "target": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM), #B), 'mem.allocated')",
               "textEditor": false
             }
           ],
