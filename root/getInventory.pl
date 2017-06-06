@@ -9,6 +9,7 @@ use Data::Dumper;
 use Net::Graphite;
 use HTML::Template;
 use URI::URL;
+use URI::Escape;
 #use threads;
 #use threads::shared;
 use Log::Log4perl qw(:easy);
@@ -93,6 +94,9 @@ sub sexiprocess {
         my @vm_pg_string = ();
         my @vm_ip_string = ();
         my @vm_mac = ();
+        my $vmPath = Util::get_inventory_path($vm_view, Vim::get_vim());
+        $vmPath = (split(/\/([^\/]+)$/, $vmPath))[0] || "Unknown";
+        if ($vmPath ne "Unknown") { $vmPath = '/'.$vmPath; }
         foreach (@$vnics) {
           ($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "N/A");
           ($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "N/A");
@@ -122,7 +126,8 @@ sub sexiprocess {
           COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
           PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
           DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1],
-          MAC => join(',', @vm_mac)
+          MAC => join(',', @vm_mac),
+          FOLDERPATH => uri_unescape($vmPath)
         );
         push( @{$listVM_ref}, \%h_vm );
       }
