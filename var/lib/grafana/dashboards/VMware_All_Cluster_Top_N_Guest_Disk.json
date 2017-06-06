@@ -335,7 +335,7 @@
         },
         "datasource": null,
         "includeAll": true,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "path",
         "options": [
