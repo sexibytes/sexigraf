@@ -1,7 +1,7 @@
 {
   "id": null,
-  "title": "VMware Multi Cluster Top N VM Stats",
-  "originalTitle": "VMware Multi Cluster Top N VM Stats",
+  "title": "VMware All Cluster Top N VM Stats",
+  "originalTitle": "VMware All Cluster Top N VM Stats",
   "tags": [
     "VM",
     "CPU",
