@@ -151,7 +151,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(lowestAverage(sortByMinima(vmw.$vcenter.$datacentre.$cluster.vm.$vm.guest.disk.$path.freeSpace), $N), 3, 5, 8)",
+              "target": "aliasByNode(lowestAverage(sortByMinima(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.vm.$vm.guest.disk.$path.freeSpace, 1, 'search', 'replace')), $N), 3, 5, 8)",
               "textEditor": false
             }
           ],
