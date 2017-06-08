@@ -292,7 +292,7 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
