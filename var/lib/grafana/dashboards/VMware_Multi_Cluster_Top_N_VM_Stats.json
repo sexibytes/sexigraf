@@ -46,7 +46,8 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -63,7 +64,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -109,7 +110,9 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "alignAsTable": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -126,7 +129,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -172,7 +175,8 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -189,7 +193,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -235,7 +239,8 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -252,7 +257,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -298,7 +303,8 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -315,7 +321,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -361,7 +367,8 @@
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": false,
+            "hideEmpty": true
           },
           "lines": true,
           "linewidth": 2,
@@ -378,7 +385,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N)), 3, 5)",
               "textEditor": true
             }
           ],
@@ -398,7 +405,335 @@
           ]
         }
       ],
-      "title": "Row"
+      "title": "VM Usage"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 7,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false,
+            "hideEmpty": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.CpuUtilization, $N)), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CpuUtilization",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false,
+            "hideEmpty": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.MemUtilization, $N)), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "MemUtilization",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 9,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false,
+            "hideEmpty": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_ready_summation, $N)), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CpuReady",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false,
+            "hideEmpty": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(scale(highest$view(sortByMaxima(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_latency_average), $N), 0.01), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CpuLatency",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "percent",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 11,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false,
+            "hideEmpty": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N)), 3, 5)",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "maxTotalLatency",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "ms",
+            "short"
+          ]
+        }
+      ],
+      "title": "VM Utilization"
     }
   ],
   "nav": [
@@ -567,9 +902,9 @@
       {
         "allFormat": "glob",
         "current": {
-          "text": "15",
-          "value": "15",
-          "tags": []
+          "tags": [],
+          "text": "10",
+          "value": "10"
         },
         "datasource": null,
         "includeAll": false,
@@ -583,12 +918,12 @@
             "value": "5"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "10",
             "value": "10"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "15",
             "value": "15"
           },
@@ -613,6 +948,6 @@
     "list": []
   },
   "schemaVersion": 6,
-  "version": 1,
+  "version": 0,
   "links": []
 }
