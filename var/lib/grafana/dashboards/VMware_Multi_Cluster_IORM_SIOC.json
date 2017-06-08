@@ -61,7 +61,7 @@
           },
           "seriesOverrides": [
             {
-              "alias": "sizeNormalizedDatastoreLatency",
+              "alias": "AvgNormalizedDatastoreLatency",
               "color": "#E24D42"
             },
             {
@@ -75,7 +75,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 7)",
+              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'AvgNormalizedDatastoreLatency')",
               "textEditor": true
             },
             {
