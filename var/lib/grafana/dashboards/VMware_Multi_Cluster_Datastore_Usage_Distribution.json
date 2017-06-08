@@ -193,7 +193,7 @@
             },
             {
               "hide": false,
-              "refId": "A",
+              "refId": "B",
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.storage.SnapshotCount, 5)",
               "textEditor": false
             }
