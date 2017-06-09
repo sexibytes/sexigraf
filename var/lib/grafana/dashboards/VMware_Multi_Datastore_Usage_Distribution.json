@@ -193,7 +193,7 @@
             },
             {
               "hide": false,
-              "refId": "A",
+              "refId": "B",
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.storage.SnapshotCount, 5)",
               "textEditor": false
             }
@@ -294,7 +294,7 @@
         ],
         "query": "vmw.*",
         "refresh": 1,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -318,7 +318,7 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": 1,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -342,7 +342,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -365,7 +365,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.storage.FileType.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }
