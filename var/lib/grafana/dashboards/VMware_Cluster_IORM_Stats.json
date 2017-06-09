@@ -304,8 +304,8 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
+        "refresh": true,
         "refresh_on_load": true,
-        "regex": "",
         "type": "query"
       }
     ]
