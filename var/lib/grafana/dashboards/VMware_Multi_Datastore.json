@@ -283,7 +283,7 @@
         ],
         "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -306,7 +306,7 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -331,7 +331,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -353,7 +353,8 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh_on_load": false,
+        "refresh": true,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }
