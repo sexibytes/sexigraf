@@ -177,7 +177,7 @@
         ],
         "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -201,7 +201,7 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -227,7 +227,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -253,7 +253,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query",
         "useTags": false
@@ -277,6 +277,7 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.net.*",
+        "refresh": true,
         "refresh_on_load": false,
         "regex": "",
         "type": "query"
