@@ -405,6 +405,7 @@
           ]
         }
       ],
+      "showTitle": true,
       "title": "VM Usage"
     },
     {
@@ -733,6 +734,7 @@
           ]
         }
       ],
+       "showTitle": true,
       "title": "VM Utilization"
     }
   ],
