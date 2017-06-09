@@ -1319,7 +1319,7 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

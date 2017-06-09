@@ -624,7 +624,7 @@
   "templating": {
     "list": [
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -648,7 +648,7 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -698,7 +698,7 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

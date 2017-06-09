@@ -158,7 +158,7 @@
   "templating": {
     "list": [
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -182,7 +182,7 @@
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -259,7 +259,7 @@
         "useTags": false
       },
       {
-        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
