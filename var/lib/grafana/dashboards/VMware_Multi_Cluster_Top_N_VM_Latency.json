@@ -65,7 +65,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(removeAboveValue(highestAverage(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N), 300)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(removeAboveValue(highestAverage(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N), 3000)), 3, 5)",
               "textEditor": false
             }
           ],
