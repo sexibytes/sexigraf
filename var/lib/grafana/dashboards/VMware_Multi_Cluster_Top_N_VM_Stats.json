@@ -64,7 +64,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), )",
+              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), 5)",
               "textEditor": true
             }
           ],
