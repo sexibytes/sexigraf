@@ -7,7 +7,7 @@
     "SSD",
     "NAND"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
