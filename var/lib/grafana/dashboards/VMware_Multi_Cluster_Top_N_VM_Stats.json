@@ -73,6 +73,7 @@
           "title": "overallCpuUsage",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -138,6 +139,7 @@
           "title": "GuestMemoryUsage",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -202,6 +204,7 @@
           "title": "HostMemoryUsage",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -266,6 +269,7 @@
           "title": "storage.committed",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -330,6 +334,7 @@
           "title": "storage.uncommitted",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -394,6 +399,7 @@
           "title": "storage.delta",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -467,6 +473,7 @@
           "title": "CpuUtilization",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -531,6 +538,7 @@
           "title": "MemUtilization",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -595,6 +603,7 @@
           "title": "CpuReady",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -659,6 +668,7 @@
           "title": "CpuLatency",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -723,6 +733,7 @@
           "title": "maxTotalLatency",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -775,6 +786,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -799,6 +811,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -845,6 +858,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

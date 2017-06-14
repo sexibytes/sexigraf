@@ -87,6 +87,7 @@
           "title": "Compute",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -164,6 +165,7 @@
           "title": "Storage",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -222,6 +224,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -245,6 +248,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -269,6 +273,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

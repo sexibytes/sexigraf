@@ -84,6 +84,7 @@
           "title": "Used Bytes by Object Type",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -148,6 +149,7 @@
           "title": "Bytes Sum by Usage Type",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -201,6 +203,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -224,6 +227,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

@@ -101,6 +101,7 @@
           "title": "CPU",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -319,6 +320,7 @@
           "title": "RAM",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -531,6 +533,7 @@
           "title": "HDD",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -715,6 +718,7 @@
           "title": "IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -883,6 +887,7 @@
           "title": "VMotion",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -1078,6 +1083,7 @@
           "title": "VMNIC Bandwidth",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -1319,6 +1325,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

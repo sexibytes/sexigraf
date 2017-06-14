@@ -95,6 +95,7 @@
           "title": "$vmnic",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -158,6 +159,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -182,6 +184,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -259,6 +262,7 @@
         "useTags": false
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

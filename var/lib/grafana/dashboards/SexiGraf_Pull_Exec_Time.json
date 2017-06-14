@@ -79,6 +79,7 @@
           "title": "Pull Exec Time",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",

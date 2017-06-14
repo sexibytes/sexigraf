@@ -80,6 +80,7 @@
           "title": "CPU _Total",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -167,6 +168,7 @@
           "title": "memory",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -231,6 +233,7 @@
           "title": "pagefile",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -300,6 +303,7 @@
           "title": "disk octets C:",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -361,6 +365,7 @@
           "title": "disk ops C:",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -422,6 +427,7 @@
           "title": "queue_length C:",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -489,6 +495,7 @@
           "title": "df C:",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -558,6 +565,7 @@
           "title": "if octets",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -619,6 +627,7 @@
           "title": "if packets",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",

@@ -93,6 +93,7 @@
           "title": "cpu/ram usage",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -193,6 +194,7 @@
           "title": "memory quickstats",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -283,6 +285,7 @@
           "title": "CPU utilization/demand",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -378,6 +381,7 @@
           "title": "RAM utilization",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -447,6 +451,7 @@
           "title": "VM count",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -556,6 +561,7 @@
           "title": "$datastore utilization",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -658,6 +664,7 @@
           "title": "$vmnic traffic",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -721,6 +728,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -744,6 +752,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -794,6 +803,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -818,6 +828,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",

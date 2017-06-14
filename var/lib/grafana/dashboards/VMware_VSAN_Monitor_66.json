@@ -111,6 +111,7 @@
           "title": "Latencies",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -202,6 +203,7 @@
           "title": "IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -289,6 +291,7 @@
           "title": "Bandwidth",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -394,6 +397,7 @@
           "title": "Congestion",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -471,6 +475,7 @@
           "title": "Outstanding IO",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -560,6 +565,7 @@
           "title": "Caches Hit Rate",
           "tooltip": {
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -624,6 +630,7 @@
   "templating": {
     "list": [
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -648,6 +655,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
@@ -698,6 +706,7 @@
         "type": "query"
       },
       {
+        "allFormat": "wildcard",
         "allValue": "*",
         "current": {
           "text": "All",
