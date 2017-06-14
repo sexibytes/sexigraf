@@ -64,7 +64,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), )",
               "textEditor": true
             }
           ],
@@ -129,7 +129,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -193,7 +193,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -257,7 +257,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -321,7 +321,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -385,7 +385,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -458,7 +458,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.CpuUtilization, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.CpuUtilization, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -522,7 +522,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.MemUtilization, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.MemUtilization, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -586,7 +586,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_ready_summation, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_ready_summation, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -650,7 +650,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(scale(highest$view(sortByMaxima(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_latency_average), $N), 0.01), 3, 5)",
+              "target": "aliasByNode(scale(highest$view(sortByMaxima(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_latency_average), $N), 0.01), 5)",
               "textEditor": true
             }
           ],
@@ -714,7 +714,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N)), 3, 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N)), 5)",
               "textEditor": true
             }
           ],
