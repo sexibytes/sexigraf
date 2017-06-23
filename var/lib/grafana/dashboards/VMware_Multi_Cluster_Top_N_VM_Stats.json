@@ -428,7 +428,7 @@
           "fill": 0,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": null,
+            "leftMax": 150,
             "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
@@ -493,7 +493,7 @@
           "fill": 0,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": null,
+            "leftMax": 100,
             "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
