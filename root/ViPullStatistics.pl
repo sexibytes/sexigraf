@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.133";
+$Util::script_version = "0.9.142";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -427,9 +427,9 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name vms in datacenter $datacentre_name");
 		
-		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot','guest.disk' ], filter => {'summary.runtime.powerState' => "poweredOn"});
+		my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'config.hardware.device' ], filter => {'summary.runtime.powerState' => "poweredOn"});
 		
-		my $cluster_vm_views_off = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'summary.storage.committed', 'summary.storage.uncommitted', 'layoutEx.file', 'snapshot' ], filter => {'summary.runtime.powerState' => "poweredOff"});
+		my $cluster_vm_views_off = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view , properties => ['name', 'summary.storage.committed', 'summary.storage.uncommitted', 'layoutEx.file', 'snapshot', 'config.hardware.device' ], filter => {'summary.runtime.powerState' => "poweredOff"});
 		
 		my $cluster_vm_views_vcpus = 0;
 		my $cluster_vm_views_vram = 0;
@@ -509,20 +509,35 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				
 				}
 
+				my $cluster_vm_view_devices = $cluster_vm_view->{'config.hardware.device'};
+				
+				# my @cluster_vm_view_vdisk = ();
+				my $cluster_vm_view_has_snap = 0;
+
+				foreach my $cluster_vm_view_device (@$cluster_vm_view_devices) {
+					if  ($cluster_vm_view_device->isa('VirtualDisk')) {
+						my $cluster_vm_view_device_back = $cluster_vm_view_device->backing;
+						# push (@cluster_vm_view_vdisk, $cluster_vm_view_device_back);
+						if ($cluster_vm_view_device_back->parent) {
+							$cluster_vm_view_has_snap = 1;
+						}
+					}
+				}
+
 				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name}) {
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name} = $cluster_vm_view_file->size;
-						if ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
+						if ($cluster_vm_view_has_snap eq 1 and ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
-						} elsif ($cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
-								$cluster_vm_views_files_snaps++;
-								$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_file->size;
-								$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
+						} elsif ($cluster_vm_view_has_snap eq 1 and $cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
+							$cluster_vm_views_files_snaps++;
+							$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_file->size;
+							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-rdm\.vmdk/) {
-								$cluster_vm_views_files_dedup_total->{rdmExtent} += $cluster_vm_view_file->size;
+							$cluster_vm_views_files_dedup_total->{rdmExtent} += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-rdmp\.vmdk/) {
-								$cluster_vm_views_files_dedup_total->{rdmpExtent} += $cluster_vm_view_file->size;
+							$cluster_vm_views_files_dedup_total->{rdmpExtent} += $cluster_vm_view_file->size;
 						} else {
 							$cluster_vm_views_files_dedup_total->{$cluster_vm_view_file->type} += $cluster_vm_view_file->size;
 						}
@@ -626,28 +641,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 						},
 					};
 					$graphite->send(path => "vmw", data => $cluster_vm_view_maxtotallatency_h);
-				}
-				
-				if ($cluster_vm_view->{'guest.disk'}) {
-
-					my $cluster_vm_view_disks = $cluster_vm_view->{'guest.disk'};
-					foreach my $vmdisk (@$cluster_vm_view_disks) {
-						my $vmdisk_path = $vmdisk->{diskPath};
-						$vmdisk_path = NFD($vmdisk_path);
-						$vmdisk_path =~ s/[^[:ascii:]]//g;
-						$vmdisk_path =~ s/[^A-Za-z0-9-_]/_/g;
-						my $vmdisk_utilization = ($vmdisk->{capacity} - $vmdisk->{freeSpace}) * 100 / $vmdisk->{capacity};
-						my $cluster_vm_view_vmdisk_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".guest.disk." . "$vmdisk_path" .".capacity", $vmdisk->{capacity},
-								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".guest.disk." . "$vmdisk_path" .".freeSpace", $vmdisk->{freeSpace},
-								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".guest.disk." . "$vmdisk_path" .".utilization", $vmdisk_utilization,
-							},
-						};
-						$graphite->send(path => "vmw", data => $cluster_vm_view_vmdisk_h);
-					}
-				}
-				
+				}	
 			}
 		
 			if ($cluster_vm_views_vcpus > 0 && $cluster_hosts_views_pcpus > 0) {
@@ -739,13 +733,28 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 				
 				}
 
+				my $cluster_vm_view_off_devices = $cluster_vm_view_off->{'config.hardware.device'};
+				
+				# my @cluster_vm_view_off_vdisk = ();
+				my $cluster_vm_view_off_has_snap = 0;
+				
+				foreach my $cluster_vm_view_off_device (@$cluster_vm_view_off_devices) {
+					if  ($cluster_vm_view_off_device->isa('VirtualDisk')) {
+						my $cluster_vm_view_off_device_back = $cluster_vm_view_off_device->backing;
+						# push (@cluster_vm_view_off_vdisk, $cluster_vm_view_off_device_back);
+						if ($cluster_vm_view_off_device_back->parent) {
+							$cluster_vm_view_off_has_snap = 1;
+						}
+					}
+				}
+
 				foreach my $cluster_vm_view_off_file (@$cluster_vm_view_off_files) {
 					if (!$cluster_vm_views_off_files_dedup->{$cluster_vm_view_off_file->name}) {
 						$cluster_vm_views_off_files_dedup->{$cluster_vm_view_off_file->name} = $cluster_vm_view_off_file->size;
-						if ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
+						if ($cluster_vm_view_off_has_snap eq 1 and ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
 							$cluster_vm_views_off_files_dedup_total->{snapshotExtent} += $cluster_vm_view_off_file->size;
 							$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
-						} elsif ($cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
+						} elsif ($cluster_vm_view_off_has_snap eq 1 and $cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
 								$cluster_vm_views_off_files_snaps++;
 								$cluster_vm_views_off_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_off_file->size;
 								$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
