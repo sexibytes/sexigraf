@@ -179,6 +179,14 @@
             {
               "alias": "snapshotDescriptor",
               "color": "#64B0C8"
+            },
+            {
+              "alias": "rdmExtent",
+              "color": "#58140C"
+            },
+            {
+              "alias": "rdmpExtent",
+              "color": "#BF1B00"
             }
           ],
           "span": 4,
