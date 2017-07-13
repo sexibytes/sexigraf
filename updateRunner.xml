@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <update>
-        <version>0.99c "Citabel"</version>
+        <version>0.99d "Nova Prospekt"</version>
         <commands>
-                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/etc/* /etc/</command>
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>

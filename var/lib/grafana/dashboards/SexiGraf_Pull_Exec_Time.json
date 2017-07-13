@@ -8,7 +8,7 @@
     "VSAN",
     "VM"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -79,6 +79,7 @@
           "title": "Pull Exec Time",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",

@@ -38,6 +38,7 @@
 			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="10" data-column="10">ProvisionnedGB</button>
 			<button type="button" class="btn btn-success btn-xs toggle-vis" style="outline: 5px auto;" name="11" data-column="11">Datastore</button>
 			<button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="12" data-column="12">MAC</button>
+                        <button type="button" class="btn btn-danger btn-xs toggle-vis" style="outline: 5px auto;" name="13" data-column="13">FolderPath</button>
 		</div><br />
 		<div name="export-button">Export in: </div>
 		<hr />
@@ -57,6 +58,7 @@
 					<th>ProvisionnedGB</th>
 					<th>Datastore</th>
 					<th>MAC</th>
+                                        <th>FolderPath</th>
 				</tr>
 			</thead>
 
@@ -76,6 +78,7 @@
 					<td><TMPL_VAR NAME=PROVISIONNED></td>
 					<td><TMPL_VAR NAME=DATASTORE></td>
 					<td><TMPL_VAR NAME=MAC></td>
+                                        <td><TMPL_VAR NAME=FOLDERPATH></td>
 				</tr>
 				</TMPL_LOOP>
 			</tbody>
@@ -89,7 +92,7 @@
                                         "smart": false,
                                         "regex": true
                                 },
-			        "columnDefs": [ { "targets": [ 4, 5, 6, 7, 8, 9, 10, 12 ], "visible": false } ]
+			        "columnDefs": [ { "targets": [ 4, 5, 6, 7, 8, 9, 10, 12, 13 ], "visible": false } ]
 			    }
 			);
 			new $.fn.dataTable.Buttons( table, { buttons: [ 'csv', 'excel' ] } );

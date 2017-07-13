@@ -6,7 +6,7 @@
     "HDD",
     "IORM"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -61,7 +61,7 @@
           },
           "seriesOverrides": [
             {
-              "alias": "sizeNormalizedDatastoreLatency",
+              "alias": "AvgNormalizedDatastoreLatency",
               "color": "#E24D42"
             },
             {
@@ -75,7 +75,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 7)",
+              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'AvgNormalizedDatastoreLatency')",
               "textEditor": true
             },
             {
@@ -89,6 +89,7 @@
           "title": "Normalized Datastore Latency",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -153,7 +154,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 7)",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 'IOPS')",
               "textEditor": true
             }
           ],
@@ -162,6 +163,7 @@
           "title": "Aggregated Datastore IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -224,6 +226,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -242,11 +245,12 @@
         ],
         "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -265,11 +269,12 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -288,11 +293,12 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -310,7 +316,7 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }

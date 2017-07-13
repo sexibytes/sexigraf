@@ -8,7 +8,7 @@
     "RAM",
     "VM"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -81,7 +81,7 @@
             },
             {
               "hide": true,
-              "refId": "A",
+              "refId": "B",
               "target": "alias(averageSeries(scale(vmw.$vcenter.$datacentre.$cluster.vm.*.quickstats.overallCpuUsage, 1000000)), 'cluster avg')",
               "textEditor": true
             }
@@ -91,6 +91,7 @@
           "title": "overallCpuUsage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -162,6 +163,7 @@
               "textEditor": true
             },
             {
+              "refId": "B",
               "hide": true,
               "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.vm.*.quickstats.HostMemoryUsage), 'cluster avg')",
               "textEditor": false
@@ -172,6 +174,7 @@
           "title": "HostMemoryUsage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -244,6 +247,7 @@
             },
             {
               "hide": true,
+              "refId": "B",
               "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.vm.*.storage.committed), 'cluster avg')",
               "textEditor": false
             }
@@ -253,6 +257,7 @@
           "title": "storage.committed",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -311,6 +316,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -335,6 +341,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -381,6 +388,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

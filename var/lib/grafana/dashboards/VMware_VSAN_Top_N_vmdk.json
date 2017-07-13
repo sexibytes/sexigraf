@@ -7,7 +7,7 @@
 		"VM",
 		"vmdk"
 	  ],
-	  "style": "dark",
+	  "style": "light",
 	  "timezone": "browser",
 	  "editable": true,
 	  "hideControls": false,
@@ -72,6 +72,7 @@
 			  "title": "read",
 			  "tooltip": {
 				"shared": true,
+				"sort": 2,
 				"value_type": "cumulative"
 			  },
 			  "type": "graph",
@@ -136,6 +137,7 @@
 			  "title": "write",
 			  "tooltip": {
 				"shared": true,
+				"sort": 2,
 				"value_type": "cumulative"
 			  },
 			  "type": "graph",
@@ -210,6 +212,7 @@
 			  "title": "read",
 			  "tooltip": {
 				"shared": true,
+				"sort": 2,
 				"value_type": "cumulative"
 			  },
 			  "type": "graph",
@@ -274,6 +277,7 @@
 			  "title": "write",
 			  "tooltip": {
 				"shared": true,
+				"sort": 2,
 				"value_type": "cumulative"
 			  },
 			  "type": "graph",
@@ -330,6 +334,7 @@
 		"list": [
 		  {
 			"allFormat": "wildcard",
+			"allValue": "*",
 			"current": {
 			  "text": "All",
 			  "value": "*"
@@ -353,6 +358,7 @@
 		  },
 		  {
 			"allFormat": "wildcard",
+			"allValue": "*",
 			"current": {
 			  "text": "All",
 			  "value": "*"
@@ -377,6 +383,7 @@
 		  },
 		  {
 			"allFormat": "wildcard",
+			"allValue": "*",
 			"current": {
 			  "text": "None",
 			  "value": "",
@@ -403,6 +410,7 @@
 		  },
 		  {
 			"allFormat": "wildcard",
+			"allValue": "*",
 			"current": {
 			  "text": "All",
 			  "value": "*"

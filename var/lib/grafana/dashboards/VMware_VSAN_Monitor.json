@@ -7,7 +7,7 @@
     "HDD",
     "SSD"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -101,6 +101,7 @@
           "title": "Latencies",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -186,6 +187,7 @@
           "title": "IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -268,6 +270,7 @@
           "title": "Bandwidth",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -363,6 +366,7 @@
           "title": "Congestion",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -440,6 +444,7 @@
           "title": "Outstanding IO",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -518,6 +523,7 @@
           "title": "Read Cache Hit Rate",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -582,6 +588,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -606,6 +613,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -656,6 +664,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

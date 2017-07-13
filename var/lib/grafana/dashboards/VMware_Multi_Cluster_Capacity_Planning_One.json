@@ -1,0 +1,305 @@
+{
+  "id": null,
+  "title": "VMware Multi Cluster Capacity Planning One",
+  "originalTitle": "VMware Multi Cluster Capacity Planning One",
+  "tags": [
+    "CPU",
+    "RAM",
+    "HDD"
+  ],
+  "style": "light",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "aliasColors": {
+            "vm.left": "#6D1F62",
+            "vm.on": "#82B5D8"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "leftYAxisLabel": "VM",
+          "legend": {
+            "avg": true,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "minSpan": 6,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeat": "cluster",
+          "rightYAxisLabel": "",
+          "scopedVars": {
+            "cluster": {
+              "text": "cluster",
+              "value": "",
+              "selected": false
+            }
+          },
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 5, 6)",
+              "textEditor": false
+            },
+            {
+              "target": "alias(minSeries(group(diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 100), maxSeries(group(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective,$scale))), asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective,$scale)))))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on)),diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total), 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity,$scale)))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total)))),'vm.left')",
+              "textEditor": true
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "$cluster",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "none",
+            "none"
+          ]
+        }
+      ],
+      "repeat": null,
+      "scopedVars": {
+        "cluster": {
+          "selected": true,
+          "text": "cluster",
+          "value": ""
+        }
+      },
+      "showTitle": false,
+      "title": "capacity"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "nowDelay": "",
+      "refresh_intervals": [
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "3h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "3d",
+        "7d",
+        "15d",
+        "30d",
+        "200d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-1d",
+    "now": false,
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "vcenter",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datacentre",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": true,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "*"
+        },
+        "datasource": null,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "datastore",
+        "options": [
+          {
+            "text": "All",
+            "value": "*",
+            "selected": true
+          }
+        ],
+        "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
+        "refresh": true,
+        "refresh_on_load": false,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": null,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "scale",
+        "options": [
+          {
+            "selected": false,
+            "text": "0.5",
+            "value": "0.5"
+          },
+          {
+            "selected": false,
+            "text": "0.6",
+            "value": "0.6"
+          },
+          {
+            "selected": false,
+            "text": "0.75",
+            "value": "0.75"
+          },
+          {
+            "selected": false,
+            "text": "0.8",
+            "value": "0.8"
+          },
+          {
+            "selected": false,
+            "text": "0.9",
+            "value": "0.9"
+          },
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "0.5,0.6,0.75,0.8,0.9,1",
+        "refresh_on_load": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 6,
+  "version": 12,
+  "links": []
+}

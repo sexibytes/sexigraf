@@ -6,7 +6,7 @@
     "VSAN",
     "SSD"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -87,6 +87,7 @@
           "title": "Write Buffer Fill Rate",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -162,6 +163,7 @@
           "title": "Evictions",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -245,6 +247,7 @@
           "title": "IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -329,6 +332,7 @@
           "title": "Bandwidth",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -436,6 +440,7 @@
           "title": "Real Usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -522,6 +527,7 @@
           "title": "IO Size",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -585,6 +591,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -609,6 +616,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -633,6 +641,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "None",
           "value": "",

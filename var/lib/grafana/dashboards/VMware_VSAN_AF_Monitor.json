@@ -1,13 +1,13 @@
 {
   "id": null,
-  "title": "VMware VSAN AF Monitor",
-  "originalTitle": "VMware VSAN AF Monitor",
+  "title": "VMware VSAN Monitor AF",
+  "originalTitle": "VMware VSAN Monitor AF",
   "tags": [
     "VSAN",
     "SSD",
     "NAND"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -101,6 +101,7 @@
           "title": "Latencies",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -186,6 +187,7 @@
           "title": "IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -268,6 +270,7 @@
           "title": "Bandwidth",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -363,6 +366,7 @@
           "title": "Congestion",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -440,6 +444,7 @@
           "title": "Outstanding IO",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -522,6 +527,7 @@
           "title": "Write Buffer Fill Rate",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -586,6 +592,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -610,6 +617,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -660,6 +668,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

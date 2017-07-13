@@ -7,7 +7,7 @@
     "RAM",
     "uptime"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -90,6 +90,7 @@
           "title": "cpu/ram usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -164,6 +165,7 @@
           "title": "uptime",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -226,6 +228,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -249,6 +252,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -292,12 +296,14 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh_on_load": false,
+        "refresh": true,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

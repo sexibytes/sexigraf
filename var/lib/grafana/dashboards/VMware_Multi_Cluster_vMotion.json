@@ -6,7 +6,7 @@
     "DRS",
     "vmotion"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -83,6 +83,7 @@
           "title": "$cluster",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -146,6 +147,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -169,6 +171,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -193,6 +196,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"

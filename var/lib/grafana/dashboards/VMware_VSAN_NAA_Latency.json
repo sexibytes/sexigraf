@@ -1,13 +1,13 @@
 {
   "id": null,
   "title": "VMware VSAN NAA Latency",
-  "originalTitle": "VMware VSAN NAA Latency",
+  "originalTitle": "VMware VSAN NAA Latency Named",
   "tags": [
     "HDD",
     "SSD",
     "VSAN"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -41,6 +41,7 @@
           "legend": {
             "avg": false,
             "current": false,
+            "hideEmpty": false,
             "max": false,
             "min": false,
             "show": true,
@@ -51,7 +52,7 @@
           "linewidth": 2,
           "links": [],
           "minSpan": 3,
-          "nullPointMode": "connected",
+          "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -59,9 +60,9 @@
           "repeat": "naa",
           "scopedVars": {
             "naa": {
-              "text": "xxx",
-              "value": "",
-              "selected": false
+              "selected": false,
+              "text": "",
+              "value": ""
             }
           },
           "seriesOverrides": [],
@@ -98,6 +99,11 @@
               "hide": false,
               "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.queueTimeWrites), #B), 'qWrites')",
               "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "aliasByNode(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$naa.writeOps, 0), 5)",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
@@ -105,6 +111,7 @@
           "title": "naa.$naa",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -159,6 +166,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -183,6 +191,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -206,6 +215,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -253,6 +263,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -282,6 +293,6 @@
   },
   "refresh": "1m",
   "schemaVersion": 6,
-  "version": 13,
+  "version": 2,
   "links": []
 }

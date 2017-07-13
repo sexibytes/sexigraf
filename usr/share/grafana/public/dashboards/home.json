@@ -10,25 +10,6 @@
     {
       "collapse": false,
       "editable": false,
-      "height": "100px",
-      "panels": [
-        {
-          "content": "<div class=\"text-center\" style=\"padding: 10px 0 20px 0\">\n<img src=\"img/sexigraf-banner.png\" width=\"600px\"> \n</div>",
-          "editable": false,
-          "id": 1,
-          "mode": "html",
-          "span": 12,
-          "style": {},
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        }
-      ],
-      "title": ""
-    },
-    {
-      "collapse": false,
-      "editable": false,
       "height": "200px",
       "panels": [
         {
@@ -77,7 +58,7 @@
           "targets": [
             {
               "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.{cpu-wait,cpu-nice,cpu-interrupt,cpu-nice,cpu-softirq,cpu-steal,cpu-system,cpu-user})",
-              "textEditor": true
+              "textEditor": false
             },
             {
               "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.cpu-idle)"
@@ -304,15 +285,15 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-reserved, '5m', 'avg', false), 3)",
+              "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-reserved, 3)",
               "textEditor": false
             },
             {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-used, '5m', 'avg', false), 3)",
+              "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-used, 3)",
               "textEditor": false
             },
             {
-              "target": "aliasByNode(summarize(collectd.sexigraf.df-root.df_complex-free, '5m', 'avg', false), 3)",
+              "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-free, 3)",
               "textEditor": false
             }
           ],
@@ -333,6 +314,92 @@
         }
       ],
       "title": ""
+    },
+    {
+      "title": "",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "aliasColors": {
+            "df_complex-free": "#D683CE",
+            "df_complex-reserved": "#EA6460",
+            "df_complex-used": "#5195CE"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": false,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": true,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "tx",
+              "lines": true,
+              "fill": 0,
+              "color": "#0A437C"
+            },
+            {
+              "alias": "rx",
+              "color": "#7EB26D",
+              "bars": true
+            }
+          ],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "target": "aliasByNode(collectd.sexigraf.interface-eth0.if_octets.*, 4)",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "if",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "bytes",
+            "short"
+          ]
+        }
+      ]
     }
   ],
   "nav": [

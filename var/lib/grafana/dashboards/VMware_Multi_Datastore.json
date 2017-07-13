@@ -1,11 +1,11 @@
 {
   "id": null,
-  "title": "VMware Multi Datastore",
-  "originalTitle": "VMware Multi Datastore",
+  "title": "VMware Multi Datastore Usage",
+  "originalTitle": "VMware Multi Datastore Usage",
   "tags": [
     "HDD"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -100,6 +100,7 @@
           "title": "$cluster shared datastore usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -211,6 +212,7 @@
           "title": "$datastore datastore usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -265,6 +267,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -283,11 +286,12 @@
         ],
         "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -306,7 +310,7 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -331,11 +335,12 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -353,7 +358,8 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh_on_load": false,
+        "refresh": true,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }

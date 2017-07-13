@@ -12,7 +12,7 @@
     "vmnic",
     "IORM"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -35,10 +35,10 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": 100,
+            "leftMax": 180,
             "leftMin": 0,
             "rightLogBase": 1,
-            "rightMax": 100,
+            "rightMax": 110,
             "rightMin": 0,
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
@@ -65,7 +65,13 @@
           "points": false,
           "renderer": "flot",
           "rightYAxisLabel": "",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "mem.allocated",
+              "fill": 0,
+              "stack": false
+            }
+          ],
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -93,6 +99,12 @@
               "refId": "D",
               "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
               "textEditor": false
+            },
+            {
+              "hide": false,
+              "refId": "E",
+              "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
@@ -100,6 +112,7 @@
           "title": "cpu/ram usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -206,6 +219,7 @@
           "title": "memory quickstats",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -309,6 +323,7 @@
           "title": "shared datastores utilization",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -388,6 +403,7 @@
           "title": "vmnic traffic",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -454,13 +470,14 @@
           "title": "vMotion count",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "none",
             "short"
           ]
         },
@@ -523,6 +540,7 @@
           "title": "VM count",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -624,6 +642,7 @@
           "title": "RAM utilization",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -720,6 +739,7 @@
           "title": "CPU utilization/demand",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -787,6 +807,7 @@
           "title": "distributed fairness",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -794,6 +815,148 @@
           "y-axis": true,
           "y_formats": [
             "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 13,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 3,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/vCPU/i",
+              "color": "#6D1F62"
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": true,
+              "refId": "A",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs"
+            },
+            {
+              "hide": true,
+              "refId": "B",
+              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs"
+            },
+            {
+              "target": "alias(divideSeries(#B, #A), '$cluster.vCPU/pCPU')",
+              "textEditor": false
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "vCPU per pCPU ratio",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "refId": "A",
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "power usage",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
             "short"
           ]
         }
@@ -874,6 +1037,7 @@
           "title": "SIOC Normalized Datastores Latency",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -942,6 +1106,7 @@
           "title": "Aggregated Datastores IOPS",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -959,34 +1124,32 @@
   ],
   "nav": [
     {
-      "type": "timepicker",
       "collapse": false,
-      "notice": false,
       "enable": true,
-      "status": "Stable",
-      "time_options": [
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
         "15m",
         "1h",
         "2h",
         "3h",
         "6h",
         "12h",
-        "24h",
-        "2d",
-        "3d",
-        "7d",
-        "15d",
-        "30d"
+        "24h"
       ],
-      "refresh_intervals": [
+      "status": "Stable",
+      "time_options": [
         "5m",
         "15m",
         "30m",
         "1h",
         "2h",
-        "1d"
+        "1d",
+        "7d",
+        "30d"
       ],
-      "now": true
+      "type": "timepicker"
     }
   ],
   "time": {
@@ -997,6 +1160,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -1009,7 +1173,8 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.*",
@@ -1019,6 +1184,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -1031,7 +1197,8 @@
         "options": [
           {
             "text": "All",
-            "value": "*"
+            "value": "*",
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.*",
@@ -1056,7 +1223,8 @@
           {
             "text": "None",
             "value": "",
-            "isNone": true
+            "isNone": true,
+            "selected": true
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
@@ -1067,6 +1235,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -1096,6 +1265,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 3,
+  "version": 5,
   "links": []
 }

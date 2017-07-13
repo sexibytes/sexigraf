@@ -1,11 +1,11 @@
 {
   "id": null,
-  "title": "VMware Cluster Network",
-  "originalTitle": "VMware Cluster Network",
+  "title": "VMware Cluster Network Usage",
+  "originalTitle": "VMware Cluster Network Usage",
   "tags": [
     "vmnic"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -95,6 +95,7 @@
           "title": "$vmnic",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "transparent": false,
@@ -159,6 +160,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -177,12 +179,13 @@
         ],
         "query": "vmw.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -201,7 +204,7 @@
         ],
         "query": "vmw.$vcenter.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -227,7 +230,7 @@
         ],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -253,13 +256,14 @@
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
         "refresh": true,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query",
         "useTags": false
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -277,6 +281,7 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.net.*",
+        "refresh": true,
         "refresh_on_load": false,
         "regex": "",
         "type": "query"

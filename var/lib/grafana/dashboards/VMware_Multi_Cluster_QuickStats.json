@@ -8,7 +8,7 @@
     "HDD",
     "VM"
   ],
-  "style": "dark",
+  "style": "light",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
@@ -92,6 +92,7 @@
           "title": "cpu/ram usage",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -192,6 +193,7 @@
           "title": "memory quickstats",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -288,6 +290,7 @@
           "title": "shared datastores utilization",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -355,6 +358,7 @@
           "title": "VM count",
           "tooltip": {
             "shared": true,
+            "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -411,6 +415,7 @@
     "list": [
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -434,6 +439,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
@@ -458,6 +464,7 @@
       },
       {
         "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "*"
