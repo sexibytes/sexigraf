@@ -113,10 +113,11 @@ sub sexiprocess {
         }
         my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
         my $cluster = $h_cluster{($h_hostcluster{$vm_view->{'runtime.host'}->value} ? $h_hostcluster{$vm_view->{'runtime.host'}->value} : "domain-c000")};
+        my $txtCluster = ($cluster eq "N/A") ? $cluster : '<a href="/dashboard/file/VMware_Cluster_FullStats.json?var-cluster=' . $cluster . '" target="_blank">' . $cluster . '</a>';
         my %h_vm : shared = (
           VM => '<a href="/dashboard/file/VMware_Multi_Cluster_Top_N_VM_Stats.json?var-vm=' . lc($vm_view->name) . '&var-N=1" target="_blank">' . $vm_view->name . '</a>',
           VCENTER => $vcentersdk->host,
-          CLUSTER => '<a href="/dashboard/file/VMware_Cluster_FullStats.json?var-cluster=' . $cluster . '" target="_blank">' . $cluster . '</a>',
+          CLUSTER => $txtCluster,
           HOST => $h_host{$vm_view->{'runtime.host'}->value},
           VMXPATH => $vm_view->{'summary.config.vmPathName'},
           PORTGROUP => join(',', @vm_pg_string),
