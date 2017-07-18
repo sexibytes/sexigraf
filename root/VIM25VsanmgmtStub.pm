@@ -332,6 +332,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package UserPrivilegeResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entity', 'ManagedObjectReference', undef, 1],
+   ['privileges', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('UserPrivilegeResult', 'entity', 'privileges');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfUserPrivilegeResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['UserPrivilegeResult', 'UserPrivilegeResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfUserPrivilegeResult', 'UserPrivilegeResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package BatchResult;
 our @ISA = qw(DynamicData);
 
@@ -389,7 +438,7 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['provisioningSupported', 'boolean', undef, 1],
    ['multiHostSupported', 'boolean', undef, 1],
-   ['userShellAccessSupported', 'boolean', undef, 1],
+   ['userShellAccessSupported', 'boolean', undef, 0],
    ['supportedEVCMode', 'EVCMode', 1, 0],
    ['networkBackupAndRestoreSupported', 'boolean', undef, 0],
 );
@@ -900,10 +949,13 @@ our @property_list = (
    ['nativeSnapshotSupported', 'boolean', undef, 0],
    ['topLevelDirectoryCreateSupported', 'boolean', undef, 0],
    ['seSparseSupported', 'boolean', undef, 0],
+   ['vmfsSparseSupported', 'boolean', undef, 0],
+   ['vsanSparseSupported', 'boolean', undef, 0],
+   ['upitSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DatastoreCapability', 'directoryHierarchySupported', 'rawDiskMappingsSupported', 'perFileThinProvisioningSupported', 'storageIORMSupported', 'nativeSnapshotSupported', 'topLevelDirectoryCreateSupported', 'seSparseSupported');
+VIMRuntime::make_get_set('DatastoreCapability', 'directoryHierarchySupported', 'rawDiskMappingsSupported', 'perFileThinProvisioningSupported', 'storageIORMSupported', 'nativeSnapshotSupported', 'topLevelDirectoryCreateSupported', 'seSparseSupported', 'vmfsSparseSupported', 'vsanSparseSupported', 'upitSupported');
 
 
 sub get_property_list {
@@ -1002,6 +1054,56 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDatastoreMountPathDatastorePair', 'DatastoreMountPathDatastorePair');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package DatastoreVVolContainerFailoverPair;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['srcContainer', undef, undef, 0],
+   ['tgtContainer', undef, undef, 1],
+   ['vvolMapping', 'KeyValue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('DatastoreVVolContainerFailoverPair', 'srcContainer', 'tgtContainer', 'vvolMapping');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDatastoreVVolContainerFailoverPair;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DatastoreVVolContainerFailoverPair', 'DatastoreVVolContainerFailoverPair', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDatastoreVVolContainerFailoverPair', 'DatastoreVVolContainerFailoverPair');
 
 
 sub get_property_list {
@@ -2603,6 +2705,108 @@ sub get_property_list {
 
 
 ##################################################################################
+package HealthUpdateInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+   ['componentType', undef, undef, 1],
+   ['description', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HealthUpdateInfo', 'id', 'componentType', 'description');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHealthUpdateInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HealthUpdateInfo', 'HealthUpdateInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHealthUpdateInfo', 'HealthUpdateInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HealthUpdate;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entity', 'ManagedObjectReference', undef, 1],
+   ['healthUpdateInfoId', undef, undef, 1],
+   ['id', undef, undef, 1],
+   ['status', 'ManagedEntityStatus', undef, 1],
+   ['remediation', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HealthUpdate', 'entity', 'healthUpdateInfoId', 'id', 'status', 'remediation');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHealthUpdate;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HealthUpdate', 'HealthUpdate', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHealthUpdate', 'HealthUpdate');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostServiceTicket;
 our @ISA = qw(DynamicData);
 
@@ -3020,12 +3224,13 @@ our @property_list = (
    ['name', undef, undef, 1],
    ['vendor', undef, undef, 1],
    ['version', undef, undef, 1],
+   ['type', undef, undef, 0],
    ['summary', undef, undef, 0],
    ['releaseDate', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('IoFilterInfo', 'id', 'name', 'vendor', 'version', 'summary', 'releaseDate');
+VIMRuntime::make_get_set('IoFilterInfo', 'id', 'name', 'vendor', 'version', 'type', 'summary', 'releaseDate');
 
 
 sub get_property_list {
@@ -3094,10 +3299,11 @@ our @ISA = qw(IoFilterInfo);
 
 our @property_list = (
    ['opType', undef, undef, 1],
+   ['vibUrl', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterIoFilterInfo', 'opType');
+VIMRuntime::make_get_set('ClusterIoFilterInfo', 'opType', 'vibUrl');
 
 
 sub get_property_list {
@@ -4108,6 +4314,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('OpaqueNetworkSummary', 'opaqueNetworkId', 'opaqueNetworkType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package OpaqueNetworkCapability;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['networkReservationSupported', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('OpaqueNetworkCapability', 'networkReservationSupported');
 
 
 sub get_property_list {
@@ -5419,12 +5649,12 @@ package PerfInterval;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 1],
+   ['key', undef, undef, 0],
    ['samplingPeriod', undef, undef, 1],
    ['name', undef, undef, 1],
    ['length', undef, undef, 1],
    ['level', undef, undef, 0],
-   ['enabled', 'boolean', undef, 1],
+   ['enabled', 'boolean', undef, 0],
 );
 
 
@@ -6067,10 +6297,16 @@ our @property_list = (
    ['overheadMemoryManager', 'ManagedObjectReference', undef, 0],
    ['certificateManager', 'ManagedObjectReference', undef, 0],
    ['ioFilterManager', 'ManagedObjectReference', undef, 0],
+   ['vStorageObjectManager', 'ManagedObjectReference', undef, 0],
+   ['hostSpecManager', 'ManagedObjectReference', undef, 0],
+   ['cryptoManager', 'ManagedObjectReference', undef, 0],
+   ['healthUpdateManager', 'ManagedObjectReference', undef, 0],
+   ['failoverClusterConfigurator', 'ManagedObjectReference', undef, 0],
+   ['failoverClusterManager', 'ManagedObjectReference', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ServiceContent', 'rootFolder', 'propertyCollector', 'viewManager', 'about', 'setting', 'userDirectory', 'sessionManager', 'authorizationManager', 'serviceManager', 'perfManager', 'scheduledTaskManager', 'alarmManager', 'eventManager', 'taskManager', 'extensionManager', 'customizationSpecManager', 'customFieldsManager', 'accountManager', 'diagnosticManager', 'licenseManager', 'searchIndex', 'fileManager', 'datastoreNamespaceManager', 'virtualDiskManager', 'virtualizationManager', 'snmpSystem', 'vmProvisioningChecker', 'vmCompatibilityChecker', 'ovfManager', 'ipPoolManager', 'dvSwitchManager', 'hostProfileManager', 'clusterProfileManager', 'complianceManager', 'localizationManager', 'storageResourceManager', 'guestOperationsManager', 'overheadMemoryManager', 'certificateManager', 'ioFilterManager');
+VIMRuntime::make_get_set('ServiceContent', 'rootFolder', 'propertyCollector', 'viewManager', 'about', 'setting', 'userDirectory', 'sessionManager', 'authorizationManager', 'serviceManager', 'perfManager', 'scheduledTaskManager', 'alarmManager', 'eventManager', 'taskManager', 'extensionManager', 'customizationSpecManager', 'customFieldsManager', 'accountManager', 'diagnosticManager', 'licenseManager', 'searchIndex', 'fileManager', 'datastoreNamespaceManager', 'virtualDiskManager', 'virtualizationManager', 'snmpSystem', 'vmProvisioningChecker', 'vmCompatibilityChecker', 'ovfManager', 'ipPoolManager', 'dvSwitchManager', 'hostProfileManager', 'clusterProfileManager', 'complianceManager', 'localizationManager', 'storageResourceManager', 'guestOperationsManager', 'overheadMemoryManager', 'certificateManager', 'ioFilterManager', 'vStorageObjectManager', 'hostSpecManager', 'cryptoManager', 'healthUpdateManager', 'failoverClusterConfigurator', 'failoverClusterManager');
 
 
 sub get_property_list {
@@ -7547,6 +7783,80 @@ sub get_property_list {
 
 
 ##################################################################################
+package VVolVmConfigFileUpdateResultFailedVmConfigFileInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['targetConfigVVolId', undef, undef, 1],
+   ['fault', 'LocalizedMethodFault', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 'targetConfigVVolId', 'fault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVVolVmConfigFileUpdateResultFailedVmConfigFileInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VVolVmConfigFileUpdateResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['succeededVmConfigFile', 'KeyValue', 1, 0],
+   ['failedVmConfigFile', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VVolVmConfigFileUpdateResult', 'succeededVmConfigFile', 'failedVmConfigFile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VASAStorageArray;
 our @ISA = qw(DynamicData);
 
@@ -7857,10 +8167,11 @@ our @ISA = qw(VirtualDiskSpec);
 our @property_list = (
    ['capacityKb', undef, undef, 1],
    ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['crypto', 'CryptoSpec', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('FileBackedVirtualDiskSpec', 'capacityKb', 'profile');
+VIMRuntime::make_get_set('FileBackedVirtualDiskSpec', 'capacityKb', 'profile', 'crypto');
 
 
 sub get_property_list {
@@ -9705,15 +10016,19 @@ our @property_list = (
    ['drsConfig', 'ClusterDrsConfigInfo', undef, 1],
    ['drsVmConfig', 'ClusterDrsVmConfigInfo', 1, 0],
    ['rule', 'ClusterRuleInfo', 1, 0],
+   ['orchestration', 'ClusterOrchestrationInfo', undef, 0],
+   ['vmOrchestration', 'ClusterVmOrchestrationInfo', 1, 0],
    ['dpmConfigInfo', 'ClusterDpmConfigInfo', undef, 0],
    ['dpmHostConfig', 'ClusterDpmHostConfigInfo', 1, 0],
    ['vsanConfigInfo', 'VsanClusterConfigInfo', undef, 0],
    ['vsanHostConfig', 'VsanHostConfigInfo', 1, 0],
    ['group', 'ClusterGroupInfo', 1, 0],
+   ['infraUpdateHaConfig', 'ClusterInfraUpdateHaConfigInfo', undef, 0],
+   ['proactiveDrsConfig', 'ClusterProactiveDrsConfigInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterConfigInfoEx', 'dasConfig', 'dasVmConfig', 'drsConfig', 'drsVmConfig', 'rule', 'dpmConfigInfo', 'dpmHostConfig', 'vsanConfigInfo', 'vsanHostConfig', 'group');
+VIMRuntime::make_get_set('ClusterConfigInfoEx', 'dasConfig', 'dasVmConfig', 'drsConfig', 'drsVmConfig', 'rule', 'orchestration', 'vmOrchestration', 'dpmConfigInfo', 'dpmHostConfig', 'vsanConfigInfo', 'vsanHostConfig', 'group', 'infraUpdateHaConfig', 'proactiveDrsConfig');
 
 
 sub get_property_list {
@@ -9791,6 +10106,58 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterDpmHostConfigInfo', 'ClusterDpmHostConfigInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterInfraUpdateHaConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['behavior', undef, undef, 0],
+   ['moderateRemediation', undef, undef, 0],
+   ['severeRemediation', undef, undef, 0],
+   ['providers', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterInfraUpdateHaConfigInfo', 'enabled', 'behavior', 'moderateRemediation', 'severeRemediation', 'providers');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterProactiveDrsConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterProactiveDrsConfigInfo', 'enabled');
 
 
 sub get_property_list {
@@ -9939,15 +10306,19 @@ our @property_list = (
    ['drsConfig', 'ClusterDrsConfigInfo', undef, 0],
    ['drsVmConfigSpec', 'ClusterDrsVmConfigSpec', 1, 0],
    ['rulesSpec', 'ClusterRuleSpec', 1, 0],
+   ['orchestration', 'ClusterOrchestrationInfo', undef, 0],
+   ['vmOrchestrationSpec', 'ClusterVmOrchestrationSpec', 1, 0],
    ['dpmConfig', 'ClusterDpmConfigInfo', undef, 0],
    ['dpmHostConfigSpec', 'ClusterDpmHostConfigSpec', 1, 0],
    ['vsanConfig', 'VsanClusterConfigInfo', undef, 0],
    ['vsanHostConfigSpec', 'VsanHostConfigInfo', 1, 0],
    ['groupSpec', 'ClusterGroupSpec', 1, 0],
+   ['infraUpdateHaConfig', 'ClusterInfraUpdateHaConfigInfo', undef, 0],
+   ['proactiveDrsConfig', 'ClusterProactiveDrsConfigInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterConfigSpecEx', 'dasConfig', 'dasVmConfigSpec', 'drsConfig', 'drsVmConfigSpec', 'rulesSpec', 'dpmConfig', 'dpmHostConfigSpec', 'vsanConfig', 'vsanHostConfigSpec', 'groupSpec');
+VIMRuntime::make_get_set('ClusterConfigSpecEx', 'dasConfig', 'dasVmConfigSpec', 'drsConfig', 'drsVmConfigSpec', 'rulesSpec', 'orchestration', 'vmOrchestrationSpec', 'dpmConfig', 'dpmHostConfigSpec', 'vsanConfig', 'vsanHostConfigSpec', 'groupSpec', 'infraUpdateHaConfig', 'proactiveDrsConfig');
 
 
 sub get_property_list {
@@ -10044,6 +10415,54 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterGroupSpec', 'ClusterGroupSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterVmOrchestrationSpec;
+our @ISA = qw(ArrayUpdateSpec);
+
+our @property_list = (
+   ['info', 'ClusterVmOrchestrationInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterVmOrchestrationSpec', 'info');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterVmOrchestrationSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterVmOrchestrationSpec', 'ClusterVmOrchestrationSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterVmOrchestrationSpec', 'ClusterVmOrchestrationSpec');
 
 
 sub get_property_list {
@@ -10162,10 +10581,11 @@ package ClusterDasAdmissionControlPolicy;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
+   ['resourceReductionToToleratePercent', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterDasAdmissionControlPolicy');
+VIMRuntime::make_get_set('ClusterDasAdmissionControlPolicy', 'resourceReductionToToleratePercent');
 
 
 sub get_property_list {
@@ -10649,13 +11069,39 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['restartPriority', undef, undef, 0],
+   ['restartPriorityTimeout', undef, undef, 0],
    ['isolationResponse', undef, undef, 0],
    ['vmToolsMonitoringSettings', 'ClusterVmToolsMonitoringSettings', undef, 0],
    ['vmComponentProtectionSettings', 'ClusterVmComponentProtectionSettings', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterDasVmSettings', 'restartPriority', 'isolationResponse', 'vmToolsMonitoringSettings', 'vmComponentProtectionSettings');
+VIMRuntime::make_get_set('ClusterDasVmSettings', 'restartPriority', 'restartPriorityTimeout', 'isolationResponse', 'vmToolsMonitoringSettings', 'vmComponentProtectionSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterDependencyRuleInfo;
+our @ISA = qw(ClusterRuleInfo);
+
+our @property_list = (
+   ['vmGroup', undef, undef, 1],
+   ['dependsOnVmGroup', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterDependencyRuleInfo', 'vmGroup', 'dependsOnVmGroup');
 
 
 sub get_property_list {
@@ -11085,10 +11531,11 @@ our @ISA = qw(ClusterDasAdmissionControlPolicy);
 
 our @property_list = (
    ['failoverHosts', 'ManagedObjectReference', 1, 0],
+   ['failoverLevel', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterFailoverHostAdmissionControlPolicy', 'failoverHosts');
+VIMRuntime::make_get_set('ClusterFailoverHostAdmissionControlPolicy', 'failoverHosts', 'failoverLevel');
 
 
 sub get_property_list {
@@ -11184,10 +11631,12 @@ our @ISA = qw(ClusterDasAdmissionControlPolicy);
 our @property_list = (
    ['cpuFailoverResourcesPercent', undef, undef, 1],
    ['memoryFailoverResourcesPercent', undef, undef, 1],
+   ['failoverLevel', undef, undef, 0],
+   ['autoComputePercentages', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterFailoverResourcesAdmissionControlPolicy', 'cpuFailoverResourcesPercent', 'memoryFailoverResourcesPercent');
+VIMRuntime::make_get_set('ClusterFailoverResourcesAdmissionControlPolicy', 'cpuFailoverResourcesPercent', 'memoryFailoverResourcesPercent', 'failoverLevel', 'autoComputePercentages');
 
 
 sub get_property_list {
@@ -11262,6 +11711,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ClusterHostGroup', 'host');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterHostInfraUpdateHaModeAction;
+our @ISA = qw(ClusterAction);
+
+our @property_list = (
+   ['operationType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterHostInfraUpdateHaModeAction', 'operationType');
 
 
 sub get_property_list {
@@ -11436,6 +11909,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterNotAttemptedVmInfo', 'ClusterNotAttemptedVmInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterOrchestrationInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['defaultVmReadiness', 'ClusterVmReadiness', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterOrchestrationInfo', 'defaultVmReadiness');
 
 
 sub get_property_list {
@@ -11925,6 +12422,80 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ClusterVmHostRuleInfo', 'vmGroupName', 'affineHostGroupName', 'antiAffineHostGroupName');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterVmOrchestrationInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vm', 'ManagedObjectReference', undef, 1],
+   ['vmReadiness', 'ClusterVmReadiness', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterVmOrchestrationInfo', 'vm', 'vmReadiness');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterVmOrchestrationInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterVmOrchestrationInfo', 'ClusterVmOrchestrationInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterVmOrchestrationInfo', 'ClusterVmOrchestrationInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterVmReadiness;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['readyCondition', undef, undef, 0],
+   ['postReadyDelay', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterVmReadiness', 'readyCondition', 'postReadyDelay');
 
 
 sub get_property_list {
@@ -12559,10 +13130,11 @@ our @property_list = (
    ['configVersion', undef, undef, 0],
    ['autoExpand', 'boolean', undef, 0],
    ['vmVnicNetworkResourcePoolKey', undef, undef, 0],
+   ['uplink', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DVPortgroupConfigInfo', 'key', 'name', 'numPorts', 'distributedVirtualSwitch', 'defaultPortConfig', 'description', 'type', 'policy', 'portNameFormat', 'scope', 'vendorSpecificConfig', 'configVersion', 'autoExpand', 'vmVnicNetworkResourcePoolKey');
+VIMRuntime::make_get_set('DVPortgroupConfigInfo', 'key', 'name', 'numPorts', 'distributedVirtualSwitch', 'defaultPortConfig', 'description', 'type', 'policy', 'portNameFormat', 'scope', 'vendorSpecificConfig', 'configVersion', 'autoExpand', 'vmVnicNetworkResourcePoolKey', 'uplink');
 
 
 sub get_property_list {
@@ -13749,10 +14321,11 @@ our @property_list = (
    ['portgroupKey', undef, 1, 0],
    ['inside', 'boolean', undef, 0],
    ['portKey', undef, 1, 0],
+   ['host', 'ManagedObjectReference', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('DistributedVirtualSwitchPortCriteria', 'connected', 'active', 'uplinkPort', 'scope', 'portgroupKey', 'inside', 'portKey');
+VIMRuntime::make_get_set('DistributedVirtualSwitchPortCriteria', 'connected', 'active', 'uplinkPort', 'scope', 'portgroupKey', 'inside', 'portKey', 'host');
 
 
 sub get_property_list {
@@ -13788,10 +14361,12 @@ our @property_list = (
    ['packetsOutDropped', undef, undef, 1],
    ['packetsInException', undef, undef, 1],
    ['packetsOutException', undef, undef, 1],
+   ['bytesInFromPnic', undef, undef, 0],
+   ['bytesOutToPnic', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DistributedVirtualSwitchPortStatistics', 'packetsInMulticast', 'packetsOutMulticast', 'bytesInMulticast', 'bytesOutMulticast', 'packetsInUnicast', 'packetsOutUnicast', 'bytesInUnicast', 'bytesOutUnicast', 'packetsInBroadcast', 'packetsOutBroadcast', 'bytesInBroadcast', 'bytesOutBroadcast', 'packetsInDropped', 'packetsOutDropped', 'packetsInException', 'packetsOutException');
+VIMRuntime::make_get_set('DistributedVirtualSwitchPortStatistics', 'packetsInMulticast', 'packetsOutMulticast', 'bytesInMulticast', 'bytesOutMulticast', 'packetsInUnicast', 'packetsOutUnicast', 'bytesInUnicast', 'bytesOutUnicast', 'packetsInBroadcast', 'packetsOutBroadcast', 'bytesInBroadcast', 'bytesOutBroadcast', 'packetsInDropped', 'packetsOutDropped', 'packetsInException', 'packetsOutException', 'bytesInFromPnic', 'bytesOutToPnic');
 
 
 sub get_property_list {
@@ -14724,10 +15299,11 @@ our @property_list = (
    ['remoteSourceSupported', 'boolean', undef, 1],
    ['remoteDestSupported', 'boolean', undef, 1],
    ['encapRemoteSourceSupported', 'boolean', undef, 1],
+   ['erspanProtocolSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VMwareDVSVspanCapability', 'mixedDestSupported', 'dvportSupported', 'remoteSourceSupported', 'remoteDestSupported', 'encapRemoteSourceSupported');
+VIMRuntime::make_get_set('VMwareDVSVspanCapability', 'mixedDestSupported', 'dvportSupported', 'remoteSourceSupported', 'remoteDestSupported', 'encapRemoteSourceSupported', 'erspanProtocolSupported');
 
 
 sub get_property_list {
@@ -14788,10 +15364,14 @@ our @property_list = (
    ['normalTrafficAllowed', 'boolean', undef, 1],
    ['sessionType', undef, undef, 0],
    ['samplingRate', undef, undef, 0],
+   ['encapType', undef, undef, 0],
+   ['erspanId', undef, undef, 0],
+   ['erspanCOS', undef, undef, 0],
+   ['erspanGraNanosec', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VMwareVspanSession', 'key', 'name', 'description', 'enabled', 'sourcePortTransmitted', 'sourcePortReceived', 'destinationPort', 'encapsulationVlanId', 'stripOriginalVlan', 'mirroredPacketLength', 'normalTrafficAllowed', 'sessionType', 'samplingRate');
+VIMRuntime::make_get_set('VMwareVspanSession', 'key', 'name', 'description', 'enabled', 'sourcePortTransmitted', 'sourcePortReceived', 'destinationPort', 'encapsulationVlanId', 'stripOriginalVlan', 'mirroredPacketLength', 'normalTrafficAllowed', 'sessionType', 'samplingRate', 'encapType', 'erspanId', 'erspanCOS', 'erspanGraNanosec');
 
 
 sub get_property_list {
@@ -15654,6 +16234,689 @@ sub get_property_list {
 
 
 ##################################################################################
+package CryptoKeyId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', undef, undef, 1],
+   ['providerId', 'KeyProviderId', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoKeyId', 'keyId', 'providerId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCryptoKeyId;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CryptoKeyId', 'CryptoKeyId', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCryptoKeyId', 'CryptoKeyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoKeyPlain;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', 'CryptoKeyId', undef, 1],
+   ['algorithm', undef, undef, 1],
+   ['keyData', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CryptoKeyPlain', 'keyId', 'algorithm', 'keyData');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCryptoKeyPlain;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CryptoKeyPlain', 'CryptoKeyPlain', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCryptoKeyPlain', 'CryptoKeyPlain');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoKeyResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', 'CryptoKeyId', undef, 1],
+   ['success', 'boolean', undef, 1],
+   ['reason', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoKeyResult', 'keyId', 'success', 'reason');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCryptoKeyResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CryptoKeyResult', 'CryptoKeyResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCryptoKeyResult', 'CryptoKeyResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoManagerKmipCertificateInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['subject', undef, undef, 1],
+   ['issuer', undef, undef, 1],
+   ['serialNumber', undef, undef, 1],
+   ['notBefore', undef, undef, 1],
+   ['notAfter', undef, undef, 1],
+   ['fingerprint', undef, undef, 1],
+   ['checkTime', undef, undef, 1],
+   ['secondsSinceValid', undef, undef, 0],
+   ['secondsBeforeExpire', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoManagerKmipCertificateInfo', 'subject', 'issuer', 'serialNumber', 'notBefore', 'notAfter', 'fingerprint', 'checkTime', 'secondsSinceValid', 'secondsBeforeExpire');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoManagerKmipServerStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['status', 'ManagedEntityStatus', undef, 1],
+   ['connectionStatus', undef, undef, 1],
+   ['certInfo', 'CryptoManagerKmipCertificateInfo', undef, 0],
+   ['clientTrustServer', 'boolean', undef, 0],
+   ['serverTrustClient', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoManagerKmipServerStatus', 'name', 'status', 'connectionStatus', 'certInfo', 'clientTrustServer', 'serverTrustClient');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCryptoManagerKmipServerStatus;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CryptoManagerKmipServerStatus', 'CryptoManagerKmipServerStatus', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCryptoManagerKmipServerStatus', 'CryptoManagerKmipServerStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoManagerKmipClusterStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterId', 'KeyProviderId', undef, 1],
+   ['servers', 'CryptoManagerKmipServerStatus', 1, 1],
+   ['clientCertInfo', 'CryptoManagerKmipCertificateInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoManagerKmipClusterStatus', 'clusterId', 'servers', 'clientCertInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCryptoManagerKmipClusterStatus;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CryptoManagerKmipClusterStatus', 'CryptoManagerKmipClusterStatus', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCryptoManagerKmipClusterStatus', 'CryptoManagerKmipClusterStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoManagerKmipServerCertInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['certificate', undef, undef, 1],
+   ['certInfo', 'CryptoManagerKmipCertificateInfo', undef, 0],
+   ['clientTrustServer', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CryptoManagerKmipServerCertInfo', 'certificate', 'certInfo', 'clientTrustServer');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CryptoSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecDecrypt;
+our @ISA = qw(CryptoSpec);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecDecrypt');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecDeepRecrypt;
+our @ISA = qw(CryptoSpec);
+
+our @property_list = (
+   ['newKeyId', 'CryptoKeyId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecDeepRecrypt', 'newKeyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecEncrypt;
+our @ISA = qw(CryptoSpec);
+
+our @property_list = (
+   ['cryptoKeyId', 'CryptoKeyId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecEncrypt', 'cryptoKeyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecNoOp;
+our @ISA = qw(CryptoSpec);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecNoOp');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecRegister;
+our @ISA = qw(CryptoSpecNoOp);
+
+our @property_list = (
+   ['cryptoKeyId', 'CryptoKeyId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecRegister', 'cryptoKeyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CryptoSpecShallowRecrypt;
+our @ISA = qw(CryptoSpec);
+
+our @property_list = (
+   ['newKeyId', 'CryptoKeyId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CryptoSpecShallowRecrypt', 'newKeyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KeyProviderId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('KeyProviderId', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KmipClusterInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterId', 'KeyProviderId', undef, 1],
+   ['servers', 'KmipServerInfo', 1, 0],
+   ['useAsDefault', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('KmipClusterInfo', 'clusterId', 'servers', 'useAsDefault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfKmipClusterInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['KmipClusterInfo', 'KmipClusterInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfKmipClusterInfo', 'KmipClusterInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KmipServerInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['address', undef, undef, 1],
+   ['port', undef, undef, 1],
+   ['proxyAddress', undef, undef, 0],
+   ['proxyPort', undef, undef, 0],
+   ['reconnect', undef, undef, 0],
+   ['protocol', undef, undef, 0],
+   ['nbio', undef, undef, 0],
+   ['timeout', undef, undef, 0],
+   ['userName', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('KmipServerInfo', 'name', 'address', 'port', 'proxyAddress', 'proxyPort', 'reconnect', 'protocol', 'nbio', 'timeout', 'userName');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfKmipServerInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['KmipServerInfo', 'KmipServerInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfKmipServerInfo', 'KmipServerInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KmipServerSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterId', 'KeyProviderId', undef, 1],
+   ['info', 'KmipServerInfo', undef, 1],
+   ['password', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('KmipServerSpec', 'clusterId', 'info', 'password');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfKmipServerSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['KmipServerSpec', 'KmipServerSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfKmipServerSpec', 'KmipServerSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KmipServerStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterId', 'KeyProviderId', undef, 1],
+   ['name', undef, undef, 1],
+   ['status', 'ManagedEntityStatus', undef, 1],
+   ['description', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('KmipServerStatus', 'clusterId', 'name', 'status', 'description');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package Event;
 our @ISA = qw(DynamicData);
 
@@ -16300,10 +17563,11 @@ our @ISA = qw(SessionEvent);
 
 our @property_list = (
    ['message', undef, undef, 1],
+   ['prevMessage', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('GlobalMessageChangedEvent', 'message');
+VIMRuntime::make_get_set('GlobalMessageChangedEvent', 'message', 'prevMessage');
 
 
 sub get_property_list {
@@ -17722,10 +18986,11 @@ our @ISA = qw(HostEvent);
 our @property_list = (
    ['spec', 'HostAccountSpec', undef, 1],
    ['group', 'boolean', undef, 1],
+   ['prevDescription', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('AccountUpdatedEvent', 'spec', 'group');
+VIMRuntime::make_get_set('AccountUpdatedEvent', 'spec', 'group', 'prevDescription');
 
 
 sub get_property_list {
@@ -17820,10 +19085,11 @@ our @ISA = qw(HostEvent);
 
 our @property_list = (
    ['datastore', 'DatastoreEventArgument', undef, 1],
+   ['datastoreUrl', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VMFSDatastoreCreatedEvent', 'datastore');
+VIMRuntime::make_get_set('VMFSDatastoreCreatedEvent', 'datastore', 'datastoreUrl');
 
 
 sub get_property_list {
@@ -17844,10 +19110,11 @@ our @ISA = qw(HostEvent);
 
 our @property_list = (
    ['datastore', 'DatastoreEventArgument', undef, 1],
+   ['datastoreUrl', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('NASDatastoreCreatedEvent', 'datastore');
+VIMRuntime::make_get_set('NASDatastoreCreatedEvent', 'datastore', 'datastoreUrl');
 
 
 sub get_property_list {
@@ -17868,10 +19135,11 @@ our @ISA = qw(HostEvent);
 
 our @property_list = (
    ['datastore', 'DatastoreEventArgument', undef, 1],
+   ['datastoreUrl', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('LocalDatastoreCreatedEvent', 'datastore');
+VIMRuntime::make_get_set('LocalDatastoreCreatedEvent', 'datastore', 'datastoreUrl');
 
 
 sub get_property_list {
@@ -18507,10 +19775,12 @@ our @ISA = qw(ProfileEvent);
 
 our @property_list = (
    ['referenceHost', 'ManagedObjectReference', undef, 0],
+   ['referenceHostName', undef, undef, 0],
+   ['prevReferenceHostName', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ProfileReferenceHostChangedEvent', 'referenceHost');
+VIMRuntime::make_get_set('ProfileReferenceHostChangedEvent', 'referenceHost', 'referenceHostName', 'prevReferenceHostName');
 
 
 sub get_property_list {
@@ -18770,10 +20040,11 @@ our @ISA = qw(HostEvent);
 
 our @property_list = (
    ['vnic', 'VnicPortArgument', undef, 1],
+   ['prevPortKey', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVnicConnectedToCustomizedDVPortEvent', 'vnic');
+VIMRuntime::make_get_set('HostVnicConnectedToCustomizedDVPortEvent', 'vnic', 'prevPortKey');
 
 
 sub get_property_list {
@@ -20069,10 +21340,11 @@ package VmResourceReallocatedEvent;
 our @ISA = qw(VmEvent);
 
 our @property_list = (
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmResourceReallocatedEvent');
+VIMRuntime::make_get_set('VmResourceReallocatedEvent', 'configChanges');
 
 
 sub get_property_list {
@@ -20545,10 +21817,11 @@ our @ISA = qw(VmEvent);
 
 our @property_list = (
    ['configSpec', 'VirtualMachineConfigSpec', undef, 1],
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmReconfiguredEvent', 'configSpec');
+VIMRuntime::make_get_set('VmReconfiguredEvent', 'configSpec', 'configChanges');
 
 
 sub get_property_list {
@@ -21881,10 +23154,11 @@ package ScheduledTaskReconfiguredEvent;
 our @ISA = qw(ScheduledTaskEvent);
 
 our @property_list = (
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ScheduledTaskReconfiguredEvent');
+VIMRuntime::make_get_set('ScheduledTaskReconfiguredEvent', 'configChanges');
 
 
 sub get_property_list {
@@ -22276,10 +23550,11 @@ our @ISA = qw(AlarmEvent);
 
 our @property_list = (
    ['entity', 'ManagedEntityEventArgument', undef, 1],
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('AlarmReconfiguredEvent', 'entity');
+VIMRuntime::make_get_set('AlarmReconfiguredEvent', 'entity', 'configChanges');
 
 
 sub get_property_list {
@@ -22472,10 +23747,11 @@ our @property_list = (
    ['fieldKey', undef, undef, 1],
    ['name', undef, undef, 1],
    ['value', undef, undef, 1],
+   ['prevState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('CustomFieldValueChangedEvent', 'entity', 'fieldKey', 'name', 'value');
+VIMRuntime::make_get_set('CustomFieldValueChangedEvent', 'entity', 'fieldKey', 'name', 'value', 'prevState');
 
 
 sub get_property_list {
@@ -22571,10 +23847,12 @@ our @ISA = qw(PermissionEvent);
 our @property_list = (
    ['role', 'RoleEventArgument', undef, 1],
    ['propagate', 'boolean', undef, 1],
+   ['prevRole', 'RoleEventArgument', undef, 0],
+   ['prevPropagate', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('PermissionUpdatedEvent', 'role', 'propagate');
+VIMRuntime::make_get_set('PermissionUpdatedEvent', 'role', 'propagate', 'prevRole', 'prevPropagate');
 
 
 sub get_property_list {
@@ -22666,10 +23944,13 @@ our @ISA = qw(RoleEvent);
 
 our @property_list = (
    ['privilegeList', undef, 1, 0],
+   ['prevRoleName', undef, undef, 0],
+   ['privilegesAdded', undef, 1, 0],
+   ['privilegesRemoved', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('RoleUpdatedEvent', 'privilegeList');
+VIMRuntime::make_get_set('RoleUpdatedEvent', 'privilegeList', 'prevRoleName', 'privilegesAdded', 'privilegesRemoved');
 
 
 sub get_property_list {
@@ -22833,10 +24114,12 @@ our @ISA = qw(DatastoreEvent);
 
 our @property_list = (
    ['targetFile', undef, undef, 1],
+   ['sourceOfOperation', undef, undef, 0],
+   ['succeeded', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DatastoreFileEvent', 'targetFile');
+VIMRuntime::make_get_set('DatastoreFileEvent', 'targetFile', 'sourceOfOperation', 'succeeded');
 
 
 sub get_property_list {
@@ -24035,10 +25318,11 @@ package ClusterReconfiguredEvent;
 our @ISA = qw(ClusterEvent);
 
 our @property_list = (
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterReconfiguredEvent');
+VIMRuntime::make_get_set('ClusterReconfiguredEvent', 'configChanges');
 
 
 sub get_property_list {
@@ -24059,10 +25343,11 @@ our @ISA = qw(ClusterEvent);
 
 our @property_list = (
    ['state', undef, undef, 1],
+   ['prevState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostMonitoringStateChangedEvent', 'state');
+VIMRuntime::make_get_set('HostMonitoringStateChangedEvent', 'state', 'prevState');
 
 
 sub get_property_list {
@@ -24083,10 +25368,11 @@ our @ISA = qw(ClusterEvent);
 
 our @property_list = (
    ['state', undef, undef, 1],
+   ['prevState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmHealthMonitoringStateChangedEvent', 'state');
+VIMRuntime::make_get_set('VmHealthMonitoringStateChangedEvent', 'state', 'prevState');
 
 
 sub get_property_list {
@@ -24202,10 +25488,11 @@ package ResourcePoolReconfiguredEvent;
 our @ISA = qw(ResourcePoolEvent);
 
 our @property_list = (
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ResourcePoolReconfiguredEvent');
+VIMRuntime::make_get_set('ResourcePoolReconfiguredEvent', 'configChanges');
 
 
 sub get_property_list {
@@ -25071,10 +26358,11 @@ our @ISA = qw(DvsEvent);
 
 our @property_list = (
    ['configSpec', 'DVSConfigSpec', undef, 1],
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DvsReconfiguredEvent', 'configSpec');
+VIMRuntime::make_get_set('DvsReconfiguredEvent', 'configSpec', 'configChanges');
 
 
 sub get_property_list {
@@ -25412,10 +26700,11 @@ our @ISA = qw(DvsEvent);
 
 our @property_list = (
    ['portKey', undef, 1, 1],
+   ['configChanges', 'ChangesInfoEventArgument', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('DvsPortReconfiguredEvent', 'portKey');
+VIMRuntime::make_get_set('DvsPortReconfiguredEvent', 'portKey', 'configChanges');
 
 
 sub get_property_list {
@@ -25663,10 +26952,11 @@ our @property_list = (
    ['portKey', undef, undef, 1],
    ['statusDetail', undef, undef, 0],
    ['runtimeInfo', 'DVPortStatus', undef, 0],
+   ['prevBlockState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DvsPortBlockedEvent', 'portKey', 'statusDetail', 'runtimeInfo');
+VIMRuntime::make_get_set('DvsPortBlockedEvent', 'portKey', 'statusDetail', 'runtimeInfo', 'prevBlockState');
 
 
 sub get_property_list {
@@ -25688,10 +26978,11 @@ our @ISA = qw(DvsEvent);
 our @property_list = (
    ['portKey', undef, undef, 1],
    ['runtimeInfo', 'DVPortStatus', undef, 0],
+   ['prevBlockState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DvsPortUnblockedEvent', 'portKey', 'runtimeInfo');
+VIMRuntime::make_get_set('DvsPortUnblockedEvent', 'portKey', 'runtimeInfo', 'prevBlockState');
 
 
 sub get_property_list {
@@ -26054,10 +27345,11 @@ our @ISA = qw(DVPortgroupEvent);
 
 our @property_list = (
    ['configSpec', 'DVPortgroupConfigSpec', undef, 1],
+   ['configChanges', 'ChangesInfoEventArgument', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DVPortgroupReconfiguredEvent', 'configSpec');
+VIMRuntime::make_get_set('DVPortgroupReconfiguredEvent', 'configSpec', 'configChanges');
 
 
 sub get_property_list {
@@ -26693,6 +27985,56 @@ sub get_property_list {
 
 
 ##################################################################################
+package ChangesInfoEventArgument;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['modified', undef, undef, 0],
+   ['added', undef, undef, 0],
+   ['deleted', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ChangesInfoEventArgument', 'modified', 'added', 'deleted');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfChangesInfoEventArgument;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ChangesInfoEventArgument', 'ChangesInfoEventArgument', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfChangesInfoEventArgument', 'ChangesInfoEventArgument');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package EventArgDesc;
 our @ISA = qw(DynamicData);
 
@@ -26946,10 +28288,11 @@ our @property_list = (
    ['type', undef, 1, 0],
    ['tag', undef, 1, 0],
    ['eventTypeId', undef, 1, 0],
+   ['maxCount', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('EventFilterSpec', 'entity', 'time', 'userName', 'eventChainId', 'alarm', 'scheduledTask', 'disableFullMessage', 'category', 'type', 'tag', 'eventTypeId');
+VIMRuntime::make_get_set('EventFilterSpec', 'entity', 'time', 'userName', 'eventChainId', 'alarm', 'scheduledTask', 'disableFullMessage', 'category', 'type', 'tag', 'eventTypeId', 'maxCount');
 
 
 sub get_property_list {
@@ -28011,29 +29354,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('CannotDeleteFile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package CannotDisableDrsOnClusterManagedByVDC;
-our @ISA = qw(RuntimeFault);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('CannotDisableDrsOnClusterManagedByVDC');
 
 
 sub get_property_list {
@@ -31871,6 +33191,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostSpecificationOperationFailed;
+our @ISA = qw(VimFault);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpecificationOperationFailed', 'host');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HotSnapshotMoveNotSupported;
 our @ISA = qw(SnapshotCopyNotSupported);
 
@@ -33705,10 +35049,11 @@ our @property_list = (
    ['reason', undef, undef, 0],
    ['host', 'ManagedObjectReference', undef, 0],
    ['profile', 'ManagedObjectReference', undef, 0],
+   ['profileName', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('InvalidProfileReferenceHost', 'reason', 'host', 'profile');
+VIMRuntime::make_get_set('InvalidProfileReferenceHost', 'reason', 'host', 'profile', 'profileName');
 
 
 sub get_property_list {
@@ -33848,6 +35193,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('InvalidVmConfig', 'property');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package InvalidVmState;
+our @ISA = qw(InvalidState);
+
+our @property_list = (
+   ['vm', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('InvalidVmState', 'vm');
 
 
 sub get_property_list {
@@ -39218,6 +40587,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package QuarantineModeFault;
+our @ISA = qw(VmConfigFault);
+
+our @property_list = (
+   ['vmName', undef, undef, 1],
+   ['faultType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('QuarantineModeFault', 'vmName', 'faultType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package QuestionPending;
 our @ISA = qw(InvalidState);
 
@@ -42437,8 +43831,8 @@ package VirtualHardwareVersionNotSupported;
 our @ISA = qw(VirtualHardwareCompatibilityIssue);
 
 our @property_list = (
-   ['hostName', undef, undef, 1],
-   ['host', 'ManagedObjectReference', undef, 1],
+   ['hostName', undef, undef, 0],
+   ['host', 'ManagedObjectReference', undef, 0],
 );
 
 
@@ -43961,11 +45355,11 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['recursiveResourcePoolsSupported', 'boolean', undef, 1],
-   ['cpuMemoryResourceConfigurationSupported', 'boolean', undef, 1],
+   ['cpuMemoryResourceConfigurationSupported', 'boolean', undef, 0],
    ['rebootSupported', 'boolean', undef, 1],
    ['shutdownSupported', 'boolean', undef, 1],
    ['vmotionSupported', 'boolean', undef, 1],
-   ['standbySupported', 'boolean', undef, 1],
+   ['standbySupported', 'boolean', undef, 0],
    ['ipmiSupported', 'boolean', undef, 0],
    ['maxSupportedVMs', undef, undef, 0],
    ['maxRunningVMs', undef, undef, 0],
@@ -43980,14 +45374,14 @@ our @property_list = (
    ['highGuestMemSupported', 'boolean', undef, 1],
    ['maintenanceModeSupported', 'boolean', undef, 1],
    ['suspendedRelocateSupported', 'boolean', undef, 1],
-   ['restrictedSnapshotRelocateSupported', 'boolean', undef, 1],
-   ['perVmSwapFiles', 'boolean', undef, 1],
-   ['localSwapDatastoreSupported', 'boolean', undef, 1],
-   ['unsharedSwapVMotionSupported', 'boolean', undef, 1],
-   ['backgroundSnapshotsSupported', 'boolean', undef, 1],
-   ['preAssignedPCIUnitNumbersSupported', 'boolean', undef, 1],
-   ['screenshotSupported', 'boolean', undef, 1],
-   ['scaledScreenshotSupported', 'boolean', undef, 1],
+   ['restrictedSnapshotRelocateSupported', 'boolean', undef, 0],
+   ['perVmSwapFiles', 'boolean', undef, 0],
+   ['localSwapDatastoreSupported', 'boolean', undef, 0],
+   ['unsharedSwapVMotionSupported', 'boolean', undef, 0],
+   ['backgroundSnapshotsSupported', 'boolean', undef, 0],
+   ['preAssignedPCIUnitNumbersSupported', 'boolean', undef, 0],
+   ['screenshotSupported', 'boolean', undef, 0],
+   ['scaledScreenshotSupported', 'boolean', undef, 0],
    ['storageVMotionSupported', 'boolean', undef, 0],
    ['vmotionWithStorageVMotionSupported', 'boolean', undef, 0],
    ['vmotionAcrossNetworkSupported', 'boolean', undef, 0],
@@ -44038,15 +45432,31 @@ our @property_list = (
    ['hostAccessManagerSupported', 'boolean', undef, 0],
    ['provisioningNicSelectionSupported', 'boolean', undef, 0],
    ['nfs41Supported', 'boolean', undef, 0],
+   ['nfs41Krb5iSupported', 'boolean', undef, 0],
    ['turnDiskLocatorLedSupported', 'boolean', undef, 0],
    ['virtualVolumeDatastoreSupported', 'boolean', undef, 0],
    ['markAsSsdSupported', 'boolean', undef, 0],
    ['markAsLocalSupported', 'boolean', undef, 0],
    ['smartCardAuthenticationSupported', 'boolean', undef, 0],
+   ['cryptoSupported', 'boolean', undef, 0],
+   ['oneKVolumeAPIsSupported', 'boolean', undef, 0],
+   ['gatewayOnNicSupported', 'boolean', undef, 0],
+   ['upitSupported', 'boolean', undef, 0],
+   ['cpuHwMmuSupported', 'boolean', undef, 0],
+   ['encryptedVMotionSupported', 'boolean', undef, 0],
+   ['encryptionChangeOnAddRemoveSupported', 'boolean', undef, 0],
+   ['encryptionHotOperationSupported', 'boolean', undef, 0],
+   ['encryptionWithSnapshotsSupported', 'boolean', undef, 0],
+   ['encryptionFaultToleranceSupported', 'boolean', undef, 0],
+   ['encryptionMemorySaveSupported', 'boolean', undef, 0],
+   ['encryptionRDMSupported', 'boolean', undef, 0],
+   ['encryptionVFlashSupported', 'boolean', undef, 0],
+   ['encryptionCBRCSupported', 'boolean', undef, 0],
+   ['encryptionHBRSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostCapability', 'recursiveResourcePoolsSupported', 'cpuMemoryResourceConfigurationSupported', 'rebootSupported', 'shutdownSupported', 'vmotionSupported', 'standbySupported', 'ipmiSupported', 'maxSupportedVMs', 'maxRunningVMs', 'maxSupportedVcpus', 'maxRegisteredVMs', 'datastorePrincipalSupported', 'sanSupported', 'nfsSupported', 'iscsiSupported', 'vlanTaggingSupported', 'nicTeamingSupported', 'highGuestMemSupported', 'maintenanceModeSupported', 'suspendedRelocateSupported', 'restrictedSnapshotRelocateSupported', 'perVmSwapFiles', 'localSwapDatastoreSupported', 'unsharedSwapVMotionSupported', 'backgroundSnapshotsSupported', 'preAssignedPCIUnitNumbersSupported', 'screenshotSupported', 'scaledScreenshotSupported', 'storageVMotionSupported', 'vmotionWithStorageVMotionSupported', 'vmotionAcrossNetworkSupported', 'maxNumDisksSVMotion', 'hbrNicSelectionSupported', 'vrNfcNicSelectionSupported', 'recordReplaySupported', 'ftSupported', 'replayUnsupportedReason', 'replayCompatibilityIssues', 'smpFtSupported', 'ftCompatibilityIssues', 'smpFtCompatibilityIssues', 'maxVcpusPerFtVm', 'loginBySSLThumbprintSupported', 'cloneFromSnapshotSupported', 'deltaDiskBackingsSupported', 'perVMNetworkTrafficShapingSupported', 'tpmSupported', 'supportedCpuFeature', 'virtualExecUsageSupported', 'storageIORMSupported', 'vmDirectPathGen2Supported', 'vmDirectPathGen2UnsupportedReason', 'vmDirectPathGen2UnsupportedReasonExtended', 'supportedVmfsMajorVersion', 'vStorageCapable', 'snapshotRelayoutSupported', 'firewallIpRulesSupported', 'servicePackageInfoSupported', 'maxHostRunningVms', 'maxHostSupportedVcpus', 'vmfsDatastoreMountCapable', 'eightPlusHostVmfsSharedAccessSupported', 'nestedHVSupported', 'vPMCSupported', 'interVMCommunicationThroughVMCISupported', 'scheduledHardwareUpgradeSupported', 'featureCapabilitiesSupported', 'latencySensitivitySupported', 'storagePolicySupported', 'accel3dSupported', 'reliableMemoryAware', 'multipleNetworkStackInstanceSupported', 'messageBusProxySupported', 'vsanSupported', 'vFlashSupported', 'hostAccessManagerSupported', 'provisioningNicSelectionSupported', 'nfs41Supported', 'turnDiskLocatorLedSupported', 'virtualVolumeDatastoreSupported', 'markAsSsdSupported', 'markAsLocalSupported', 'smartCardAuthenticationSupported');
+VIMRuntime::make_get_set('HostCapability', 'recursiveResourcePoolsSupported', 'cpuMemoryResourceConfigurationSupported', 'rebootSupported', 'shutdownSupported', 'vmotionSupported', 'standbySupported', 'ipmiSupported', 'maxSupportedVMs', 'maxRunningVMs', 'maxSupportedVcpus', 'maxRegisteredVMs', 'datastorePrincipalSupported', 'sanSupported', 'nfsSupported', 'iscsiSupported', 'vlanTaggingSupported', 'nicTeamingSupported', 'highGuestMemSupported', 'maintenanceModeSupported', 'suspendedRelocateSupported', 'restrictedSnapshotRelocateSupported', 'perVmSwapFiles', 'localSwapDatastoreSupported', 'unsharedSwapVMotionSupported', 'backgroundSnapshotsSupported', 'preAssignedPCIUnitNumbersSupported', 'screenshotSupported', 'scaledScreenshotSupported', 'storageVMotionSupported', 'vmotionWithStorageVMotionSupported', 'vmotionAcrossNetworkSupported', 'maxNumDisksSVMotion', 'hbrNicSelectionSupported', 'vrNfcNicSelectionSupported', 'recordReplaySupported', 'ftSupported', 'replayUnsupportedReason', 'replayCompatibilityIssues', 'smpFtSupported', 'ftCompatibilityIssues', 'smpFtCompatibilityIssues', 'maxVcpusPerFtVm', 'loginBySSLThumbprintSupported', 'cloneFromSnapshotSupported', 'deltaDiskBackingsSupported', 'perVMNetworkTrafficShapingSupported', 'tpmSupported', 'supportedCpuFeature', 'virtualExecUsageSupported', 'storageIORMSupported', 'vmDirectPathGen2Supported', 'vmDirectPathGen2UnsupportedReason', 'vmDirectPathGen2UnsupportedReasonExtended', 'supportedVmfsMajorVersion', 'vStorageCapable', 'snapshotRelayoutSupported', 'firewallIpRulesSupported', 'servicePackageInfoSupported', 'maxHostRunningVms', 'maxHostSupportedVcpus', 'vmfsDatastoreMountCapable', 'eightPlusHostVmfsSharedAccessSupported', 'nestedHVSupported', 'vPMCSupported', 'interVMCommunicationThroughVMCISupported', 'scheduledHardwareUpgradeSupported', 'featureCapabilitiesSupported', 'latencySensitivitySupported', 'storagePolicySupported', 'accel3dSupported', 'reliableMemoryAware', 'multipleNetworkStackInstanceSupported', 'messageBusProxySupported', 'vsanSupported', 'vFlashSupported', 'hostAccessManagerSupported', 'provisioningNicSelectionSupported', 'nfs41Supported', 'nfs41Krb5iSupported', 'turnDiskLocatorLedSupported', 'virtualVolumeDatastoreSupported', 'markAsSsdSupported', 'markAsLocalSupported', 'smartCardAuthenticationSupported', 'cryptoSupported', 'oneKVolumeAPIsSupported', 'gatewayOnNicSupported', 'upitSupported', 'cpuHwMmuSupported', 'encryptedVMotionSupported', 'encryptionChangeOnAddRemoveSupported', 'encryptionHotOperationSupported', 'encryptionWithSnapshotsSupported', 'encryptionFaultToleranceSupported', 'encryptionMemorySaveSupported', 'encryptionRDMSupported', 'encryptionVFlashSupported', 'encryptionCBRCSupported', 'encryptionHBRSupported');
 
 
 sub get_property_list {
@@ -44119,6 +45529,7 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['host', 'ManagedObjectReference', undef, 1],
    ['product', 'AboutInfo', undef, 1],
+   ['deploymentInfo', 'HostDeploymentInfo', undef, 0],
    ['hyperThread', 'HostHyperThreadScheduleInfo', undef, 0],
    ['consoleReservation', 'ServiceConsoleReservationInfo', undef, 0],
    ['virtualMachineReservation', 'VirtualMachineMemoryReservationInfo', undef, 0],
@@ -44166,11 +45577,13 @@ our @property_list = (
    ['hostConfigCheckSum', undef, undef, 0],
    ['graphicsInfo', 'HostGraphicsInfo', 1, 0],
    ['sharedPassthruGpuTypes', undef, 1, 0],
+   ['graphicsConfig', 'HostGraphicsConfig', undef, 0],
    ['ioFilterInfo', 'HostIoFilterInfo', 1, 0],
+   ['sriovDevicePool', 'HostSriovDevicePoolInfo', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostConfigInfo', 'host', 'product', 'hyperThread', 'consoleReservation', 'virtualMachineReservation', 'storageDevice', 'multipathState', 'fileSystemVolume', 'systemFile', 'network', 'vmotion', 'virtualNicManagerInfo', 'capabilities', 'datastoreCapabilities', 'offloadCapabilities', 'service', 'firewall', 'autoStart', 'activeDiagnosticPartition', 'option', 'optionDef', 'datastorePrincipal', 'localSwapDatastore', 'systemSwapConfiguration', 'systemResources', 'dateTimeInfo', 'flags', 'adminDisabled', 'lockdownMode', 'ipmi', 'sslThumbprintInfo', 'sslThumbprintData', 'certificate', 'pciPassthruInfo', 'authenticationManagerInfo', 'featureVersion', 'powerSystemCapability', 'powerSystemInfo', 'cacheConfigurationInfo', 'wakeOnLanCapable', 'featureCapability', 'maskedFeatureCapability', 'vFlashConfigInfo', 'vsanHostConfig', 'domainList', 'scriptCheckSum', 'hostConfigCheckSum', 'graphicsInfo', 'sharedPassthruGpuTypes', 'ioFilterInfo');
+VIMRuntime::make_get_set('HostConfigInfo', 'host', 'product', 'deploymentInfo', 'hyperThread', 'consoleReservation', 'virtualMachineReservation', 'storageDevice', 'multipathState', 'fileSystemVolume', 'systemFile', 'network', 'vmotion', 'virtualNicManagerInfo', 'capabilities', 'datastoreCapabilities', 'offloadCapabilities', 'service', 'firewall', 'autoStart', 'activeDiagnosticPartition', 'option', 'optionDef', 'datastorePrincipal', 'localSwapDatastore', 'systemSwapConfiguration', 'systemResources', 'dateTimeInfo', 'flags', 'adminDisabled', 'lockdownMode', 'ipmi', 'sslThumbprintInfo', 'sslThumbprintData', 'certificate', 'pciPassthruInfo', 'authenticationManagerInfo', 'featureVersion', 'powerSystemCapability', 'powerSystemInfo', 'cacheConfigurationInfo', 'wakeOnLanCapable', 'featureCapability', 'maskedFeatureCapability', 'vFlashConfigInfo', 'vsanHostConfig', 'domainList', 'scriptCheckSum', 'hostConfigCheckSum', 'graphicsInfo', 'sharedPassthruGpuTypes', 'graphicsConfig', 'ioFilterInfo', 'sriovDevicePool');
 
 
 sub get_property_list {
@@ -44226,10 +45639,11 @@ our @property_list = (
    ['graphicsManager', 'ManagedObjectReference', undef, 0],
    ['vsanInternalSystem', 'ManagedObjectReference', undef, 0],
    ['certificateManager', 'ManagedObjectReference', undef, 0],
+   ['cryptoManager', 'ManagedObjectReference', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostConfigManager', 'cpuScheduler', 'datastoreSystem', 'memoryManager', 'storageSystem', 'networkSystem', 'vmotionSystem', 'virtualNicManager', 'serviceSystem', 'firewallSystem', 'advancedOption', 'diagnosticSystem', 'autoStartManager', 'snmpSystem', 'dateTimeSystem', 'patchManager', 'imageConfigManager', 'bootDeviceSystem', 'firmwareSystem', 'healthStatusSystem', 'pciPassthruSystem', 'licenseManager', 'kernelModuleSystem', 'authenticationManager', 'powerSystem', 'cacheConfigurationManager', 'esxAgentHostManager', 'iscsiManager', 'vFlashManager', 'vsanSystem', 'messageBusProxy', 'userDirectory', 'accountManager', 'hostAccessManager', 'graphicsManager', 'vsanInternalSystem', 'certificateManager');
+VIMRuntime::make_get_set('HostConfigManager', 'cpuScheduler', 'datastoreSystem', 'memoryManager', 'storageSystem', 'networkSystem', 'vmotionSystem', 'virtualNicManager', 'serviceSystem', 'firewallSystem', 'advancedOption', 'diagnosticSystem', 'autoStartManager', 'snmpSystem', 'dateTimeSystem', 'patchManager', 'imageConfigManager', 'bootDeviceSystem', 'firmwareSystem', 'healthStatusSystem', 'pciPassthruSystem', 'licenseManager', 'kernelModuleSystem', 'authenticationManager', 'powerSystem', 'cacheConfigurationManager', 'esxAgentHostManager', 'iscsiManager', 'vFlashManager', 'vsanSystem', 'messageBusProxy', 'userDirectory', 'accountManager', 'hostAccessManager', 'graphicsManager', 'vsanInternalSystem', 'certificateManager', 'cryptoManager');
 
 
 sub get_property_list {
@@ -44266,10 +45680,11 @@ our @property_list = (
    ['memory', 'HostMemorySpec', undef, 0],
    ['activeDirectory', 'HostActiveDirectory', 1, 0],
    ['genericConfig', 'KeyAnyValue', 1, 0],
+   ['graphicsConfig', 'HostGraphicsConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostConfigSpec', 'nasDatastore', 'network', 'nicTypeSelection', 'service', 'firewall', 'option', 'datastorePrincipal', 'datastorePrincipalPasswd', 'datetime', 'storageDevice', 'license', 'security', 'userAccount', 'usergroupAccount', 'memory', 'activeDirectory', 'genericConfig');
+VIMRuntime::make_get_set('HostConfigSpec', 'nasDatastore', 'network', 'nicTypeSelection', 'service', 'firewall', 'option', 'datastorePrincipal', 'datastorePrincipalPasswd', 'datetime', 'storageDevice', 'license', 'security', 'userAccount', 'usergroupAccount', 'memory', 'activeDirectory', 'genericConfig', 'graphicsConfig');
 
 
 sub get_property_list {
@@ -44546,6 +45961,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package ArrayOfHostConnectSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostConnectSpec', 'HostConnectSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostConnectSpec', 'HostConnectSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostCpuIdInfo;
 our @ISA = qw(DynamicData);
 
@@ -44657,13 +46096,14 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['path', undef, undef, 1],
+   ['friendlyName', undef, undef, 0],
    ['fileSize', undef, undef, 0],
    ['modification', undef, undef, 0],
    ['owner', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('FileInfo', 'path', 'fileSize', 'modification', 'owner');
+VIMRuntime::make_get_set('FileInfo', 'path', 'friendlyName', 'fileSize', 'modification', 'owner');
 
 
 sub get_property_list {
@@ -44755,10 +46195,11 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['matchConfigVersion', undef, 1, 0],
+   ['encrypted', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileQueryFilter', 'matchConfigVersion');
+VIMRuntime::make_get_set('VmConfigFileQueryFilter', 'matchConfigVersion', 'encrypted');
 
 
 sub get_property_list {
@@ -44779,10 +46220,11 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['configVersion', 'boolean', undef, 1],
+   ['encryption', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileQueryFlags', 'configVersion');
+VIMRuntime::make_get_set('VmConfigFileQueryFlags', 'configVersion', 'encryption');
 
 
 sub get_property_list {
@@ -44854,10 +46296,11 @@ our @property_list = (
    ['matchHardwareVersion', undef, 1, 0],
    ['controllerType', undef, 1, 0],
    ['thin', 'boolean', undef, 0],
+   ['encrypted', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmDiskFileQueryFilter', 'diskType', 'matchHardwareVersion', 'controllerType', 'thin');
+VIMRuntime::make_get_set('VmDiskFileQueryFilter', 'diskType', 'matchHardwareVersion', 'controllerType', 'thin', 'encrypted');
 
 
 sub get_property_list {
@@ -44883,10 +46326,11 @@ our @property_list = (
    ['controllerType', 'boolean', undef, 0],
    ['diskExtents', 'boolean', undef, 0],
    ['thin', 'boolean', undef, 0],
+   ['encryption', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmDiskFileQueryFlags', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin');
+VIMRuntime::make_get_set('VmDiskFileQueryFlags', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin', 'encryption');
 
 
 sub get_property_list {
@@ -45065,15 +46509,40 @@ sub get_property_list {
 
 
 ##################################################################################
+package VmConfigFileEncryptionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', 'CryptoKeyId', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VmConfigFileEncryptionInfo', 'keyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VmConfigFileInfo;
 our @ISA = qw(FileInfo);
 
 our @property_list = (
    ['configVersion', undef, undef, 0],
+   ['encryption', 'VmConfigFileEncryptionInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileInfo', 'configVersion');
+VIMRuntime::make_get_set('VmConfigFileInfo', 'configVersion', 'encryption');
 
 
 sub get_property_list {
@@ -45112,6 +46581,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package VmDiskFileEncryptionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', 'CryptoKeyId', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VmDiskFileEncryptionInfo', 'keyId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VmDiskFileInfo;
 our @ISA = qw(FileInfo);
 
@@ -45122,10 +46615,11 @@ our @property_list = (
    ['controllerType', undef, undef, 0],
    ['diskExtents', undef, 1, 0],
    ['thin', 'boolean', undef, 0],
+   ['encryption', 'VmDiskFileEncryptionInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmDiskFileInfo', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin');
+VIMRuntime::make_get_set('VmDiskFileInfo', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin', 'encryption');
 
 
 sub get_property_list {
@@ -45887,6 +47381,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostDateTimeSystemTimeZone', 'HostDateTimeSystemTimeZone');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostDeploymentInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['bootedFromStatelessCache', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostDeploymentInfo', 'bootedFromStatelessCache');
 
 
 sub get_property_list {
@@ -47511,6 +49029,81 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostGraphicsConfigDeviceType;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['deviceId', undef, undef, 1],
+   ['graphicsType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostGraphicsConfigDeviceType', 'deviceId', 'graphicsType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostGraphicsConfigDeviceType;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostGraphicsConfigDeviceType', 'HostGraphicsConfigDeviceType', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostGraphicsConfigDeviceType', 'HostGraphicsConfigDeviceType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostGraphicsConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostDefaultGraphicsType', undef, undef, 1],
+   ['sharedPassthruAssignmentPolicy', undef, undef, 1],
+   ['deviceType', 'HostGraphicsConfigDeviceType', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostGraphicsConfig', 'hostDefaultGraphicsType', 'sharedPassthruAssignmentPolicy', 'deviceType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostGraphicsInfo;
 our @ISA = qw(DynamicData);
 
@@ -47814,10 +49407,15 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['biosVersion', undef, undef, 0],
    ['releaseDate', undef, undef, 0],
+   ['vendor', undef, undef, 0],
+   ['majorRelease', undef, undef, 0],
+   ['minorRelease', undef, undef, 0],
+   ['firmwareMajorRelease', undef, undef, 0],
+   ['firmwareMinorRelease', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostBIOSInfo', 'biosVersion', 'releaseDate');
+VIMRuntime::make_get_set('HostBIOSInfo', 'biosVersion', 'releaseDate', 'vendor', 'majorRelease', 'minorRelease', 'firmwareMajorRelease', 'firmwareMinorRelease');
 
 
 sub get_property_list {
@@ -48166,6 +49764,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostParallelScsiHba');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSerialAttachedHba;
+our @ISA = qw(HostHostBusAdapter);
+
+our @property_list = (
+   ['nodeWorldWideName', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSerialAttachedHba', 'nodeWorldWideName');
 
 
 sub get_property_list {
@@ -49424,12 +51046,16 @@ our @property_list = (
    ['portgroupName', undef, undef, 0],
    ['portgroupKey', undef, undef, 0],
    ['portKey', undef, undef, 0],
+   ['opaqueNetworkId', undef, undef, 0],
+   ['opaqueNetworkType', undef, undef, 0],
+   ['opaqueNetworkName', undef, undef, 0],
+   ['externalId', undef, undef, 0],
    ['complianceStatus', 'IscsiStatus', undef, 0],
    ['pathStatus', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('IscsiPortInfo', 'vnicDevice', 'vnic', 'pnicDevice', 'pnic', 'switchName', 'switchUuid', 'portgroupName', 'portgroupKey', 'portKey', 'complianceStatus', 'pathStatus');
+VIMRuntime::make_get_set('IscsiPortInfo', 'vnicDevice', 'vnic', 'pnicDevice', 'pnic', 'switchName', 'switchUuid', 'portgroupName', 'portgroupKey', 'portKey', 'opaqueNetworkId', 'opaqueNetworkType', 'opaqueNetworkName', 'externalId', 'complianceStatus', 'pathStatus');
 
 
 sub get_property_list {
@@ -50791,11 +52417,11 @@ our @property_list = (
    ['usesServiceConsoleNic', 'boolean', undef, 1],
    ['supportsNetworkHints', 'boolean', undef, 1],
    ['maxPortGroupsPerVswitch', undef, undef, 0],
-   ['vswitchConfigSupported', 'boolean', undef, 1],
-   ['vnicConfigSupported', 'boolean', undef, 1],
-   ['ipRouteConfigSupported', 'boolean', undef, 1],
-   ['dnsConfigSupported', 'boolean', undef, 1],
-   ['dhcpOnVnicSupported', 'boolean', undef, 1],
+   ['vswitchConfigSupported', 'boolean', undef, 0],
+   ['vnicConfigSupported', 'boolean', undef, 0],
+   ['ipRouteConfigSupported', 'boolean', undef, 0],
+   ['dnsConfigSupported', 'boolean', undef, 0],
+   ['dhcpOnVnicSupported', 'boolean', undef, 0],
    ['ipV6Supported', 'boolean', undef, 0],
 );
 
@@ -51247,11 +52873,13 @@ our @property_list = (
    ['unitModifier', undef, undef, 1],
    ['baseUnits', undef, undef, 1],
    ['rateUnits', undef, undef, 0],
-   ['sensorType', undef, undef, 1],
+   ['sensorType', undef, undef, 0],
+   ['id', undef, undef, 0],
+   ['timeStamp', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostNumericSensorInfo', 'name', 'healthState', 'currentReading', 'unitModifier', 'baseUnits', 'rateUnits', 'sensorType');
+VIMRuntime::make_get_set('HostNumericSensorInfo', 'name', 'healthState', 'currentReading', 'unitModifier', 'baseUnits', 'rateUnits', 'sensorType', 'id', 'timeStamp');
 
 
 sub get_property_list {
@@ -51299,10 +52927,12 @@ our @property_list = (
    ['opaqueNetworkName', undef, undef, 1],
    ['opaqueNetworkType', undef, undef, 1],
    ['pnicZone', undef, 1, 0],
+   ['capability', 'OpaqueNetworkCapability', undef, 0],
+   ['extraConfig', 'OptionValue', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostOpaqueNetworkInfo', 'opaqueNetworkId', 'opaqueNetworkName', 'opaqueNetworkType', 'pnicZone');
+VIMRuntime::make_get_set('HostOpaqueNetworkInfo', 'opaqueNetworkId', 'opaqueNetworkName', 'opaqueNetworkType', 'pnicZone', 'capability', 'extraConfig');
 
 
 sub get_property_list {
@@ -51401,10 +53031,11 @@ our @property_list = (
    ['pnicZone', 'HostOpaqueSwitchPhysicalNicZone', 1, 0],
    ['status', undef, undef, 0],
    ['vtep', 'HostVirtualNic', 1, 0],
+   ['extraConfig', 'OptionValue', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostOpaqueSwitch', 'key', 'name', 'pnic', 'pnicZone', 'status', 'vtep');
+VIMRuntime::make_get_set('HostOpaqueSwitch', 'key', 'name', 'pnic', 'pnicZone', 'status', 'vtep', 'extraConfig');
 
 
 sub get_property_list {
@@ -52243,8 +53874,8 @@ our @property_list = (
    ['linkSpeed', 'PhysicalNicLinkInfo', undef, 0],
    ['validLinkSpecification', 'PhysicalNicLinkInfo', 1, 0],
    ['spec', 'PhysicalNicSpec', undef, 1],
-   ['wakeOnLanSupported', 'boolean', undef, 1],
-   ['mac', undef, undef, 1],
+   ['wakeOnLanSupported', 'boolean', undef, 0],
+   ['mac', undef, undef, 0],
    ['fcoeConfiguration', 'FcoeConfig', undef, 0],
    ['vmDirectPathGen2Supported', 'boolean', undef, 0],
    ['vmDirectPathGen2SupportedMode', undef, undef, 0],
@@ -52859,16 +54490,21 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['peType', undef, undef, 1],
+   ['type', undef, undef, 0],
    ['uuid', undef, undef, 1],
    ['hostKey', 'ManagedObjectReference', 1, 0],
    ['storageArray', undef, undef, 0],
    ['nfsServer', undef, undef, 0],
    ['nfsDir', undef, undef, 0],
+   ['nfsServerScope', undef, undef, 0],
+   ['nfsServerMajor', undef, undef, 0],
+   ['nfsServerAuthType', undef, undef, 0],
+   ['nfsServerUser', undef, undef, 0],
    ['deviceId', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostProtocolEndpoint', 'peType', 'uuid', 'hostKey', 'storageArray', 'nfsServer', 'nfsDir', 'deviceId');
+VIMRuntime::make_get_set('HostProtocolEndpoint', 'peType', 'type', 'uuid', 'hostKey', 'storageArray', 'nfsServer', 'nfsDir', 'nfsServerScope', 'nfsServerMajor', 'nfsServerAuthType', 'nfsServerUser', 'deviceId');
 
 
 sub get_property_list {
@@ -53345,9 +54981,10 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['connectionState', 'HostSystemConnectionState', undef, 1],
-   ['powerState', 'HostSystemPowerState', undef, 1],
+   ['powerState', 'HostSystemPowerState', undef, 0],
    ['standbyMode', undef, undef, 0],
    ['inMaintenanceMode', 'boolean', undef, 1],
+   ['inQuarantineMode', 'boolean', undef, 0],
    ['bootTime', undef, undef, 0],
    ['healthSystemRuntime', 'HealthSystemRuntime', undef, 0],
    ['dasHostState', 'ClusterDasFdmHostState', undef, 0],
@@ -53356,10 +54993,12 @@ our @property_list = (
    ['networkRuntimeInfo', 'HostRuntimeInfoNetworkRuntimeInfo', undef, 0],
    ['vFlashResourceRuntimeInfo', 'HostVFlashManagerVFlashResourceRunTimeInfo', undef, 0],
    ['hostMaxVirtualDiskCapacity', undef, undef, 0],
+   ['cryptoState', undef, undef, 0],
+   ['cryptoKeyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostRuntimeInfo', 'connectionState', 'powerState', 'standbyMode', 'inMaintenanceMode', 'bootTime', 'healthSystemRuntime', 'dasHostState', 'tpmPcrValues', 'vsanRuntimeInfo', 'networkRuntimeInfo', 'vFlashResourceRuntimeInfo', 'hostMaxVirtualDiskCapacity');
+VIMRuntime::make_get_set('HostRuntimeInfo', 'connectionState', 'powerState', 'standbyMode', 'inMaintenanceMode', 'inQuarantineMode', 'bootTime', 'healthSystemRuntime', 'dasHostState', 'tpmPcrValues', 'vsanRuntimeInfo', 'networkRuntimeInfo', 'vFlashResourceRuntimeInfo', 'hostMaxVirtualDiskCapacity', 'cryptoState', 'cryptoKeyId');
 
 
 sub get_property_list {
@@ -53435,10 +55074,11 @@ our @property_list = (
    ['physicalLocation', undef, 1, 0],
    ['emulatedDIXDIFEnabled', 'boolean', undef, 0],
    ['vsanDiskInfo', 'VsanHostVsanDiskInfo', undef, 0],
+   ['scsiDiskType', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostScsiDisk', 'capacity', 'devicePath', 'ssd', 'localDisk', 'physicalLocation', 'emulatedDIXDIFEnabled', 'vsanDiskInfo');
+VIMRuntime::make_get_set('HostScsiDisk', 'capacity', 'devicePath', 'ssd', 'localDisk', 'physicalLocation', 'emulatedDIXDIFEnabled', 'vsanDiskInfo', 'scsiDiskType');
 
 
 sub get_property_list {
@@ -54127,6 +55767,148 @@ sub get_property_list {
 
 
 ##################################################################################
+package SoftwarePackageCapability;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['liveInstallAllowed', 'boolean', undef, 0],
+   ['liveRemoveAllowed', 'boolean', undef, 0],
+   ['statelessReady', 'boolean', undef, 0],
+   ['overlay', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('SoftwarePackageCapability', 'liveInstallAllowed', 'liveRemoveAllowed', 'statelessReady', 'overlay');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package Relation;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['constraint', undef, undef, 0],
+   ['name', undef, undef, 1],
+   ['version', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('Relation', 'constraint', 'name', 'version');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfRelation;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['Relation', 'Relation', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfRelation', 'Relation');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package SoftwarePackage;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['type', undef, undef, 1],
+   ['vendor', undef, undef, 1],
+   ['acceptanceLevel', undef, undef, 1],
+   ['summary', undef, undef, 1],
+   ['description', undef, undef, 1],
+   ['referenceURL', undef, 1, 0],
+   ['creationDate', undef, undef, 0],
+   ['depends', 'Relation', 1, 0],
+   ['conflicts', 'Relation', 1, 0],
+   ['replaces', 'Relation', 1, 0],
+   ['provides', undef, 1, 0],
+   ['maintenanceModeRequired', 'boolean', undef, 0],
+   ['hardwarePlatformsRequired', undef, 1, 0],
+   ['capability', 'SoftwarePackageCapability', undef, 1],
+   ['tag', undef, 1, 0],
+   ['payload', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('SoftwarePackage', 'name', 'version', 'type', 'vendor', 'acceptanceLevel', 'summary', 'description', 'referenceURL', 'creationDate', 'depends', 'conflicts', 'replaces', 'provides', 'maintenanceModeRequired', 'hardwarePlatformsRequired', 'capability', 'tag', 'payload');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfSoftwarePackage;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['SoftwarePackage', 'SoftwarePackage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfSoftwarePackage', 'SoftwarePackage');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSriovConfig;
 our @ISA = qw(HostPciPassthruConfig);
 
@@ -54137,6 +55919,54 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostSriovConfig', 'sriovEnabled', 'numVirtualFunction');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSriovDevicePoolInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSriovDevicePoolInfo', 'key');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostSriovDevicePoolInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostSriovDevicePoolInfo', 'HostSriovDevicePoolInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostSriovDevicePoolInfo', 'HostSriovDevicePoolInfo');
 
 
 sub get_property_list {
@@ -54166,6 +55996,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostSriovInfo', 'sriovEnabled', 'sriovCapable', 'sriovActive', 'numVirtualFunctionRequested', 'numVirtualFunction', 'maxVirtualFunctionSupported');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSriovNetworkDevicePoolInfo;
+our @ISA = qw(HostSriovDevicePoolInfo);
+
+our @property_list = (
+   ['switchKey', undef, undef, 0],
+   ['switchUuid', undef, undef, 0],
+   ['pnic', 'PhysicalNic', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostSriovNetworkDevicePoolInfo', 'switchKey', 'switchUuid', 'pnic');
 
 
 sub get_property_list {
@@ -54610,6 +56466,58 @@ sub get_property_list {
 
 
 ##################################################################################
+package SystemEventInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['recordId', undef, undef, 1],
+   ['when', undef, undef, 1],
+   ['selType', undef, undef, 1],
+   ['message', undef, undef, 1],
+   ['sensorNumber', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('SystemEventInfo', 'recordId', 'when', 'selType', 'message', 'sensorNumber');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfSystemEventInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['SystemEventInfo', 'SystemEventInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfSystemEventInfo', 'SystemEventInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSystemHealthInfo;
 our @ISA = qw(DynamicData);
 
@@ -54952,6 +56860,29 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostBlockAdapterTargetTransport');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSerialAttachedTargetTransport;
+our @ISA = qw(HostTargetTransport);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('HostSerialAttachedTargetTransport');
 
 
 sub get_property_list {
@@ -55950,10 +57881,11 @@ our @property_list = (
    ['opaqueNetwork', 'HostVirtualNicOpaqueNetworkSpec', undef, 0],
    ['externalId', undef, undef, 0],
    ['pinnedPnic', undef, undef, 0],
+   ['ipRouteSpec', 'HostVirtualNicIpRouteSpec', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVirtualNicSpec', 'ip', 'mac', 'distributedVirtualPort', 'portgroup', 'mtu', 'tsoEnabled', 'netStackInstanceKey', 'opaqueNetwork', 'externalId', 'pinnedPnic');
+VIMRuntime::make_get_set('HostVirtualNicSpec', 'ip', 'mac', 'distributedVirtualPort', 'portgroup', 'mtu', 'tsoEnabled', 'netStackInstanceKey', 'opaqueNetwork', 'externalId', 'pinnedPnic', 'ipRouteSpec');
 
 
 sub get_property_list {
@@ -56030,6 +57962,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostVirtualNicOpaqueNetworkSpec', 'opaqueNetworkId', 'opaqueNetworkType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostVirtualNicIpRouteSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ipRouteConfig', 'HostIpRouteConfig', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostVirtualNicIpRouteSpec', 'ipRouteConfig');
 
 
 sub get_property_list {
@@ -56606,10 +58562,62 @@ our @property_list = (
    ['blockSizeMb', undef, undef, 0],
    ['majorVersion', undef, undef, 1],
    ['volumeName', undef, undef, 1],
+   ['blockSize', undef, undef, 0],
+   ['unmapGranularity', undef, undef, 0],
+   ['unmapPriority', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVmfsSpec', 'extent', 'blockSizeMb', 'majorVersion', 'volumeName');
+VIMRuntime::make_get_set('HostVmfsSpec', 'extent', 'blockSizeMb', 'majorVersion', 'volumeName', 'blockSize', 'unmapGranularity', 'unmapPriority');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VmfsConfigOption;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['blockSizeOption', undef, undef, 1],
+   ['unmapGranularityOption', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VmfsConfigOption', 'blockSizeOption', 'unmapGranularityOption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVmfsConfigOption;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VmfsConfigOption', 'VmfsConfigOption', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVmfsConfigOption', 'VmfsConfigOption');
 
 
 sub get_property_list {
@@ -56630,6 +58638,9 @@ our @ISA = qw(HostFileSystemVolume);
 
 our @property_list = (
    ['blockSizeMb', undef, undef, 1],
+   ['blockSize', undef, undef, 0],
+   ['unmapGranularity', undef, undef, 0],
+   ['unmapPriority', undef, undef, 0],
    ['maxBlocks', undef, undef, 1],
    ['majorVersion', undef, undef, 1],
    ['version', undef, undef, 1],
@@ -56639,10 +58650,11 @@ our @property_list = (
    ['forceMountedInfo', 'HostForceMountedInfo', undef, 0],
    ['ssd', 'boolean', undef, 0],
    ['local', 'boolean', undef, 0],
+   ['scsiDiskType', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVmfsVolume', 'blockSizeMb', 'maxBlocks', 'majorVersion', 'version', 'uuid', 'extent', 'vmfsUpgradable', 'forceMountedInfo', 'ssd', 'local');
+VIMRuntime::make_get_set('HostVmfsVolume', 'blockSizeMb', 'blockSize', 'unmapGranularity', 'unmapPriority', 'maxBlocks', 'majorVersion', 'version', 'uuid', 'extent', 'vmfsUpgradable', 'forceMountedInfo', 'ssd', 'local', 'scsiDiskType');
 
 
 sub get_property_list {
@@ -58135,10 +60147,15 @@ our @property_list = (
    ['profileTypeName', undef, undef, 0],
    ['profileVersion', undef, undef, 0],
    ['property', 'ProfileApplyProfileProperty', 1, 0],
+   ['favorite', 'boolean', undef, 0],
+   ['toBeMerged', 'boolean', undef, 0],
+   ['toReplaceWith', 'boolean', undef, 0],
+   ['toBeDeleted', 'boolean', undef, 0],
+   ['copyEnableStatus', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ApplyProfile', 'enabled', 'policy', 'profileTypeName', 'profileVersion', 'property');
+VIMRuntime::make_get_set('ApplyProfile', 'enabled', 'policy', 'profileTypeName', 'profileVersion', 'property', 'favorite', 'toBeMerged', 'toReplaceWith', 'toBeDeleted', 'copyEnableStatus');
 
 
 sub get_property_list {
@@ -58326,6 +60343,57 @@ sub get_property_list {
 
 
 ##################################################################################
+package ComplianceFailureComplianceFailureValues;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['comparisonIdentifier', undef, undef, 1],
+   ['profileInstance', undef, undef, 0],
+   ['hostValue', 'anyType', undef, 0],
+   ['profileValue', 'anyType', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ComplianceFailureComplianceFailureValues', 'comparisonIdentifier', 'profileInstance', 'hostValue', 'profileValue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfComplianceFailureComplianceFailureValues;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ComplianceFailure;
 our @ISA = qw(DynamicData);
 
@@ -58333,10 +60401,11 @@ our @property_list = (
    ['failureType', undef, undef, 1],
    ['message', 'LocalizableMessage', undef, 1],
    ['expressionName', undef, undef, 0],
+   ['failureValues', 'ComplianceFailureComplianceFailureValues', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ComplianceFailure', 'failureType', 'message', 'expressionName');
+VIMRuntime::make_get_set('ComplianceFailure', 'failureType', 'message', 'expressionName', 'failureValues');
 
 
 sub get_property_list {
@@ -58634,10 +60703,13 @@ our @property_list = (
    ['type', undef, undef, 1],
    ['optional', 'boolean', undef, 1],
    ['defaultValue', 'anyType', undef, 0],
+   ['hidden', 'boolean', undef, 0],
+   ['securitySensitive', 'boolean', undef, 0],
+   ['readOnly', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ProfileParameterMetadata', 'id', 'type', 'optional', 'defaultValue');
+VIMRuntime::make_get_set('ProfileParameterMetadata', 'id', 'type', 'optional', 'defaultValue', 'hidden', 'securitySensitive', 'readOnly');
 
 
 sub get_property_list {
@@ -60992,10 +63064,11 @@ our @property_list = (
    ['defaultComplyLocator', 'ComplianceLocator', 1, 0],
    ['customComplyProfile', 'ComplianceProfile', undef, 0],
    ['disabledExpressionList', undef, 1, 0],
+   ['description', 'ProfileDescription', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostProfileConfigInfo', 'applyProfile', 'defaultComplyProfile', 'defaultComplyLocator', 'customComplyProfile', 'disabledExpressionList');
+VIMRuntime::make_get_set('HostProfileConfigInfo', 'applyProfile', 'defaultComplyProfile', 'defaultComplyLocator', 'customComplyProfile', 'disabledExpressionList', 'description');
 
 
 sub get_property_list {
@@ -61069,10 +63142,11 @@ our @property_list = (
    ['disabledExpressionList', undef, 1, 0],
    ['validatorHost', 'ManagedObjectReference', undef, 0],
    ['validating', 'boolean', undef, 0],
+   ['hostConfig', 'HostProfileConfigInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostProfileCompleteConfigSpec', 'applyProfile', 'customComplyProfile', 'disabledExpressionListChanged', 'disabledExpressionList', 'validatorHost', 'validating');
+VIMRuntime::make_get_set('HostProfileCompleteConfigSpec', 'applyProfile', 'customComplyProfile', 'disabledExpressionListChanged', 'disabledExpressionList', 'validatorHost', 'validating', 'hostConfig');
 
 
 sub get_property_list {
@@ -61098,6 +63172,84 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostProfileHostBasedConfigSpec', 'host', 'useHostProfileEngine');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpecification;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['createdTime', undef, undef, 1],
+   ['lastModified', undef, undef, 0],
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['subSpecs', 'HostSubSpecification', 1, 0],
+   ['changeID', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostSpecification', 'createdTime', 'lastModified', 'host', 'subSpecs', 'changeID');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSubSpecification;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['createdTime', undef, undef, 1],
+   ['data', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostSubSpecification', 'name', 'createdTime', 'data');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostSubSpecification;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostSubSpecification', 'HostSubSpecification', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostSubSpecification', 'HostSubSpecification');
 
 
 sub get_property_list {
@@ -61196,6 +63348,261 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('AnswerFileSerializedCreateSpec', 'answerFileConfigString');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostProfilesEntityCustomizations;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('HostProfilesEntityCustomizations');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostProfilesEntityCustomizations;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostProfilesEntityCustomizations', 'HostProfilesEntityCustomizations', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostProfilesEntityCustomizations', 'HostProfilesEntityCustomizations');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package StructuredCustomizations;
+our @ISA = qw(HostProfilesEntityCustomizations);
+
+our @property_list = (
+   ['entity', 'ManagedObjectReference', undef, 1],
+   ['customizations', 'AnswerFile', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('StructuredCustomizations', 'entity', 'customizations');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfStructuredCustomizations;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['StructuredCustomizations', 'StructuredCustomizations', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfStructuredCustomizations', 'StructuredCustomizations');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostProfileManagerHostToConfigSpecMap;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['configSpec', 'AnswerFileCreateSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostProfileManagerHostToConfigSpecMap', 'host', 'configSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostProfileManagerHostToConfigSpecMap;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostProfileManagerHostToConfigSpecMap', 'HostProfileManagerHostToConfigSpecMap', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostProfileManagerHostToConfigSpecMap', 'HostProfileManagerHostToConfigSpecMap');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ApplyHostProfileConfigurationSpec;
+our @ISA = qw(ProfileExecuteResult);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['taskListRequirement', undef, 1, 0],
+   ['taskDescription', 'LocalizableMessage', 1, 0],
+   ['rebootStateless', 'boolean', undef, 0],
+   ['rebootHost', 'boolean', undef, 0],
+   ['faultData', 'LocalizedMethodFault', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ApplyHostProfileConfigurationSpec', 'host', 'taskListRequirement', 'taskDescription', 'rebootStateless', 'rebootHost', 'faultData');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfApplyHostProfileConfigurationSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ApplyHostProfileConfigurationSpec', 'ApplyHostProfileConfigurationSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfApplyHostProfileConfigurationSpec', 'ApplyHostProfileConfigurationSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostProfileManagerCompositionValidationResultResultElement;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['target', 'ManagedObjectReference', undef, 1],
+   ['status', undef, undef, 1],
+   ['errors', 'LocalizableMessage', 1, 0],
+   ['sourceDiffForToBeMerged', 'HostApplyProfile', undef, 0],
+   ['targetDiffForToBeMerged', 'HostApplyProfile', undef, 0],
+   ['toBeAdded', 'HostApplyProfile', undef, 0],
+   ['toBeDeleted', 'HostApplyProfile', undef, 0],
+   ['toBeDisabled', 'HostApplyProfile', undef, 0],
+   ['toBeEnabled', 'HostApplyProfile', undef, 0],
+   ['toBeReenableCC', 'HostApplyProfile', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostProfileManagerCompositionValidationResultResultElement', 'target', 'status', 'errors', 'sourceDiffForToBeMerged', 'targetDiffForToBeMerged', 'toBeAdded', 'toBeDeleted', 'toBeDisabled', 'toBeEnabled', 'toBeReenableCC');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostProfileManagerCompositionValidationResultResultElement;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostProfileManagerCompositionValidationResultResultElement', 'HostProfileManagerCompositionValidationResultResultElement', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostProfileManagerCompositionValidationResultResultElement', 'HostProfileManagerCompositionValidationResultResultElement');
 
 
 sub get_property_list {
@@ -63247,6 +65654,417 @@ sub get_property_list {
 
 
 ##################################################################################
+package ClusterNetworkConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['networkPortGroup', 'ManagedObjectReference', undef, 1],
+   ['ipSettings', 'CustomizationIPSettings', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterNetworkConfigSpec', 'networkPortGroup', 'ipSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package SourceNodeSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['managementVc', 'ServiceLocator', undef, 1],
+   ['activeVc', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('SourceNodeSpec', 'managementVc', 'activeVc');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NodeNetworkSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ipSettings', 'CustomizationIPSettings', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('NodeNetworkSpec', 'ipSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package PassiveNodeNetworkSpec;
+our @ISA = qw(NodeNetworkSpec);
+
+our @property_list = (
+   ['failoverIpSettings', 'CustomizationIPSettings', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('PassiveNodeNetworkSpec', 'failoverIpSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterNetworkSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['witnessNetworkSpec', 'NodeNetworkSpec', undef, 1],
+   ['passiveNetworkSpec', 'PassiveNodeNetworkSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterNetworkSpec', 'witnessNetworkSpec', 'passiveNetworkSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NodeDeploymentSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['esxHost', 'ManagedObjectReference', undef, 0],
+   ['datastore', 'ManagedObjectReference', undef, 0],
+   ['publicNetworkPortGroup', 'ManagedObjectReference', undef, 0],
+   ['clusterNetworkPortGroup', 'ManagedObjectReference', undef, 0],
+   ['folder', 'ManagedObjectReference', undef, 1],
+   ['resourcePool', 'ManagedObjectReference', undef, 0],
+   ['managementVc', 'ServiceLocator', undef, 0],
+   ['nodeName', undef, undef, 1],
+   ['ipSettings', 'CustomizationIPSettings', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('NodeDeploymentSpec', 'esxHost', 'datastore', 'publicNetworkPortGroup', 'clusterNetworkPortGroup', 'folder', 'resourcePool', 'managementVc', 'nodeName', 'ipSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package PassiveNodeDeploymentSpec;
+our @ISA = qw(NodeDeploymentSpec);
+
+our @property_list = (
+   ['failoverIpSettings', 'CustomizationIPSettings', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('PassiveNodeDeploymentSpec', 'failoverIpSettings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['passiveIp', undef, undef, 1],
+   ['witnessIp', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterConfigSpec', 'passiveIp', 'witnessIp');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterDeploymentSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['passiveDeploymentSpec', 'PassiveNodeDeploymentSpec', undef, 1],
+   ['witnessDeploymentSpec', 'NodeDeploymentSpec', undef, 1],
+   ['activeVcSpec', 'SourceNodeSpec', undef, 1],
+   ['activeVcNetworkConfig', 'ClusterNetworkConfigSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterDeploymentSpec', 'passiveDeploymentSpec', 'witnessDeploymentSpec', 'activeVcSpec', 'activeVcNetworkConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package FailoverNodeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterIpSettings', 'CustomizationIPSettings', undef, 1],
+   ['failoverIp', 'CustomizationIPSettings', undef, 0],
+   ['biosUuid', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('FailoverNodeInfo', 'clusterIpSettings', 'failoverIp', 'biosUuid');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package WitnessNodeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ipSettings', 'CustomizationIPSettings', undef, 1],
+   ['biosUuid', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('WitnessNodeInfo', 'ipSettings', 'biosUuid');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['failoverNodeInfo1', 'FailoverNodeInfo', undef, 0],
+   ['failoverNodeInfo2', 'FailoverNodeInfo', undef, 0],
+   ['witnessNodeInfo', 'WitnessNodeInfo', undef, 0],
+   ['state', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterConfigInfo', 'failoverNodeInfo1', 'failoverNodeInfo2', 'witnessNodeInfo', 'state');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaNodeRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['nodeState', undef, undef, 1],
+   ['nodeRole', undef, undef, 1],
+   ['nodeIp', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VchaNodeRuntimeInfo', 'nodeState', 'nodeRole', 'nodeIp');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVchaNodeRuntimeInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VchaNodeRuntimeInfo', 'VchaNodeRuntimeInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVchaNodeRuntimeInfo', 'VchaNodeRuntimeInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterState', undef, undef, 1],
+   ['nodeInfo', 'VchaNodeRuntimeInfo', 1, 0],
+   ['clusterMode', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterRuntimeInfo', 'clusterState', 'nodeInfo', 'clusterMode');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['runtimeInfo', 'VchaClusterRuntimeInfo', undef, 1],
+   ['healthMessages', 'LocalizableMessage', 1, 0],
+   ['additionalInformation', 'LocalizableMessage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VchaClusterHealth', 'runtimeInfo', 'healthMessages', 'additionalInformation');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineAffinityInfo;
 our @ISA = qw(DynamicData);
 
@@ -63418,6 +66236,7 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['bootDelay', undef, undef, 0],
    ['enterBIOSSetup', 'boolean', undef, 0],
+   ['efiSecureBootEnabled', 'boolean', undef, 0],
    ['bootRetryEnabled', 'boolean', undef, 0],
    ['bootRetryDelay', undef, undef, 0],
    ['bootOrder', 'VirtualMachineBootOptionsBootableDevice', 1, 0],
@@ -63425,7 +66244,7 @@ our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineBootOptions', 'bootDelay', 'enterBIOSSetup', 'bootRetryEnabled', 'bootRetryDelay', 'bootOrder', 'networkBootProtocol');
+VIMRuntime::make_get_set('VirtualMachineBootOptions', 'bootDelay', 'enterBIOSSetup', 'efiSecureBootEnabled', 'bootRetryEnabled', 'bootRetryDelay', 'bootOrder', 'networkBootProtocol');
 
 
 sub get_property_list {
@@ -63452,24 +66271,24 @@ our @property_list = (
    ['memorySnapshotsSupported', 'boolean', undef, 1],
    ['revertToSnapshotSupported', 'boolean', undef, 1],
    ['quiescedSnapshotsSupported', 'boolean', undef, 1],
-   ['disableSnapshotsSupported', 'boolean', undef, 1],
-   ['lockSnapshotsSupported', 'boolean', undef, 1],
+   ['disableSnapshotsSupported', 'boolean', undef, 0],
+   ['lockSnapshotsSupported', 'boolean', undef, 0],
    ['consolePreferencesSupported', 'boolean', undef, 1],
    ['cpuFeatureMaskSupported', 'boolean', undef, 1],
    ['s1AcpiManagementSupported', 'boolean', undef, 1],
    ['settingScreenResolutionSupported', 'boolean', undef, 1],
    ['toolsAutoUpdateSupported', 'boolean', undef, 1],
-   ['vmNpivWwnSupported', 'boolean', undef, 1],
-   ['npivWwnOnNonRdmVmSupported', 'boolean', undef, 1],
+   ['vmNpivWwnSupported', 'boolean', undef, 0],
+   ['npivWwnOnNonRdmVmSupported', 'boolean', undef, 0],
    ['vmNpivWwnDisableSupported', 'boolean', undef, 0],
    ['vmNpivWwnUpdateSupported', 'boolean', undef, 0],
-   ['swapPlacementSupported', 'boolean', undef, 1],
-   ['toolsSyncTimeSupported', 'boolean', undef, 1],
-   ['virtualMmuUsageSupported', 'boolean', undef, 1],
-   ['diskSharesSupported', 'boolean', undef, 1],
-   ['bootOptionsSupported', 'boolean', undef, 1],
+   ['swapPlacementSupported', 'boolean', undef, 0],
+   ['toolsSyncTimeSupported', 'boolean', undef, 0],
+   ['virtualMmuUsageSupported', 'boolean', undef, 0],
+   ['diskSharesSupported', 'boolean', undef, 0],
+   ['bootOptionsSupported', 'boolean', undef, 0],
    ['bootRetryOptionsSupported', 'boolean', undef, 0],
-   ['settingVideoRamSizeSupported', 'boolean', undef, 1],
+   ['settingVideoRamSizeSupported', 'boolean', undef, 0],
    ['settingDisplayTopologySupported', 'boolean', undef, 0],
    ['recordReplaySupported', 'boolean', undef, 0],
    ['changeTrackingSupported', 'boolean', undef, 0],
@@ -63482,10 +66301,11 @@ our @property_list = (
    ['seSparseDiskSupported', 'boolean', undef, 0],
    ['nestedHVSupported', 'boolean', undef, 0],
    ['vPMCSupported', 'boolean', undef, 0],
+   ['secureBootSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineCapability', 'snapshotOperationsSupported', 'multipleSnapshotsSupported', 'snapshotConfigSupported', 'poweredOffSnapshotsSupported', 'memorySnapshotsSupported', 'revertToSnapshotSupported', 'quiescedSnapshotsSupported', 'disableSnapshotsSupported', 'lockSnapshotsSupported', 'consolePreferencesSupported', 'cpuFeatureMaskSupported', 's1AcpiManagementSupported', 'settingScreenResolutionSupported', 'toolsAutoUpdateSupported', 'vmNpivWwnSupported', 'npivWwnOnNonRdmVmSupported', 'vmNpivWwnDisableSupported', 'vmNpivWwnUpdateSupported', 'swapPlacementSupported', 'toolsSyncTimeSupported', 'virtualMmuUsageSupported', 'diskSharesSupported', 'bootOptionsSupported', 'bootRetryOptionsSupported', 'settingVideoRamSizeSupported', 'settingDisplayTopologySupported', 'recordReplaySupported', 'changeTrackingSupported', 'multipleCoresPerSocketSupported', 'hostBasedReplicationSupported', 'guestAutoLockSupported', 'memoryReservationLockSupported', 'featureRequirementSupported', 'poweredOnMonitorTypeChangeSupported', 'seSparseDiskSupported', 'nestedHVSupported', 'vPMCSupported');
+VIMRuntime::make_get_set('VirtualMachineCapability', 'snapshotOperationsSupported', 'multipleSnapshotsSupported', 'snapshotConfigSupported', 'poweredOffSnapshotsSupported', 'memorySnapshotsSupported', 'revertToSnapshotSupported', 'quiescedSnapshotsSupported', 'disableSnapshotsSupported', 'lockSnapshotsSupported', 'consolePreferencesSupported', 'cpuFeatureMaskSupported', 's1AcpiManagementSupported', 'settingScreenResolutionSupported', 'toolsAutoUpdateSupported', 'vmNpivWwnSupported', 'npivWwnOnNonRdmVmSupported', 'vmNpivWwnDisableSupported', 'vmNpivWwnUpdateSupported', 'swapPlacementSupported', 'toolsSyncTimeSupported', 'virtualMmuUsageSupported', 'diskSharesSupported', 'bootOptionsSupported', 'bootRetryOptionsSupported', 'settingVideoRamSizeSupported', 'settingDisplayTopologySupported', 'recordReplaySupported', 'changeTrackingSupported', 'multipleCoresPerSocketSupported', 'hostBasedReplicationSupported', 'guestAutoLockSupported', 'memoryReservationLockSupported', 'featureRequirementSupported', 'poweredOnMonitorTypeChangeSupported', 'seSparseDiskSupported', 'nestedHVSupported', 'vPMCSupported', 'secureBootSupported');
 
 
 sub get_property_list {
@@ -63505,10 +66325,11 @@ package VirtualMachineCdromInfo;
 our @ISA = qw(VirtualMachineTargetInfo);
 
 our @property_list = (
+   ['description', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineCdromInfo');
+VIMRuntime::make_get_set('VirtualMachineCdromInfo', 'description');
 
 
 sub get_property_list {
@@ -63673,7 +66494,7 @@ our @property_list = (
    ['locationId', undef, undef, 0],
    ['template', 'boolean', undef, 1],
    ['guestId', undef, undef, 1],
-   ['alternateGuestName', undef, undef, 1],
+   ['alternateGuestName', undef, undef, 0],
    ['annotation', undef, undef, 0],
    ['files', 'VirtualMachineFileInfo', undef, 1],
    ['tools', 'ToolsConfigInfo', undef, 0],
@@ -63717,10 +66538,13 @@ our @property_list = (
    ['messageBusTunnelEnabled', 'boolean', undef, 0],
    ['vmStorageObjectId', undef, undef, 0],
    ['swapStorageObjectId', undef, undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
+   ['guestIntegrityInfo', 'VirtualMachineGuestIntegrityInfo', undef, 0],
+   ['migrateEncryption', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineConfigInfo', 'changeVersion', 'modified', 'name', 'guestFullName', 'version', 'uuid', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'locationId', 'template', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'defaultPowerOps', 'hardware', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'hotPlugMemoryLimit', 'hotPlugMemoryIncrementSize', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'extraConfig', 'cpuFeatureMask', 'datastoreUrl', 'swapPlacement', 'bootOptions', 'ftInfo', 'repConfig', 'vAppConfig', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'initialOverhead', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'forkConfigInfo', 'vFlashCacheReservation', 'vmxConfigChecksum', 'messageBusTunnelEnabled', 'vmStorageObjectId', 'swapStorageObjectId');
+VIMRuntime::make_get_set('VirtualMachineConfigInfo', 'changeVersion', 'modified', 'name', 'guestFullName', 'version', 'uuid', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'locationId', 'template', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'defaultPowerOps', 'hardware', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'hotPlugMemoryLimit', 'hotPlugMemoryIncrementSize', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'extraConfig', 'cpuFeatureMask', 'datastoreUrl', 'swapPlacement', 'bootOptions', 'ftInfo', 'repConfig', 'vAppConfig', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'initialOverhead', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'forkConfigInfo', 'vFlashCacheReservation', 'vmxConfigChecksum', 'messageBusTunnelEnabled', 'vmStorageObjectId', 'swapStorageObjectId', 'keyId', 'guestIntegrityInfo', 'migrateEncryption');
 
 
 sub get_property_list {
@@ -63748,7 +66572,7 @@ our @property_list = (
    ['capabilities', 'VirtualMachineCapability', undef, 1],
    ['datastore', 'DatastoreOption', undef, 1],
    ['defaultDevice', 'VirtualDevice', 1, 0],
-   ['supportedMonitorType', undef, 1, 1],
+   ['supportedMonitorType', undef, 1, 0],
    ['supportedOvfEnvironmentTransport', undef, 1, 0],
    ['supportedOvfInstallTransport', undef, 1, 0],
 );
@@ -63933,10 +66757,12 @@ our @property_list = (
    ['scheduledHardwareUpgradeInfo', 'ScheduledHardwareUpgradeInfo', undef, 0],
    ['vmProfile', 'VirtualMachineProfileSpec', 1, 0],
    ['messageBusTunnelEnabled', 'boolean', undef, 0],
+   ['crypto', 'CryptoSpec', undef, 0],
+   ['migrateEncryption', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineConfigSpec', 'changeVersion', 'name', 'version', 'uuid', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'npivWorldWideNameOp', 'locationId', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'powerOpInfo', 'numCPUs', 'numCoresPerSocket', 'memoryMB', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'virtualICH7MPresent', 'virtualSMCPresent', 'deviceChange', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'cpuFeatureMask', 'extraConfig', 'swapPlacement', 'bootOptions', 'vAppConfig', 'ftInfo', 'repConfig', 'vAppConfigRemoved', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'vmProfile', 'messageBusTunnelEnabled');
+VIMRuntime::make_get_set('VirtualMachineConfigSpec', 'changeVersion', 'name', 'version', 'uuid', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'npivWorldWideNameOp', 'locationId', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'powerOpInfo', 'numCPUs', 'numCoresPerSocket', 'memoryMB', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'virtualICH7MPresent', 'virtualSMCPresent', 'deviceChange', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'cpuFeatureMask', 'extraConfig', 'swapPlacement', 'bootOptions', 'vAppConfig', 'ftInfo', 'repConfig', 'vAppConfigRemoved', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'vmProfile', 'messageBusTunnelEnabled', 'crypto', 'migrateEncryption');
 
 
 sub get_property_list {
@@ -64012,32 +66838,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineConsolePreferences', 'powerOnWhenOpened', 'enterFullScreenOnPowerOn', 'closeOnPowerOffOrSuspend');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineCreateChildSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['location', 'VirtualMachineRelocateSpec', undef, 0],
-   ['persistent', 'boolean', undef, 1],
-   ['configParams', 'OptionValue', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineCreateChildSpec', 'location', 'persistent', 'configParams');
 
 
 sub get_property_list {
@@ -64239,11 +67039,12 @@ our @ISA = qw(VirtualMachineProfileSpec);
 
 our @property_list = (
    ['profileId', undef, undef, 1],
+   ['replicationSpec', 'ReplicationSpec', undef, 0],
    ['profileData', 'VirtualMachineProfileRawData', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineDefinedProfileSpec', 'profileId', 'profileData');
+VIMRuntime::make_get_set('VirtualMachineDefinedProfileSpec', 'profileId', 'replicationSpec', 'profileData');
 
 
 sub get_property_list {
@@ -65082,10 +67883,11 @@ our @property_list = (
    ['snapshotPowerOffBehavior', undef, undef, 0],
    ['recordReplayEnabled', 'boolean', undef, 0],
    ['faultToleranceType', undef, undef, 0],
+   ['cbrcCacheEnabled', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineFlagInfo', 'disableAcceleration', 'enableLogging', 'useToe', 'runWithDebugInfo', 'monitorType', 'htSharing', 'snapshotDisabled', 'snapshotLocked', 'diskUuidEnabled', 'virtualMmuUsage', 'virtualExecUsage', 'snapshotPowerOffBehavior', 'recordReplayEnabled', 'faultToleranceType');
+VIMRuntime::make_get_set('VirtualMachineFlagInfo', 'disableAcceleration', 'enableLogging', 'useToe', 'runWithDebugInfo', 'monitorType', 'htSharing', 'snapshotDisabled', 'snapshotLocked', 'diskUuidEnabled', 'virtualMmuUsage', 'virtualExecUsage', 'snapshotPowerOffBehavior', 'recordReplayEnabled', 'faultToleranceType', 'cbrcCacheEnabled');
 
 
 sub get_property_list {
@@ -65154,11 +67956,12 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['parentEnabled', 'boolean', undef, 0],
    ['childForkGroupId', undef, undef, 0],
+   ['parentForkGroupId', undef, undef, 0],
    ['childType', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineForkConfigInfo', 'parentEnabled', 'childForkGroupId', 'childType');
+VIMRuntime::make_get_set('VirtualMachineForkConfigInfo', 'parentEnabled', 'childForkGroupId', 'parentForkGroupId', 'childType');
 
 
 sub get_property_list {
@@ -65413,6 +68216,7 @@ our @property_list = (
    ['toolsVersionStatus2', undef, undef, 0],
    ['toolsRunningStatus', undef, undef, 0],
    ['toolsVersion', undef, undef, 0],
+   ['toolsInstallType', undef, undef, 0],
    ['guestId', undef, undef, 0],
    ['guestFamily', undef, undef, 0],
    ['guestFullName', undef, undef, 0],
@@ -65433,7 +68237,31 @@ our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('GuestInfo', 'toolsStatus', 'toolsVersionStatus', 'toolsVersionStatus2', 'toolsRunningStatus', 'toolsVersion', 'guestId', 'guestFamily', 'guestFullName', 'hostName', 'ipAddress', 'net', 'ipStack', 'disk', 'screen', 'guestState', 'appHeartbeatStatus', 'guestKernelCrashed', 'appState', 'guestOperationsReady', 'interactiveGuestOperationsReady', 'guestStateChangeSupported', 'generationInfo');
+VIMRuntime::make_get_set('GuestInfo', 'toolsStatus', 'toolsVersionStatus', 'toolsVersionStatus2', 'toolsRunningStatus', 'toolsVersion', 'toolsInstallType', 'guestId', 'guestFamily', 'guestFullName', 'hostName', 'ipAddress', 'net', 'ipStack', 'disk', 'screen', 'guestState', 'appHeartbeatStatus', 'guestKernelCrashed', 'appState', 'guestOperationsReady', 'interactiveGuestOperationsReady', 'guestStateChangeSupported', 'generationInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineGuestIntegrityInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineGuestIntegrityInfo', 'enabled');
 
 
 sub get_property_list {
@@ -65496,10 +68324,12 @@ our @property_list = (
    ['supportsPvscsiControllerForBoot', 'boolean', undef, 0],
    ['diskUuidEnabled', 'boolean', undef, 0],
    ['supportsHotPlugPCI', 'boolean', undef, 0],
+   ['supportsSecureBoot', 'boolean', undef, 0],
+   ['defaultSecureBoot', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('GuestOsDescriptor', 'id', 'family', 'fullName', 'supportedMaxCPUs', 'numSupportedPhysicalSockets', 'numSupportedCoresPerSocket', 'supportedMinMemMB', 'supportedMaxMemMB', 'recommendedMemMB', 'recommendedColorDepth', 'supportedDiskControllerList', 'recommendedSCSIController', 'recommendedDiskController', 'supportedNumDisks', 'recommendedDiskSizeMB', 'recommendedCdromController', 'supportedEthernetCard', 'recommendedEthernetCard', 'supportsSlaveDisk', 'cpuFeatureMask', 'smcRequired', 'supportsWakeOnLan', 'supportsVMI', 'supportsMemoryHotAdd', 'supportsCpuHotAdd', 'supportsCpuHotRemove', 'supportedFirmware', 'recommendedFirmware', 'supportedUSBControllerList', 'recommendedUSBController', 'supports3D', 'recommended3D', 'smcRecommended', 'ich7mRecommended', 'usbRecommended', 'supportLevel', 'supportedForCreate', 'vRAMSizeInKB', 'numSupportedFloppyDevices', 'wakeOnLanEthernetCard', 'supportsPvscsiControllerForBoot', 'diskUuidEnabled', 'supportsHotPlugPCI');
+VIMRuntime::make_get_set('GuestOsDescriptor', 'id', 'family', 'fullName', 'supportedMaxCPUs', 'numSupportedPhysicalSockets', 'numSupportedCoresPerSocket', 'supportedMinMemMB', 'supportedMaxMemMB', 'recommendedMemMB', 'recommendedColorDepth', 'supportedDiskControllerList', 'recommendedSCSIController', 'recommendedDiskController', 'supportedNumDisks', 'recommendedDiskSizeMB', 'recommendedCdromController', 'supportedEthernetCard', 'recommendedEthernetCard', 'supportsSlaveDisk', 'cpuFeatureMask', 'smcRequired', 'supportsWakeOnLan', 'supportsVMI', 'supportsMemoryHotAdd', 'supportsCpuHotAdd', 'supportsCpuHotRemove', 'supportedFirmware', 'recommendedFirmware', 'supportedUSBControllerList', 'recommendedUSBController', 'supports3D', 'recommended3D', 'smcRecommended', 'ich7mRecommended', 'usbRecommended', 'supportLevel', 'supportedForCreate', 'vRAMSizeInKB', 'numSupportedFloppyDevices', 'wakeOnLanEthernetCard', 'supportsPvscsiControllerForBoot', 'diskUuidEnabled', 'supportsHotPlugPCI', 'supportsSecureBoot', 'defaultSecureBoot');
 
 
 sub get_property_list {
@@ -65524,6 +68354,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfGuestOsDescriptor', 'GuestOsDescriptor');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineGuestQuiesceSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['timeout', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineGuestQuiesceSpec', 'timeout');
 
 
 sub get_property_list {
@@ -65886,10 +68740,11 @@ our @ISA = qw(VirtualMachineTargetInfo);
 
 our @property_list = (
    ['network', 'NetworkSummary', undef, 1],
+   ['vswitch', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineNetworkInfo', 'network');
+VIMRuntime::make_get_set('VirtualMachineNetworkInfo', 'network', 'vswitch');
 
 
 sub get_property_list {
@@ -66794,16 +69649,41 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineSriovDevicePoolInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineSriovDevicePoolInfo', 'key');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineSriovInfo;
 our @ISA = qw(VirtualMachinePciPassthroughInfo);
 
 our @property_list = (
    ['virtualFunction', 'boolean', undef, 1],
    ['pnic', undef, undef, 0],
+   ['devicePool', 'VirtualMachineSriovDevicePoolInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineSriovInfo', 'virtualFunction', 'pnic');
+VIMRuntime::make_get_set('VirtualMachineSriovInfo', 'virtualFunction', 'pnic', 'devicePool');
 
 
 sub get_property_list {
@@ -66828,6 +69708,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineSriovInfo', 'VirtualMachineSriovInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineSriovNetworkDevicePoolInfo;
+our @ISA = qw(VirtualMachineSriovDevicePoolInfo);
+
+our @property_list = (
+   ['switchKey', undef, undef, 0],
+   ['switchUuid', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineSriovNetworkDevicePoolInfo', 'switchKey', 'switchUuid');
 
 
 sub get_property_list {
@@ -67171,6 +70076,7 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['toolsVersion', undef, undef, 0],
+   ['toolsInstallType', undef, undef, 0],
    ['afterPowerOn', 'boolean', undef, 0],
    ['afterResume', 'boolean', undef, 0],
    ['beforeGuestStandby', 'boolean', undef, 0],
@@ -67178,12 +70084,13 @@ our @property_list = (
    ['beforeGuestReboot', 'boolean', undef, 0],
    ['toolsUpgradePolicy', undef, undef, 0],
    ['pendingCustomization', undef, undef, 0],
+   ['customizationKeyId', 'CryptoKeyId', undef, 0],
    ['syncTimeWithHost', 'boolean', undef, 0],
    ['lastInstallInfo', 'ToolsConfigInfoToolsLastInstallInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ToolsConfigInfo', 'toolsVersion', 'afterPowerOn', 'afterResume', 'beforeGuestStandby', 'beforeGuestShutdown', 'beforeGuestReboot', 'toolsUpgradePolicy', 'pendingCustomization', 'syncTimeWithHost', 'lastInstallInfo');
+VIMRuntime::make_get_set('ToolsConfigInfo', 'toolsVersion', 'toolsInstallType', 'afterPowerOn', 'afterResume', 'beforeGuestStandby', 'beforeGuestShutdown', 'beforeGuestReboot', 'toolsUpgradePolicy', 'pendingCustomization', 'customizationKeyId', 'syncTimeWithHost', 'lastInstallInfo');
 
 
 sub get_property_list {
@@ -67238,6 +70145,110 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineUsbInfo', 'VirtualMachineUsbInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package UsbScanCodeSpecModifierType;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['leftControl', 'boolean', undef, 0],
+   ['leftShift', 'boolean', undef, 0],
+   ['leftAlt', 'boolean', undef, 0],
+   ['leftGui', 'boolean', undef, 0],
+   ['rightControl', 'boolean', undef, 0],
+   ['rightShift', 'boolean', undef, 0],
+   ['rightAlt', 'boolean', undef, 0],
+   ['rightGui', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('UsbScanCodeSpecModifierType', 'leftControl', 'leftShift', 'leftAlt', 'leftGui', 'rightControl', 'rightShift', 'rightAlt', 'rightGui');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package UsbScanCodeSpecKeyEvent;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['usbHidCode', undef, undef, 1],
+   ['modifiers', 'UsbScanCodeSpecModifierType', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('UsbScanCodeSpecKeyEvent', 'usbHidCode', 'modifiers');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfUsbScanCodeSpecKeyEvent;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['UsbScanCodeSpecKeyEvent', 'UsbScanCodeSpecKeyEvent', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfUsbScanCodeSpecKeyEvent', 'UsbScanCodeSpecKeyEvent');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package UsbScanCodeSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyEvents', 'UsbScanCodeSpecKeyEvent', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('UsbScanCodeSpec', 'keyEvents');
 
 
 sub get_property_list {
@@ -67380,6 +70391,33 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineImportSpec', 'configSpec', 'resPoolEntity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineWindowsQuiesceSpec;
+our @ISA = qw(VirtualMachineGuestQuiesceSpec);
+
+our @property_list = (
+   ['vssBackupType', undef, undef, 0],
+   ['vssBootableSystemState', 'boolean', undef, 0],
+   ['vssPartialFileSupport', 'boolean', undef, 0],
+   ['vssBackupContext', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineWindowsQuiesceSpec', 'vssBackupType', 'vssBootableSystemState', 'vssPartialFileSupport', 'vssBackupContext');
 
 
 sub get_property_list {
@@ -69328,7 +72366,7 @@ package VirtualDeviceDeviceBackingOption;
 our @ISA = qw(VirtualDeviceBackingOption);
 
 our @property_list = (
-   ['autoDetectAvailable', 'BoolOption', undef, 1],
+   ['autoDetectAvailable', 'BoolOption', undef, 0],
 );
 
 
@@ -69352,7 +72390,7 @@ package VirtualDeviceRemoteDeviceBackingOption;
 our @ISA = qw(VirtualDeviceBackingOption);
 
 our @property_list = (
-   ['autoDetectAvailable', 'BoolOption', undef, 1],
+   ['autoDetectAvailable', 'BoolOption', undef, 0],
 );
 
 
@@ -69526,6 +72564,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualDeviceConfigSpecBackingSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['parent', 'VirtualDeviceConfigSpecBackingSpec', undef, 0],
+   ['crypto', 'CryptoSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualDeviceConfigSpecBackingSpec', 'parent', 'crypto');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualDeviceConfigSpec;
 our @ISA = qw(DynamicData);
 
@@ -69534,10 +72597,11 @@ our @property_list = (
    ['fileOperation', 'VirtualDeviceConfigSpecFileOperation', undef, 0],
    ['device', 'VirtualDevice', undef, 1],
    ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['backing', 'VirtualDeviceConfigSpecBackingSpec', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDeviceConfigSpec', 'operation', 'fileOperation', 'device', 'profile');
+VIMRuntime::make_get_set('VirtualDeviceConfigSpec', 'operation', 'fileOperation', 'device', 'profile', 'backing');
 
 
 sub get_property_list {
@@ -69618,10 +72682,11 @@ our @property_list = (
    ['contentId', undef, undef, 0],
    ['changeId', undef, undef, 0],
    ['parent', 'VirtualDiskSparseVer2BackingInfo', undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDiskSparseVer2BackingInfo', 'diskMode', 'split', 'writeThrough', 'spaceUsedInKB', 'uuid', 'contentId', 'changeId', 'parent');
+VIMRuntime::make_get_set('VirtualDiskSparseVer2BackingInfo', 'diskMode', 'split', 'writeThrough', 'spaceUsedInKB', 'uuid', 'contentId', 'changeId', 'parent', 'keyId');
 
 
 sub get_property_list {
@@ -69683,10 +72748,11 @@ our @property_list = (
    ['deltaGrainSize', undef, undef, 0],
    ['deltaDiskFormatVariant', undef, undef, 0],
    ['sharing', undef, undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDiskFlatVer2BackingInfo', 'diskMode', 'split', 'writeThrough', 'thinProvisioned', 'eagerlyScrub', 'uuid', 'contentId', 'changeId', 'parent', 'deltaDiskFormat', 'digestEnabled', 'deltaGrainSize', 'deltaDiskFormatVariant', 'sharing');
+VIMRuntime::make_get_set('VirtualDiskFlatVer2BackingInfo', 'diskMode', 'split', 'writeThrough', 'thinProvisioned', 'eagerlyScrub', 'uuid', 'contentId', 'changeId', 'parent', 'deltaDiskFormat', 'digestEnabled', 'deltaGrainSize', 'deltaDiskFormatVariant', 'sharing', 'keyId');
 
 
 sub get_property_list {
@@ -69715,10 +72781,11 @@ our @property_list = (
    ['deltaDiskFormat', undef, undef, 0],
    ['digestEnabled', 'boolean', undef, 0],
    ['grainSize', undef, undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDiskSeSparseBackingInfo', 'diskMode', 'writeThrough', 'uuid', 'contentId', 'changeId', 'parent', 'deltaDiskFormat', 'digestEnabled', 'grainSize');
+VIMRuntime::make_get_set('VirtualDiskSeSparseBackingInfo', 'diskMode', 'writeThrough', 'uuid', 'contentId', 'changeId', 'parent', 'deltaDiskFormat', 'digestEnabled', 'grainSize', 'keyId');
 
 
 sub get_property_list {
@@ -69856,10 +72923,11 @@ our @property_list = (
    ['diskObjectId', undef, undef, 0],
    ['vFlashCacheConfigInfo', 'VirtualDiskVFlashCacheConfigInfo', undef, 0],
    ['iofilter', undef, 1, 0],
+   ['vDiskId', 'ID', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDisk', 'capacityInKB', 'capacityInBytes', 'shares', 'storageIOAllocation', 'diskObjectId', 'vFlashCacheConfigInfo', 'iofilter');
+VIMRuntime::make_get_set('VirtualDisk', 'capacityInKB', 'capacityInBytes', 'shares', 'storageIOAllocation', 'diskObjectId', 'vFlashCacheConfigInfo', 'iofilter', 'vDiskId');
 
 
 sub get_property_list {
@@ -69983,8 +73051,8 @@ our @property_list = (
    ['split', 'BoolOption', undef, 1],
    ['writeThrough', 'BoolOption', undef, 1],
    ['growable', 'boolean', undef, 1],
-   ['hotGrowable', 'boolean', undef, 1],
-   ['uuid', 'boolean', undef, 1],
+   ['hotGrowable', 'boolean', undef, 0],
+   ['uuid', 'boolean', undef, 0],
 );
 
 
@@ -70088,8 +73156,8 @@ our @property_list = (
    ['split', 'BoolOption', undef, 1],
    ['writeThrough', 'BoolOption', undef, 1],
    ['growable', 'boolean', undef, 1],
-   ['hotGrowable', 'boolean', undef, 1],
-   ['uuid', 'boolean', undef, 1],
+   ['hotGrowable', 'boolean', undef, 0],
+   ['uuid', 'boolean', undef, 0],
    ['thinProvisioned', 'BoolOption', undef, 0],
    ['eagerlyScrub', 'BoolOption', undef, 0],
    ['deltaDiskFormat', 'ChoiceOption', undef, 0],
@@ -70147,7 +73215,7 @@ our @ISA = qw(VirtualDeviceDeviceBackingOption);
 
 our @property_list = (
    ['descriptorFileNameExtensions', 'ChoiceOption', undef, 1],
-   ['uuid', 'boolean', undef, 1],
+   ['uuid', 'boolean', undef, 0],
 );
 
 
@@ -70197,7 +73265,7 @@ our @property_list = (
    ['descriptorFileNameExtensions', 'ChoiceOption', undef, 0],
    ['compatibilityMode', 'ChoiceOption', undef, 1],
    ['diskMode', 'ChoiceOption', undef, 1],
-   ['uuid', 'boolean', undef, 1],
+   ['uuid', 'boolean', undef, 0],
 );
 
 
@@ -71121,6 +74189,53 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualNVMEController;
+our @ISA = qw(VirtualController);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualNVMEController');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualNVMEControllerOption;
+our @ISA = qw(VirtualControllerOption);
+
+our @property_list = (
+   ['numNVMEDisks', 'IntOption', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VirtualNVMEControllerOption', 'numNVMEDisks');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualPCIController;
 our @ISA = qw(VirtualController);
 
@@ -71152,17 +74267,18 @@ our @property_list = (
    ['numEthernetCards', 'IntOption', undef, 1],
    ['numVideoCards', 'IntOption', undef, 1],
    ['numSoundCards', 'IntOption', undef, 1],
-   ['numVmiRoms', 'IntOption', undef, 1],
+   ['numVmiRoms', 'IntOption', undef, 0],
    ['numVmciDevices', 'IntOption', undef, 0],
    ['numPCIPassthroughDevices', 'IntOption', undef, 0],
    ['numSasSCSIControllers', 'IntOption', undef, 0],
    ['numVmxnet3EthernetCards', 'IntOption', undef, 0],
    ['numParaVirtualSCSIControllers', 'IntOption', undef, 0],
    ['numSATAControllers', 'IntOption', undef, 0],
+   ['numNVMEControllers', 'IntOption', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualPCIControllerOption', 'numSCSIControllers', 'numEthernetCards', 'numVideoCards', 'numSoundCards', 'numVmiRoms', 'numVmciDevices', 'numPCIPassthroughDevices', 'numSasSCSIControllers', 'numVmxnet3EthernetCards', 'numParaVirtualSCSIControllers', 'numSATAControllers');
+VIMRuntime::make_get_set('VirtualPCIControllerOption', 'numSCSIControllers', 'numEthernetCards', 'numVideoCards', 'numSoundCards', 'numVmiRoms', 'numVmciDevices', 'numPCIPassthroughDevices', 'numSasSCSIControllers', 'numVmxnet3EthernetCards', 'numParaVirtualSCSIControllers', 'numSATAControllers', 'numNVMEControllers');
 
 
 sub get_property_list {
@@ -72557,7 +75673,7 @@ package VirtualUSB;
 our @ISA = qw(VirtualDevice);
 
 our @property_list = (
-   ['connected', 'boolean', undef, 1],
+   ['connected', 'boolean', undef, 0],
    ['vendor', undef, undef, 0],
    ['product', undef, undef, 0],
    ['family', undef, 1, 0],
@@ -72635,7 +75751,7 @@ our @ISA = qw(VirtualControllerOption);
 
 our @property_list = (
    ['autoConnectDevices', 'BoolOption', undef, 1],
-   ['ehciSupported', 'BoolOption', undef, 1],
+   ['ehciSupported', 'BoolOption', undef, 0],
    ['supportedSpeeds', undef, 1, 0],
 );
 
@@ -73160,6 +76276,52 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualVmxnet3Option');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualVmxnet3Vrdma;
+our @ISA = qw(VirtualVmxnet3);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualVmxnet3Vrdma');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualVmxnet3VrdmaOption;
+our @ISA = qw(VirtualVmxnet3Option);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualVmxnet3VrdmaOption');
 
 
 sub get_property_list {
@@ -74188,6 +77350,103 @@ sub get_property_list {
 
 
 ##################################################################################
+package DeviceGroupId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('DeviceGroupId', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package FaultDomainId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('FaultDomainId', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ReplicationGroupId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['faultDomainId', 'FaultDomainId', undef, 1],
+   ['deviceGroupId', 'DeviceGroupId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ReplicationGroupId', 'faultDomainId', 'deviceGroupId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ReplicationSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['replicationGroupId', 'ReplicationGroupId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ReplicationSpec', 'replicationGroupId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterConfigInfoHostDefaultInfo;
 our @ISA = qw(DynamicData);
 
@@ -74902,6 +78161,475 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanHostRuntimeInfo', 'membershipList', 'diskIssues', 'accessGenNo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package BaseConfigInfoBackingInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['datastore', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('BaseConfigInfoBackingInfo', 'datastore');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package BaseConfigInfoFileBackingInfo;
+our @ISA = qw(BaseConfigInfoBackingInfo);
+
+our @property_list = (
+   ['filePath', undef, undef, 1],
+   ['backingObjectId', undef, undef, 0],
+   ['parent', 'BaseConfigInfoFileBackingInfo', undef, 0],
+   ['deltaSizeInMB', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('BaseConfigInfoFileBackingInfo', 'filePath', 'backingObjectId', 'parent', 'deltaSizeInMB');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package BaseConfigInfoDiskFileBackingInfo;
+our @ISA = qw(BaseConfigInfoFileBackingInfo);
+
+our @property_list = (
+   ['provisioningType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('BaseConfigInfoDiskFileBackingInfo', 'provisioningType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package BaseConfigInfoRawDiskMappingBackingInfo;
+our @ISA = qw(BaseConfigInfoFileBackingInfo);
+
+our @property_list = (
+   ['lunUuid', undef, undef, 1],
+   ['compatibilityMode', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('BaseConfigInfoRawDiskMappingBackingInfo', 'lunUuid', 'compatibilityMode');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package BaseConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', 'ID', undef, 1],
+   ['name', undef, undef, 1],
+   ['createTime', undef, undef, 1],
+   ['backing', 'BaseConfigInfoBackingInfo', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('BaseConfigInfo', 'id', 'name', 'createTime', 'backing');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmCloneSpec;
+our @ISA = qw(VslmMigrateSpec);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VslmCloneSpec', 'name');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmCreateSpecBackingSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['datastore', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VslmCreateSpecBackingSpec', 'datastore');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmCreateSpecDiskFileBackingSpec;
+our @ISA = qw(VslmCreateSpecBackingSpec);
+
+our @property_list = (
+   ['provisioningType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VslmCreateSpecDiskFileBackingSpec', 'provisioningType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmCreateSpecRawDiskMappingBackingSpec;
+our @ISA = qw(VslmCreateSpecBackingSpec);
+
+our @property_list = (
+   ['lunUuid', undef, undef, 1],
+   ['compatibilityMode', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VslmCreateSpecRawDiskMappingBackingSpec', 'lunUuid', 'compatibilityMode');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmCreateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['backingSpec', 'VslmCreateSpecBackingSpec', undef, 1],
+   ['capacityInMB', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VslmCreateSpec', 'name', 'backingSpec', 'capacityInMB');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ID;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ID', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfID;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ID', 'ID', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfID', 'ID');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmMigrateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['backingSpec', 'VslmCreateSpecBackingSpec', undef, 1],
+   ['consolidate', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VslmMigrateSpec', 'backingSpec', 'consolidate');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmRelocateSpec;
+our @ISA = qw(VslmMigrateSpec);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VslmRelocateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VStorageObjectStateInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['tentative', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VStorageObjectStateInfo', 'tentative');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VslmTagEntry;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['tagName', undef, undef, 1],
+   ['parentCategoryName', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VslmTagEntry', 'tagName', 'parentCategoryName');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVslmTagEntry;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VslmTagEntry', 'VslmTagEntry', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVslmTagEntry', 'VslmTagEntry');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VStorageObjectConfigInfo;
+our @ISA = qw(BaseConfigInfo);
+
+our @property_list = (
+   ['capacityInMB', undef, undef, 1],
+   ['consumptionType', undef, 1, 0],
+   ['consumerId', 'ID', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VStorageObjectConfigInfo', 'capacityInMB', 'consumptionType', 'consumerId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VStorageObject;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['config', 'VStorageObjectConfigInfo', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VStorageObject', 'config');
 
 
 sub get_property_list {
@@ -76257,6 +79985,278 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanCompositeConstraint;
+our @ISA = qw(VsanResourceConstraint);
+
+our @property_list = (
+   ['nestedConstraints', 'VsanResourceConstraint', 1, 0],
+   ['conjoiner', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanCompositeConstraint', 'nestedConstraints', 'conjoiner');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDataObfuscationRule;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanDataObfuscationRule');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMassCollectorPropertyParams;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['propertyName', undef, undef, 0],
+   ['propertyParams', 'KeyAnyValue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMassCollectorPropertyParams', 'propertyName', 'propertyParams');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMassCollectorPropertyParams;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMassCollectorPropertyParams', 'VsanMassCollectorPropertyParams', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMassCollectorPropertyParams', 'VsanMassCollectorPropertyParams');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMassCollectorSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['objects', 'ManagedObjectReference', 1, 0],
+   ['objectCollection', undef, undef, 0],
+   ['properties', undef, 1, 1],
+   ['propertiesParams', 'VsanMassCollectorPropertyParams', 1, 0],
+   ['constraint', 'VsanResourceConstraint', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMassCollectorSpec', 'objects', 'objectCollection', 'properties', 'propertiesParams', 'constraint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMassCollectorSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMassCollectorSpec', 'VsanMassCollectorSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMassCollectorSpec', 'VsanMassCollectorSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanObjectTypeRule;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['objectType', undef, undef, 0],
+   ['attributes', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanObjectTypeRule', 'objectType', 'attributes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPropertyConstraint;
+our @ISA = qw(VsanResourceConstraint);
+
+our @property_list = (
+   ['propertyName', undef, undef, 0],
+   ['comparator', undef, undef, 0],
+   ['comparableValue', 'KeyAnyValue', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanPropertyConstraint', 'propertyName', 'comparator', 'comparableValue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanRegexBasedRule;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['rules', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanRegexBasedRule', 'rules');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanResourceConstraint;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['targetType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanResourceConstraint', 'targetType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanResourceConstraint;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanResourceConstraint', 'VsanResourceConstraint', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanResourceConstraint', 'VsanResourceConstraint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanStorageComplianceResult;
 our @ISA = qw(DynamicData);
 
@@ -76368,8 +80368,8 @@ package VimClusterVSANPreferredFaultDomainInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['preferredFaultDomainName', undef, undef, 1],
-   ['preferredFaultDomainId', undef, undef, 1],
+   ['preferredFaultDomainName', undef, undef, 0],
+   ['preferredFaultDomainId', undef, undef, 0],
 );
 
 
@@ -76452,6 +80452,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VimClusterVSANStretchedClusterFaultDomainConfig', 'firstFdName', 'firstFdHosts', 'secondFdName', 'secondFdHosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VSANStretchedClusterHostVirtualApplianceStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vcCluster', 'ManagedObjectReference', undef, 0],
+   ['isVirtualApp', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VSANStretchedClusterHostVirtualApplianceStatus', 'vcCluster', 'isVirtualApp');
 
 
 sub get_property_list {
@@ -76577,10 +80602,11 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['target', 'ManagedObjectReference', undef, 0],
    ['capabilities', undef, 1, 0],
+   ['statuses', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanCapability', 'target', 'capabilities');
+VIMRuntime::make_get_set('VsanCapability', 'target', 'capabilities', 'statuses');
 
 
 sub get_property_list {
@@ -76828,10 +80854,11 @@ our @property_list = (
    ['config', 'VsanClusterConfigInfo', undef, 1],
    ['name', undef, undef, 1],
    ['hosts', undef, 1, 0],
+   ['toBeDeleted', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterConfig', 'config', 'name', 'hosts');
+VIMRuntime::make_get_set('VsanClusterConfig', 'config', 'name', 'hosts', 'toBeDeleted');
 
 
 sub get_property_list {
@@ -76920,6 +80947,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanClusterEncryptionHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['overallHealth', undef, undef, 0],
+   ['configHealth', undef, undef, 0],
+   ['kmsHealth', undef, undef, 0],
+   ['vcKmsResult', 'VsanVcKmipServersHealth', undef, 0],
+   ['hostResults', 'VsanEncryptionHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterEncryptionHealthSummary', 'overallHealth', 'configHealth', 'kmsHealth', 'vcKmsResult', 'hostResults');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterHclInfo;
 our @ISA = qw(DynamicData);
 
@@ -76927,10 +80982,11 @@ our @property_list = (
    ['hclDbLastUpdate', undef, undef, 0],
    ['hclDbAgeHealth', undef, undef, 0],
    ['hostResults', 'VsanHostHclInfo', 1, 0],
+   ['updateItems', 'VsanUpdateItem', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterHclInfo', 'hclDbLastUpdate', 'hclDbAgeHealth', 'hostResults');
+VIMRuntime::make_get_set('VsanClusterHclInfo', 'hclDbLastUpdate', 'hclDbAgeHealth', 'hostResults', 'updateItems');
 
 
 sub get_property_list {
@@ -76982,6 +81038,57 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanClusterHealthAction', 'VsanClusterHealthAction');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClusterHealthCheckInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['testId', undef, undef, 1],
+   ['testName', undef, undef, 0],
+   ['groupId', undef, undef, 1],
+   ['groupName', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterHealthCheckInfo', 'testId', 'testName', 'groupId', 'groupName');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanClusterHealthCheckInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanClusterHealthCheckInfo', 'VsanClusterHealthCheckInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanClusterHealthCheckInfo', 'VsanClusterHealthCheckInfo');
 
 
 sub get_property_list {
@@ -77304,22 +81411,27 @@ our @property_list = (
    ['timestamp', undef, undef, 0],
    ['clusterVersions', 'VsanClusterHealthSystemVersionResult', undef, 0],
    ['objectHealth', 'VsanObjectOverallHealth', undef, 0],
-   ['vmHealth', 'VsanClusterVMsHealthOverAllResult', undef, 0],
+   ['vmHealth', 'VsanClusterVMsHealthOverallResult', undef, 0],
    ['networkHealth', 'VsanClusterNetworkHealthResult', undef, 0],
    ['limitHealth', 'VsanClusterLimitHealthResult', undef, 0],
    ['advCfgSync', 'VsanClusterAdvCfgSyncResult', 1, 0],
    ['createVmHealth', 'VsanHostCreateVmHealthTestResult', 1, 0],
    ['physicalDisksHealth', 'VsanPhysicalDiskHealthSummary', 1, 0],
+   ['encryptionHealth', 'VsanClusterEncryptionHealthSummary', undef, 0],
    ['hclInfo', 'VsanClusterHclInfo', undef, 0],
    ['groups', 'VsanClusterHealthGroup', 1, 0],
    ['overallHealth', undef, undef, 1],
    ['overallHealthDescription', undef, undef, 1],
    ['clomdLiveness', 'VsanClusterClomdLivenessResult', undef, 0],
    ['diskBalance', 'VsanClusterBalanceSummary', undef, 0],
+   ['genericCluster', 'VsanGenericClusterBestPracticeHealth', undef, 0],
+   ['networkConfig', 'VsanNetworkConfigBestPracticeHealth', undef, 0],
+   ['vsanConfig', 'VsanConfigCheckResult', undef, 0],
+   ['burnInTest', 'VsanBurnInTestCheckResult', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterHealthSummary', 'clusterStatus', 'timestamp', 'clusterVersions', 'objectHealth', 'vmHealth', 'networkHealth', 'limitHealth', 'advCfgSync', 'createVmHealth', 'physicalDisksHealth', 'hclInfo', 'groups', 'overallHealth', 'overallHealthDescription', 'clomdLiveness', 'diskBalance');
+VIMRuntime::make_get_set('VsanClusterHealthSummary', 'clusterStatus', 'timestamp', 'clusterVersions', 'objectHealth', 'vmHealth', 'networkHealth', 'limitHealth', 'advCfgSync', 'createVmHealth', 'physicalDisksHealth', 'encryptionHealth', 'hclInfo', 'groups', 'overallHealth', 'overallHealthDescription', 'clomdLiveness', 'diskBalance', 'genericCluster', 'networkConfig', 'vsanConfig', 'burnInTest');
 
 
 sub get_property_list {
@@ -77395,10 +81507,11 @@ our @property_list = (
    ['hostResults', 'VsanHostHealthSystemVersionResult', 1, 0],
    ['vcVersion', undef, undef, 0],
    ['issueFound', 'boolean', undef, 1],
+   ['upgradePossible', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterHealthSystemVersionResult', 'hostResults', 'vcVersion', 'issueFound');
+VIMRuntime::make_get_set('VsanClusterHealthSystemVersionResult', 'hostResults', 'vcVersion', 'issueFound', 'upgradePossible');
 
 
 sub get_property_list {
@@ -77558,6 +81671,7 @@ our @property_list = (
    ['matchingIpSubnets', 'boolean', undef, 0],
    ['pingTestSuccess', 'boolean', undef, 0],
    ['largePingTestSuccess', 'boolean', undef, 0],
+   ['hostLatencyCheckSuccess', 'boolean', undef, 0],
    ['potentialMulticastIssue', 'boolean', undef, 0],
    ['otherHostsInVsanCluster', undef, 1, 0],
    ['partitions', 'VsanClusterNetworkPartitionInfo', 1, 0],
@@ -77567,10 +81681,11 @@ our @property_list = (
    ['hostsInEsxMaintenanceMode', undef, 1, 0],
    ['hostsInVsanMaintenanceMode', undef, 1, 0],
    ['infoAboutUnexpectedHosts', 'VsanQueryResultHostInfo', 1, 0],
+   ['clusterInUnicastMode', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterNetworkHealthResult', 'hostResults', 'issueFound', 'vsanVmknicPresent', 'matchingMulticastConfig', 'matchingIpSubnets', 'pingTestSuccess', 'largePingTestSuccess', 'potentialMulticastIssue', 'otherHostsInVsanCluster', 'partitions', 'hostsWithVsanDisabled', 'hostsDisconnected', 'hostsCommFailure', 'hostsInEsxMaintenanceMode', 'hostsInVsanMaintenanceMode', 'infoAboutUnexpectedHosts');
+VIMRuntime::make_get_set('VsanClusterNetworkHealthResult', 'hostResults', 'issueFound', 'vsanVmknicPresent', 'matchingMulticastConfig', 'matchingIpSubnets', 'pingTestSuccess', 'largePingTestSuccess', 'hostLatencyCheckSuccess', 'potentialMulticastIssue', 'otherHostsInVsanCluster', 'partitions', 'hostsWithVsanDisabled', 'hostsDisconnected', 'hostsCommFailure', 'hostsInEsxMaintenanceMode', 'hostsInVsanMaintenanceMode', 'infoAboutUnexpectedHosts', 'clusterInUnicastMode');
 
 
 sub get_property_list {
@@ -77738,7 +81853,7 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanClusterVMsHealthOverAllResult;
+package VsanClusterVMsHealthOverallResult;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
@@ -77747,7 +81862,7 @@ our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VsanClusterVMsHealthOverAllResult', 'healthStateList', 'overallHealthState');
+VIMRuntime::make_get_set('VsanClusterVMsHealthOverallResult', 'healthStateList', 'overallHealthState');
 
 
 sub get_property_list {
@@ -77951,10 +82066,12 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['dataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
+   ['dataEncryptionConfig', 'VsanDataEncryptionConfig', undef, 0],
+   ['skipHostRemediation', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanDiskFormatConversionSpec', 'dataEfficiencyConfig');
+VIMRuntime::make_get_set('VsanDiskFormatConversionSpec', 'dataEfficiencyConfig', 'dataEncryptionConfig', 'skipHostRemediation');
 
 
 sub get_property_list {
@@ -78299,6 +82416,439 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanIscsiHomeObjectSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['storagePolicy', 'VirtualMachineProfileSpec', undef, 0],
+   ['defaultConfig', 'VsanIscsiTargetServiceDefaultConfigSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiHomeObjectSpec', 'storagePolicy', 'defaultConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiInitiatorGroup;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['initiators', undef, 1, 0],
+   ['targets', 'VsanIscsiTargetBasicInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiInitiatorGroup', 'name', 'initiators', 'targets');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanIscsiInitiatorGroup;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanIscsiInitiatorGroup', 'VsanIscsiInitiatorGroup', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanIscsiInitiatorGroup', 'VsanIscsiInitiatorGroup');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiLUN;
+our @ISA = qw(VsanIscsiLUNCommonInfo);
+
+our @property_list = (
+   ['targetAlias', undef, undef, 1],
+   ['uuid', undef, undef, 1],
+   ['actualSize', undef, undef, 1],
+   ['objectInformation', 'VsanObjectInformation', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiLUN', 'targetAlias', 'uuid', 'actualSize', 'objectInformation');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanIscsiLUN;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanIscsiLUN', 'VsanIscsiLUN', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanIscsiLUN', 'VsanIscsiLUN');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiLUNCommonInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['lunId', undef, undef, 0],
+   ['alias', undef, undef, 0],
+   ['lunSize', undef, undef, 1],
+   ['status', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiLUNCommonInfo', 'lunId', 'alias', 'lunSize', 'status');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiLUNSpec;
+our @ISA = qw(VsanIscsiLUNCommonInfo);
+
+our @property_list = (
+   ['storagePolicy', 'VirtualMachineProfileSpec', undef, 0],
+   ['newLunId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiLUNSpec', 'storagePolicy', 'newLunId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTarget;
+our @ISA = qw(VsanIscsiTargetCommonInfo);
+
+our @property_list = (
+   ['lunCount', undef, undef, 0],
+   ['objectInformation', 'VsanObjectInformation', undef, 0],
+   ['ioOwnerHost', undef, undef, 0],
+   ['initiators', undef, 1, 0],
+   ['initiatorGroups', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTarget', 'lunCount', 'objectInformation', 'ioOwnerHost', 'initiators', 'initiatorGroups');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanIscsiTarget;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanIscsiTarget', 'VsanIscsiTarget', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanIscsiTarget', 'VsanIscsiTarget');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetAuthSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['authType', undef, undef, 0],
+   ['userNameAttachToTarget', undef, undef, 0],
+   ['userSecretAttachToTarget', undef, undef, 0],
+   ['userNameAttachToInitiator', undef, undef, 0],
+   ['userSecretAttachToInitiator', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetAuthSpec', 'authType', 'userNameAttachToTarget', 'userSecretAttachToTarget', 'userNameAttachToInitiator', 'userSecretAttachToInitiator');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetBasicInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['alias', undef, undef, 1],
+   ['iqn', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetBasicInfo', 'alias', 'iqn');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanIscsiTargetBasicInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanIscsiTargetBasicInfo', 'VsanIscsiTargetBasicInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanIscsiTargetBasicInfo', 'VsanIscsiTargetBasicInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetCommonInfo;
+our @ISA = qw(VsanIscsiTargetBasicInfo);
+
+our @property_list = (
+   ['authSpec', 'VsanIscsiTargetAuthSpec', undef, 0],
+   ['port', undef, undef, 0],
+   ['networkInterface', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetCommonInfo', 'authSpec', 'port', 'networkInterface');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetServiceConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['defaultConfig', 'VsanIscsiTargetServiceDefaultConfigSpec', undef, 0],
+   ['enabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetServiceConfig', 'defaultConfig', 'enabled');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetServiceDefaultConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['networkInterface', undef, undef, 1],
+   ['port', undef, undef, 0],
+   ['iscsiTargetAuthSpec', 'VsanIscsiTargetAuthSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetServiceDefaultConfigSpec', 'networkInterface', 'port', 'iscsiTargetAuthSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetServiceSpec;
+our @ISA = qw(VsanIscsiTargetServiceConfig);
+
+our @property_list = (
+   ['homeObjectStoragePolicy', 'VirtualMachineProfileSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetServiceSpec', 'homeObjectStoragePolicy');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetSpec;
+our @ISA = qw(VsanIscsiTargetCommonInfo);
+
+our @property_list = (
+   ['storagePolicy', 'VirtualMachineProfileSpec', undef, 0],
+   ['newAlias', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIscsiTargetSpec', 'storagePolicy', 'newAlias');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanObjectIdentity;
 our @ISA = qw(DynamicData);
 
@@ -78538,6 +83088,135 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanPerfDiagnoseQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['startTime', undef, undef, 1],
+   ['endTime', undef, undef, 1],
+   ['queryType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanPerfDiagnoseQuerySpec', 'startTime', 'endTime', 'queryType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPerfDiagnosticException;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['exceptionId', undef, undef, 1],
+   ['exceptionMessage', undef, undef, 1],
+   ['exceptionDetails', undef, undef, 1],
+   ['exceptionUrl', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanPerfDiagnosticException', 'exceptionId', 'exceptionMessage', 'exceptionDetails', 'exceptionUrl');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanPerfDiagnosticException;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanPerfDiagnosticException', 'VsanPerfDiagnosticException', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanPerfDiagnosticException', 'VsanPerfDiagnosticException');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPerfDiagnosticResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['exceptionId', undef, undef, 1],
+   ['recommendation', undef, undef, 0],
+   ['aggregationFunction', undef, undef, 0],
+   ['aggregationData', 'VsanPerfEntityMetricCSV', undef, 0],
+   ['exceptionData', 'VsanPerfEntityMetricCSV', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanPerfDiagnosticResult', 'exceptionId', 'recommendation', 'aggregationFunction', 'aggregationData', 'exceptionData');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanPerfDiagnosticResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanPerfDiagnosticResult', 'VsanPerfDiagnosticResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanPerfDiagnosticResult', 'VsanPerfDiagnosticResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanPerfEntityMetricCSV;
 our @ISA = qw(DynamicData);
 
@@ -78702,10 +83381,12 @@ our @property_list = (
    ['collectionFailureHostUuids', undef, 1, 0],
    ['renamedStatsDirectories', undef, 1, 0],
    ['statsDirectoryPercentFree', undef, undef, 0],
+   ['verboseMode', 'boolean', undef, 0],
+   ['verboseModeLastUpdate', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfMasterInformation', 'secSinceLastStatsWrite', 'secSinceLastStatsCollect', 'statsIntervalSec', 'collectionFailureHostUuids', 'renamedStatsDirectories', 'statsDirectoryPercentFree');
+VIMRuntime::make_get_set('VsanPerfMasterInformation', 'secSinceLastStatsWrite', 'secSinceLastStatsCollect', 'statsIntervalSec', 'collectionFailureHostUuids', 'renamedStatsDirectories', 'statsDirectoryPercentFree', 'verboseMode', 'verboseModeLastUpdate');
 
 
 sub get_property_list {
@@ -78726,10 +83407,13 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['thumbprint', undef, undef, 1],
+   ['memberUuid', undef, undef, 0],
+   ['isSupportUnicast', 'boolean', undef, 0],
+   ['unicastAddressInfos', 'VsanUnicastAddressInfo', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfMemberInfo', 'thumbprint');
+VIMRuntime::make_get_set('VsanPerfMemberInfo', 'thumbprint', 'memberUuid', 'isSupportUnicast', 'unicastAddressInfos');
 
 
 sub get_property_list {
@@ -78828,11 +83512,12 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['metricId', 'VsanPerfMetricId', undef, 1],
+   ['threshold', 'VsanPerfThreshold', undef, 0],
    ['values', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfMetricSeriesCSV', 'metricId', 'values');
+VIMRuntime::make_get_set('VsanPerfMetricSeriesCSV', 'metricId', 'threshold', 'values');
 
 
 sub get_property_list {
@@ -79006,6 +83691,84 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanPerfTimeRange;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['startTime', undef, undef, 1],
+   ['endTime', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanPerfTimeRange', 'name', 'startTime', 'endTime');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanPerfTimeRange;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanPerfTimeRange', 'VsanPerfTimeRange', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanPerfTimeRange', 'VsanPerfTimeRange');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPerfTimeRangeQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['startTimeFrom', undef, undef, 0],
+   ['startTimeTo', undef, undef, 0],
+   ['endTimeFrom', undef, undef, 0],
+   ['endTimeTo', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanPerfTimeRangeQuerySpec', 'name', 'startTimeFrom', 'startTimeTo', 'endTimeFrom', 'endTimeTo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanPerfTopEntities;
 our @ISA = qw(DynamicData);
 
@@ -79139,10 +83902,11 @@ our @property_list = (
    ['typeId', undef, undef, 1],
    ['name', undef, undef, 1],
    ['description', undef, undef, 1],
+   ['duration', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanStorageWorkloadType', 'specs', 'typeId', 'name', 'description');
+VIMRuntime::make_get_set('VsanStorageWorkloadType', 'specs', 'typeId', 'name', 'description', 'duration');
 
 
 sub get_property_list {
@@ -79167,6 +83931,109 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanStorageWorkloadType', 'VsanStorageWorkloadType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanUnicastAddressInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['address', undef, undef, 1],
+   ['port', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanUnicastAddressInfo', 'address', 'port');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanUnicastAddressInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanUnicastAddressInfo', 'VsanUnicastAddressInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanUnicastAddressInfo', 'VsanUnicastAddressInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanUpgradeStatusEx;
+our @ISA = qw(VsanUpgradeSystemUpgradeStatus);
+
+our @property_list = (
+   ['isPrecheck', 'boolean', undef, 0],
+   ['precheckResult', 'VsanDiskFormatConversionCheckResult', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanUpgradeStatusEx', 'isPrecheck', 'precheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVcKmipServersHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['health', undef, undef, 0],
+   ['error', 'LocalizedMethodFault', undef, 0],
+   ['kmsProviderId', undef, undef, 0],
+   ['kmsHealth', 'VsanKmsHealth', 1, 0],
+   ['clientCertHealth', undef, undef, 0],
+   ['clientCertExpireDate', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVcKmipServersHealth', 'health', 'error', 'kmsProviderId', 'kmsHealth', 'clientCertHealth', 'clientCertExpireDate');
 
 
 sub get_property_list {
@@ -79309,81 +84176,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VimHostVSANCmmdsFaultDomainInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['faultDomainId', undef, undef, 1],
-   ['faultDomainName', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VimHostVSANCmmdsFaultDomainInfo', 'faultDomainId', 'faultDomainName');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VimHostVSANCmmdsNodeInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['nodeUuid', undef, undef, 1],
-   ['isWitness', 'boolean', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VimHostVSANCmmdsNodeInfo', 'nodeUuid', 'isWitness');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VimHostVSANCmmdsPreferredFaultDomainInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['preferredFaultDomainId', undef, undef, 1],
-   ['preferredFaultDomainName', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VimHostVSANCmmdsPreferredFaultDomainInfo', 'preferredFaultDomainId', 'preferredFaultDomainName');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VimHostVSANStretchedClusterHostCapability;
 our @ISA = qw(DynamicData);
 
@@ -79408,17 +84200,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package VimHostVSANStretchedClusterHostInfo;
+package VsanDiskEncryptionHealth;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['nodeInfo', 'VimHostVSANCmmdsNodeInfo', undef, 1],
-   ['faultDomainInfo', 'VimHostVSANCmmdsFaultDomainInfo', undef, 0],
-   ['preferredFaultDomainInfo', 'VimHostVSANCmmdsPreferredFaultDomainInfo', undef, 0],
+   ['diskHealth', 'VsanPhysicalDiskHealth', undef, 0],
+   ['encryptionIssues', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VimHostVSANStretchedClusterHostInfo', 'nodeInfo', 'faultDomainInfo', 'preferredFaultDomainInfo');
+VIMRuntime::make_get_set('VsanDiskEncryptionHealth', 'diskHealth', 'encryptionIssues');
 
 
 sub get_property_list {
@@ -79434,15 +84225,100 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVimHostVSANStretchedClusterHostInfo;
+package ArrayOfVsanDiskEncryptionHealth;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['VimHostVSANStretchedClusterHostInfo', 'VimHostVSANStretchedClusterHostInfo', 1, 0],
+   ['VsanDiskEncryptionHealth', 'VsanDiskEncryptionHealth', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfVimHostVSANStretchedClusterHostInfo', 'VimHostVSANStretchedClusterHostInfo');
+VIMRuntime::make_get_set('ArrayOfVsanDiskEncryptionHealth', 'VsanDiskEncryptionHealth');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDiskRebalanceResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['status', undef, undef, 1],
+   ['bytesMoving', undef, undef, 0],
+   ['remainingBytesToMove', undef, undef, 0],
+   ['diskUsage', undef, undef, 0],
+   ['maxDiskUsage', undef, undef, 0],
+   ['minDiskUsage', undef, undef, 0],
+   ['avgDiskUsage', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDiskRebalanceResult', 'status', 'bytesMoving', 'remainingBytesToMove', 'diskUsage', 'maxDiskUsage', 'minDiskUsage', 'avgDiskUsage');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanEncryptionHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 0],
+   ['encryptionInfo', 'VsanHostEncryptionInfo', undef, 0],
+   ['overallKmsHealth', undef, undef, 1],
+   ['kmsHealth', 'VsanKmsHealth', 1, 0],
+   ['encryptionIssues', undef, 1, 0],
+   ['diskResults', 'VsanDiskEncryptionHealth', 1, 0],
+   ['error', 'LocalizedMethodFault', undef, 0],
+   ['aesniEnabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanEncryptionHealthSummary', 'hostname', 'encryptionInfo', 'overallKmsHealth', 'kmsHealth', 'encryptionIssues', 'diskResults', 'error', 'aesniEnabled');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanEncryptionHealthSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanEncryptionHealthSummary', 'VsanEncryptionHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanEncryptionHealthSummary', 'VsanEncryptionHealthSummary');
 
 
 sub get_property_list {
@@ -79535,10 +84411,22 @@ our @property_list = (
    ['raidConfig', undef, undef, 0],
    ['cacheConfig', undef, undef, 0],
    ['cimProviderInfo', 'VsanHostCimProviderInfo', undef, 0],
+   ['usedByVsan', 'boolean', undef, 0],
+   ['disks', 'VsanHclDiskInfo', 1, 0],
+   ['issues', 'LocalizedMethodFault', 1, 0],
+   ['remediableIssues', undef, 1, 0],
+   ['driversOnHcl', 'VsanHclDriverInfo', 1, 0],
+   ['fwAuxVersion', undef, undef, 0],
+   ['queueDepth', undef, undef, 0],
+   ['queueDepthOnHcl', undef, undef, 0],
+   ['queueDepthSupported', 'boolean', undef, 0],
+   ['diskMode', undef, undef, 0],
+   ['diskModeOnHcl', undef, 1, 0],
+   ['diskModeSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHclControllerInfo', 'deviceName', 'deviceDisplayName', 'driverName', 'driverVersion', 'vendorId', 'deviceId', 'subVendorId', 'subDeviceId', 'extraInfo', 'deviceOnHcl', 'releaseSupported', 'releasesOnHcl', 'driverVersionsOnHcl', 'driverVersionSupported', 'fwVersionSupported', 'fwVersionOnHcl', 'cacheConfigSupported', 'cacheConfigOnHcl', 'raidConfigSupported', 'raidConfigOnHcl', 'fwVersion', 'raidConfig', 'cacheConfig', 'cimProviderInfo');
+VIMRuntime::make_get_set('VsanHclControllerInfo', 'deviceName', 'deviceDisplayName', 'driverName', 'driverVersion', 'vendorId', 'deviceId', 'subVendorId', 'subDeviceId', 'extraInfo', 'deviceOnHcl', 'releaseSupported', 'releasesOnHcl', 'driverVersionsOnHcl', 'driverVersionSupported', 'fwVersionSupported', 'fwVersionOnHcl', 'cacheConfigSupported', 'cacheConfigOnHcl', 'raidConfigSupported', 'raidConfigOnHcl', 'fwVersion', 'raidConfig', 'cacheConfig', 'cimProviderInfo', 'usedByVsan', 'disks', 'issues', 'remediableIssues', 'driversOnHcl', 'fwAuxVersion', 'queueDepth', 'queueDepthOnHcl', 'queueDepthSupported', 'diskMode', 'diskModeOnHcl', 'diskModeSupported');
 
 
 sub get_property_list {
@@ -79578,6 +84466,160 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHclDiskInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['deviceName', undef, undef, 1],
+   ['model', undef, undef, 0],
+   ['isSsd', 'boolean', undef, 0],
+   ['vsanDisk', 'boolean', undef, 1],
+   ['issues', 'LocalizedMethodFault', 1, 0],
+   ['remediableIssues', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHclDiskInfo', 'deviceName', 'model', 'isSsd', 'vsanDisk', 'issues', 'remediableIssues');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclDiskInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclDiskInfo', 'VsanHclDiskInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclDiskInfo', 'VsanHclDiskInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHclFirmwareFile;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['fileType', undef, undef, 1],
+   ['filenameOrUrl', undef, undef, 1],
+   ['sha1sum', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHclFirmwareFile', 'fileType', 'filenameOrUrl', 'sha1sum');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclFirmwareFile;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclFirmwareFile', 'VsanHclFirmwareFile', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclFirmwareFile', 'VsanHclFirmwareFile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHclFirmwareUpdateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['hbaDevice', undef, undef, 1],
+   ['fwFiles', 'VsanHclFirmwareFile', 1, 1],
+   ['allowDowngrade', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHclFirmwareUpdateSpec', 'host', 'hbaDevice', 'fwFiles', 'allowDowngrade');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclFirmwareUpdateSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclFirmwareUpdateSpec', 'VsanHclFirmwareUpdateSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclFirmwareUpdateSpec', 'VsanHclFirmwareUpdateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostCimProviderInfo;
 our @ISA = qw(DynamicData);
 
@@ -79585,10 +84627,11 @@ our @property_list = (
    ['cimProviderSupported', 'boolean', undef, 0],
    ['installedCIMProvider', undef, undef, 0],
    ['cimProviderOnHcl', undef, 1, 0],
+   ['cimProviderLinksOnHcl', 'VsanDownloadItem', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostCimProviderInfo', 'cimProviderSupported', 'installedCIMProvider', 'cimProviderOnHcl');
+VIMRuntime::make_get_set('VsanHostCimProviderInfo', 'cimProviderSupported', 'installedCIMProvider', 'cimProviderOnHcl', 'cimProviderLinksOnHcl');
 
 
 sub get_property_list {
@@ -79706,6 +84749,79 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostReference;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHostReference', 'hostname');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostVirtualApplianceInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostKey', 'ManagedObjectReference', undef, 1],
+   ['isVirtualApp', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHostVirtualApplianceInfo', 'hostKey', 'isVirtualApp');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostVirtualApplianceInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostVirtualApplianceInfo', 'VsanHostVirtualApplianceInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostVirtualApplianceInfo', 'VsanHostVirtualApplianceInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostVmdkLoadTestResult;
 our @ISA = qw(DynamicData);
 
@@ -79742,6 +84858,59 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanHostVmdkLoadTestResult', 'VsanHostVmdkLoadTestResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanKmsHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['serverName', undef, undef, 1],
+   ['health', undef, undef, 1],
+   ['error', 'LocalizedMethodFault', undef, 0],
+   ['trustHealth', undef, undef, 0],
+   ['certHealth', undef, undef, 0],
+   ['certExpireDate', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanKmsHealth', 'serverName', 'health', 'error', 'trustHealth', 'certHealth', 'certExpireDate');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanKmsHealth;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanKmsHealth', 'VsanKmsHealth', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanKmsHealth', 'VsanKmsHealth');
 
 
 sub get_property_list {
@@ -79826,11 +84995,13 @@ our @property_list = (
    ['ipSubnets', undef, 1, 0],
    ['issueFound', 'boolean', undef, 0],
    ['peerHealth', 'VsanNetworkPeerHealthResult', 1, 0],
+   ['vMotionHealth', 'VsanNetworkPeerHealthResult', 1, 0],
    ['multicastConfig', undef, undef, 0],
+   ['inUnicast', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanNetworkHealthResult', 'host', 'hostname', 'vsanVmknicPresent', 'ipSubnets', 'issueFound', 'peerHealth', 'multicastConfig');
+VIMRuntime::make_get_set('VsanNetworkHealthResult', 'host', 'hostname', 'vsanVmknicPresent', 'ipSubnets', 'issueFound', 'peerHealth', 'vMotionHealth', 'multicastConfig', 'inUnicast');
 
 
 sub get_property_list {
@@ -80087,10 +85258,16 @@ our @property_list = (
    ['usedComponents', undef, undef, 0],
    ['maxComponents', undef, undef, 0],
    ['compLimitHealth', undef, undef, 0],
+   ['encryptionEnabled', 'boolean', undef, 0],
+   ['kmsProviderId', undef, undef, 0],
+   ['kekId', undef, undef, 0],
+   ['dekGenerationId', undef, undef, 0],
+   ['encryptedUnlocked', 'boolean', undef, 0],
+   ['rebalanceResult', 'VsanDiskRebalanceResult', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPhysicalDiskHealth', 'name', 'uuid', 'inCmmds', 'inVsi', 'dedupScope', 'formatVersion', 'isAllFlash', 'congestionValue', 'congestionArea', 'congestionHealth', 'metadataHealth', 'operationalHealthDescription', 'operationalHealth', 'dedupUsageHealth', 'capacityHealth', 'summaryHealth', 'capacity', 'usedCapacity', 'reservedCapacity', 'totalBytes', 'freeBytes', 'hashedBytes', 'dedupedBytes', 'scsiDisk', 'usedComponents', 'maxComponents', 'compLimitHealth');
+VIMRuntime::make_get_set('VsanPhysicalDiskHealth', 'name', 'uuid', 'inCmmds', 'inVsi', 'dedupScope', 'formatVersion', 'isAllFlash', 'congestionValue', 'congestionArea', 'congestionHealth', 'metadataHealth', 'operationalHealthDescription', 'operationalHealth', 'dedupUsageHealth', 'capacityHealth', 'summaryHealth', 'capacity', 'usedCapacity', 'reservedCapacity', 'totalBytes', 'freeBytes', 'hashedBytes', 'dedupedBytes', 'scsiDisk', 'usedComponents', 'maxComponents', 'compLimitHealth', 'encryptionEnabled', 'kmsProviderId', 'kekId', 'dekGenerationId', 'encryptedUnlocked', 'rebalanceResult');
 
 
 sub get_property_list {
@@ -80342,6 +85519,156 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanSmartDiskStats;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['disk', undef, undef, 1],
+   ['stats', 'VsanSmartParameter', 1, 0],
+   ['error', 'LocalizedMethodFault', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSmartDiskStats', 'disk', 'stats', 'error');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanSmartDiskStats;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanSmartDiskStats', 'VsanSmartDiskStats', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanSmartDiskStats', 'VsanSmartDiskStats');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSmartParameter;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['parameter', undef, undef, 0],
+   ['value', undef, undef, 0],
+   ['threshold', undef, undef, 0],
+   ['worst', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSmartParameter', 'parameter', 'value', 'threshold', 'worst');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanSmartParameter;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanSmartParameter', 'VsanSmartParameter', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanSmartParameter', 'VsanSmartParameter');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSmartStatsHostSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 0],
+   ['smartStats', 'VsanSmartDiskStats', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSmartStatsHostSummary', 'hostname', 'smartStats');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanSmartStatsHostSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanSmartStatsHostSummary', 'VsanSmartStatsHostSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanSmartStatsHostSummary', 'VsanSmartStatsHostSummary');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanVmdkIOLoadSpec;
 our @ISA = qw(DynamicData);
 
@@ -80563,10 +85890,13 @@ our @ISA = qw(VsanClusterConfigInfo);
 
 our @property_list = (
    ['dataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
+   ['resyncIopsLimitConfig', 'ResyncIopsInfo', undef, 0],
+   ['iscsiConfig', 'VsanIscsiTargetServiceConfig', undef, 0],
+   ['dataEncryptionConfig', 'VsanDataEncryptionConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanConfigInfoEx', 'dataEfficiencyConfig');
+VIMRuntime::make_get_set('VsanConfigInfoEx', 'dataEfficiencyConfig', 'resyncIopsLimitConfig', 'iscsiConfig', 'dataEncryptionConfig');
 
 
 sub get_property_list {
@@ -80607,6 +85937,36 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanDataEncryptionConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['encryptionEnabled', 'boolean', undef, 1],
+   ['kmsProviderId', 'KeyProviderId', undef, 0],
+   ['kekId', undef, undef, 0],
+   ['hostKeyId', undef, undef, 0],
+   ['dekGenerationId', undef, undef, 0],
+   ['changing', 'boolean', undef, 0],
+   ['eraseDisksBeforeUse', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDataEncryptionConfig', 'encryptionEnabled', 'kmsProviderId', 'kekId', 'hostKeyId', 'dekGenerationId', 'changing', 'eraseDisksBeforeUse');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVsanReconfigSpec;
 our @ISA = qw(DynamicData);
 
@@ -80617,10 +85977,1323 @@ our @property_list = (
    ['faultDomainsSpec', 'VimClusterVsanFaultDomainsConfigSpec', undef, 0],
    ['modify', 'boolean', undef, 1],
    ['allowReducedRedundancy', 'boolean', undef, 0],
+   ['resyncIopsLimitConfig', 'ResyncIopsInfo', undef, 0],
+   ['iscsiSpec', 'VsanIscsiTargetServiceSpec', undef, 0],
+   ['dataEncryptionConfig', 'VsanDataEncryptionConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimVsanReconfigSpec', 'vsanClusterConfig', 'dataEfficiencyConfig', 'diskMappingSpec', 'faultDomainsSpec', 'modify', 'allowReducedRedundancy');
+VIMRuntime::make_get_set('VimVsanReconfigSpec', 'vsanClusterConfig', 'dataEfficiencyConfig', 'diskMappingSpec', 'faultDomainsSpec', 'modify', 'allowReducedRedundancy', 'resyncIopsLimitConfig', 'iscsiSpec', 'dataEncryptionConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ResyncIopsInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['resyncIops', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ResyncIopsInfo', 'resyncIops');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanRuntimeStatsHostMap;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['stats', 'VsanHostRuntimeStats', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanRuntimeStatsHostMap', 'host', 'stats');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanRuntimeStatsHostMap;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanRuntimeStatsHostMap', 'VsanRuntimeStatsHostMap', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanRuntimeStatsHostMap', 'VsanRuntimeStatsHostMap');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanBurnInTest;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['testname', undef, undef, 1],
+   ['workload', undef, undef, 0],
+   ['duration', undef, undef, 1],
+   ['result', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanBurnInTest', 'testname', 'workload', 'duration', 'result');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanBurnInTest;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanBurnInTest', 'VsanBurnInTest', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanBurnInTest', 'VsanBurnInTest');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanBurnInTestCheckResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['passedTests', 'VsanBurnInTest', 1, 0],
+   ['notPerformedTests', 'VsanBurnInTest', 1, 0],
+   ['failedTests', 'VsanBurnInTest', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanBurnInTestCheckResult', 'passedTests', 'notPerformedTests', 'failedTests');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClusterBurnInTestResultList;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['items', 'VsanBurnInTest', 1, 0],
+   ['hosts', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterBurnInTestResultList', 'items', 'hosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanConfigBaseIssue;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanConfigBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanConfigBaseIssue;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanConfigBaseIssue', 'VsanConfigBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanConfigBaseIssue', 'VsanConfigBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanConfigCheckResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vsanEnabled', 'boolean', undef, 1],
+   ['issues', 'VsanConfigBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanConfigCheckResult', 'vsanEnabled', 'issues');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanConfigNotAllDisksClaimedIssue;
+our @ISA = qw(VsanConfigBaseIssue);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['disks', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanConfigNotAllDisksClaimedIssue', 'host', 'disks');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDownloadItem;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['url', undef, undef, 1],
+   ['sha1sum', undef, undef, 1],
+   ['formatType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDownloadItem', 'url', 'sha1sum', 'formatType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanDownloadItem;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanDownloadItem', 'VsanDownloadItem', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanDownloadItem', 'VsanDownloadItem');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanGenericClusterBaseIssue;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanGenericClusterBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanGenericClusterBaseIssue;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanGenericClusterBaseIssue', 'VsanGenericClusterBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanGenericClusterBaseIssue', 'VsanGenericClusterBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanGenericClusterBestPracticeHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['drsEnabled', 'boolean', undef, 1],
+   ['haEnabled', 'boolean', undef, 1],
+   ['issues', 'VsanGenericClusterBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanGenericClusterBestPracticeHealth', 'drsEnabled', 'haEnabled', 'issues');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHclDriverInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['driverVersion', undef, undef, 0],
+   ['driverLink', 'VsanDownloadItem', undef, 0],
+   ['fwVersion', undef, undef, 0],
+   ['fwLinks', 'VsanDownloadItem', 1, 0],
+   ['toolsLinks', 'VsanDownloadItem', 1, 0],
+   ['eula', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHclDriverInfo', 'driverVersion', 'driverLink', 'fwVersion', 'fwLinks', 'toolsLinks', 'eula');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclDriverInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclDriverInfo', 'VsanHclDriverInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclDriverInfo', 'VsanHclDriverInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigBaseIssue;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanNetworkConfigBaseIssue;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanNetworkConfigBaseIssue', 'VsanNetworkConfigBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanNetworkConfigBaseIssue', 'VsanNetworkConfigBaseIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigBestPracticeHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vdsPresent', 'boolean', undef, 1],
+   ['issues', 'VsanNetworkConfigBaseIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigBestPracticeHealth', 'vdsPresent', 'issues');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigPnicSpeedInconsistencyIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['vswitchName', undef, undef, 0],
+   ['vds', 'ManagedObjectReference', undef, 0],
+   ['speedsMb', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigPnicSpeedInconsistencyIssue', 'host', 'vswitchName', 'vds', 'speedsMb');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigPortgroupWithNoRedundancyIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['portgroupName', undef, undef, 0],
+   ['vds', 'ManagedObjectReference', undef, 0],
+   ['pg', 'ManagedObjectReference', undef, 0],
+   ['numPnics', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigPortgroupWithNoRedundancyIssue', 'host', 'portgroupName', 'vds', 'pg', 'numPnics');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigVdsScopeIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['vds', 'ManagedObjectReference', undef, 1],
+   ['memberHosts', 'ManagedObjectReference', 1, 1],
+   ['nonMemberHosts', 'ManagedObjectReference', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigVdsScopeIssue', 'vds', 'memberHosts', 'nonMemberHosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigVsanNotOnVdsIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['vmknic', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigVsanNotOnVdsIssue', 'host', 'vmknic');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkConfigVswitchWithNoRedundancyIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['vswitchName', undef, undef, 0],
+   ['vds', 'ManagedObjectReference', undef, 0],
+   ['numPnics', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkConfigVswitchWithNoRedundancyIssue', 'host', 'vswitchName', 'vds', 'numPnics');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanNetworkVMotionVmknicNotFountIssue;
+our @ISA = qw(VsanNetworkConfigBaseIssue);
+
+our @property_list = (
+   ['hostWithoutVmotionVmknic', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanNetworkVMotionVmknicNotFountIssue', 'hostWithoutVmotionVmknic');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPrepareVsanForVcsaSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vsanDiskMappingCreationSpec', 'VimVsanHostDiskMappingCreationSpec', undef, 0],
+   ['vsanDataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
+   ['taskId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanPrepareVsanForVcsaSpec', 'vsanDiskMappingCreationSpec', 'vsanDataEfficiencyConfig', 'taskId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanUpdateItem;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['type', undef, undef, 1],
+   ['name', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['existingVersion', undef, undef, 0],
+   ['present', 'boolean', undef, 1],
+   ['vibSpec', 'VsanVibSpec', 1, 0],
+   ['firmwareSpec', 'VsanHclFirmwareUpdateSpec', undef, 0],
+   ['downloadInfo', 'VsanDownloadItem', 1, 0],
+   ['eula', undef, undef, 0],
+   ['adapter', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanUpdateItem', 'host', 'type', 'name', 'version', 'existingVersion', 'present', 'vibSpec', 'firmwareSpec', 'downloadInfo', 'eula', 'adapter');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanUpdateItem;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanUpdateItem', 'VsanUpdateItem', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanUpdateItem', 'VsanUpdateItem');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVcPostDeployConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dcName', undef, undef, 0],
+   ['clusterName', undef, undef, 0],
+   ['firstHost', 'HostConnectSpec', undef, 0],
+   ['hostsToAdd', 'HostConnectSpec', 1, 0],
+   ['vsanDataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
+   ['vsanLicenseKey', undef, undef, 0],
+   ['hostLicenseKey', undef, undef, 0],
+   ['taskId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVcPostDeployConfigSpec', 'dcName', 'clusterName', 'firstHost', 'hostsToAdd', 'vsanDataEfficiencyConfig', 'vsanLicenseKey', 'hostLicenseKey', 'taskId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVcsaDeploymentProgress;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['phase', undef, undef, 1],
+   ['progressPct', undef, undef, 1],
+   ['message', undef, undef, 1],
+   ['success', 'boolean', undef, 1],
+   ['error', 'LocalizedMethodFault', undef, 0],
+   ['updateCounter', undef, undef, 1],
+   ['taskId', undef, undef, 0],
+   ['vm', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVcsaDeploymentProgress', 'phase', 'progressPct', 'message', 'success', 'error', 'updateCounter', 'taskId', 'vm');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVcsaDeploymentProgress;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVcsaDeploymentProgress', 'VsanVcsaDeploymentProgress', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVcsaDeploymentProgress', 'VsanVcsaDeploymentProgress');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVdsMigrationPlan;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vdsSpec', 'DVSCreateSpec', undef, 1],
+   ['pgs', 'VsanVdsPgMigrationSpec', 1, 0],
+   ['inaccessibleVms', 'ManagedObjectReference', 1, 0],
+   ['infraVms', 'ManagedObjectReference', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVdsMigrationPlan', 'vdsSpec', 'pgs', 'inaccessibleVms', 'infraVms');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVdsPgMigrationHostInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['hostname', undef, undef, 1],
+   ['vmknicDevices', undef, 1, 0],
+   ['vmVnics', 'VsanVdsPgMigrationVmInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVdsPgMigrationHostInfo', 'host', 'hostname', 'vmknicDevices', 'vmVnics');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVdsPgMigrationHostInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVdsPgMigrationHostInfo', 'VsanVdsPgMigrationHostInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVdsPgMigrationHostInfo', 'VsanVdsPgMigrationHostInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVdsPgMigrationSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vssPgName', undef, undef, 1],
+   ['dvPgName', undef, undef, 1],
+   ['vdsPgSetting', 'VMwareDVSPortSetting', undef, 1],
+   ['vdsPgType', undef, undef, 1],
+   ['hosts', 'VsanVdsPgMigrationHostInfo', 1, 0],
+   ['collisionRename', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVdsPgMigrationSpec', 'vssPgName', 'dvPgName', 'vdsPgSetting', 'vdsPgType', 'hosts', 'collisionRename');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVdsPgMigrationSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVdsPgMigrationSpec', 'VsanVdsPgMigrationSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVdsPgMigrationSpec', 'VsanVdsPgMigrationSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVdsPgMigrationVmInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vm', 'ManagedObjectReference', undef, 1],
+   ['vnicLabel', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVdsPgMigrationVmInfo', 'vm', 'vnicLabel');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVdsPgMigrationVmInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVdsPgMigrationVmInfo', 'VsanVdsPgMigrationVmInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVdsPgMigrationVmInfo', 'VsanVdsPgMigrationVmInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVibInstallPreflightStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['manualVmotionRequired', 'boolean', undef, 1],
+   ['rollingRequired', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVibInstallPreflightStatus', 'manualVmotionRequired', 'rollingRequired');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVibScanResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['vibName', undef, undef, 1],
+   ['vibVersion', undef, undef, 1],
+   ['existingVersion', undef, undef, 0],
+   ['maintenanceModeRequired', 'boolean', undef, 1],
+   ['rebootRequired', 'boolean', undef, 1],
+   ['meetsSystemReq', 'boolean', undef, 1],
+   ['pkgDepsMetByHost', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVibScanResult', 'host', 'vibName', 'vibVersion', 'existingVersion', 'maintenanceModeRequired', 'rebootRequired', 'meetsSystemReq', 'pkgDepsMetByHost');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVibScanResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVibScanResult', 'VsanVibScanResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVibScanResult', 'VsanVibScanResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVibSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['metaUrl', undef, undef, 0],
+   ['metaSha1Sum', undef, undef, 0],
+   ['vibUrl', undef, undef, 1],
+   ['vibSha1Sum', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVibSpec', 'host', 'metaUrl', 'metaSha1Sum', 'vibUrl', 'vibSha1Sum');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVibSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVibSpec', 'VsanVibSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVibSpec', 'VsanVibSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVmVdsMigrationSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vmInstanceUuid', undef, undef, 1],
+   ['vnics', 'VsanVnicVdsMigrationSpec', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVmVdsMigrationSpec', 'vmInstanceUuid', 'vnics');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVmVdsMigrationSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVmVdsMigrationSpec', 'VsanVmVdsMigrationSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVmVdsMigrationSpec', 'VsanVmVdsMigrationSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVnicVdsMigrationSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['vdsBacking', 'VirtualDeviceBackingInfo', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVnicVdsMigrationSpec', 'key', 'vdsBacking');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanVnicVdsMigrationSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanVnicVdsMigrationSpec', 'VsanVnicVdsMigrationSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanVnicVdsMigrationSpec', 'VsanVnicVdsMigrationSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostAboutInfoEx;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['version', undef, undef, 0],
+   ['build', undef, undef, 0],
+   ['buildType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostAboutInfoEx', 'name', 'version', 'build', 'buildType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostConfigInfoEx;
+our @ISA = qw(VsanHostConfigInfo);
+
+our @property_list = (
+   ['encryptionInfo', 'VsanHostEncryptionInfo', undef, 0],
+   ['dataEfficiencyInfo', 'VsanDataEfficiencyConfig', undef, 0],
+   ['resyncIopsLimitInfo', 'ResyncIopsInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostConfigInfoEx', 'encryptionInfo', 'dataEfficiencyInfo', 'resyncIopsLimitInfo');
 
 
 sub get_property_list {
@@ -80642,12 +87315,14 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['mapping', 'VsanHostDiskMapping', undef, 1],
    ['isMounted', 'boolean', undef, 1],
+   ['unlockedEncrypted', 'boolean', undef, 0],
    ['isAllFlash', 'boolean', undef, 1],
    ['isDataEfficiency', 'boolean', undef, 0],
+   ['encryptionInfo', 'VsanDataEncryptionConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimVsanHostDiskMapInfoEx', 'mapping', 'isMounted', 'isAllFlash', 'isDataEfficiency');
+VIMRuntime::make_get_set('VimVsanHostDiskMapInfoEx', 'mapping', 'isMounted', 'unlockedEncrypted', 'isAllFlash', 'isDataEfficiency', 'encryptionInfo');
 
 
 sub get_property_list {
@@ -80699,6 +87374,112 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VimVsanHostDiskMappingCreationSpec', 'host', 'cacheDisks', 'capacityDisks', 'creationType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostEncryptionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['kekId', undef, undef, 0],
+   ['hostKeyId', undef, undef, 0],
+   ['kmipServers', 'KmipServerSpec', 1, 0],
+   ['kmsServerCerts', undef, 1, 0],
+   ['clientKey', undef, undef, 0],
+   ['clientCert', undef, undef, 0],
+   ['dekGenerationId', undef, undef, 0],
+   ['changing', 'boolean', undef, 0],
+   ['eraseDisksBeforeUse', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostEncryptionInfo', 'enabled', 'kekId', 'hostKeyId', 'kmipServers', 'kmsServerCerts', 'clientKey', 'clientCert', 'dekGenerationId', 'changing', 'eraseDisksBeforeUse');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostIpConfigEx;
+our @ISA = qw(VsanHostIpConfig);
+
+our @property_list = (
+   ['upstreamIpV6Address', undef, undef, 0],
+   ['downstreamIpV6Address', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostIpConfigEx', 'upstreamIpV6Address', 'downstreamIpV6Address');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostPortConfigEx;
+our @ISA = qw(VsanHostConfigInfoNetworkInfoPortConfig);
+
+our @property_list = (
+   ['trafficTypes', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostPortConfigEx', 'trafficTypes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostRuntimeStats;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['resyncIopsInfo', 'ResyncIopsInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostRuntimeStats', 'resyncIopsInfo');
 
 
 sub get_property_list {
@@ -80773,6 +87554,85 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVimVsanHostVsanHostCapability', 'VimVsanHostVsanHostCapability');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanWhatIfEvacDetail;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['success', 'boolean', undef, 0],
+   ['bytesToSync', undef, undef, 0],
+   ['inaccessibleObjects', undef, 1, 0],
+   ['incompliantObjects', undef, 1, 0],
+   ['extraSpaceNeeded', undef, undef, 0],
+   ['failedDueToInaccessibleObjects', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanWhatIfEvacDetail', 'success', 'bytesToSync', 'inaccessibleObjects', 'incompliantObjects', 'extraSpaceNeeded', 'failedDueToInaccessibleObjects');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanWhatIfEvacResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['noAction', 'VsanWhatIfEvacDetail', undef, 1],
+   ['ensureAccess', 'VsanWhatIfEvacDetail', undef, 1],
+   ['evacAllData', 'VsanWhatIfEvacDetail', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanWhatIfEvacResult', 'noAction', 'ensureAccess', 'evacAllData');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanBrokenDiskChainIssue;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
+
+our @property_list = (
+   ['uuids', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanBrokenDiskChainIssue', 'uuids');
 
 
 sub get_property_list {
@@ -80940,6 +87800,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanObjectPolicyIssue', 'uuids');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanUnknownScanIssue;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
+
+our @property_list = (
+   ['uuids', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanUnknownScanIssue', 'uuids');
 
 
 sub get_property_list {
@@ -81335,6 +88219,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package HealthUpdateInfoComponentType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSystemConnectionState;
 our @ISA = qw(SimpleType);
 
@@ -81365,6 +88259,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package HostCryptoState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HttpNfcLeaseState;
 our @ISA = qw(SimpleType);
 
@@ -81376,6 +88280,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package IoFilterOperation;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package IoFilterType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -81825,6 +88739,26 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package ClusterInfraUpdateHaConfigInfoBehaviorType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterInfraUpdateHaConfigInfoRemediationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ClusterDasAamNodeStateDasState;
 our @ISA = qw(SimpleType);
 
@@ -81915,6 +88849,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package ClusterHostInfraUpdateHaModeActionOperationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostPowerOperationType;
 our @ISA = qw(SimpleType);
 
@@ -81976,6 +88920,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package ClusterVmComponentProtectionSettingsVmReactionOnAPDCleared;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterVmReadinessReadyCondition;
 our @ISA = qw(SimpleType);
 
 1;
@@ -82086,6 +89040,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VmwareDistributedVirtualSwitchPvlanPortType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VMwareDVSVspanSessionEncapType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -82206,6 +89170,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VmFailedStartingSecondaryEventFailureReason;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package DvsEventPortBlockState;
 our @ISA = qw(SimpleType);
 
 1;
@@ -82416,6 +89390,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package NumVirtualCpusIncompatibleReason;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package QuarantineModeFaultFaultType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -82686,6 +89670,26 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package HostNasVolumeSecurityType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostGraphicsConfigGraphicsType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostGraphicsConfigSharedPassthruAssignmentPolicy;
 our @ISA = qw(SimpleType);
 
 1;
@@ -83085,6 +90089,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package HostProtocolEndpointProtocolEndpointType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostFirewallRuleDirection;
 our @ISA = qw(SimpleType);
 
@@ -83116,6 +90130,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package HostRuntimeInfoNetStackInstanceRuntimeInfoState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ScsiDiskType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -83185,6 +90209,26 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package SoftwarePackageVibType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package SoftwarePackageConstraint;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSystemIdentificationInfoIdentifier;
 our @ISA = qw(SimpleType);
 
@@ -83236,6 +90280,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package HostVmciAccessManagerMode;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostVmfsVolumeUnmapPriority;
 our @ISA = qw(SimpleType);
 
 1;
@@ -83485,6 +90539,56 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VchaState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaNodeRole;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterMode;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaClusterState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VchaNodeState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineBootOptionsNetworkBootProtocolType;
 our @ISA = qw(SimpleType);
 
@@ -83516,6 +90620,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VirtualMachineConfigSpecNpivWwnOp;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineConfigSpecEncryptedVMotionModes;
 our @ISA = qw(SimpleType);
 
 1;
@@ -83656,6 +90770,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VirtualMachineToolsRunningStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineToolsInstallType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -83826,6 +90950,16 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VirtualMachineUsbInfoFamily;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineWindowsQuiesceSpecVssBackupContext;
 our @ISA = qw(SimpleType);
 
 1;
@@ -84155,6 +91289,26 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package BaseConfigInfoDiskFileBackingInfoProvisioningType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VStorageObjectConsumptionType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ObjectUpdateKind;
 our @ISA = qw(SimpleType);
 
@@ -84166,6 +91320,36 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package PropertyChangeOp;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanCompositeConstraintConjoinerEnum;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMassCollectorObjectCollectionEnum;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPropertyConstraintComparatorEnum;
 our @ISA = qw(SimpleType);
 
 1;
@@ -84195,6 +91379,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanCapabilityStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterHealthActionVsanClusterHealthActionIdEnum;
 our @ISA = qw(SimpleType);
 
@@ -84215,7 +91409,47 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanIscsiLUNCommonInfoVsanIscsiLUNStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetAuthSpecVsanIscsiTargetAuthType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIscsiTargetServiceProcessStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanObjectSpaceSummaryVsanObjectTypeEnum;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanPerfDiagnosticQueryType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -84275,6 +91509,26 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanDiskBalanceState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanEncryptionIssue;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanObjectHealthVsanObjectHealthState;
 our @ISA = qw(SimpleType);
 
@@ -84285,7 +91539,77 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanSmartParameterType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHealthPerspective;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VimVsanVsanScanObjectsIssueVsanScanObjectsIssueType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanUpdateItemType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VimVsanVsanVcsaDeploymentPhase;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVsanHostDiskMappingCreationSpecDiskMappingCreationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostPortConfigExTrafficType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostStatsType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -84447,7 +91771,7 @@ sub AddAuthorizationRole {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['privIds', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddAuthorizationRole', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84457,7 +91781,7 @@ sub RemoveAuthorizationRole {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['roleId', undef],['failIfUsed', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveAuthorizationRole', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84467,7 +91791,7 @@ sub UpdateAuthorizationRole {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['roleId', undef],['newName', undef],['privIds', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateAuthorizationRole', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84477,7 +91801,7 @@ sub MergePermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['srcRoleId', undef],['dstRoleId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MergePermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84487,7 +91811,7 @@ sub RetrieveRolePermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['roleId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveRolePermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Permission', 1);
 }
@@ -84497,7 +91821,7 @@ sub RetrieveEntityPermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['inherited', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveEntityPermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Permission', 1);
 }
@@ -84507,7 +91831,7 @@ sub RetrieveAllPermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveAllPermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Permission', 1);
 }
@@ -84517,7 +91841,7 @@ sub SetEntityPermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['permission', 'Permission'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetEntityPermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84527,7 +91851,7 @@ sub ResetEntityPermissions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['permission', 'Permission'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetEntityPermissions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84537,7 +91861,7 @@ sub RemoveEntityPermission {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['user', undef],['isGroup', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveEntityPermission', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84547,7 +91871,7 @@ sub HasPrivilegeOnEntity {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['sessionId', undef],['privId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HasPrivilegeOnEntity', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -84557,9 +91881,29 @@ sub HasPrivilegeOnEntities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['sessionId', undef],['privId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HasPrivilegeOnEntities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'EntityPrivilege', 1);
+}
+
+sub HasUserPrivilegeOnEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['entities', 'ManagedObjectReference'],['userName', undef],['privId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HasUserPrivilegeOnEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'EntityPrivilege', 1);
+}
+
+sub FetchUserPrivilegeOnEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['entities', 'ManagedObjectReference'],['userName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('FetchUserPrivilegeOnEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'UserPrivilegeResult', 1);
 }
 
 sub CertMgrRefreshCACertificatesAndCRLs_Task {
@@ -84567,7 +91911,7 @@ sub CertMgrRefreshCACertificatesAndCRLs_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CertMgrRefreshCACertificatesAndCRLs_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84577,7 +91921,7 @@ sub CertMgrRefreshCertificates_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CertMgrRefreshCertificates_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84587,7 +91931,7 @@ sub CertMgrRevokeCertificates_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CertMgrRevokeCertificates_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84597,7 +91941,7 @@ sub ReconfigureCluster_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'ClusterConfigSpec'],['modify', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureCluster_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84607,7 +91951,7 @@ sub ApplyRecommendation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ApplyRecommendation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84617,7 +91961,7 @@ sub CancelRecommendation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CancelRecommendation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84627,7 +91971,7 @@ sub RecommendHostsForVm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['pool', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RecommendHostsForVm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterHostRecommendation', 1);
 }
@@ -84637,7 +91981,7 @@ sub AddHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostConnectSpec'],['asConnected', undef],['resourcePool', 'ManagedObjectReference'],['license', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84647,7 +91991,7 @@ sub MoveInto_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveInto_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84657,7 +92001,7 @@ sub MoveHostInto_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['resourcePool', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveHostInto_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84667,7 +92011,7 @@ sub RefreshRecommendation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshRecommendation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84677,7 +92021,7 @@ sub EvcManager {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EvcManager', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84687,7 +92031,7 @@ sub RetrieveDasAdvancedRuntimeInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveDasAdvancedRuntimeInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterDasAdvancedRuntimeInfo', 0);
 }
@@ -84697,7 +92041,7 @@ sub ClusterEnterMaintenanceMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['option', 'OptionValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ClusterEnterMaintenanceMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterEnterMaintenanceResult', 0);
 }
@@ -84707,7 +92051,7 @@ sub PlaceVm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['placementSpec', 'PlacementSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PlaceVm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PlacementResult', 0);
 }
@@ -84717,7 +92061,7 @@ sub FindRulesForVm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindRulesForVm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterRuleInfo', 1);
 }
@@ -84727,7 +92071,7 @@ sub StampAllRulesWithUuid_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StampAllRulesWithUuid_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84737,7 +92081,7 @@ sub GetResourceUsage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetResourceUsage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterResourceUsageSummary', 0);
 }
@@ -84747,7 +92091,7 @@ sub ReconfigureComputeResource_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'ComputeResourceConfigSpec'],['modify', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureComputeResource_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84757,7 +92101,7 @@ sub AddCustomFieldDef {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['moType', undef],['fieldDefPolicy', 'PrivilegePolicyDef'],['fieldPolicy', 'PrivilegePolicyDef'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddCustomFieldDef', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'CustomFieldDef', 0);
 }
@@ -84767,7 +92111,7 @@ sub RemoveCustomFieldDef {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveCustomFieldDef', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84777,7 +92121,7 @@ sub RenameCustomFieldDef {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RenameCustomFieldDef', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84787,7 +92131,7 @@ sub SetField {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['key', undef],['value', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetField', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84797,7 +92141,7 @@ sub DoesCustomizationSpecExist {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DoesCustomizationSpecExist', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84807,7 +92151,7 @@ sub GetCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'CustomizationSpecItem', 0);
 }
@@ -84817,7 +92161,7 @@ sub CreateCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['item', 'CustomizationSpecItem'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84827,7 +92171,7 @@ sub OverwriteCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['item', 'CustomizationSpecItem'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('OverwriteCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84837,7 +92181,7 @@ sub DeleteCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84847,7 +92191,7 @@ sub DuplicateCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['newName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DuplicateCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84857,7 +92201,7 @@ sub RenameCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['newName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RenameCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84867,7 +92211,7 @@ sub CustomizationSpecItemToXml {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['item', 'CustomizationSpecItem'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CustomizationSpecItemToXml', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84877,7 +92221,7 @@ sub XmlToCustomizationSpecItem {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['specItemXml', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('XmlToCustomizationSpecItem', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'CustomizationSpecItem', 0);
 }
@@ -84887,7 +92231,7 @@ sub CheckCustomizationResources {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['guestOs', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckCustomizationResources', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84897,7 +92241,7 @@ sub QueryConnectionInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hostname', undef],['port', undef],['username', undef],['password', undef],['sslThumbprint', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConnectionInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostConnectInfo', 0);
 }
@@ -84907,7 +92251,7 @@ sub QueryConnectionInfoViaSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostConnectSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConnectionInfoViaSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostConnectInfo', 0);
 }
@@ -84917,7 +92261,7 @@ sub PowerOnMultiVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['option', 'OptionValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerOnMultiVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84927,7 +92271,7 @@ sub queryDatacenterConfigOptionDescriptor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('queryDatacenterConfigOptionDescriptor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineConfigOptionDescriptor', 1);
 }
@@ -84937,7 +92281,7 @@ sub ReconfigureDatacenter_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DatacenterConfigSpec'],['modify', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureDatacenter_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84947,7 +92291,7 @@ sub RefreshDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84957,7 +92301,7 @@ sub RefreshDatastoreStorageInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshDatastoreStorageInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84967,7 +92311,7 @@ sub UpdateVirtualMachineFiles_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mountPathDatastoreMapping', 'DatastoreMountPathDatastorePair'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateVirtualMachineFiles_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -84977,7 +92321,7 @@ sub RenameDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['newName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RenameDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84987,7 +92331,7 @@ sub DestroyDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -84997,7 +92341,7 @@ sub DatastoreEnterMaintenanceMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DatastoreEnterMaintenanceMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'StoragePlacementResult', 0);
 }
@@ -85007,8 +92351,18 @@ sub DatastoreExitMaintenanceMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DatastoreExitMaintenanceMode_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub UpdateVVolVirtualMachineFiles_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['failoverPair', 'DatastoreVVolContainerFailoverPair'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateVVolVirtualMachineFiles_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
@@ -85017,7 +92371,7 @@ sub CreateDirectory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['displayName', undef],['policy', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDirectory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85027,8 +92381,18 @@ sub DeleteDirectory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['datastorePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteDirectory', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ConvertNamespacePathToUuidPath {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['namespaceUrl', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ConvertNamespacePathToUuidPath', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -85037,7 +92401,7 @@ sub QueryDescriptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDescriptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DiagnosticManagerLogDescriptor', 1);
 }
@@ -85047,7 +92411,7 @@ sub BrowseDiagnosticLog {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['key', undef],['start', undef],['lines', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('BrowseDiagnosticLog', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DiagnosticManagerLogHeader', 0);
 }
@@ -85057,7 +92421,7 @@ sub GenerateLogBundles_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['includeDefault', undef],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GenerateLogBundles_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85067,7 +92431,7 @@ sub FetchDVPortKeys {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['criteria', 'DistributedVirtualSwitchPortCriteria'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FetchDVPortKeys', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -85077,7 +92441,7 @@ sub FetchDVPorts {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['criteria', 'DistributedVirtualSwitchPortCriteria'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FetchDVPorts', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DistributedVirtualPort', 1);
 }
@@ -85087,7 +92451,7 @@ sub QueryUsedVlanIdInDvs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryUsedVlanIdInDvs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -85097,7 +92461,7 @@ sub ReconfigureDvs_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DVSConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureDvs_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85107,7 +92471,7 @@ sub PerformDvsProductSpecOperation_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['operation', undef],['productSpec', 'DistributedVirtualSwitchProductSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PerformDvsProductSpecOperation_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85117,7 +92481,7 @@ sub MergeDvs_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dvs', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MergeDvs_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85127,7 +92491,7 @@ sub AddDVPortgroup_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DVPortgroupConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddDVPortgroup_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85137,7 +92501,7 @@ sub MoveDVPort_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portKey', undef],['destinationPortgroupKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveDVPort_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85147,7 +92511,7 @@ sub UpdateDvsCapability {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['capability', 'DVSCapability'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDvsCapability', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85157,7 +92521,7 @@ sub ReconfigureDVPort_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['port', 'DVPortConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureDVPort_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85167,7 +92531,7 @@ sub RefreshDVPortState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portKeys', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshDVPortState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85177,7 +92541,7 @@ sub RectifyDvsHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RectifyDvsHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85187,7 +92551,7 @@ sub UpdateNetworkResourcePool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'DVSNetworkResourcePoolConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateNetworkResourcePool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85197,7 +92561,7 @@ sub AddNetworkResourcePool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'DVSNetworkResourcePoolConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddNetworkResourcePool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85207,7 +92571,7 @@ sub RemoveNetworkResourcePool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveNetworkResourcePool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85217,7 +92581,7 @@ sub DvsReconfigureVmVnicNetworkResourcePool_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'DvsVmVnicResourcePoolConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DvsReconfigureVmVnicNetworkResourcePool_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85227,7 +92591,7 @@ sub EnableNetworkResourceManagement {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['enable', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableNetworkResourceManagement', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85237,7 +92601,7 @@ sub DVSRollback_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entityBackup', 'EntityBackupConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DVSRollback_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85247,7 +92611,7 @@ sub CreateDVPortgroup_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DVPortgroupConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDVPortgroup_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85257,7 +92621,7 @@ sub UpdateDVSHealthCheckConfig_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['healthCheckConfig', 'DVSHealthCheckConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDVSHealthCheckConfig_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85267,7 +92631,7 @@ sub LookupDvPortGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portgroupKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LookupDvPortGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85277,7 +92641,7 @@ sub QueryConfigOptionDescriptor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConfigOptionDescriptor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineConfigOptionDescriptor', 1);
 }
@@ -85287,7 +92651,7 @@ sub QueryConfigOption {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConfigOption', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineConfigOption', 0);
 }
@@ -85297,7 +92661,7 @@ sub QueryConfigOptionEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'EnvironmentBrowserConfigOptionQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConfigOptionEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineConfigOption', 0);
 }
@@ -85307,7 +92671,7 @@ sub QueryConfigTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConfigTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ConfigTarget', 0);
 }
@@ -85317,7 +92681,7 @@ sub QueryTargetCapabilities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryTargetCapabilities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostCapability', 0);
 }
@@ -85327,7 +92691,7 @@ sub setCustomValue {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],['value', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('setCustomValue', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85337,7 +92701,7 @@ sub UnregisterExtension {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnregisterExtension', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85347,7 +92711,7 @@ sub FindExtension {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindExtension', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Extension', 0);
 }
@@ -85357,7 +92721,7 @@ sub RegisterExtension {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extension', 'Extension'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RegisterExtension', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85367,7 +92731,7 @@ sub UpdateExtension {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extension', 'Extension'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateExtension', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85377,7 +92741,7 @@ sub GetPublicKey {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetPublicKey', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85387,7 +92751,7 @@ sub SetPublicKey {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],['publicKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetPublicKey', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85397,7 +92761,7 @@ sub SetExtensionCertificate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],['certificatePem', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetExtensionCertificate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85407,7 +92771,7 @@ sub QueryManagedBy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryManagedBy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -85417,7 +92781,7 @@ sub QueryExtensionIpAllocationUsage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKeys', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryExtensionIpAllocationUsage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ExtensionManagerIpAllocationUsage', 1);
 }
@@ -85427,7 +92791,7 @@ sub MoveDatastoreFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sourceName', undef],['sourceDatacenter', 'ManagedObjectReference'],['destinationName', undef],['destinationDatacenter', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveDatastoreFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85437,7 +92801,7 @@ sub CopyDatastoreFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sourceName', undef],['sourceDatacenter', 'ManagedObjectReference'],['destinationName', undef],['destinationDatacenter', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CopyDatastoreFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85447,7 +92811,7 @@ sub DeleteDatastoreFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteDatastoreFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85457,7 +92821,7 @@ sub MakeDirectory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['createParentDirectories', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MakeDirectory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85467,7 +92831,7 @@ sub ChangeOwner {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['owner', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ChangeOwner', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85477,7 +92841,7 @@ sub CreateFolder {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateFolder', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85487,7 +92851,7 @@ sub MoveIntoFolder_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['list', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveIntoFolder_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85497,7 +92861,7 @@ sub CreateVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'VirtualMachineConfigSpec'],['pool', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85507,7 +92871,7 @@ sub RegisterVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['path', undef],['name', undef],['asTemplate', undef],['pool', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RegisterVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85517,7 +92881,7 @@ sub CreateCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['spec', 'ClusterConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85527,7 +92891,7 @@ sub CreateClusterEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['spec', 'ClusterConfigSpecEx'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateClusterEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85537,7 +92901,7 @@ sub AddStandaloneHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostConnectSpec'],['compResSpec', 'ComputeResourceConfigSpec'],['addConnected', undef],['license', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddStandaloneHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85547,7 +92911,7 @@ sub CreateDatacenter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDatacenter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85557,7 +92921,7 @@ sub UnregisterAndDestroy_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnregisterAndDestroy_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85567,7 +92931,7 @@ sub CreateDVS_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DVSCreateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDVS_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85577,9 +92941,219 @@ sub CreateStoragePod {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateStoragePod', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RegisterHealthUpdateProvider {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['healthUpdateInfo', 'HealthUpdateInfo'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RegisterHealthUpdateProvider', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UnregisterHealthUpdateProvider {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UnregisterHealthUpdateProvider', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryProviderList {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryProviderList', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
+}
+
+sub HasProvider {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HasProvider', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryProviderName {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryProviderName', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryHealthUpdateInfos {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryHealthUpdateInfos', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'HealthUpdateInfo', 1);
+}
+
+sub AddMonitoredEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['entities', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AddMonitoredEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RemoveMonitoredEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['entities', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveMonitoredEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryMonitoredEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryMonitoredEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
+}
+
+sub HasMonitoredEntity {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['entity', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HasMonitoredEntity', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryUnmonitoredHosts {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryUnmonitoredHosts', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
+}
+
+sub PostHealthUpdates {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['updates', 'HealthUpdate'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('PostHealthUpdates', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryHealthUpdates {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryHealthUpdates', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'HealthUpdate', 1);
+}
+
+sub AddFilter {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],['filterName', undef],['infoIds', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AddFilter', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryFilterList {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['providerId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryFilterList', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
+}
+
+sub QueryFilterName {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryFilterName', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryFilterInfoIds {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryFilterInfoIds', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
+}
+
+sub QueryFilterEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryFilterEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
+}
+
+sub AddFilterEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['entities', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AddFilterEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RemoveFilterEntities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['entities', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveFilterEntities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RemoveFilter {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveFilter', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub SetCollectorPageSize {
@@ -85587,7 +93161,7 @@ sub SetCollectorPageSize {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maxCount', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetCollectorPageSize', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85597,7 +93171,7 @@ sub RewindCollector {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RewindCollector', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85607,7 +93181,7 @@ sub ResetCollector {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetCollector', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85617,7 +93191,7 @@ sub DestroyCollector {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyCollector', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85627,7 +93201,7 @@ sub QueryTpmAttestationReport {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryTpmAttestationReport', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostTpmAttestationReport', 0);
 }
@@ -85637,7 +93211,7 @@ sub QueryHostConnectionInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryHostConnectionInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostConnectInfo', 0);
 }
@@ -85647,7 +93221,7 @@ sub UpdateSystemResources {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['resourceInfo', 'HostSystemResourceInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateSystemResources', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85657,7 +93231,7 @@ sub UpdateSystemSwapConfiguration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sysSwapConfig', 'HostSystemSwapConfiguration'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateSystemSwapConfiguration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85667,7 +93241,7 @@ sub ReconnectHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cnxSpec', 'HostConnectSpec'],['reconnectSpec', 'HostSystemReconnectSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconnectHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85677,7 +93251,7 @@ sub DisconnectHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisconnectHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85687,7 +93261,7 @@ sub EnterMaintenanceMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],['evacuatePoweredOffVms', undef],['maintenanceSpec', 'HostMaintenanceSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnterMaintenanceMode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85697,7 +93271,7 @@ sub ExitMaintenanceMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExitMaintenanceMode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85707,7 +93281,7 @@ sub RebootHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RebootHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85717,7 +93291,7 @@ sub ShutdownHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ShutdownHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85727,7 +93301,7 @@ sub PowerDownHostToStandBy_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeoutSec', undef],['evacuatePoweredOffVms', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerDownHostToStandBy_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85737,7 +93311,7 @@ sub PowerUpHostFromStandBy_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeoutSec', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerUpHostFromStandBy_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85747,7 +93321,7 @@ sub QueryMemoryOverhead {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['memorySize', undef],['videoRamSize', undef],['numVcpus', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryMemoryOverhead', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85757,7 +93331,7 @@ sub QueryMemoryOverheadEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmConfigInfo', 'VirtualMachineConfigInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryMemoryOverheadEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85767,7 +93341,7 @@ sub ReconfigureHostForDAS_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureHostForDAS_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85777,7 +93351,7 @@ sub UpdateFlags {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['flagInfo', 'HostFlagInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateFlags', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85787,7 +93361,7 @@ sub EnterLockdownMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnterLockdownMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85797,7 +93371,7 @@ sub ExitLockdownMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExitLockdownMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85807,7 +93381,7 @@ sub AcquireCimServicesTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireCimServicesTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostServiceTicket', 0);
 }
@@ -85817,7 +93391,7 @@ sub UpdateIpmi {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ipmiInfo', 'HostIpmiInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateIpmi', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85827,8 +93401,38 @@ sub RetrieveHardwareUptime {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveHardwareUptime', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub PrepareCrypto {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('PrepareCrypto', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub EnableCrypto {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keyPlain', 'CryptoKeyPlain'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('EnableCrypto', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ConfigureCryptoKey {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keyId', 'CryptoKeyId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ConfigureCryptoKey', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -85837,7 +93441,7 @@ sub HttpNfcLeaseGetManifest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HttpNfcLeaseGetManifest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HttpNfcLeaseManifestEntry', 1);
 }
@@ -85847,7 +93451,7 @@ sub HttpNfcLeaseComplete {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HttpNfcLeaseComplete', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85857,7 +93461,7 @@ sub HttpNfcLeaseAbort {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['fault', 'LocalizedMethodFault'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HttpNfcLeaseAbort', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85867,7 +93471,7 @@ sub HttpNfcLeaseProgress {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['percent', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HttpNfcLeaseProgress', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85877,7 +93481,7 @@ sub InstallIoFilter_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vibUrl', undef],['compRes', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InstallIoFilter_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85887,7 +93491,7 @@ sub UninstallIoFilter_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['compRes', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UninstallIoFilter_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85897,7 +93501,7 @@ sub UpgradeIoFilter_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['compRes', 'ManagedObjectReference'],['vibUrl', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeIoFilter_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85907,7 +93511,7 @@ sub QueryIoFilterIssues {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['compRes', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryIoFilterIssues', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IoFilterQueryIssueResult', 0);
 }
@@ -85917,7 +93521,7 @@ sub QueryIoFilterInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['compRes', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryIoFilterInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterIoFilterInfo', 1);
 }
@@ -85927,7 +93531,7 @@ sub ResolveInstallationErrorsOnHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResolveInstallationErrorsOnHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85937,7 +93541,7 @@ sub ResolveInstallationErrorsOnCluster_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResolveInstallationErrorsOnCluster_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -85947,7 +93551,7 @@ sub QueryDisksUsingFilter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filterId', undef],['compRes', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDisksUsingFilter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualDiskId', 1);
 }
@@ -85957,7 +93561,7 @@ sub QueryIpPools {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryIpPools', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IpPool', 1);
 }
@@ -85967,7 +93571,7 @@ sub CreateIpPool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['pool', 'IpPool'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateIpPool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85977,7 +93581,7 @@ sub UpdateIpPool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['pool', 'IpPool'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateIpPool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85987,7 +93591,7 @@ sub DestroyIpPool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['id', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyIpPool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -85997,7 +93601,7 @@ sub AllocateIpv4Address {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['poolId', undef],['allocationId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AllocateIpv4Address', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86007,7 +93611,7 @@ sub AllocateIpv6Address {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['poolId', undef],['allocationId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AllocateIpv6Address', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86017,7 +93621,7 @@ sub ReleaseIpAllocation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['poolId', undef],['allocationId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReleaseIpAllocation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86027,7 +93631,7 @@ sub QueryIPAllocations {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dc', 'ManagedObjectReference'],['poolId', undef],['extensionKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryIPAllocations', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IpPoolManagerIpAllocation', 1);
 }
@@ -86037,7 +93641,7 @@ sub UpdateAssignedLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', undef],['licenseKey', undef],['entityDisplayName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateAssignedLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseManagerLicenseInfo', 0);
 }
@@ -86047,7 +93651,7 @@ sub RemoveAssignedLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entityId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveAssignedLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86057,7 +93661,7 @@ sub QueryAssignedLicenses {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entityId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAssignedLicenses', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseAssignmentManagerLicenseAssignment', 1);
 }
@@ -86067,7 +93671,7 @@ sub QuerySupportedFeatures {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QuerySupportedFeatures', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseFeatureInfo', 1);
 }
@@ -86077,7 +93681,7 @@ sub QueryLicenseSourceAvailability {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryLicenseSourceAvailability', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseAvailabilityInfo', 1);
 }
@@ -86087,7 +93691,7 @@ sub QueryLicenseUsage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryLicenseUsage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseUsageInfo', 0);
 }
@@ -86097,7 +93701,7 @@ sub SetLicenseEdition {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['featureKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetLicenseEdition', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86107,7 +93711,7 @@ sub CheckLicenseFeature {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['featureKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckLicenseFeature', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86117,7 +93721,7 @@ sub EnableFeature {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['featureKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableFeature', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86127,7 +93731,7 @@ sub DisableFeature {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['featureKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableFeature', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86137,7 +93741,7 @@ sub ConfigureLicenseSource {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['licenseSource', 'LicenseSource'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureLicenseSource', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86147,7 +93751,7 @@ sub UpdateLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],['labels', 'KeyValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseManagerLicenseInfo', 0);
 }
@@ -86157,7 +93761,7 @@ sub AddLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],['labels', 'KeyValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseManagerLicenseInfo', 0);
 }
@@ -86167,7 +93771,7 @@ sub RemoveLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86177,7 +93781,7 @@ sub DecodeLicense {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DecodeLicense', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LicenseManagerLicenseInfo', 0);
 }
@@ -86187,7 +93791,7 @@ sub UpdateLicenseLabel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],['labelKey', undef],['labelValue', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateLicenseLabel', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86197,7 +93801,7 @@ sub RemoveLicenseLabel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['licenseKey', undef],['labelKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveLicenseLabel', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86207,7 +93811,7 @@ sub Reload {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Reload', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86217,7 +93821,7 @@ sub Rename_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['newName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Rename_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86227,7 +93831,7 @@ sub Destroy_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Destroy_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86237,7 +93841,7 @@ sub DestroyNetwork {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyNetwork', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86247,7 +93851,7 @@ sub LookupVmOverheadMemory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LookupVmOverheadMemory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86257,7 +93861,7 @@ sub ValidateHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ovfDescriptor', undef],['host', 'ManagedObjectReference'],['vhp', 'OvfValidateHostParams'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ValidateHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OvfValidateHostResult', 0);
 }
@@ -86267,7 +93871,7 @@ sub ParseDescriptor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ovfDescriptor', undef],['pdp', 'OvfParseDescriptorParams'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ParseDescriptor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OvfParseDescriptorResult', 0);
 }
@@ -86277,7 +93881,7 @@ sub CreateImportSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ovfDescriptor', undef],['resourcePool', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['cisp', 'OvfCreateImportSpecParams'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateImportSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OvfCreateImportSpecResult', 0);
 }
@@ -86287,7 +93891,7 @@ sub CreateDescriptor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],['cdp', 'OvfCreateDescriptorParams'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDescriptor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OvfCreateDescriptorResult', 0);
 }
@@ -86297,7 +93901,7 @@ sub QueryPerfProviderSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPerfProviderSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfProviderSummary', 0);
 }
@@ -86307,7 +93911,7 @@ sub QueryAvailablePerfMetric {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['beginTime', undef],['endTime', undef],['intervalId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailablePerfMetric', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfMetricId', 1);
 }
@@ -86317,7 +93921,7 @@ sub QueryPerfCounter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['counterId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPerfCounter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfCounterInfo', 1);
 }
@@ -86327,7 +93931,7 @@ sub QueryPerfCounterByLevel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['level', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPerfCounterByLevel', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfCounterInfo', 1);
 }
@@ -86337,7 +93941,7 @@ sub QueryPerf {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['querySpec', 'PerfQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPerf', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfEntityMetricBase', 1);
 }
@@ -86347,7 +93951,7 @@ sub QueryPerfComposite {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['querySpec', 'PerfQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPerfComposite', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PerfCompositeMetric', 0);
 }
@@ -86357,7 +93961,7 @@ sub CreatePerfInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['intervalId', 'PerfInterval'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreatePerfInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86367,7 +93971,7 @@ sub RemovePerfInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['samplePeriod', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemovePerfInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86377,7 +93981,7 @@ sub UpdatePerfInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['interval', 'PerfInterval'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdatePerfInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86387,7 +93991,7 @@ sub UpdateCounterLevelMapping {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['counterLevelMap', 'PerformanceManagerCounterLevelMapping'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateCounterLevelMapping', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86397,7 +94001,7 @@ sub ResetCounterLevelMapping {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['counters', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetCounterLevelMapping', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86407,7 +94011,7 @@ sub EstimateDatabaseSize {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dbSizeParam', 'DatabaseSizeParam'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EstimateDatabaseSize', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DatabaseSizeEstimate', 0);
 }
@@ -86417,7 +94021,7 @@ sub UpdateConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['config', 'ResourceConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86427,7 +94031,7 @@ sub MoveIntoResourcePool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['list', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveIntoResourcePool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86437,7 +94041,7 @@ sub UpdateChildResourceConfiguration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'ResourceConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateChildResourceConfiguration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86447,7 +94051,7 @@ sub CreateResourcePool {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['spec', 'ResourceConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateResourcePool', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86457,7 +94061,7 @@ sub DestroyChildren {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyChildren', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86467,7 +94071,7 @@ sub CreateVApp {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['resSpec', 'ResourceConfigSpec'],['configSpec', 'VAppConfigSpec'],['vmFolder', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateVApp', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86477,7 +94081,7 @@ sub CreateChildVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'VirtualMachineConfigSpec'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateChildVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86487,7 +94091,7 @@ sub RegisterChildVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['path', undef],['name', undef],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RegisterChildVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86497,7 +94101,7 @@ sub ImportVApp {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'ImportSpec'],['folder', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ImportVApp', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86507,7 +94111,7 @@ sub QueryResourceConfigOption {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryResourceConfigOption', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ResourceConfigOption', 0);
 }
@@ -86517,7 +94121,7 @@ sub RefreshRuntime {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshRuntime', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86527,7 +94131,7 @@ sub FindByUuid {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['uuid', undef],['vmSearch', undef],['instanceUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindByUuid', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86537,7 +94141,7 @@ sub FindByDatastorePath {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['path', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindByDatastorePath', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86547,7 +94151,7 @@ sub FindByDnsName {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['dnsName', undef],['vmSearch', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindByDnsName', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86557,7 +94161,7 @@ sub FindByIp {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['ip', undef],['vmSearch', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindByIp', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86567,7 +94171,7 @@ sub FindByInventoryPath {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['inventoryPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindByInventoryPath', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86577,7 +94181,7 @@ sub FindChild {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindChild', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86587,7 +94191,7 @@ sub FindAllByUuid {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['uuid', undef],['vmSearch', undef],['instanceUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindAllByUuid', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -86597,7 +94201,7 @@ sub FindAllByDnsName {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['dnsName', undef],['vmSearch', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindAllByDnsName', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -86607,7 +94211,7 @@ sub FindAllByIp {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datacenter', 'ManagedObjectReference'],['ip', undef],['vmSearch', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindAllByIp', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -86617,7 +94221,7 @@ sub CurrentTime {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CurrentTime', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86627,7 +94231,7 @@ sub RetrieveServiceContent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveServiceContent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ServiceContent', 0);
 }
@@ -86637,7 +94241,7 @@ sub ValidateMigration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['state', 'VirtualMachinePowerState'],['testType', undef],['pool', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ValidateMigration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Event', 1);
 }
@@ -86647,7 +94251,7 @@ sub QueryVMotionCompatibility {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['compatibility', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVMotionCompatibility', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVMotionCompatibility', 1);
 }
@@ -86657,7 +94261,7 @@ sub RetrieveProductComponents {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveProductComponents', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProductComponentInfo', 1);
 }
@@ -86667,7 +94271,7 @@ sub QueryServiceList {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['serviceName', undef],['location', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryServiceList', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ServiceManagerServiceInfo', 1);
 }
@@ -86677,7 +94281,7 @@ sub UpdateServiceMessage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['message', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateServiceMessage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86687,7 +94291,7 @@ sub LoginByToken {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LoginByToken', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86697,7 +94301,7 @@ sub Login {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['userName', undef],['password', undef],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Login', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86707,7 +94311,7 @@ sub LoginBySSPI {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['base64Token', undef],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LoginBySSPI', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86717,7 +94321,7 @@ sub Logout {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Logout', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86727,7 +94331,7 @@ sub AcquireLocalTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['userName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireLocalTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'SessionManagerLocalTicket', 0);
 }
@@ -86737,7 +94341,7 @@ sub AcquireGenericServiceTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'SessionManagerServiceRequestSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireGenericServiceTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'SessionManagerGenericServiceTicket', 0);
 }
@@ -86747,7 +94351,7 @@ sub TerminateSession {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sessionId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TerminateSession', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86757,7 +94361,7 @@ sub SetLocale {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetLocale', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86767,7 +94371,7 @@ sub LoginExtensionBySubjectName {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LoginExtensionBySubjectName', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86777,7 +94381,7 @@ sub LoginExtensionByCertificate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['extensionKey', undef],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LoginExtensionByCertificate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86787,7 +94391,7 @@ sub ImpersonateUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['userName', undef],['locale', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ImpersonateUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86797,7 +94401,7 @@ sub SessionIsActive {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sessionID', undef],['userName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SessionIsActive', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86807,7 +94411,7 @@ sub AcquireCloneTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireCloneTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86817,7 +94421,7 @@ sub CloneSession {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cloneTicket', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CloneSession', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSession', 0);
 }
@@ -86827,7 +94431,7 @@ sub ExecuteSimpleCommand {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['arguments', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExecuteSimpleCommand', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86837,7 +94441,7 @@ sub ConfigureDatastoreIORM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['spec', 'StorageIORMConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureDatastoreIORM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86847,7 +94451,7 @@ sub QueryIORMConfigOption {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryIORMConfigOption', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'StorageIORMConfigOption', 0);
 }
@@ -86857,7 +94461,7 @@ sub QueryDatastorePerformanceSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDatastorePerformanceSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'StoragePerformanceSummary', 1);
 }
@@ -86867,7 +94471,7 @@ sub ApplyStorageDrsRecommendationToPod_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pod', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ApplyStorageDrsRecommendationToPod_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86877,7 +94481,7 @@ sub ApplyStorageDrsRecommendation_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ApplyStorageDrsRecommendation_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86887,7 +94491,7 @@ sub CancelStorageDrsRecommendation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CancelStorageDrsRecommendation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86897,7 +94501,7 @@ sub RefreshStorageDrsRecommendation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pod', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshStorageDrsRecommendation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86907,7 +94511,7 @@ sub ConfigureStorageDrsForPod_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pod', 'ManagedObjectReference'],['spec', 'StorageDrsConfigSpec'],['modify', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureStorageDrsForPod_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86917,7 +94521,7 @@ sub RecommendDatastores {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['storageSpec', 'StoragePlacementSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RecommendDatastores', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'StoragePlacementResult', 0);
 }
@@ -86927,7 +94531,7 @@ sub CancelTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CancelTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86937,7 +94541,7 @@ sub UpdateProgress {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['percentDone', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateProgress', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86947,7 +94551,7 @@ sub SetTaskState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['state', 'TaskInfoState'],['result', undef],['fault', 'LocalizedMethodFault'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetTaskState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86957,7 +94561,7 @@ sub SetTaskDescription {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['description', 'LocalizableMessage'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetTaskDescription', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -86967,7 +94571,7 @@ sub ReadNextTasks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maxCount', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReadNextTasks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'TaskInfo', 1);
 }
@@ -86977,7 +94581,7 @@ sub ReadPreviousTasks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maxCount', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReadPreviousTasks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'TaskInfo', 1);
 }
@@ -86987,7 +94591,7 @@ sub CreateCollectorForTasks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filter', 'TaskFilterSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateCollectorForTasks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -86997,7 +94601,7 @@ sub CreateTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],['taskTypeId', undef],['initiatedBy', undef],['cancelable', undef],['parentTaskKey', undef],['activationId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'TaskInfo', 0);
 }
@@ -87007,7 +94611,7 @@ sub RetrieveUserGroups {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['domain', undef],['searchStr', undef],['belongsToGroup', undef],['belongsToUser', undef],['exactMatch', undef],['findUsers', undef],['findGroups', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveUserGroups', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UserSearchResult', 1);
 }
@@ -87017,7 +94621,7 @@ sub UpdateVAppConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VAppConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateVAppConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87027,7 +94631,7 @@ sub UpdateLinkedChildren {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['addChangeSet', 'VirtualAppLinkInfo'],['removeSet', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateLinkedChildren', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87037,7 +94641,7 @@ sub CloneVApp_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['target', 'ManagedObjectReference'],['spec', 'VAppCloneSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CloneVApp_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87047,7 +94651,7 @@ sub ExportVApp {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExportVApp', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87057,7 +94661,7 @@ sub PowerOnVApp_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerOnVApp_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87067,7 +94671,7 @@ sub PowerOffVApp_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerOffVApp_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87077,7 +94681,7 @@ sub SuspendVApp_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SuspendVApp_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87087,7 +94691,7 @@ sub unregisterVApp_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('unregisterVApp_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87097,7 +94701,7 @@ sub CreateVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['spec', 'VirtualDiskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87107,7 +94711,7 @@ sub DeleteVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87117,7 +94721,7 @@ sub MoveVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sourceName', undef],['sourceDatacenter', 'ManagedObjectReference'],['destName', undef],['destDatacenter', 'ManagedObjectReference'],['force', undef],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87127,7 +94731,7 @@ sub CopyVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sourceName', undef],['sourceDatacenter', 'ManagedObjectReference'],['destName', undef],['destDatacenter', 'ManagedObjectReference'],['destSpec', 'VirtualDiskSpec'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CopyVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87137,7 +94741,7 @@ sub ExtendVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['newCapacityKb', undef],['eagerZero', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExtendVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87147,7 +94751,7 @@ sub QueryVirtualDiskFragmentation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVirtualDiskFragmentation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87157,7 +94761,7 @@ sub DefragmentVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DefragmentVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87167,7 +94771,7 @@ sub ShrinkVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['copy', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ShrinkVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87177,7 +94781,7 @@ sub InflateVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InflateVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87187,7 +94791,7 @@ sub EagerZeroVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EagerZeroVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87197,7 +94801,7 @@ sub ZeroFillVirtualDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ZeroFillVirtualDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87207,7 +94811,7 @@ sub SetVirtualDiskUuid {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],['uuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetVirtualDiskUuid', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87217,7 +94821,7 @@ sub QueryVirtualDiskUuid {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVirtualDiskUuid', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87227,7 +94831,7 @@ sub QueryVirtualDiskGeometry {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['datacenter', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVirtualDiskGeometry', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiskDimensionsChs', 0);
 }
@@ -87237,8 +94841,18 @@ sub ImportUnmanagedSnapshot {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vdisk', undef],['datacenter', 'ManagedObjectReference'],['vvolId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ImportUnmanagedSnapshot', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ReleaseManagedSnapshot {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['vdisk', undef],['datacenter', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ReleaseManagedSnapshot', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -87247,7 +94861,7 @@ sub RefreshStorageInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshStorageInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87257,8 +94871,18 @@ sub CreateSnapshot_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['description', undef],['memory', undef],['quiesce', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateSnapshot_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub CreateSnapshotEx_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['description', undef],['memory', undef],['quiesceSpec', 'VirtualMachineGuestQuiesceSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('CreateSnapshotEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
@@ -87267,7 +94891,7 @@ sub RevertToCurrentSnapshot_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['suppressPowerOn', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RevertToCurrentSnapshot_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87277,7 +94901,7 @@ sub RemoveAllSnapshots_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['consolidate', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveAllSnapshots_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87287,7 +94911,7 @@ sub ConsolidateVMDisks_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConsolidateVMDisks_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87297,7 +94921,7 @@ sub EstimateStorageForConsolidateSnapshots_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EstimateStorageForConsolidateSnapshots_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87307,7 +94931,7 @@ sub ReconfigVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VirtualMachineConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87317,7 +94941,7 @@ sub UpgradeVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['version', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87327,7 +94951,7 @@ sub ExtractOvfEnvironment {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExtractOvfEnvironment', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87337,7 +94961,7 @@ sub PowerOnVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerOnVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87347,7 +94971,7 @@ sub PowerOffVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PowerOffVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87357,7 +94981,7 @@ sub SuspendVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SuspendVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87367,7 +94991,7 @@ sub ResetVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87377,7 +95001,7 @@ sub ShutdownGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ShutdownGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87387,7 +95011,7 @@ sub RebootGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RebootGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87397,7 +95021,7 @@ sub StandbyGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StandbyGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87407,7 +95031,7 @@ sub AnswerVM {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['questionId', undef],['answerChoice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AnswerVM', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87417,7 +95041,7 @@ sub CustomizeVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'CustomizationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CustomizeVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87427,7 +95051,7 @@ sub CheckCustomizationSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'CustomizationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckCustomizationSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87437,7 +95061,7 @@ sub MigrateVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pool', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['priority', 'VirtualMachineMovePriority'],['state', 'VirtualMachinePowerState'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MigrateVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87447,7 +95071,7 @@ sub RelocateVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VirtualMachineRelocateSpec'],['priority', 'VirtualMachineMovePriority'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RelocateVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87457,7 +95081,7 @@ sub CloneVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['folder', 'ManagedObjectReference'],['name', undef],['spec', 'VirtualMachineCloneSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CloneVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87467,7 +95091,7 @@ sub ExportVm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExportVm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87477,7 +95101,7 @@ sub MarkAsTemplate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsTemplate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87487,7 +95111,7 @@ sub MarkAsVirtualMachine {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pool', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsVirtualMachine', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87497,7 +95121,7 @@ sub UnregisterVM {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnregisterVM', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87507,7 +95131,7 @@ sub ResetGuestInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetGuestInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87517,7 +95141,7 @@ sub MountToolsInstaller {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MountToolsInstaller', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87527,7 +95151,7 @@ sub UnmountToolsInstaller {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountToolsInstaller', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87537,7 +95161,7 @@ sub UpgradeTools_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['installerOptions', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeTools_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87547,7 +95171,7 @@ sub AcquireMksTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireMksTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineMksTicket', 0);
 }
@@ -87557,7 +95181,7 @@ sub AcquireTicket {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ticketType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireTicket', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualMachineTicket', 0);
 }
@@ -87567,7 +95191,7 @@ sub SetScreenResolution {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['width', undef],['height', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetScreenResolution', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87577,7 +95201,7 @@ sub DefragmentAllDisks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DefragmentAllDisks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87587,7 +95211,7 @@ sub CreateSecondaryVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateSecondaryVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87597,7 +95221,7 @@ sub CreateSecondaryVMEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['spec', 'FaultToleranceConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateSecondaryVMEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87607,7 +95231,7 @@ sub TurnOffFaultToleranceForVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TurnOffFaultToleranceForVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87617,7 +95241,7 @@ sub MakePrimaryVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MakePrimaryVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87627,7 +95251,7 @@ sub TerminateFaultTolerantVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TerminateFaultTolerantVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87637,7 +95261,7 @@ sub DisableSecondaryVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableSecondaryVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87647,7 +95271,7 @@ sub EnableSecondaryVM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableSecondaryVM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87657,7 +95281,7 @@ sub SetDisplayTopology {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['displays', 'VirtualMachineDisplayTopology'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetDisplayTopology', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87667,7 +95291,7 @@ sub StartRecording_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['description', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StartRecording_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87677,7 +95301,7 @@ sub StopRecording_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StopRecording_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87687,7 +95311,7 @@ sub StartReplaying_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['replaySnapshot', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StartReplaying_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87697,7 +95321,7 @@ sub StopReplaying_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StopReplaying_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87707,7 +95331,7 @@ sub PromoteDisks_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['unlink', undef],['disks', 'VirtualDisk'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PromoteDisks_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87717,9 +95341,19 @@ sub CreateScreenshot_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateScreenshot_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub PutUsbScanCodes {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'UsbScanCodeSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('PutUsbScanCodes', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub QueryChangedDiskAreas {
@@ -87727,7 +95361,7 @@ sub QueryChangedDiskAreas {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['snapshot', 'ManagedObjectReference'],['deviceKey', undef],['startOffset', undef],['changeId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryChangedDiskAreas', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DiskChangeInfo', 0);
 }
@@ -87737,7 +95371,7 @@ sub QueryUnownedFiles {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryUnownedFiles', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -87747,7 +95381,7 @@ sub reloadVirtualMachineFromPath_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configurationPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('reloadVirtualMachineFromPath_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87757,7 +95391,7 @@ sub QueryFaultToleranceCompatibility {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryFaultToleranceCompatibility', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LocalizedMethodFault', 1);
 }
@@ -87767,7 +95401,7 @@ sub QueryFaultToleranceCompatibilityEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['forLegacyFt', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryFaultToleranceCompatibilityEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'LocalizedMethodFault', 1);
 }
@@ -87777,7 +95411,7 @@ sub TerminateVM {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TerminateVM', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87787,9 +95421,29 @@ sub SendNMI {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SendNMI', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub AttachDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['diskId', 'ID'],['datastore', 'ManagedObjectReference'],['controllerKey', undef],['unitNumber', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AttachDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub DetachDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['diskId', 'ID'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('DetachDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub PerformVsanUpgradePreflightCheck {
@@ -87797,7 +95451,7 @@ sub PerformVsanUpgradePreflightCheck {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightCheck', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanUpgradeSystemPreflightCheckResult', 0);
 }
@@ -87807,7 +95461,7 @@ sub QueryVsanUpgradeStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVsanUpgradeStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanUpgradeSystemUpgradeStatus', 0);
 }
@@ -87817,7 +95471,7 @@ sub PerformVsanUpgrade_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['performObjectUpgrade', undef],['downgradeFormat', undef],['allowReducedRedundancy', undef],['excludeHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgrade_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87827,7 +95481,7 @@ sub RemoveAlarm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveAlarm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87837,7 +95491,7 @@ sub ReconfigureAlarm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'AlarmSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureAlarm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87847,7 +95501,7 @@ sub CreateAlarm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['spec', 'AlarmSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateAlarm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87857,7 +95511,7 @@ sub GetAlarm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetAlarm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -87867,7 +95521,7 @@ sub AreAlarmActionsEnabled {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AreAlarmActionsEnabled', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87877,7 +95531,7 @@ sub EnableAlarmActions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['enabled', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableAlarmActions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87887,7 +95541,7 @@ sub GetAlarmState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetAlarmState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'AlarmState', 1);
 }
@@ -87897,7 +95551,7 @@ sub AcknowledgeAlarm {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['alarm', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcknowledgeAlarm', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -87907,7 +95561,7 @@ sub ConfigureEvcMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['evcModeKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureEvcMode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87917,7 +95571,7 @@ sub DisableEvcMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableEvcMode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87927,7 +95581,7 @@ sub CheckConfigureEvcMode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['evcModeKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckConfigureEvcMode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87937,7 +95591,7 @@ sub CheckAddHostEvc_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cnxSpec', 'HostConnectSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckAddHostEvc_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87947,7 +95601,7 @@ sub ReconfigureDVPortgroup_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'DVPortgroupConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureDVPortgroup_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87957,7 +95611,7 @@ sub DVPortgroupRollback_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entityBackup', 'EntityBackupConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DVPortgroupRollback_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -87967,7 +95621,7 @@ sub QueryAvailableDvsSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['recommended', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailableDvsSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DistributedVirtualSwitchProductSpec', 1);
 }
@@ -87977,7 +95631,7 @@ sub QueryCompatibleHostForNewDvs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['container', 'ManagedObjectReference'],['recursive', undef],['switchProductSpec', 'DistributedVirtualSwitchProductSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryCompatibleHostForNewDvs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -87987,7 +95641,7 @@ sub QueryCompatibleHostForExistingDvs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['container', 'ManagedObjectReference'],['recursive', undef],['dvs', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryCompatibleHostForExistingDvs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -87997,7 +95651,7 @@ sub QueryDvsCompatibleHostSpec {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['switchProductSpec', 'DistributedVirtualSwitchProductSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDvsCompatibleHostSpec', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DistributedVirtualSwitchHostProductSpec', 1);
 }
@@ -88007,7 +95661,7 @@ sub QueryDvsFeatureCapability {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['switchProductSpec', 'DistributedVirtualSwitchProductSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDvsFeatureCapability', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DVSFeatureCapability', 0);
 }
@@ -88017,7 +95671,7 @@ sub QueryDvsByUuid {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDvsByUuid', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88027,7 +95681,7 @@ sub QueryDvsConfigTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['dvs', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDvsConfigTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DVSManagerDvsConfigTarget', 0);
 }
@@ -88037,7 +95691,7 @@ sub QueryDvsCheckCompatibility {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hostContainer', 'DistributedVirtualSwitchManagerHostContainer'],['dvsProductSpec', 'DistributedVirtualSwitchManagerDvsProductSpec'],['hostFilterSpec', 'DistributedVirtualSwitchManagerHostDvsFilterSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDvsCheckCompatibility', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DistributedVirtualSwitchManagerCompatibilityResult', 1);
 }
@@ -88047,7 +95701,7 @@ sub RectifyDvsOnHost_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RectifyDvsOnHost_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88057,7 +95711,7 @@ sub DVSManagerExportEntity_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['selectionSet', 'SelectionSet'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DVSManagerExportEntity_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88067,7 +95721,7 @@ sub DVSManagerImportEntity_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entityBackup', 'EntityBackupConfig'],['importType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DVSManagerImportEntity_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88077,7 +95731,7 @@ sub DVSManagerLookupDvPortGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['switchUuid', undef],['portgroupKey', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DVSManagerLookupDvPortGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88087,9 +95741,229 @@ sub UpdateDVSLacpGroupConfig_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lacpGroupSpec', 'VMwareDvsLacpGroupSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDVSLacpGroupConfig_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub AddKey {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['key', 'CryptoKeyPlain'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AddKey', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub AddKeys {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keys', 'CryptoKeyPlain'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AddKeys', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CryptoKeyResult', 1);
+}
+
+sub RemoveKey {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['key', 'CryptoKeyId'],['force', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveKey', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RemoveKeys {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keys', 'CryptoKeyId'],['force', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveKeys', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CryptoKeyResult', 1);
+}
+
+sub ListKeys {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['limit', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ListKeys', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CryptoKeyId', 1);
+}
+
+sub RegisterKmipServer {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['server', 'KmipServerSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RegisterKmipServer', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub MarkDefault {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['clusterId', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('MarkDefault', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UpdateKmipServer {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['server', 'KmipServerSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateKmipServer', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RemoveKmipServer {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['clusterId', 'KeyProviderId'],['serverName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RemoveKmipServer', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ListKmipServers {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['limit', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ListKmipServers', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'KmipClusterInfo', 1);
+}
+
+sub RetrieveKmipServersStatus_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['clusters', 'KmipClusterInfo'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveKmipServersStatus_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub GenerateKey {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keyProvider', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('GenerateKey', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CryptoKeyResult', 0);
+}
+
+sub RetrieveKmipServerCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['keyProvider', 'KeyProviderId'],['server', 'KmipServerInfo'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveKmipServerCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CryptoManagerKmipServerCertInfo', 0);
+}
+
+sub UploadKmipServerCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],['certificate', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UploadKmipServerCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub GenerateSelfSignedClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('GenerateSelfSignedClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub GenerateClientCsr {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('GenerateClientCsr', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RetrieveSelfSignedClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveSelfSignedClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RetrieveClientCsr {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveClientCsr', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RetrieveClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UpdateSelfSignedClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],['certificate', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateSelfSignedClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UpdateKmsSignedCsrClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],['certificate', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateKmsSignedCsrClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UploadClientCert {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'KeyProviderId'],['certificate', undef],['privateKey', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UploadClientCert', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub ReadNextEvents {
@@ -88097,7 +95971,7 @@ sub ReadNextEvents {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maxCount', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReadNextEvents', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Event', 1);
 }
@@ -88107,7 +95981,7 @@ sub ReadPreviousEvents {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maxCount', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReadPreviousEvents', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Event', 1);
 }
@@ -88117,7 +95991,7 @@ sub RetrieveArgumentDescription {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['eventTypeId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveArgumentDescription', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'EventArgDesc', 1);
 }
@@ -88127,7 +96001,7 @@ sub CreateCollectorForEvents {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filter', 'EventFilterSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateCollectorForEvents', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88137,7 +96011,7 @@ sub LogUserEvent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['msg', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LogUserEvent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88147,7 +96021,7 @@ sub QueryEvents {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['filter', 'EventFilterSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryEvents', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'Event', 1);
 }
@@ -88157,7 +96031,7 @@ sub PostEvent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['eventToPost', 'Event'],['taskInfo', 'TaskInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PostEvent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88167,7 +96041,7 @@ sub JoinDomain_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['domainName', undef],['userName', undef],['password', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('JoinDomain_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88177,7 +96051,7 @@ sub JoinDomainWithCAM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['domainName', undef],['camServer', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('JoinDomainWithCAM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88187,7 +96061,7 @@ sub ImportCertificateForCAM_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['certPath', undef],['camServer', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ImportCertificateForCAM_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88197,7 +96071,7 @@ sub LeaveCurrentDomain_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('LeaveCurrentDomain_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88207,7 +96081,7 @@ sub EnableSmartCardAuthentication {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableSmartCardAuthentication', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88217,7 +96091,7 @@ sub InstallSmartCardTrustAnchor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cert', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InstallSmartCardTrustAnchor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88227,7 +96101,7 @@ sub ReplaceSmartCardTrustAnchors {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['certs', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReplaceSmartCardTrustAnchors', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88237,7 +96111,7 @@ sub RemoveSmartCardTrustAnchor {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['issuer', undef],['serial', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveSmartCardTrustAnchor', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88247,7 +96121,7 @@ sub RemoveSmartCardTrustAnchorByFingerprint {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['fingerprint', undef],['digest', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveSmartCardTrustAnchorByFingerprint', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88257,7 +96131,7 @@ sub ListSmartCardTrustAnchors {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListSmartCardTrustAnchors', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -88267,7 +96141,7 @@ sub DisableSmartCardAuthentication {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableSmartCardAuthentication', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88277,7 +96151,7 @@ sub ReconfigureAutostart {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostAutoStartManagerConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureAutostart', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88287,7 +96161,7 @@ sub AutoStartPowerOn {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AutoStartPowerOn', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88297,7 +96171,7 @@ sub AutoStartPowerOff {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AutoStartPowerOff', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88307,7 +96181,7 @@ sub QueryBootDevices {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryBootDevices', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostBootDeviceInfo', 0);
 }
@@ -88317,7 +96191,7 @@ sub UpdateBootDevice {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateBootDevice', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88327,7 +96201,7 @@ sub ConfigureHostCache_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostCacheConfigurationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureHostCache_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88337,7 +96211,7 @@ sub GenerateCertificateSigningRequest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['useIpAddressAsCommonName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GenerateCertificateSigningRequest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88347,7 +96221,7 @@ sub GenerateCertificateSigningRequestByDn {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['distinguishedName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GenerateCertificateSigningRequestByDn', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88357,7 +96231,7 @@ sub InstallServerCertificate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cert', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InstallServerCertificate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88367,7 +96241,7 @@ sub ReplaceCACertificatesAndCRLs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['caCert', undef],['caCrl', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReplaceCACertificatesAndCRLs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88377,7 +96251,7 @@ sub ListCACertificates {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListCACertificates', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -88387,7 +96261,7 @@ sub ListCACertificateRevocationLists {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListCACertificateRevocationLists', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -88397,7 +96271,7 @@ sub EnableHyperThreading {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableHyperThreading', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88407,7 +96281,7 @@ sub DisableHyperThreading {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableHyperThreading', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88417,7 +96291,7 @@ sub SearchDatastore_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastorePath', undef],['searchSpec', 'HostDatastoreBrowserSearchSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SearchDatastore_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88427,7 +96301,7 @@ sub SearchDatastoreSubFolders_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastorePath', undef],['searchSpec', 'HostDatastoreBrowserSearchSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SearchDatastoreSubFolders_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88437,7 +96311,7 @@ sub DeleteFile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastorePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteFile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88447,7 +96321,7 @@ sub UpdateLocalSwapDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateLocalSwapDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88457,7 +96331,7 @@ sub QueryAvailableDisksForVmfs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailableDisksForVmfs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostScsiDisk', 1);
 }
@@ -88467,7 +96341,7 @@ sub QueryVmfsDatastoreCreateOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['devicePath', undef],['vmfsMajorVersion', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVmfsDatastoreCreateOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VmfsDatastoreOption', 1);
 }
@@ -88477,7 +96351,7 @@ sub CreateVmfsDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VmfsDatastoreCreateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateVmfsDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88487,7 +96361,7 @@ sub QueryVmfsDatastoreExtendOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['devicePath', undef],['suppressExpandCandidates', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVmfsDatastoreExtendOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VmfsDatastoreOption', 1);
 }
@@ -88497,7 +96371,7 @@ sub QueryVmfsDatastoreExpandOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVmfsDatastoreExpandOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VmfsDatastoreOption', 1);
 }
@@ -88507,7 +96381,7 @@ sub ExtendVmfsDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['spec', 'VmfsDatastoreExtendSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExtendVmfsDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88517,7 +96391,7 @@ sub ExpandVmfsDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],['spec', 'VmfsDatastoreExpandSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExpandVmfsDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88527,7 +96401,7 @@ sub CreateNasDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostNasVolumeSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateNasDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88537,7 +96411,7 @@ sub CreateLocalDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['path', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateLocalDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88547,7 +96421,7 @@ sub CreateVvolDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostDatastoreSystemVvolDatastoreSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateVvolDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88557,7 +96431,7 @@ sub RemoveDatastore {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveDatastore', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88567,7 +96441,7 @@ sub RemoveDatastoreEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveDatastoreEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88577,7 +96451,7 @@ sub ConfigureDatastorePrincipal {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['userName', undef],['password', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureDatastorePrincipal', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88587,7 +96461,7 @@ sub QueryUnresolvedVmfsVolumes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryUnresolvedVmfsVolumes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostUnresolvedVmfsVolume', 1);
 }
@@ -88597,7 +96471,7 @@ sub ResignatureUnresolvedVmfsVolume_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['resolutionSpec', 'HostUnresolvedVmfsResignatureSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResignatureUnresolvedVmfsVolume_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -88607,7 +96481,7 @@ sub UpdateDateTimeConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostDateTimeConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDateTimeConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88617,7 +96491,7 @@ sub QueryAvailableTimeZones {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailableTimeZones', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDateTimeSystemTimeZone', 1);
 }
@@ -88627,7 +96501,7 @@ sub QueryDateTime {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDateTime', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88637,7 +96511,7 @@ sub UpdateDateTime {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['dateTime', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDateTime', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88647,7 +96521,7 @@ sub RefreshDateTimeSystem {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshDateTimeSystem', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88657,7 +96531,7 @@ sub QueryAvailablePartition {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailablePartition', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiagnosticPartition', 1);
 }
@@ -88667,7 +96541,7 @@ sub SelectActivePartition {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['partition', 'HostScsiDiskPartition'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SelectActivePartition', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88677,7 +96551,7 @@ sub QueryPartitionCreateOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['storageType', undef],['diagnosticType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPartitionCreateOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiagnosticPartitionCreateOption', 1);
 }
@@ -88687,7 +96561,7 @@ sub QueryPartitionCreateDesc {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['diskUuid', undef],['diagnosticType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPartitionCreateDesc', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiagnosticPartitionCreateDescription', 0);
 }
@@ -88697,7 +96571,7 @@ sub CreateDiagnosticPartition {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostDiagnosticPartitionCreateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDiagnosticPartition', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88707,7 +96581,7 @@ sub EsxAgentHostManagerUpdateConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configInfo', 'HostEsxAgentHostManagerConfigInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EsxAgentHostManagerUpdateConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88717,7 +96591,7 @@ sub UpdateDefaultPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['defaultPolicy', 'HostFirewallDefaultPolicy'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDefaultPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88727,7 +96601,7 @@ sub EnableRuleset {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableRuleset', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88737,7 +96611,7 @@ sub DisableRuleset {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableRuleset', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88747,7 +96621,7 @@ sub UpdateRuleset {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],['spec', 'HostFirewallRulesetRulesetSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateRuleset', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88757,7 +96631,7 @@ sub RefreshFirewall {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshFirewall', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88767,7 +96641,7 @@ sub ResetFirmwareToFactoryDefaults {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetFirmwareToFactoryDefaults', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88777,7 +96651,7 @@ sub BackupFirmwareConfiguration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('BackupFirmwareConfiguration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88787,7 +96661,7 @@ sub QueryFirmwareConfigUploadURL {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryFirmwareConfigUploadURL', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88797,7 +96671,7 @@ sub RestoreFirmwareConfiguration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RestoreFirmwareConfiguration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88807,7 +96681,7 @@ sub RefreshGraphicsManager {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshGraphicsManager', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88817,8 +96691,18 @@ sub IsSharedGraphicsActive {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('IsSharedGraphicsActive', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UpdateGraphicsConfig {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostGraphicsConfig'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateGraphicsConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -88827,7 +96711,7 @@ sub RefreshHealthStatusSystem {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshHealthStatusSystem', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88837,9 +96721,29 @@ sub ResetSystemHealthInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetSystemHealthInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ClearSystemEventLog {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ClearSystemEventLog', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub FetchSystemEventLog {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('FetchSystemEventLog', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'SystemEventInfo', 1);
 }
 
 sub RetrieveHostAccessControlEntries {
@@ -88847,7 +96751,7 @@ sub RetrieveHostAccessControlEntries {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveHostAccessControlEntries', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostAccessControlEntry', 1);
 }
@@ -88857,7 +96761,7 @@ sub ChangeAccessMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['principal', undef],['isGroup', undef],['accessMode', 'HostAccessMode'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ChangeAccessMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88867,7 +96771,7 @@ sub QuerySystemUsers {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QuerySystemUsers', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -88877,7 +96781,7 @@ sub UpdateSystemUsers {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['users', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateSystemUsers', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88887,7 +96791,7 @@ sub QueryLockdownExceptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryLockdownExceptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -88897,7 +96801,7 @@ sub UpdateLockdownExceptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['users', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateLockdownExceptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88907,7 +96811,7 @@ sub ChangeLockdownMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mode', 'HostLockdownMode'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ChangeLockdownMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88917,7 +96821,7 @@ sub HostImageConfigGetAcceptance {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostImageConfigGetAcceptance', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88927,7 +96831,7 @@ sub HostImageConfigGetProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostImageConfigGetProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostImageProfileSummary', 0);
 }
@@ -88937,8 +96841,28 @@ sub UpdateHostImageAcceptanceLevel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['newAcceptanceLevel', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateHostImageAcceptanceLevel', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub fetchSoftwarePackages {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('fetchSoftwarePackages', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'SoftwarePackage', 1);
+}
+
+sub installDate {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('installDate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -88947,7 +96871,7 @@ sub QueryVnicStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vnicDevice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVnicStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IscsiStatus', 0);
 }
@@ -88957,7 +96881,7 @@ sub QueryPnicStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pnicDevice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPnicStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IscsiStatus', 0);
 }
@@ -88967,7 +96891,7 @@ sub QueryBoundVnics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryBoundVnics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IscsiPortInfo', 1);
 }
@@ -88977,7 +96901,7 @@ sub QueryCandidateNics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryCandidateNics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IscsiPortInfo', 1);
 }
@@ -88987,7 +96911,7 @@ sub BindVnic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaName', undef],['vnicDevice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('BindVnic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -88997,7 +96921,7 @@ sub UnbindVnic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaName', undef],['vnicDevice', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnbindVnic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89007,7 +96931,7 @@ sub QueryMigrationDependencies {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pnicDevice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryMigrationDependencies', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'IscsiMigrationDependency', 0);
 }
@@ -89017,7 +96941,7 @@ sub QueryModules {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryModules', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'KernelModuleInfo', 1);
 }
@@ -89027,7 +96951,7 @@ sub UpdateModuleOptionString {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['options', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateModuleOptionString', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89037,7 +96961,7 @@ sub QueryConfiguredModuleOptionString {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryConfiguredModuleOptionString', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89047,7 +96971,7 @@ sub CreateUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['user', 'HostAccountSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89057,7 +96981,7 @@ sub UpdateUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['user', 'HostAccountSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89067,7 +96991,7 @@ sub CreateGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['group', 'HostAccountSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89077,7 +97001,7 @@ sub RemoveUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['userName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89087,7 +97011,7 @@ sub RemoveGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['groupName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89097,7 +97021,7 @@ sub AssignUserToGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['user', undef],['group', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AssignUserToGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89107,7 +97031,7 @@ sub UnassignUserFromGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['user', undef],['group', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnassignUserFromGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89117,7 +97041,7 @@ sub ReconfigureServiceConsoleReservation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cfgBytes', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureServiceConsoleReservation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89127,7 +97051,7 @@ sub ReconfigureVirtualMachineReservation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VirtualMachineMemoryReservationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureVirtualMachineReservation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89137,7 +97061,7 @@ sub UpdateNetworkConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostNetworkConfig'],['changeMode', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateNetworkConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostNetworkConfigResult', 0);
 }
@@ -89147,7 +97071,7 @@ sub UpdateDnsConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostDnsConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDnsConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89157,7 +97081,7 @@ sub UpdateIpRouteConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostIpRouteConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateIpRouteConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89167,7 +97091,7 @@ sub UpdateConsoleIpRouteConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostIpRouteConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateConsoleIpRouteConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89177,7 +97101,7 @@ sub UpdateIpRouteTableConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostIpRouteTableConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateIpRouteTableConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89187,7 +97111,7 @@ sub AddVirtualSwitch {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vswitchName', undef],['spec', 'HostVirtualSwitchSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddVirtualSwitch', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89197,7 +97121,7 @@ sub RemoveVirtualSwitch {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vswitchName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveVirtualSwitch', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89207,7 +97131,7 @@ sub UpdateVirtualSwitch {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vswitchName', undef],['spec', 'HostVirtualSwitchSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateVirtualSwitch', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89217,7 +97141,7 @@ sub AddPortGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portgrp', 'HostPortGroupSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddPortGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89227,7 +97151,7 @@ sub RemovePortGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pgName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemovePortGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89237,7 +97161,7 @@ sub UpdatePortGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pgName', undef],['portgrp', 'HostPortGroupSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdatePortGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89247,7 +97171,7 @@ sub UpdatePhysicalNicLinkSpeed {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],['linkSpeed', 'PhysicalNicLinkInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdatePhysicalNicLinkSpeed', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89257,7 +97181,7 @@ sub QueryNetworkHint {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryNetworkHint', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'PhysicalNicHintInfo', 1);
 }
@@ -89267,7 +97191,7 @@ sub AddVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portgroup', undef],['nic', 'HostVirtualNicSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89277,7 +97201,7 @@ sub RemoveVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89287,7 +97211,7 @@ sub UpdateVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],['nic', 'HostVirtualNicSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89297,7 +97221,7 @@ sub AddServiceConsoleVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['portgroup', undef],['nic', 'HostVirtualNicSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddServiceConsoleVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89307,7 +97231,7 @@ sub RemoveServiceConsoleVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveServiceConsoleVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89317,7 +97241,7 @@ sub UpdateServiceConsoleVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],['nic', 'HostVirtualNicSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateServiceConsoleVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89327,7 +97251,7 @@ sub RestartServiceConsoleVirtualNic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RestartServiceConsoleVirtualNic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89337,7 +97261,7 @@ sub RefreshNetworkSystem {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshNetworkSystem', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89347,7 +97271,7 @@ sub CheckHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['metaUrls', undef],['bundleUrls', undef],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89357,7 +97281,7 @@ sub ScanHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['repository', 'HostPatchManagerLocator'],['updateID', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ScanHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89367,7 +97291,7 @@ sub ScanHostPatchV2_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['metaUrls', undef],['bundleUrls', undef],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ScanHostPatchV2_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89377,7 +97301,7 @@ sub StageHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['metaUrls', undef],['bundleUrls', undef],['vibUrls', undef],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StageHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89387,7 +97311,7 @@ sub InstallHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['repository', 'HostPatchManagerLocator'],['updateID', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InstallHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89397,7 +97321,7 @@ sub InstallHostPatchV2_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['metaUrls', undef],['bundleUrls', undef],['vibUrls', undef],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InstallHostPatchV2_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89407,7 +97331,7 @@ sub UninstallHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['bulletinIds', undef],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UninstallHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89417,7 +97341,7 @@ sub QueryHostPatch_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostPatchManagerPatchManagerOperationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryHostPatch_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89427,7 +97351,7 @@ sub Refresh {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('Refresh', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89437,7 +97361,7 @@ sub UpdatePassthruConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostPciPassthruConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdatePassthruConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89447,7 +97371,7 @@ sub ConfigurePowerPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['key', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigurePowerPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89457,7 +97381,7 @@ sub UpdateServicePolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],['policy', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateServicePolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89467,7 +97391,7 @@ sub StartService {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StartService', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89477,7 +97401,7 @@ sub StopService {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StopService', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89487,7 +97411,7 @@ sub RestartService {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RestartService', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89497,7 +97421,7 @@ sub UninstallService {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['id', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UninstallService', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89507,7 +97431,7 @@ sub RefreshServices {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshServices', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89517,7 +97441,7 @@ sub ReconfigureSnmpAgent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostSnmpConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureSnmpAgent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89527,7 +97451,7 @@ sub SendTestNotification {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SendTestNotification', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89537,7 +97461,7 @@ sub RetrieveDiskPartitionInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['devicePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveDiskPartitionInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiskPartitionInfo', 1);
 }
@@ -89547,7 +97471,7 @@ sub ComputeDiskPartitionInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['devicePath', undef],['layout', 'HostDiskPartitionLayout'],['partitionFormat', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ComputeDiskPartitionInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiskPartitionInfo', 0);
 }
@@ -89557,7 +97481,7 @@ sub ComputeDiskPartitionInfoForResize {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['partition', 'HostScsiDiskPartition'],['blockRange', 'HostDiskPartitionBlockRange'],['partitionFormat', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ComputeDiskPartitionInfoForResize', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostDiskPartitionInfo', 0);
 }
@@ -89567,7 +97491,7 @@ sub UpdateDiskPartitions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['devicePath', undef],['spec', 'HostDiskPartitionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateDiskPartitions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89577,7 +97501,7 @@ sub FormatVmfs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['createSpec', 'HostVmfsSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FormatVmfs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVmfsVolume', 0);
 }
@@ -89587,7 +97511,7 @@ sub MountVmfsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MountVmfsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89597,7 +97521,7 @@ sub UnmountVmfsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountVmfsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89607,7 +97531,7 @@ sub UnmountVmfsVolumeEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountVmfsVolumeEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89617,7 +97541,7 @@ sub MountVmfsVolumeEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MountVmfsVolumeEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89627,7 +97551,7 @@ sub UnmapVmfsVolumeEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmapVmfsVolumeEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89637,7 +97561,7 @@ sub DeleteVmfsVolumeState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteVmfsVolumeState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89647,7 +97571,7 @@ sub RescanVmfs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RescanVmfs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89657,7 +97581,7 @@ sub AttachVmfsExtent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsPath', undef],['extent', 'HostScsiDiskPartition'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AttachVmfsExtent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89667,7 +97591,7 @@ sub ExpandVmfsExtent {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsPath', undef],['extent', 'HostScsiDiskPartition'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExpandVmfsExtent', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89677,7 +97601,7 @@ sub UpgradeVmfs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeVmfs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89687,7 +97611,7 @@ sub UpgradeVmLayout {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeVmLayout', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89697,7 +97621,7 @@ sub QueryUnresolvedVmfsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryUnresolvedVmfsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostUnresolvedVmfsVolume', 1);
 }
@@ -89707,7 +97631,7 @@ sub ResolveMultipleUnresolvedVmfsVolumes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['resolutionSpec', 'HostUnresolvedVmfsResolutionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResolveMultipleUnresolvedVmfsVolumes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostUnresolvedVmfsResolutionResult', 1);
 }
@@ -89717,7 +97641,7 @@ sub ResolveMultipleUnresolvedVmfsVolumesEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['resolutionSpec', 'HostUnresolvedVmfsResolutionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResolveMultipleUnresolvedVmfsVolumesEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89727,7 +97651,7 @@ sub UnmountForceMountedVmfsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountForceMountedVmfsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89737,7 +97661,7 @@ sub RescanHba {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hbaDevice', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RescanHba', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89747,7 +97671,7 @@ sub RescanAllHba {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RescanAllHba', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89757,7 +97681,7 @@ sub UpdateSoftwareInternetScsiEnabled {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['enabled', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateSoftwareInternetScsiEnabled', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89767,7 +97691,7 @@ sub UpdateInternetScsiDiscoveryProperties {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['discoveryProperties', 'HostInternetScsiHbaDiscoveryProperties'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiDiscoveryProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89777,7 +97701,7 @@ sub UpdateInternetScsiAuthenticationProperties {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['authenticationProperties', 'HostInternetScsiHbaAuthenticationProperties'],['targetSet', 'HostInternetScsiHbaTargetSet'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiAuthenticationProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89787,7 +97711,7 @@ sub UpdateInternetScsiDigestProperties {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targetSet', 'HostInternetScsiHbaTargetSet'],['digestProperties', 'HostInternetScsiHbaDigestProperties'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiDigestProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89797,7 +97721,7 @@ sub UpdateInternetScsiAdvancedOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targetSet', 'HostInternetScsiHbaTargetSet'],['options', 'HostInternetScsiHbaParamValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiAdvancedOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89807,7 +97731,7 @@ sub UpdateInternetScsiIPProperties {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['ipProperties', 'HostInternetScsiHbaIPProperties'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiIPProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89817,7 +97741,7 @@ sub UpdateInternetScsiName {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['iScsiName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiName', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89827,7 +97751,7 @@ sub UpdateInternetScsiAlias {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['iScsiAlias', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateInternetScsiAlias', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89837,7 +97761,7 @@ sub AddInternetScsiSendTargets {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targets', 'HostInternetScsiHbaSendTarget'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddInternetScsiSendTargets', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89847,7 +97771,7 @@ sub RemoveInternetScsiSendTargets {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targets', 'HostInternetScsiHbaSendTarget'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveInternetScsiSendTargets', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89857,7 +97781,7 @@ sub AddInternetScsiStaticTargets {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targets', 'HostInternetScsiHbaStaticTarget'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddInternetScsiStaticTargets', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89867,7 +97791,7 @@ sub RemoveInternetScsiStaticTargets {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['iScsiHbaDevice', undef],['targets', 'HostInternetScsiHbaStaticTarget'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveInternetScsiStaticTargets', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89877,7 +97801,7 @@ sub EnableMultipathPath {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pathName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EnableMultipathPath', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89887,7 +97811,7 @@ sub DisableMultipathPath {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pathName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DisableMultipathPath', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89897,7 +97821,7 @@ sub SetMultipathLunPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunId', undef],['policy', 'HostMultipathInfoLogicalUnitPolicy'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetMultipathLunPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89907,7 +97831,7 @@ sub QueryPathSelectionPolicyOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPathSelectionPolicyOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostPathSelectionPolicyOption', 1);
 }
@@ -89917,7 +97841,7 @@ sub QueryStorageArrayTypePolicyOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryStorageArrayTypePolicyOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostStorageArrayTypePolicyOption', 1);
 }
@@ -89927,7 +97851,7 @@ sub UpdateScsiLunDisplayName {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunUuid', undef],['displayName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateScsiLunDisplayName', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89937,7 +97861,7 @@ sub DetachScsiLun {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DetachScsiLun', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89947,7 +97871,7 @@ sub DetachScsiLunEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DetachScsiLunEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89957,7 +97881,7 @@ sub DeleteScsiLunState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunCanonicalName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteScsiLunState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89967,7 +97891,7 @@ sub AttachScsiLun {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AttachScsiLun', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89977,7 +97901,7 @@ sub AttachScsiLunEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['lunUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AttachScsiLunEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -89987,7 +97911,7 @@ sub RefreshStorageSystem {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RefreshStorageSystem', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -89997,7 +97921,7 @@ sub DiscoverFcoeHbas {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['fcoeSpec', 'FcoeConfigFcoeSpecification'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DiscoverFcoeHbas', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90007,7 +97931,7 @@ sub MarkForRemoval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hbaName', undef],['remove', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkForRemoval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90017,7 +97941,7 @@ sub FormatVffs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['createSpec', 'HostVffsSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FormatVffs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVffsVolume', 0);
 }
@@ -90027,7 +97951,7 @@ sub ExtendVffs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsPath', undef],['devicePath', undef],['spec', 'HostDiskPartitionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExtendVffs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90037,7 +97961,7 @@ sub DestroyVffs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyVffs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90047,7 +97971,7 @@ sub MountVffsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MountVffsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90057,7 +97981,7 @@ sub UnmountVffsVolume {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountVffsVolume', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90067,7 +97991,7 @@ sub DeleteVffsVolumeState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteVffsVolumeState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90077,7 +98001,7 @@ sub RescanVffs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RescanVffs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90087,7 +98011,7 @@ sub QueryAvailableSsds {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vffsPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAvailableSsds', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostScsiDisk', 1);
 }
@@ -90097,7 +98021,7 @@ sub SetNFSUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['user', undef],['password', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetNFSUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90107,7 +98031,7 @@ sub ChangeNFSUserPassword {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['password', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ChangeNFSUserPassword', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90117,7 +98041,7 @@ sub QueryNFSUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryNFSUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostNasVolumeUserInfo', 0);
 }
@@ -90127,7 +98051,7 @@ sub ClearNFSUser {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ClearNFSUser', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90137,7 +98061,7 @@ sub TurnDiskLocatorLedOn_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TurnDiskLocatorLedOn_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90147,7 +98071,7 @@ sub TurnDiskLocatorLedOff_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TurnDiskLocatorLedOff_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90157,7 +98081,7 @@ sub MarkAsSsd_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsSsd_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90167,7 +98091,7 @@ sub MarkAsNonSsd_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsNonSsd_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90177,7 +98101,7 @@ sub MarkAsLocal_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsLocal_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90187,9 +98111,29 @@ sub MarkAsNonLocal_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['scsiDiskUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MarkAsNonLocal_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub UpdateVmfsUnmapPriority {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['vmfsUuid', undef],['unmapPriority', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateVmfsUnmapPriority', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub QueryVmfsConfigOption {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('QueryVmfsConfigOption', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VmfsConfigOption', 1);
 }
 
 sub ConfigureVFlashResourceEx_Task {
@@ -90197,7 +98141,7 @@ sub ConfigureVFlashResourceEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['devicePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ConfigureVFlashResourceEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90207,7 +98151,7 @@ sub HostConfigureVFlashResource {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostVFlashManagerVFlashResourceConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostConfigureVFlashResource', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90217,7 +98161,7 @@ sub HostRemoveVFlashResource {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostRemoveVFlashResource', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90227,7 +98171,7 @@ sub HostConfigVFlashCache {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'HostVFlashManagerVFlashCacheConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostConfigVFlashCache', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90237,7 +98181,7 @@ sub HostGetVFlashModuleDefaultConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vFlashModule', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('HostGetVFlashModuleDefaultConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualDiskVFlashCacheConfigInfo', 0);
 }
@@ -90247,7 +98191,7 @@ sub UpdateIpConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['ipConfig', 'HostIpConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateIpConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90257,7 +98201,7 @@ sub SelectVnic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SelectVnic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90267,7 +98211,7 @@ sub DeselectVnic {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeselectVnic', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90277,7 +98221,7 @@ sub QueryNetConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['nicType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryNetConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VirtualNicManagerNetConfig', 0);
 }
@@ -90287,7 +98231,7 @@ sub SelectVnicForNicType {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['nicType', undef],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SelectVnicForNicType', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90297,7 +98241,7 @@ sub DeselectVnicForNicType {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['nicType', undef],['device', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeselectVnicForNicType', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90307,7 +98251,7 @@ sub QueryCmmds {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['queries', 'HostVsanInternalSystemCmmdsQuery'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryCmmds', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90317,7 +98261,7 @@ sub QueryPhysicalVsanDisks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['props', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPhysicalVsanDisks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90327,7 +98271,7 @@ sub QueryVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90337,7 +98281,7 @@ sub QueryObjectsOnPhysicalVsanDisk {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryObjectsOnPhysicalVsanDisk', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90347,7 +98291,7 @@ sub AbdicateDomOwnership {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AbdicateDomOwnership', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -90357,7 +98301,7 @@ sub QueryVsanStatistics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['labels', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVsanStatistics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90367,7 +98311,7 @@ sub ReconfigureDomObject {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuid', undef],['policy', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureDomObject', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90377,7 +98321,7 @@ sub QuerySyncingVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QuerySyncingVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90387,7 +98331,7 @@ sub RunVsanPhysicalDiskDiagnostics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RunVsanPhysicalDiskDiagnostics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemVsanPhysicalDiskDiagnosticsResult', 1);
 }
@@ -90397,7 +98341,7 @@ sub GetVsanObjExtAttrs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GetVsanObjExtAttrs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90407,7 +98351,7 @@ sub ReconfigurationSatisfiable {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['pcbs', 'VsanPolicyChangeBatch'],['ignoreSatisfiability', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigurationSatisfiable', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPolicySatisfiability', 1);
 }
@@ -90417,7 +98361,7 @@ sub CanProvisionObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['npbs', 'VsanNewPolicyBatch'],['ignoreSatisfiability', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CanProvisionObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPolicySatisfiability', 1);
 }
@@ -90427,7 +98371,7 @@ sub DeleteVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemDeleteVsanObjectsResult', 1);
 }
@@ -90437,7 +98381,7 @@ sub UpgradeVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['newVersion', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpgradeVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemVsanObjectOperationResult', 1);
 }
@@ -90447,7 +98391,7 @@ sub QueryVsanObjectUuidsByFilter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['limit', undef],['version', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVsanObjectUuidsByFilter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -90457,7 +98401,7 @@ sub QueryDisksForVsan {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['canonicalName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDisksForVsan', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostDiskResult', 1);
 }
@@ -90467,7 +98411,7 @@ sub AddDisks_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disk', 'HostScsiDisk'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddDisks_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90477,7 +98421,7 @@ sub InitializeDisks_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mapping', 'VsanHostDiskMapping'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InitializeDisks_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90487,7 +98431,7 @@ sub RemoveDisk_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disk', 'HostScsiDisk'],['maintenanceSpec', 'HostMaintenanceSpec'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveDisk_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90497,7 +98441,7 @@ sub RemoveDiskMapping_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mapping', 'VsanHostDiskMapping'],['maintenanceSpec', 'HostMaintenanceSpec'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveDiskMapping_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90507,7 +98451,7 @@ sub UnmountDiskMapping_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mapping', 'VsanHostDiskMapping'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UnmountDiskMapping_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90517,7 +98461,7 @@ sub UpdateVsan_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'VsanHostConfigInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateVsan_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90527,7 +98471,7 @@ sub QueryHostStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryHostStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostClusterStatus', 0);
 }
@@ -90537,7 +98481,7 @@ sub EvacuateVsanNode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maintenanceSpec', 'HostMaintenanceSpec'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('EvacuateVsanNode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90547,7 +98491,7 @@ sub RecommissionVsanNode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RecommissionVsanNode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90557,7 +98501,7 @@ sub QueryOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OptionValue', 1);
 }
@@ -90567,7 +98511,7 @@ sub UpdateOptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['changedValue', 'OptionValue'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateOptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90577,7 +98521,7 @@ sub CheckCompliance_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profile', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckCompliance_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90587,7 +98531,7 @@ sub QueryComplianceStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profile', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryComplianceStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ComplianceResult', 1);
 }
@@ -90597,7 +98541,7 @@ sub ClearComplianceStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profile', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ClearComplianceStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90607,7 +98551,7 @@ sub QueryExpressionMetadata {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['expressionName', undef],['profile', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryExpressionMetadata', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfileExpressionMetadata', 1);
 }
@@ -90617,7 +98561,7 @@ sub RetrieveDescription {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveDescription', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfileDescription', 0);
 }
@@ -90627,7 +98571,7 @@ sub DestroyProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90637,7 +98581,7 @@ sub AssociateProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AssociateProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90647,7 +98591,7 @@ sub DissociateProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DissociateProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90657,7 +98601,7 @@ sub CheckProfileCompliance_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckProfileCompliance_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90667,7 +98611,7 @@ sub ExportProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExportProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90677,7 +98621,7 @@ sub CreateProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['createSpec', 'ProfileCreateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90687,7 +98631,7 @@ sub QueryPolicyMetadata {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['policyName', undef],['profile', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryPolicyMetadata', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfilePolicyMetadata', 1);
 }
@@ -90697,7 +98641,7 @@ sub FindAssociatedProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('FindAssociatedProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90707,7 +98651,7 @@ sub UpdateClusterProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'ClusterProfileConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateClusterProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90717,7 +98661,7 @@ sub UpdateReferenceHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateReferenceHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90727,7 +98671,7 @@ sub UpdateHostProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'HostProfileConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateHostProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90737,9 +98681,69 @@ sub ExecuteHostProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['deferredParam', 'ProfileDeferredPolicyOptionParameter'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExecuteHostProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfileExecuteResult', 0);
+}
+
+sub UpdateHostSpecification {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['hostSpec', 'HostSpecification'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateHostSpecification', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UpdateHostSubSpecification {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['hostSubSpec', 'HostSubSpecification'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateHostSubSpecification', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub RetrieveHostSpecification {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['fromHost', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveHostSpecification', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'HostSpecification', 0);
+}
+
+sub DeleteHostSubSpecification {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['subSpecName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('DeleteHostSubSpecification', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub DeleteHostSpecification {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('DeleteHostSpecification', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub HostSpecGetUpdatedHosts {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['startChangeID', undef],['endChangeID', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostSpecGetUpdatedHosts', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
 
 sub ApplyHostConfig_Task {
@@ -90747,7 +98751,7 @@ sub ApplyHostConfig_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['configSpec', 'HostConfigSpec'],['userInput', 'ProfileDeferredPolicyOptionParameter'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ApplyHostConfig_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90757,7 +98761,7 @@ sub GenerateConfigTaskList {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'HostConfigSpec'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GenerateConfigTaskList', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostProfileManagerConfigTaskList', 0);
 }
@@ -90767,7 +98771,7 @@ sub GenerateHostProfileTaskList_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'HostConfigSpec'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('GenerateHostProfileTaskList_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90777,7 +98781,7 @@ sub QueryHostProfileMetadata {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profileName', undef],['profile', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryHostProfileMetadata', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfileMetadata', 1);
 }
@@ -90787,7 +98791,7 @@ sub QueryProfileStructure {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profile', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryProfileStructure', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ProfileProfileStructure', 0);
 }
@@ -90797,7 +98801,7 @@ sub CreateDefaultProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['profileType', undef],['profileTypeName', undef],['profile', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateDefaultProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ApplyProfile', 0);
 }
@@ -90807,7 +98811,7 @@ sub UpdateAnswerFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['configSpec', 'AnswerFileCreateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('UpdateAnswerFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90817,7 +98821,7 @@ sub RetrieveAnswerFile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveAnswerFile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'AnswerFile', 0);
 }
@@ -90827,7 +98831,7 @@ sub RetrieveAnswerFileForProfile {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['applyProfile', 'HostApplyProfile'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveAnswerFileForProfile', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'AnswerFile', 0);
 }
@@ -90837,7 +98841,7 @@ sub ExportAnswerFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExportAnswerFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90847,7 +98851,7 @@ sub CheckAnswerFileStatus_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckAnswerFileStatus_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90857,9 +98861,59 @@ sub QueryAnswerFileStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryAnswerFileStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'AnswerFileStatusResult', 1);
+}
+
+sub UpdateHostCustomizations_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hostToConfigSpecMap', 'HostProfileManagerHostToConfigSpecMap'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('UpdateHostCustomizations_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RetrieveHostCustomizations {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveHostCustomizations', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'StructuredCustomizations', 1);
+}
+
+sub RetrieveHostCustomizationsForProfile {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],['applyProfile', 'HostApplyProfile'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveHostCustomizationsForProfile', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'StructuredCustomizations', 1);
+}
+
+sub GenerateHostConfigTaskSpec_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hostsInfo', 'StructuredCustomizations'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('GenerateHostConfigTaskSpec_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub ApplyEntitiesConfig_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['applyConfigSpecs', 'ApplyHostProfileConfigurationSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ApplyEntitiesConfig_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub RemoveScheduledTask {
@@ -90867,7 +98921,7 @@ sub RemoveScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90877,7 +98931,7 @@ sub ReconfigureScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'ScheduledTaskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReconfigureScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90887,7 +98941,7 @@ sub RunScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RunScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90897,7 +98951,7 @@ sub CreateScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],['spec', 'ScheduledTaskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90907,7 +98961,7 @@ sub RetrieveEntityScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveEntityScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90917,7 +98971,7 @@ sub CreateObjectScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],['spec', 'ScheduledTaskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateObjectScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -90927,9 +98981,119 @@ sub RetrieveObjectScheduledTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveObjectScheduledTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
+}
+
+sub prepareVcha_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['networkSpec', 'VchaClusterNetworkSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('prepareVcha_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub deployVcha_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['deploymentSpec', 'VchaClusterDeploymentSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('deployVcha_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub configureVcha_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'VchaClusterConfigSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('configureVcha_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub createPassiveNode_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['passiveDeploymentSpec', 'PassiveNodeDeploymentSpec'],['sourceVcSpec', 'SourceNodeSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('createPassiveNode_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub createWitnessNode_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['witnessDeploymentSpec', 'NodeDeploymentSpec'],['sourceVcSpec', 'SourceNodeSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('createWitnessNode_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub getVchaConfig {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('getVchaConfig', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VchaClusterConfigInfo', 0);
+}
+
+sub destroyVcha_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('destroyVcha_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub setClusterMode_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['mode', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('setClusterMode_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub getClusterMode {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('getClusterMode', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub GetVchaClusterHealth {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('GetVchaClusterHealth', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VchaClusterHealth', 0);
+}
+
+sub initiateFailover_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['planned', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('initiateFailover_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub OpenInventoryViewFolder {
@@ -90937,7 +99101,7 @@ sub OpenInventoryViewFolder {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('OpenInventoryViewFolder', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90947,7 +99111,7 @@ sub CloseInventoryViewFolder {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['entity', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CloseInventoryViewFolder', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90957,7 +99121,7 @@ sub ModifyListView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['add', 'ManagedObjectReference'],['remove', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ModifyListView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90967,7 +99131,7 @@ sub ResetListView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetListView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 1);
 }
@@ -90977,7 +99141,7 @@ sub ResetListViewFromView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['view', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ResetListViewFromView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90987,7 +99151,7 @@ sub DestroyView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -90997,7 +99161,7 @@ sub CreateInventoryView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateInventoryView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91007,7 +99171,7 @@ sub CreateContainerView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['container', 'ManagedObjectReference'],['type', undef],['recursive', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateContainerView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91017,7 +99181,7 @@ sub CreateListView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['obj', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateListView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91027,7 +99191,7 @@ sub CreateListViewFromView {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['view', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateListViewFromView', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91037,7 +99201,7 @@ sub RevertToSnapshot_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['suppressPowerOn', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RevertToSnapshot_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91047,7 +99211,7 @@ sub RemoveSnapshot_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['removeChildren', undef],['consolidate', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveSnapshot_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91057,7 +99221,7 @@ sub RenameSnapshot {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['name', undef],['description', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RenameSnapshot', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91067,7 +99231,7 @@ sub ExportSnapshot {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ExportSnapshot', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91077,7 +99241,7 @@ sub CheckCompatibility_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['pool', 'ManagedObjectReference'],['testType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckCompatibility_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91087,7 +99251,7 @@ sub QueryVMotionCompatibilityEx_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryVMotionCompatibilityEx_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91097,7 +99261,7 @@ sub CheckMigrate_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['pool', 'ManagedObjectReference'],['state', 'VirtualMachinePowerState'],['testType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckMigrate_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91107,7 +99271,7 @@ sub CheckRelocate_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['spec', 'VirtualMachineRelocateSpec'],['testType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckRelocate_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91117,7 +99281,7 @@ sub AddGuestAlias {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['username', undef],['mapCert', undef],['base64Cert', undef],['aliasInfo', 'GuestAuthAliasInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AddGuestAlias', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91127,7 +99291,7 @@ sub RemoveGuestAlias {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['username', undef],['base64Cert', undef],['subject', 'GuestAuthSubject'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveGuestAlias', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91137,7 +99301,7 @@ sub RemoveGuestAliasByCert {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['username', undef],['base64Cert', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RemoveGuestAliasByCert', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91147,7 +99311,7 @@ sub ListGuestAliases {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['username', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListGuestAliases', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestAliases', 1);
 }
@@ -91157,7 +99321,7 @@ sub ListGuestMappedAliases {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListGuestMappedAliases', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestMappedAliases', 1);
 }
@@ -91167,7 +99331,7 @@ sub ValidateCredentialsInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ValidateCredentialsInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91177,7 +99341,7 @@ sub AcquireCredentialsInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['requestedAuth', 'GuestAuthentication'],['sessionID', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('AcquireCredentialsInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestAuthentication', 0);
 }
@@ -91187,7 +99351,7 @@ sub ReleaseCredentialsInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReleaseCredentialsInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91197,7 +99361,7 @@ sub MakeDirectoryInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['directoryPath', undef],['createParentDirectories', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MakeDirectoryInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91207,7 +99371,7 @@ sub DeleteFileInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['filePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteFileInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91217,7 +99381,7 @@ sub DeleteDirectoryInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['directoryPath', undef],['recursive', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteDirectoryInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91227,7 +99391,7 @@ sub MoveDirectoryInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['srcDirectoryPath', undef],['dstDirectoryPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveDirectoryInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91237,7 +99401,7 @@ sub MoveFileInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['srcFilePath', undef],['dstFilePath', undef],['overwrite', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('MoveFileInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91247,7 +99411,7 @@ sub CreateTemporaryFileInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['prefix', undef],['suffix', undef],['directoryPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateTemporaryFileInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91257,7 +99421,7 @@ sub CreateTemporaryDirectoryInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['prefix', undef],['suffix', undef],['directoryPath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateTemporaryDirectoryInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91267,7 +99431,7 @@ sub ListFilesInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['filePath', undef],['index', undef],['maxResults', undef],['matchPattern', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListFilesInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestListFileInfo', 0);
 }
@@ -91277,7 +99441,7 @@ sub ChangeFileAttributesInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['guestFilePath', undef],['fileAttributes', 'GuestFileAttributes'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ChangeFileAttributesInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91287,7 +99451,7 @@ sub InitiateFileTransferFromGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['guestFilePath', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InitiateFileTransferFromGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'FileTransferInformation', 0);
 }
@@ -91297,7 +99461,7 @@ sub InitiateFileTransferToGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['guestFilePath', undef],['fileAttributes', 'GuestFileAttributes'],['fileSize', undef],['overwrite', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InitiateFileTransferToGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91307,7 +99471,7 @@ sub StartProgramInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['spec', 'GuestProgramSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('StartProgramInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91317,7 +99481,7 @@ sub ListProcessesInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['pids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListProcessesInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestProcessInfo', 1);
 }
@@ -91327,7 +99491,7 @@ sub TerminateProcessInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['pid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('TerminateProcessInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91337,7 +99501,7 @@ sub ReadEnvironmentVariableInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['names', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ReadEnvironmentVariableInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -91347,7 +99511,7 @@ sub CreateRegistryKeyInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['keyName', 'GuestRegKeyNameSpec'],['isVolatile', undef],['classType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateRegistryKeyInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91357,7 +99521,7 @@ sub ListRegistryKeysInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['keyName', 'GuestRegKeyNameSpec'],['recursive', undef],['matchPattern', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListRegistryKeysInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestRegKeyRecordSpec', 1);
 }
@@ -91367,7 +99531,7 @@ sub DeleteRegistryKeyInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['keyName', 'GuestRegKeyNameSpec'],['recursive', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteRegistryKeyInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91377,7 +99541,7 @@ sub SetRegistryValueInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['value', 'GuestRegValueSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('SetRegistryValueInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91387,7 +99551,7 @@ sub ListRegistryValuesInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['keyName', 'GuestRegKeyNameSpec'],['expandStrings', undef],['matchPattern', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ListRegistryValuesInGuest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'GuestRegValueSpec', 1);
 }
@@ -91397,8 +99561,308 @@ sub DeleteRegistryValueInGuest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vm', 'ManagedObjectReference'],['auth', 'GuestAuthentication'],['valueName', 'GuestRegValueNameSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DeleteRegistryValueInGuest', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub HostCreateDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VslmCreateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostCreateDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostRegisterDisk {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['path', undef],['name', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostRegisterDisk', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObject', 0);
+}
+
+sub HostExtendDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['newCapacityInMB', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostExtendDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostInflateDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostInflateDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostRenameVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['name', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostRenameVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub HostDeleteVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostDeleteVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostRetrieveVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostRetrieveVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObject', 0);
+}
+
+sub HostRetrieveVStorageObjectState {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostRetrieveVStorageObjectState', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObjectStateInfo', 0);
+}
+
+sub HostListVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostListVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ID', 1);
+}
+
+sub HostCloneVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['spec', 'VslmCloneSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostCloneVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostRelocateVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['spec', 'VslmRelocateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostRelocateVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostReconcileDatastoreInventory_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostReconcileDatastoreInventory_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub HostScheduleReconcileDatastoreInventory {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('HostScheduleReconcileDatastoreInventory', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub CreateDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VslmCreateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('CreateDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RegisterDisk {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['path', undef],['name', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RegisterDisk', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObject', 0);
+}
+
+sub ExtendDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['newCapacityInMB', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ExtendDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub InflateDisk_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('InflateDisk_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RenameVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['name', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RenameVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub DeleteVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('DeleteVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RetrieveVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObject', 0);
+}
+
+sub RetrieveVStorageObjectState {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RetrieveVStorageObjectState', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VStorageObjectStateInfo', 0);
+}
+
+sub ListVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ListVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ID', 1);
+}
+
+sub CloneVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['spec', 'VslmCloneSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('CloneVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RelocateVStorageObject_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['datastore', 'ManagedObjectReference'],['spec', 'VslmRelocateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('RelocateVStorageObject_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub AttachTagToVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['category', undef],['tag', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('AttachTagToVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub DetachTagFromVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],['category', undef],['tag', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('DetachTagFromVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub ListVStorageObjectsAttachedToTag {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['category', undef],['tag', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ListVStorageObjectsAttachedToTag', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ID', 1);
+}
+
+sub ListTagsAttachedToVStorageObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['id', 'ID'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ListTagsAttachedToVStorageObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VslmTagEntry', 1);
+}
+
+sub ReconcileDatastoreInventory_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ReconcileDatastoreInventory_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub ScheduleReconcileDatastoreInventory {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('ScheduleReconcileDatastoreInventory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -91407,7 +99871,7 @@ sub DestroyPropertyFilter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyPropertyFilter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91417,7 +99881,7 @@ sub CreateFilter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'PropertyFilterSpec'],['partialUpdates', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreateFilter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91427,7 +99891,7 @@ sub RetrieveProperties {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['specSet', 'PropertyFilterSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ObjectContent', 1);
 }
@@ -91437,7 +99901,7 @@ sub CheckForUpdates {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['version', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CheckForUpdates', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UpdateSet', 0);
 }
@@ -91447,7 +99911,7 @@ sub WaitForUpdates {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['version', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('WaitForUpdates', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UpdateSet', 0);
 }
@@ -91457,7 +99921,7 @@ sub CancelWaitForUpdates {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CancelWaitForUpdates', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91467,7 +99931,7 @@ sub WaitForUpdatesEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['version', undef],['options', 'WaitOptions'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('WaitForUpdatesEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'UpdateSet', 0);
 }
@@ -91477,7 +99941,7 @@ sub RetrievePropertiesEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['specSet', 'PropertyFilterSpec'],['options', 'RetrieveOptions'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrievePropertiesEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'RetrieveResult', 0);
 }
@@ -91487,7 +99951,7 @@ sub ContinueRetrievePropertiesEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['token', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('ContinueRetrievePropertiesEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'RetrieveResult', 0);
 }
@@ -91497,7 +99961,7 @@ sub CancelRetrievePropertiesEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['token', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CancelRetrievePropertiesEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91507,7 +99971,7 @@ sub CreatePropertyCollector {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('CreatePropertyCollector', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91517,9 +99981,29 @@ sub DestroyPropertyCollector {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('DestroyPropertyCollector', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanRetrieveProperties {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['massCollectorSpecs', 'VsanMassCollectorSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanRetrieveProperties', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ObjectContent', 1);
+}
+
+sub VsanPerformOnlineHealthCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerformOnlineHealthCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub PerformVsanUpgradeEx {
@@ -91527,19 +100011,19 @@ sub PerformVsanUpgradeEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['performObjectUpgrade', undef],['downgradeFormat', undef],['allowReducedRedundancy', undef],['excludeHosts', 'ManagedObjectReference'],['spec', 'VsanDiskFormatConversionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradeEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
-sub PerformVsanUpgradePreflightCheckEx {
+sub VsanQueryUpgradeStatusEx {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],['spec', 'VsanDiskFormatConversionSpec'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightCheckEx', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanDiskFormatConversionCheckResult', 0);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryUpgradeStatusEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanUpgradeStatusEx', 0);
 }
 
 sub RetrieveSupportedVsanFormatVersion {
@@ -91547,9 +100031,29 @@ sub RetrieveSupportedVsanFormatVersion {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveSupportedVsanFormatVersion', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub PerformVsanUpgradePreflightCheckEx {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],['spec', 'VsanDiskFormatConversionSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightCheckEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanDiskFormatConversionCheckResult', 0);
+}
+
+sub PerformVsanUpgradePreflightAsyncCheck_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],['spec', 'VsanDiskFormatConversionSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightAsyncCheck_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VsanGetCapabilities {
@@ -91557,7 +100061,7 @@ sub VsanGetCapabilities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['targets', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanGetCapabilities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanCapability', 1);
 }
@@ -91567,7 +100071,7 @@ sub VsanQueryClusterPhysicalDiskHealthSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterPhysicalDiskHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPhysicalDiskHealthSummary', 1);
 }
@@ -91577,7 +100081,7 @@ sub VsanQueryClusterNetworkPerfTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['multicast', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterNetworkPerfTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 0);
 }
@@ -91585,9 +100089,9 @@ sub VsanQueryClusterNetworkPerfTest {
 sub VsanQueryClusterAdvCfgSync {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['options', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterAdvCfgSync', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterAdvCfgSyncResult', 1);
 }
@@ -91597,7 +100101,7 @@ sub VsanRepairClusterImmediateObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanRepairClusterImmediateObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemObjectsRepairResult', 0);
 }
@@ -91607,7 +100111,7 @@ sub VsanQueryVerifyClusterNetworkSettings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVerifyClusterNetworkSettings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkHealthResult', 0);
 }
@@ -91617,7 +100121,7 @@ sub VsanQueryClusterCreateVmHealthTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCreateVmHealthTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 0);
 }
@@ -91627,7 +100131,7 @@ sub VsanQueryClusterHealthSystemVersions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterHealthSystemVersions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemVersionResult', 0);
 }
@@ -91637,7 +100141,7 @@ sub VsanClusterGetHclInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanClusterGetHclInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHclInfo', 0);
 }
@@ -91647,7 +100151,7 @@ sub VsanQueryClusterCheckLimits {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCheckLimits', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterLimitHealthResult', 0);
 }
@@ -91657,7 +100161,7 @@ sub VsanQueryClusterCaptureVsanPcap {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['duration', undef],['vmknic', 'VsanClusterHostVmknicMapping'],['includeRawPcap', undef],['includeIgmp', undef],['cmmdsMsgTypeFilter', undef],['cmmdsPorts', undef],['clusterUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCaptureVsanPcap', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVsanClusterPcapResult', 0);
 }
@@ -91667,9 +100171,229 @@ sub VsanCheckClusterClomdLiveness {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanCheckClusterClomdLiveness', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterClomdLivenessResult', 0);
+}
+
+sub VsanVitRemoveIscsiInitiatorsFromTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['initiatorNames', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorsFromTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitRemoveIscsiInitiatorsFromGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['initiatorNames', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorsFromGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitEditIscsiLUN {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunSpec', 'VsanIscsiLUNSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitEditIscsiLUN', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitGetIscsiLUN {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiLUN', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiLUN', 0);
+}
+
+sub VsanVitEditIscsiTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetSpec', 'VsanIscsiTargetSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitEditIscsiTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitAddIscsiInitiatorsToGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['initiatorNames', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorsToGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitAddIscsiInitiatorsToTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['initiatorNames', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorsToTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitQueryIscsiTargetServiceVersion {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitQueryIscsiTargetServiceVersion', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitAddIscsiTargetToGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['targetAlias', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiTargetToGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitRemoveIscsiTargetFromGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['targetAlias', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiTargetFromGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitGetIscsiLUNs {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAliases', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiLUNs', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiLUN', 1);
+}
+
+sub VsanVitRemoveIscsiLUN {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunId', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiLUN', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitGetIscsiInitiatorGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiInitiatorGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiInitiatorGroup', 0);
+}
+
+sub VsanVitRemoveIscsiInitiatorGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVitGetHomeObject {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetHomeObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanObjectInformation', 0);
+}
+
+sub VsanVitGetIscsiTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiTarget', 0);
+}
+
+sub VsanVitRemoveIscsiTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitAddIscsiLUN {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunSpec', 'VsanIscsiLUNSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiLUN', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitGetIscsiInitiatorGroups {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiInitiatorGroups', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiInitiatorGroup', 1);
+}
+
+sub VsanVitGetIscsiTargets {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiTargets', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIscsiTarget', 1);
+}
+
+sub VsanVitAddIscsiTarget {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetSpec', 'VsanIscsiTargetSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiTarget', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVitAddIscsiInitiatorGroup {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorGroup', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VosSetVsanObjectPolicy {
@@ -91677,7 +100401,7 @@ sub VosSetVsanObjectPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanObjectUuid', undef],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VosSetVsanObjectPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91685,9 +100409,9 @@ sub VosSetVsanObjectPolicy {
 sub VsanQueryObjectIdentities {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['objUuids', undef],['includeHealth', undef],['includeObjIdentity', undef],['includeSpaceSummary', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['objUuids', undef],['objTypes', undef],['includeHealth', undef],['includeObjIdentity', undef],['includeSpaceSummary', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryObjectIdentities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectIdentityAndHealth', 0);
 }
@@ -91697,9 +100421,59 @@ sub VosQueryVsanObjectInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanObjectQuerySpecs', 'VsanObjectQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VosQueryVsanObjectInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectInformation', 1);
+}
+
+sub VsanPerfDiagnose {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['perfDiagnoseQuery', 'VsanPerfDiagnoseQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfDiagnose', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPerfDiagnosticResult', 1);
+}
+
+sub VsanPerfQueryClusterHealth {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfQueryClusterHealth', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'DynamicData', 1);
+}
+
+sub VsanPerfToggleVerboseMode {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['verboseMode', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfToggleVerboseMode', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanPerfQueryNodeInformation {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfQueryNodeInformation', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPerfNodeInformation', 1);
+}
+
+sub VsanPerfQueryTimeRanges {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['querySpec', 'VsanPerfTimeRangeQuerySpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfQueryTimeRanges', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPerfTimeRange', 1);
 }
 
 sub VsanPerfSetStatsObjectPolicy {
@@ -91707,19 +100481,29 @@ sub VsanPerfSetStatsObjectPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanPerfSetStatsObjectPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VsanPerfDeleteStatsObject {
+sub VsanPerfCreateStatsObject {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanPerfDeleteStatsObject', $arg_string, $soap_action);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfCreateStatsObject', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanPerfQueryPerf {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['querySpecs', 'VsanPerfQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfQueryPerf', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPerfEntityMetricCSV', 1);
 }
 
 sub VsanPerfCreateStatsObjectTask {
@@ -91727,7 +100511,7 @@ sub VsanPerfCreateStatsObjectTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanPerfCreateStatsObjectTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91737,19 +100521,19 @@ sub VsanPerfDeleteStatsObjectTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDeleteStatsObjectTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
-sub VsanPerfQueryClusterHealth {
+sub VsanPerfDeleteTimeRange {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanPerfQueryClusterHealth', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'DynamicData', 1);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfDeleteTimeRange', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanPerfQueryStatsObjectInformation {
@@ -91757,29 +100541,39 @@ sub VsanPerfQueryStatsObjectInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryStatsObjectInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectInformation', 0);
 }
 
-sub VsanPerfQueryNodeInformation {
+sub VsanPerfDeleteStatsObject {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanPerfQueryNodeInformation', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanPerfNodeInformation', 1);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfDeleteStatsObject', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VsanPerfQueryPerf {
+sub VsanPerfSaveTimeRanges {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['querySpecs', 'VsanPerfQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['timeRanges', 'VsanPerfTimeRange'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanPerfQueryPerf', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanPerfEntityMetricCSV', 1);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfSaveTimeRanges', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanPerfGetSupportedDiagnosticExceptions {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPerfGetSupportedDiagnosticExceptions', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPerfDiagnosticException', 1);
 }
 
 sub VsanPerfGetSupportedEntityTypes {
@@ -91787,19 +100581,9 @@ sub VsanPerfGetSupportedEntityTypes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanPerfGetSupportedEntityTypes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfEntityType', 1);
-}
-
-sub VsanPerfCreateStatsObject {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanPerfCreateStatsObject', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanQuerySpaceUsage {
@@ -91807,7 +100591,7 @@ sub VsanQuerySpaceUsage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQuerySpaceUsage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanSpaceUsage', 0);
 }
@@ -91817,7 +100601,7 @@ sub VsanClusterGetConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanClusterGetConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanConfigInfoEx', 0);
 }
@@ -91827,9 +100611,39 @@ sub VsanClusterReconfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanReconfigSpec', 'VimVsanReconfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanClusterReconfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanClusterGetRuntimeStats {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['stats', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterGetRuntimeStats', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanRuntimeStatsHostMap', 1);
+}
+
+sub VsanEncryptedClusterRekey_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['encryptedCluster', 'ManagedObjectReference'],['deepRekey', undef],['allowReducedRedundancy', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanEncryptedClusterRekey_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanPurgeHclFiles {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['sha1sums', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPurgeHclFiles', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanQueryVcClusterCreateVmHealthHistoryTest {
@@ -91837,7 +100651,7 @@ sub VsanQueryVcClusterCreateVmHealthHistoryTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterCreateVmHealthHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 1);
 }
@@ -91847,7 +100661,7 @@ sub VsanHealthSetLogLevel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['level', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetLogLevel', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91857,7 +100671,7 @@ sub VsanHealthTestVsanClusterTelemetryProxy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['proxyConfig', 'VsanClusterTelemetryProxyConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthTestVsanClusterTelemetryProxy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91867,9 +100681,19 @@ sub VsanVcUploadHclDb {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['db', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanVcUploadHclDb', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanQueryVcClusterSmartStatsSummary {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterSmartStatsSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanSmartStatsHostSummary', 1);
 }
 
 sub VsanVcUpdateHclDbFromWeb {
@@ -91877,9 +100701,19 @@ sub VsanVcUpdateHclDbFromWeb {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['url', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanVcUpdateHclDbFromWeb', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHealthGetVsanClusterSilentChecks {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHealthGetVsanClusterSilentChecks', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
 }
 
 sub VsanHealthRepairClusterObjectsImmediate {
@@ -91887,7 +100721,7 @@ sub VsanHealthRepairClusterObjectsImmediate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthRepairClusterObjectsImmediate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91897,7 +100731,7 @@ sub VsanQueryVcClusterNetworkPerfTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['multicast', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterNetworkPerfTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 0);
 }
@@ -91907,19 +100741,9 @@ sub VsanQueryVcClusterVmdkLoadHistoryTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterVmdkLoadHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterVmdkLoadTestResult', 1);
-}
-
-sub VsanHealthQueryVsanClusterHealthCheckInterval {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanClusterHealthCheckInterval', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanQueryVcClusterCreateVmHealthTest {
@@ -91927,17 +100751,37 @@ sub VsanQueryVcClusterCreateVmHealthTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterCreateVmHealthTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 0);
+}
+
+sub VsanHealthQueryVsanClusterHealthCheckInterval {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanClusterHealthCheckInterval', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanQueryAllSupportedHealthChecks {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryAllSupportedHealthChecks', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanClusterHealthCheckInfo', 1);
 }
 
 sub VsanVcClusterGetHclInfo {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['includeHostsResult', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['includeHostsResult', undef],['includeVendorInfo', undef],['esxRelease', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterGetHclInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHclInfo', 0);
 }
@@ -91947,7 +100791,7 @@ sub VsanQueryAttachToSrHistory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryAttachToSrHistory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanAttachToSrOperation', 1);
 }
@@ -91957,7 +100801,7 @@ sub VsanRebalanceCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanRebalanceCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91967,7 +100811,7 @@ sub VsanVcClusterRunVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['runname', undef],['durationSec', undef],['specs', 'VsanVmdkLoadTestSpec'],['action', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterRunVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -91977,7 +100821,7 @@ sub VsanHealthSendVsanTelemetry {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSendVsanTelemetry', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -91987,7 +100831,7 @@ sub VsanQueryVcClusterNetworkPerfHistoryTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterNetworkPerfHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 1);
 }
@@ -91995,9 +100839,9 @@ sub VsanQueryVcClusterNetworkPerfHistoryTest {
 sub VsanQueryVcClusterHealthSummary {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vmCreateTimeout', undef],['objUuids', undef],['includeObjUuids', undef],['fields', undef],['fetchFromCache', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vmCreateTimeout', undef],['objUuids', undef],['includeObjUuids', undef],['fields', undef],['fetchFromCache', undef],['perspective', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSummary', 0);
 }
@@ -92007,7 +100851,7 @@ sub VsanStopRebalanceCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanStopRebalanceCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -92017,7 +100861,7 @@ sub VsanHealthQueryVsanClusterHealthConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanClusterHealthConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthConfigs', 0);
 }
@@ -92027,8 +100871,18 @@ sub VsanAttachVsanSupportBundleToSr {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['srNumber', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanAttachVsanSupportBundleToSr', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanDownloadHclFile_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['sha1sums', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanDownloadHclFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
@@ -92037,9 +100891,19 @@ sub VsanQueryVcClusterVmdkWorkloadTypes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterVmdkWorkloadTypes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanStorageWorkloadType', 1);
+}
+
+sub VsanHealthSetVsanClusterSilentChecks {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['addSilentChecks', undef],['removeSilentChecks', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterSilentChecks', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanVcClusterQueryVerifyHealthSystemVersions {
@@ -92047,9 +100911,19 @@ sub VsanVcClusterQueryVerifyHealthSystemVersions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterQueryVerifyHealthSystemVersions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemVersionResult', 0);
+}
+
+sub VsanHealthSetVsanClusterTelemetryConfig {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanClusterHealthConfig', 'VsanClusterHealthConfigs'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterTelemetryConfig', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanHealthIsRebalanceRunning {
@@ -92057,7 +100931,7 @@ sub VsanHealthIsRebalanceRunning {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthIsRebalanceRunning', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -92067,7 +100941,7 @@ sub VsanHealthSetVsanClusterHealthCheckInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanClusterHealthCheckInterval', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterHealthCheckInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -92077,7 +100951,7 @@ sub InitializeDiskMappings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VimVsanHostDiskMappingCreationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('InitializeDiskMappings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -92087,7 +100961,7 @@ sub RetrieveAllFlashCapabilities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('RetrieveAllFlashCapabilities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimVsanHostVsanHostCapability', 1);
 }
@@ -92097,7 +100971,7 @@ sub QueryDiskMappings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('QueryDiskMappings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimVsanHostDiskMapInfoEx', 1);
 }
@@ -92107,7 +100981,7 @@ sub VSANVcIsWitnessHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcIsWitnessHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -92117,7 +100991,7 @@ sub VSANVcSetPreferredFaultDomain {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['preferredFd', undef],['witnessHost', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcSetPreferredFaultDomain', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -92127,9 +101001,19 @@ sub VSANVcGetPreferredFaultDomain {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcGetPreferredFaultDomain', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANPreferredFaultDomainInfo', 0);
+}
+
+sub VSANIsWitnessVirtualAppliance {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VSANIsWitnessVirtualAppliance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostVirtualApplianceInfo', 1);
 }
 
 sub VSANVcGetWitnessHosts {
@@ -92137,7 +101021,7 @@ sub VSANVcGetWitnessHosts {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcGetWitnessHosts', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANWitnessHostInfo', 1);
 }
@@ -92147,7 +101031,7 @@ sub VSANVcRetrieveStretchedClusterVcCapability {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['verifyAllConnected', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcRetrieveStretchedClusterVcCapability', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANStretchedClusterCapability', 1);
 }
@@ -92157,7 +101041,7 @@ sub VSANVcConvertToStretchedCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['faultDomainConfig', 'VimClusterVSANStretchedClusterFaultDomainConfig'],['witnessHost', 'ManagedObjectReference'],['preferredFd', undef],['diskMapping', 'VsanHostDiskMapping'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcConvertToStretchedCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -92167,7 +101051,7 @@ sub VSANVcRemoveWitnessHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['witnessHost', 'ManagedObjectReference'],['witnessAddress', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VSANVcRemoveWitnessHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -92175,61 +101059,11 @@ sub VSANVcRemoveWitnessHost {
 sub VsanHostQueryAdvCfg {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['options', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['options', undef],['includeAllAdvOptions', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryAdvCfg', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OptionValue', 1);
-}
-
-sub VsanHostQueryPhysicalDiskHealthSummary {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostQueryPhysicalDiskHealthSummary', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanPhysicalDiskHealthSummary', 0);
-}
-
-sub VsanStartProactiveRebalance {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['timeSpan', undef],['varianceThreshold', undef],['timeThreshold', undef],['rateThreshold', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanStartProactiveRebalance', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VsanHostQueryHostInfoByUuids {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostQueryHostInfoByUuids', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanQueryResultHostInfo', 1);
-}
-
-sub VsanHostQueryHealthSystemVersion {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostQueryHealthSystemVersion', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VsanHostQueryVerifyNetworkSettings {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['peers', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostQueryVerifyNetworkSettings', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanNetworkHealthResult', 0);
 }
 
 sub VsanHostQueryRunIperfClient {
@@ -92237,19 +101071,9 @@ sub VsanHostQueryRunIperfClient {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['multicast', undef],['serverIp', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryRunIperfClient', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanNetworkLoadTestResult', 0);
-}
-
-sub VsanHostRunVmdkLoadTest {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['durationSec', undef],['specs', 'VsanVmdkLoadTestSpec'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostRunVmdkLoadTest', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanVmdkLoadTestResult', 1);
 }
 
 sub VsanHostQueryObjectHealthSummary {
@@ -92257,39 +101081,9 @@ sub VsanHostQueryObjectHealthSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['objUuids', undef],['includeObjUuids', undef],['localHostOnly', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryObjectHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectOverallHealth', 0);
-}
-
-sub VsanGetHclInfo {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanGetHclInfo', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanHostHclInfo', 0);
-}
-
-sub VsanHostCleanupVmdkLoadTest {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['specs', 'VsanVmdkLoadTestSpec'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostCleanupVmdkLoadTest', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VsanWaitForVsanHealthGenerationIdChange {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanWaitForVsanHealthGenerationIdChange', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanStopProactiveRebalance {
@@ -92297,8 +101091,18 @@ sub VsanStopProactiveRebalance {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanStopProactiveRebalance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHostClomdLiveness {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostClomdLiveness', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
@@ -92307,9 +101111,109 @@ sub VsanHostRepairImmediateObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['repairType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostRepairImmediateObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanRepairObjectsResult', 0);
+}
+
+sub VsanHostQueryVerifyNetworkSettings {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['peers', undef],['ROBOStretchedClusterWitnesses', undef],['vMotionPeers', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryVerifyNetworkSettings', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanNetworkHealthResult', 0);
+}
+
+sub VsanHostCleanupVmdkLoadTest {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['specs', 'VsanVmdkLoadTestSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostCleanupVmdkLoadTest', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanGetHclInfo {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['includeVendorInfo', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanGetHclInfo', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostHclInfo', 0);
+}
+
+sub VsanHostQueryEncryptionHealthSummary {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryEncryptionHealthSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanEncryptionHealthSummary', 0);
+}
+
+sub VsanFlashScsiControllerFirmware_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanHclFirmwareUpdateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanFlashScsiControllerFirmware_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanWaitForVsanHealthGenerationIdChange {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanWaitForVsanHealthGenerationIdChange', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHostQueryHealthSystemVersion {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryHealthSystemVersion', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanStartProactiveRebalance {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['timeSpan', undef],['varianceThreshold', undef],['timeThreshold', undef],['rateThreshold', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanStartProactiveRebalance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHostRunVmdkLoadTest {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['durationSec', undef],['specs', 'VsanVmdkLoadTestSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostRunVmdkLoadTest', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanVmdkLoadTestResult', 1);
+}
+
+sub VsanHostQuerySmartStats {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],['includeAllDisks', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQuerySmartStats', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanSmartStatsHostSummary', 0);
 }
 
 sub VsanHostPrepareVmdkLoadTest {
@@ -92317,7 +101221,7 @@ sub VsanHostPrepareVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['specs', 'VsanVmdkLoadTestSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostPrepareVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -92327,19 +101231,9 @@ sub VsanHostQueryRunIperfServer {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['multicast', undef],['serverIp', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryRunIperfServer', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanNetworkLoadTestResult', 0);
-}
-
-sub VsanHostQueryCheckLimits {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostQueryCheckLimits', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanLimitHealthResult', 0);
 }
 
 sub VsanGetProactiveRebalanceInfo {
@@ -92347,108 +101241,188 @@ sub VsanGetProactiveRebalanceInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
+   my $soap_action = '"urn:vsan/6.6"';
    my ($result, $fault) = $vim_soap->request('VsanGetProactiveRebalanceInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanProactiveRebalanceInfoEx', 0);
 }
 
-sub VsanHostClomdLiveness {
+sub VsanHostQueryPhysicalDiskHealthSummary {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VsanHostClomdLiveness', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryPhysicalDiskHealthSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanPhysicalDiskHealthSummary', 0);
 }
 
-sub VSANHostGetStretchedClusterInfoFromCmmds {
+sub VsanHostQueryHostInfoByUuids {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryHostInfoByUuids', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanQueryResultHostInfo', 1);
+}
+
+sub VsanHostCreateVmHealthTest {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostCreateVmHealthTest', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostCreateVmHealthTestResult', 0);
+}
+
+sub VsanHostQueryCheckLimits {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANHostGetStretchedClusterInfoFromCmmds', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VimHostVSANStretchedClusterHostInfo', 1);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryCheckLimits', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanLimitHealthResult', 0);
 }
 
-sub VSANWitnessJoinVsanCluster {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['clusterUuid', undef],['preferredFd', undef],['disableVsanAllowed', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANWitnessJoinVsanCluster', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VSANWitnessSetPreferredFaultDomain {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['preferredFd', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANWitnessSetPreferredFaultDomain', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VSANHostAddUnicastAgent {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['witnessAddress', undef],['witnessPort', undef],['overwrite', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANHostAddUnicastAgent', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VSANClusterGetPreferredFaultDomain {
+sub VsanGetAboutInfoEx {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANClusterGetPreferredFaultDomain', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VimHostVSANCmmdsPreferredFaultDomainInfo', 0);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanGetAboutInfoEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostAboutInfoEx', 0);
 }
 
-sub VSANWitnessLeaveVsanCluster {
+sub VsanHostGetRuntimeStats {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['stats', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANWitnessLeaveVsanCluster', $arg_string, $soap_action);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanHostGetRuntimeStats', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostRuntimeStats', 0);
+}
+
+sub VsanQueryWhatIfEvacuationResult {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['evacEntityUuid', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryWhatIfEvacuationResult', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanWhatIfEvacResult', 0);
+}
+
+sub VsanVibInstall_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vibSpecs', 'VsanVibSpec'],['scanResults', 'VsanVibScanResult'],['firmwareSpecs', 'VsanHclFirmwareUpdateSpec'],['maintenanceSpec', 'HostMaintenanceSpec'],['rolling', undef],['noSigCheck', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVibInstall_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVibInstallPreflightCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVibInstallPreflightCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanVibInstallPreflightStatus', 0);
+}
+
+sub VsanVibScan {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vibSpecs', 'VsanVibSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVibScan', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanVibScanResult', 1);
+}
+
+sub VsanPostConfigForVcsa {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanVcPostDeployConfigSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPostConfigForVcsa', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VSANHostGetStretchedClusterCapability {
+sub VsanVcsaGetBootstrapProgress {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANHostGetStretchedClusterCapability', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VimHostVSANStretchedClusterHostCapability', 0);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVcsaGetBootstrapProgress', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanVcsaDeploymentProgress', 1);
 }
 
-sub VSANHostRemoveUnicastAgent {
+sub VsanPrepareVsanForVcsa {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['witnessAddress', undef],['ignoreExistence', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanPrepareVsanForVcsaSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANHostRemoveUnicastAgent', $arg_string, $soap_action);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanPrepareVsanForVcsa', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VSANHostListUnicastAgent {
+sub VsanCompleteMigrateVmsToVds {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['jobId', undef],['newState', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.0"';
-   my ($result, $fault) = $vim_soap->request('VSANHostListUnicastAgent', $arg_string, $soap_action);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanCompleteMigrateVmsToVds', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanMigrateVmsToVds {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['vmConfigSpecs', 'VsanVmVdsMigrationSpec'],['vdsUuid', undef],['timeoutSec', undef],['revert', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanMigrateVmsToVds', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVdsMigrateVss {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['migrationPlan', 'VsanVdsMigrationPlan'],['vswitchName', undef],['vdsName', undef],['vmnicDevices', undef],['infraVm', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVdsMigrateVss', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVdsGetMigrationPlan {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vswitchName', undef],['vdsName', undef],['vmnicDevices', undef],['infraVm', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanVdsGetMigrationPlan', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanVdsMigrationPlan', 0);
+}
+
+sub VsanRollbackVdsToVss {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['task', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/6.6"';
+   my ($result, $fault) = $vim_soap->request('VsanRollbackVdsToVss', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 

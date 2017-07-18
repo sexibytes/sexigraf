@@ -396,6 +396,7 @@ func_echo-header(){
   echo -e "  _|_|_|      _|_|_|  _|    _|  _|    _|_|_|  _|          _|_|_|    _|      "
   echo ""
   echo -e "Hostname:    `hostname`"
+  echo -e "Version:     `[ -f /etc/sexigraf_version ] && cat /etc/sexigraf_version || echo "Unknown"`"
   echo -e "IP:          `ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`"
   echo -e "Netmask:     `ifconfig eth0 | grep -Eo ' (Mask:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`"
   echo -e "GW:          "`ip route show | grep -Eo "default via ([0-9]*\.){3}[0-9]*" | grep -Eo '([0-9]*\.){3}[0-9]*'`""
