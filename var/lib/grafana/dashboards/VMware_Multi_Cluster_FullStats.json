@@ -34,7 +34,7 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": 100,
+            "leftMax": 130,
             "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": 100,
