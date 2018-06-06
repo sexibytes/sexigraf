@@ -132,9 +132,9 @@ sub QuickQueryPerf {
 				my $values = $_->value;
 				my @s_values = sort { $a <=> $b } @$values;
 				my $sum = 0;
-				my $count = 0;
+				my $count = 1;
 				foreach (@s_values) {
-					if (($_ < $query_limit) && ($count < 13)) {
+					if (($_ < $query_limit) && ($count < 14)) {
 						$sum += $_;
 						$count += 1;
 					}
@@ -174,9 +174,9 @@ sub FatQueryPerf {
 				my $values = $_->value;
 				my @s_values = sort { $a <=> $b } @$values;
 				my $sum = 0;
-				my $count = 0;
+				my $count = 1;
 				foreach (@s_values) {
-					if ($count < 13) {
+					if ($count < 14) {
 						$sum += $_;
 						$count += 1;
 					}
