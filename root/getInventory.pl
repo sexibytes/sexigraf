@@ -120,14 +120,14 @@ sub sexiprocess {
           CLUSTER => $txtCluster,
           HOST => $h_host{$vm_view->{'runtime.host'}->value},
           VMXPATH => $vm_view->{'summary.config.vmPathName'},
-          PORTGROUP => join(',', @vm_pg_string),
-          IP => join(',', @vm_ip_string),
+          PORTGROUP => join(';', @vm_pg_string),
+          IP => join(';', @vm_ip_string),
           NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "N/A"),
           MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "N/A"),
           COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
           PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
           DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1],
-          MAC => join(',', @vm_mac),
+          MAC => join(';', @vm_mac),
           FOLDERPATH => uri_unescape($vmPath)
         );
         push( @{$listVM_ref}, \%h_vm );
