@@ -2,6 +2,7 @@
 
 # purge existing export files
 rm -rf /root/sexigraf-export/
+rm -f /var/www/admin/sexigraf-export.iso
 
 # create root folders
 mkdir /root/sexigraf-export/
