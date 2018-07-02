@@ -401,7 +401,7 @@ func_echo-header(){
   #echo -e "Netmask:     `ip addr show ens33 | grep -Eo ' (Mask:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`"
   echo -e "GW:          "`ip route show | grep -Eo "default via ([0-9]*\.){3}[0-9]*" | grep -Eo '([0-9]*\.){3}[0-9]*'`""
   echo ""
-  echo -e "`df -h | egrep "Filesystem|sda1"`"
+  echo -e "`df -h | egrep "Filesystem|sexigraf--vg-root"`"
   echo ""
   if [[ $statecarboncache =~ "Active: active (running)" ]]; then
     echo -e -n " carbon-cache  [$green RUNNING $clean]"
