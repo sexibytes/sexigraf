@@ -106,6 +106,26 @@ require("header.php");
                                 </div>
                         </a>
                 </div>
+                <div class="col-lg-4 col-md-6">
+                        <a href="export-import.php">
+                                <div class="panel">
+                                        <div class="panel-heading">
+                                                <div class="row">
+                                                        <div class="col-xs-2">
+                                                                <i class="glyphicon glyphicon-transfer" style="font-size: 2em;"></i>
+                                                        </div>
+                                                        <div class="col-xs-10 text-right">
+                                                                <div class="huge">Export / Import</div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="panel-footer">
+                                                <span class="pull-left">In this page, you'll find a tool to export or import your data from/to another SexiGraf appliance. It will make the appliance update/upgrade/migration easier.</span>
+                                                <div class="clearfix"></div>
+                                        </div>
+                                </div>
+                        </a>
+                </div>
         </div>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
