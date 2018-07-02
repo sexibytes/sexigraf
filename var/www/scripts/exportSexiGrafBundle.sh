@@ -35,4 +35,4 @@ rm -f /root/sexigraf-dump/conf/vicredentials.conf
 #openssl des3 -d -salt -in /root/sexigraf-dump/conf/vicredentials.conf.ss -out /root/sexigraf-dump/conf/vicredentials.conf2 -pass pass:sexigraf
 
 # create ISO file from export folder
-genisoimage -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
+genisoimage -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
