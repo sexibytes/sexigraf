@@ -10,6 +10,9 @@ mkdir /root/sexigraf-dump/whisper/
 mkdir /root/sexigraf-dump/conf/
 mkdir /root/sexigraf-dump/conf/cron.d/
 
+# Info file
+echo "Built on server" $(hostname) "on" $(date) > /root/sexigraf-export/dump.info
+
 # Retrieve whiper files
 cp -R /var/lib/graphite/whisper/ /root/sexigraf-dump/whisper/
 
