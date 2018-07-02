@@ -10,6 +10,9 @@ mkdir /root/sexigraf-dump/whisper/
 mkdir /root/sexigraf-dump/conf/
 mkdir /root/sexigraf-dump/conf/cron.d/
 
+# Info file
+echo "Built on server" $(hostname) "on" $(date) > /root/sexigraf-export/dump.info
+
 # Retrieve whiper files
 cp -R /var/lib/graphite/whisper/ /root/sexigraf-dump/whisper/
 
@@ -32,4 +35,4 @@ rm -f /root/sexigraf-dump/conf/vicredentials.conf
 #openssl des3 -d -salt -in /root/sexigraf-dump/conf/vicredentials.conf.ss -out /root/sexigraf-dump/conf/vicredentials.conf2 -pass pass:sexigraf
 
 # create ISO file from export folder
-genisoimage -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
+genisoimage -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
