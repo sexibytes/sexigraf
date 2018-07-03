@@ -88,7 +88,7 @@ sub sexiprocess {
           $h_host{$StandaloneResourceVMHost[0][0]->{'mo_ref'}->value} = $StandaloneResourceVMHostName;
         }
       }
-      $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage']);
+      $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.connectionState','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage'], filter => {'runtime.connectionState' => "connected"});
       foreach my $vm_view (@$vm_views) {
         my $vnics = $vm_view->guest->net;
         my @vm_pg_string = ();
