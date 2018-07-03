@@ -1,26 +1,17 @@
 {
-  "id": null,
-  "title": "VMware Cluster FullStats",
-  "originalTitle": "VMware Cluster FullStats",
-  "tags": [
-    "CPU",
-    "RAM",
-    "HDD",
-    "DRS",
-    "VM",
-    "vmotion",
-    "vmnic",
-    "IORM"
-  ],
-  "style": "light",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": null,
+  "links": [],
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
-      "editable": true,
       "height": "200px",
       "panels": [
         {
@@ -29,24 +20,14 @@
             "mem.usage": "#1F78C1"
           },
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": 110,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": 110,
-            "rightMin": 0,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 1,
-          "leftYAxisLabel": "",
           "legend": {
             "avg": false,
             "current": false,
@@ -64,7 +45,6 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "rightYAxisLabel": "",
           "seriesOverrides": [
             {
               "alias": "mem.allocated",
@@ -72,6 +52,7 @@
               "stack": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -107,6 +88,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "cpu/ram usage",
@@ -116,11 +98,30 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "percent",
-            "percent"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": 110,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": 110,
+              "min": 0,
+              "show": true
+            }
           ]
         },
         {
@@ -132,22 +133,13 @@
             "zipped": "#6ED0E0"
           },
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 6,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": 0,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 2,
           "legend": {
             "alignAsTable": false,
@@ -179,6 +171,7 @@
               "stack": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -214,6 +207,7 @@
               "textEditor": true
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "memory quickstats",
@@ -223,11 +217,28 @@
             "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "mbytes",
-            "mbytes"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "mbytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "mbytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            }
           ]
         },
         {
@@ -240,22 +251,13 @@
             "used": "#052B51"
           },
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": 0,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 5,
           "legend": {
             "avg": false,
@@ -289,6 +291,7 @@
               "zindex": 3
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -318,6 +321,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "shared datastores utilization",
@@ -327,32 +331,40 @@
             "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "bytes",
-            "percent"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "percent",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            }
           ]
         },
         {
           "aliasColors": {},
           "bars": true,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 7,
           "legend": {
             "avg": false,
@@ -383,6 +395,7 @@
               "color": "#0A50A1"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -398,6 +411,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "vmnic traffic",
@@ -407,78 +421,28 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "Bps",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "vmotion.count": "#052B51"
-          },
-          "bars": true,
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "fill": 4,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 4,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
             "show": true,
-            "total": true,
-            "values": true
+            "values": []
           },
-          "lines": false,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
+          "yaxes": [
             {
-              "refId": "A",
-              "target": "alias(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion.count')",
-              "textEditor": false
+              "format": "Bps",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "vMotion count",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "none",
-            "short"
           ]
         },
         {
@@ -487,22 +451,13 @@
             "vm.registered": "#BA43A9"
           },
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 4,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 3,
           "legend": {
             "avg": false,
@@ -522,6 +477,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -535,6 +491,7 @@
               "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')"
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "VM count",
@@ -544,11 +501,118 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 15,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "bytesRead",
+              "color": "#E24D42",
+              "lines": false
+            },
+            {
+              "alias": "bytesWrite",
+              "bars": false,
+              "color": "#1F78C1"
+            }
+          ],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesRead, 1024)), 8)",
+              "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesWrite, 1024)), 8)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "vmhba traffic",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
@@ -559,22 +623,13 @@
             "total": "#EF843C"
           },
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 8,
           "legend": {
             "avg": false,
@@ -600,6 +655,7 @@
               "stack": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -637,6 +693,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "RAM utilization",
@@ -646,32 +703,40 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "mbytes",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "mbytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 10,
           "legend": {
             "avg": false,
@@ -697,6 +762,7 @@
               "stack": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -734,6 +800,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "CPU utilization/demand",
@@ -743,100 +810,40 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "hertz",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
-          "id": 9,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
+          "yaxes": [
             {
-              "hide": false,
-              "refId": "A",
-              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedCpuFairness, 5, 7)"
+              "format": "hertz",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
             },
             {
-              "refId": "B",
-              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedMemoryFairness, 5, 7)"
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "distributed fairness",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
           ]
         },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 13,
           "legend": {
             "avg": false,
@@ -861,6 +868,7 @@
               "color": "#6D1F62"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -876,10 +884,12 @@
               "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs"
             },
             {
+              "refId": "C",
               "target": "alias(divideSeries(#B, #A), '$cluster.vCPU/pCPU')",
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "vCPU per pCPU ratio",
@@ -889,32 +899,40 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 14,
           "legend": {
             "avg": false,
@@ -934,6 +952,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -944,6 +963,7 @@
               "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)"
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "power usage",
@@ -953,41 +973,212 @@
             "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watt",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "watt",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {
+            "vmotion.count": "#052B51"
+          },
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "fill": 4,
+          "grid": {},
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": true,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "alias(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion.count')",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "vMotion count",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 9,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/distributedMemoryFairness/i",
+              "transform": "negative-Y"
+            }
+          ],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "refId": "A",
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedCpuFairness, 5, 7)"
+            },
+            {
+              "refId": "B",
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedMemoryFairness, 5, 7)"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "distributed fairness",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         }
       ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
       "showTitle": false,
-      "title": "$cluster"
+      "title": "$cluster",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "200px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 11,
           "legend": {
             "avg": false,
@@ -1017,6 +1208,7 @@
               "fill": 0
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1032,6 +1224,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "SIOC Normalized Datastores Latency",
@@ -1041,32 +1234,40 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "µs",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "µs",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
           "aliasColors": {},
           "bars": true,
-          "datasource": null,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 12,
           "legend": {
             "avg": false,
@@ -1091,6 +1292,7 @@
               "color": "#1F78C1"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1101,6 +1303,7 @@
               "textEditor": false
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Aggregated Datastores IOPS",
@@ -1110,161 +1313,180 @@
             "value_type": "cumulative"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         }
       ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
       "showTitle": true,
-      "title": "IORM"
+      "title": "IORM",
+      "titleSize": "h6"
     }
   ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
+  "schemaVersion": 14,
+  "style": "light",
+  "tags": [
+    "CPU",
+    "RAM",
+    "HDD",
+    "DRS",
+    "VM",
+    "vmotion",
+    "vmnic",
+    "IORM"
   ],
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
   "templating": {
     "list": [
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "current": {},
+        "datasource": "",
+        "hide": 0,
         "includeAll": true,
+        "label": null,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
+        "options": [],
         "query": "vmw.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
-        "type": "query"
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "current": {},
+        "datasource": "",
+        "hide": 0,
         "includeAll": true,
+        "label": null,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
+        "options": [],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
-        "type": "query"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allFormat": "glob",
-        "current": {
-          "text": "None",
-          "value": "",
-          "isNone": true
-        },
-        "datasource": null,
+        "allValue": null,
+        "current": {},
+        "datasource": "",
+        "hide": 0,
         "includeAll": false,
+        "label": null,
         "multi": false,
         "multiFormat": "glob",
         "name": "cluster",
-        "options": [
-          {
-            "text": "None",
-            "value": "",
-            "isNone": true,
-            "selected": true
-          }
-        ],
+        "options": [],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
-        "type": "query"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "current": {},
+        "datasource": "",
+        "hide": 0,
         "includeAll": true,
+        "label": null,
         "multi": true,
         "multiFormat": "glob",
         "name": "datastore",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
+        "options": [],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
-        "type": "query"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
-  "annotations": {
-    "list": []
+  "time": {
+    "from": "now-7d",
+    "to": "now"
   },
-  "refresh": false,
-  "schemaVersion": 6,
-  "version": 5,
-  "links": []
+  "timepicker": {
+    "collapse": false,
+    "enable": true,
+    "notice": false,
+    "now": true,
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "1h",
+      "2h",
+      "3h",
+      "6h",
+      "12h",
+      "24h"
+    ],
+    "status": "Stable",
+    "time_options": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d",
+      "7d",
+      "30d"
+    ],
+    "type": "timepicker"
+  },
+  "timezone": "browser",
+  "title": "VMware Cluster FullStats",
+  "version": 0
 }
