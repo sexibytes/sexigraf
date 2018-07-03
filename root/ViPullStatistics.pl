@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.142";
+$Util::script_version = "0.9.502";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -174,9 +174,9 @@ sub FatQueryPerf {
 				my $values = $_->value;
 				my @s_values = sort { $a <=> $b } @$values;
 				my $sum = 0;
-				my $count = 1;
+				my $count = 0;
 				foreach (@s_values) {
-					if ($count < 14) {
+					if ($count < 13) {
 						$sum += $_;
 						$count += 1;
 					}
@@ -362,7 +362,7 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
 		
-		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus'], filter => {'runtime.connectionState' => "connected"});
+		my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime', 'summary', 'overallStatus', 'config.storageDevice.hostBusAdapter'], filter => {'runtime.connectionState' => "connected"});
 
 		my $cluster_hosts_views_pcpus = 0;
 
@@ -394,6 +394,22 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 					};
 					$graphite->send(path => "vmw", data => $cluster_host_vmnic_h);
 				}
+			}
+
+			foreach my $cluster_host_vmhba (@{$cluster_host_view->{'config.storageDevice.hostBusAdapter'}}) {
+					my $HbabytesRead = QuickQueryPerf($cluster_host_view, 'storageAdapter', 'read', 'average', $cluster_host_vmhba->device, 100000000);
+					if (!defined($HbabytesRead)) { $HbabytesRead = 0; }
+					my $HbabytesWrite = QuickQueryPerf($cluster_host_view, 'storageAdapter', 'write', 'average', $cluster_host_vmhba->device, 100000000);
+					if (!defined($HbabytesWrite)) { $HbabytesWrite = 0; }
+					my $cluster_host_vmhba_name = $cluster_host_vmhba->device;
+
+					my $cluster_host_vmhba_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".hba.$cluster_host_vmhba_name.bytesRead", $HbabytesRead,
+							"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".hba.$cluster_host_vmhba_name.bytesWrite", $HbabytesWrite,
+						},
+					};
+					$graphite->send(path => "vmw", data => $cluster_host_vmhba_h);
 			}
 			
 			my $cluster_host_view_power = QuickQueryPerf($cluster_host_view, 'power', 'power', 'average', '*', 1000000);
@@ -468,6 +484,26 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
 			$logger->info("[DEBUG] computed vm maxTotalLatency in cluster $cluster_name in $vmmaxtotallatencytimelapse sec");
 
+			my $vmdiskusagestart = Time::HiRes::gettimeofday();
+			my %vmdiskusage = FatQueryPerf($cluster_vm_views, 'disk', 'usage', 'average', '');
+			my $vmdiskusageend = Time::HiRes::gettimeofday();
+			my $vmdiskusagetimelapse = $vmdiskusageend - $vmdiskusagestart;
+
+			$logger->info("[DEBUG] computed vm diskusage in cluster $cluster_name in $vmdiskusagetimelapse sec");
+						
+			my $vmnetusagestart = Time::HiRes::gettimeofday();
+			my %vmnetusage = FatQueryPerf($cluster_vm_views, 'net', 'usage', 'average', '');
+			my $vmnetusageend = Time::HiRes::gettimeofday();
+			my $vmnetusagetimelapse = $vmnetusageend - $vmnetusagestart;
+
+			$logger->info("[DEBUG] computed vm netusage in cluster $cluster_name in $vmnetusagetimelapse sec");
+						
+			my $vmcommandsAveragedstart = Time::HiRes::gettimeofday();
+			my %vmcommandsAveraged = FatQueryPerf($cluster_vm_views, 'disk', 'commandsAveraged', 'average', '');
+			my $vmcommandsAveragedend = Time::HiRes::gettimeofday();
+			my $vmcommandsAveragedtimelapse = $vmcommandsAveragedend - $vmcommandsAveragedstart;
+
+			$logger->info("[DEBUG] computed vm commandsAveraged in cluster $cluster_name in $vmcommandsAveragedtimelapse sec");
 			
 
 			foreach my $cluster_vm_view (@$cluster_vm_views) {
@@ -641,7 +677,37 @@ $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 						},
 					};
 					$graphite->send(path => "vmw", data => $cluster_vm_view_maxtotallatency_h);
-				}	
+				}
+
+				if ($vmdiskusage{$cluster_vm_view->{'mo_ref'}->value}) {
+					my $vmdiskusageval = $vmdiskusage{$cluster_vm_view->{'mo_ref'}->value};
+					my $cluster_vm_view_diskusage_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskUsage", $vmdiskusageval,
+						},
+					};
+					$graphite->send(path => "vmw", data => $cluster_vm_view_diskusage_h);
+				}
+				
+				if ($vmnetusage{$cluster_vm_view->{'mo_ref'}->value}) {
+					my $vmnetusageval = $vmnetusage{$cluster_vm_view->{'mo_ref'}->value};
+					my $cluster_vm_view_netusage_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.netUsage", $vmnetusageval,
+						},
+					};
+					$graphite->send(path => "vmw", data => $cluster_vm_view_netusage_h);
+				}
+
+				if ($vmcommandsAveraged{$cluster_vm_view->{'mo_ref'}->value}) {
+					my $vmcommandsAveragedval = $vmcommandsAveraged{$cluster_vm_view->{'mo_ref'}->value};
+					my $cluster_vm_view_commandsAveraged_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskCommands", $vmcommandsAveragedval,
+						},
+					};
+					$graphite->send(path => "vmw", data => $cluster_vm_view_commandsAveraged_h);
+				}				
 			}
 		
 			if ($cluster_vm_views_vcpus > 0 && $cluster_hosts_views_pcpus > 0) {
