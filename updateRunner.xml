@@ -6,6 +6,6 @@
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/* /root/</command>
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/usr/* /usr/</command>
                 <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/var/* /var/</command>
-                <command>/bin/bash /root/vsp67sdk_instaler.sh</command>
+                <command>/bin/bash /root/vsp67sdk_installer.sh</command>
         </commands>
 </update>
