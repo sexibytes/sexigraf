@@ -7,7 +7,7 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  /bin/sed -i 's/ubuntu/debian/g' /root/vmware-vsphere-cli-distrib/vmware-install.pl
  yes | PAGER=/bin/cat /root/vmware-vsphere-cli-distrib/vmware-install.pl default
  mv /root/genisoimage /usr/bin/
- chmod +X /usr/bin/genisoimage
+ chmod +x /usr/bin/genisoimage
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
  rm -f /root/099e_update.sh
