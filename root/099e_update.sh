@@ -9,6 +9,7 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
  rm -f /root/099e_update.sh
+ echo "Pimp Your Stats!"
 else
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -16,5 +17,6 @@ else
  echo "            PLEASE UPGRADE TO 0.99d AND TRY AGAIN              "
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+ rm -f /root/099e_update.sh
  exit 1
 fi
