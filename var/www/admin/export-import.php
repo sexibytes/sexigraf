@@ -27,10 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <li>When done, download this ISO and use it to migrate your SexiGraf environement to another brand new SexiGraf VM.</li>
                     <li>In order to import data on this appliance, just map the ISO on the VM's CD drive and use the Import tool below.</li>
                     <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
-                </ul>
-            </div>
+                </ul>            
+	   </div>
         </div>
         <h2><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SexiGraf Export/Import</h2>
+	<br />
         <h3><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Export</h3>
 <?php
 $psList = shell_exec("ps auxwww | awk 'NR==1 || /exportSexiGrafBundle.sh/' | egrep -v 'awk|\/bin\/sh|sudo'");
@@ -51,10 +52,16 @@ if ($nbProcess > 1) : ?>
             SexiGraf export file generated on <?php echo date ("r", filemtime('/var/www/admin/sexigraf-dump.iso')); ?>, you can download it here: <strong><a href="/admin/sexigraf-dump.iso">sexigraf-dump.iso</a></strong>
         </div>
 <?php endif; ?>
-        <form class="form" action="export-import.php" method="post">
+        <div class="alert alert-warning" role="alert">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <span class="sr-only">Info:</span>
+            No ISO file generated yet...
+        </div>
+	<form class="form" action="export-import.php" method="post">
             <button name="submit" class="btn btn-success" value="genexport">Generate export bundle</button>
         </form>
 <?php endif; ?>
+	<br />
         <h3><span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import</h3>
     <?php
 $psList = shell_exec("ps auxwww | awk 'NR==1 || /importSexiGrafBundle.sh/' | egrep -v 'awk|\/bin\/sh|sudo'");
