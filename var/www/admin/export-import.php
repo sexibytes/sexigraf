@@ -51,12 +51,13 @@ if ($nbProcess > 1) : ?>
             <span class="sr-only">Success:</span>
             SexiGraf export file generated on <?php echo date ("r", filemtime('/var/www/admin/sexigraf-dump.iso')); ?>, you can download it here: <strong><a href="/admin/sexigraf-dump.iso">sexigraf-dump.iso</a></strong>
         </div>
+<?php else : ?>
+<div class="alert alert-warning" role="alert">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    <span class="sr-only">Info:</span>
+    No ISO file generated yet...
+</div>
 <?php endif; ?>
-        <div class="alert alert-warning" role="alert">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            <span class="sr-only">Info:</span>
-            No ISO file generated yet...
-        </div>
 	<form class="form" action="export-import.php" method="post">
             <button name="submit" class="btn btn-success" value="genexport">Generate export bundle</button>
         </form>
