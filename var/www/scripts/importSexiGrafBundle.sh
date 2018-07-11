@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Import whiper files
+# Import whiper files and re-apply Graphite ownership
 /bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
+chown _graphite:_graphite -R /var/lib/graphite/whisper/*
 
 # Import cron entries
 /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
@@ -22,3 +23,6 @@ rm -f /root/vicredentials.conf
 /etc/init.d/collectd restart
 /etc/init.d/grafana-server restart
 /etc/init.d/apache2 restart
+
+# Eject iso file to prevent a "code 40"
+eject -v /dev/cdrom
