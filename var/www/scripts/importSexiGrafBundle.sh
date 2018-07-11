@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Import whiper files and re-apply Graphite ownership
+# Import whiper files and re-apply Graphite ownership and correct access rights
 /bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
 chown _graphite:_graphite -R /var/lib/graphite/whisper/*
+chmod -R 644 /var/lib/graphite/whisper/*
 
 # Import cron entries
 /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
