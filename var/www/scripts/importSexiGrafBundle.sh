@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import whiper files
-/bin/cp -fR /media/cdrom/whisper/ /var/lib/graphite/whisper/
+/bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
 
 # Import cron entries
 /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
@@ -18,11 +18,7 @@ done
 rm -f /root/vicredentials.conf
 
 # Restart services
-/etc/init.d/apache2 stop
-/etc/init.d/grafana-server stop
-/etc/init.d/collectd stop
-/etc/init.d/carbon-cache stop
-/etc/init.d/carbon-cache start
-/etc/init.d/collectd start
-/etc/init.d/grafana-server start
-/etc/init.d/apache2 start
+/etc/init.d/carbon-cache restart
+/etc/init.d/collectd restart
+/etc/init.d/grafana-server restart
+/etc/init.d/apache2 restart
