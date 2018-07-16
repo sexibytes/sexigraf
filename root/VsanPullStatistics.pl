@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.73";
+$Util::script_version = "0.9.181";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -53,7 +53,7 @@ BEGIN {
 		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
 		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
 		   $logger->warn("WARN @_");
-	   };		
+	   };
 	$SIG{__DIE__} = sub {
 		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
 		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
@@ -107,9 +107,9 @@ sub getParent {
 
 sub getObj {
 	my ($obj, $keys, $ret) = @_;
-	
+
 	foreach my $key (keys %$obj) {
-		
+
 		if ($key eq 'attributes') {
 			foreach my $attr (keys %{$obj->{$key}}) {
 				if (grep $_ eq $attr, @$keys) {
@@ -148,33 +148,33 @@ my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', proper
 
 $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
 
-foreach my $datacentre_view (@$datacentres_views) {	
+foreach my $datacentre_view (@$datacentres_views) {
 	my $datacentre_name = lc ($datacentre_view->name);
 	$datacentre_name =~ s/[ .]/_/g;
 	$datacentre_name = NFD($datacentre_name);
 	$datacentre_name =~ s/[^[:ascii:]]//g;
 	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
-	
+
 	my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name','host'], begin_entity => $datacentre_view);
-	
+
 	$logger->info("[INFO] Processing vCenter $vcenterserver clusters");
-	
+
 	foreach my $cluster_view (@$clusters_views) {
 		my $cluster_name = lc ($cluster_view->name);
 		$cluster_name =~ s/[ .]/_/g;
 		$cluster_name = NFD($cluster_name);
 		$cluster_name =~ s/[^[:ascii:]]//g;
 		$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
-		
+
 		if(scalar $cluster_view->host > 1) {
-			
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','configManager.advancedOption'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
-			
+
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.product.apiVersion','config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','configManager.advancedOption'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
+
 			if (@$hosts_views[0]) {
-			
+
 				my $vsan_cluster_uuid = @$hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
-			
+
 				my $advConfigurations = Vim::get_view(mo_ref => @$hosts_views[0]->{'configManager.advancedOption'});
 				my $advSupportedOptions = $advConfigurations->supportedOption();
 
@@ -185,7 +185,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 							if (!$@) {
 								my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
 								if ($VsanSpaceUsageReport) {
-								$logger->info("[INFO] VSAN cluster $cluster_name version is >= 6.2");
+								$logger->info("[INFO] Processing spaceUsageByObjectType in VSAN cluster $cluster_name (v6.2+)");
 								my $VsanSpaceUsageReportObjList  = $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
 									foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
 										my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
@@ -223,7 +223,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 							$vmdk =~ s/[^[:ascii:]]//g;
 							$vmdk =~ s/[^A-Za-z0-9-_]/_/g;
 							$VirtualDisks->{ $_->backing->backingObjectId } = $vmdk;
-							
+
 							if ($_->backing->parent) {
 								my $rootparent = getParent($_->backing->parent);
 								my @rootvmdkpath = split("/", $rootparent->fileName);
@@ -244,57 +244,113 @@ foreach my $datacentre_view (@$datacentres_views) {
 				foreach (shuffle @{$hosts_views}) {
 
 					if ($_->{'runtime.connectionState'}->val eq "connected" && $_->{'runtime.inMaintenanceMode'} eq "false") {
-				
-						my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
-						
-						my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
-						$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
+						my $VsanSystemEx;
+						my $VsanHostVsanObjectSyncQueryResult;
+						my $host_api = $_->{'config.product.apiVersion'};
+						if ($host_api >= 6.7) {
+							my $VsanSystemExSync = {};
+							my $VsanHostVsanObjectSyncQueryResultObjs;
+							my $VsanHostVsanObjectSyncQueryResultUuids = 0;
+							$logger->info("[INFO] Processing SyncingVsanObjects of VSAN cluster $cluster_name (v6.7+)");
+							my @morefval = split /[-]/, $_->{'mo_ref'}->{'value'};
+							my $esx_moid = $morefval[1];
+							my %esx_mos_ex = get_vsan_esx_mos_ex($esx_moid);
+							my $VsanSystemEx = $esx_mos_ex{"vsanSystemEx"};
+							#https://code.vmware.com/apis/398/vsan#/doc/vim.vsan.host.VsanComponentSyncState.html
+							eval { $VsanHostVsanObjectSyncQueryResult = $VsanSystemEx->VsanQuerySyncingVsanObjects(includeSummary => 1)->objects };
+							if (!$@ and $VsanHostVsanObjectSyncQueryResult) {
+								my $VsanHostVsanObjectSyncQueryResult = $VsanSystemEx->VsanQuerySyncingVsanObjects(includeSummary => 1);
+								$VsanHostVsanObjectSyncQueryResultObjs = $VsanHostVsanObjectSyncQueryResult->objects;
+								my $VsanHostVsanObjectSyncQueryResultEta = $VsanHostVsanObjectSyncQueryResult->totalRecoveryETA;
+								my $VsanHostVsanObjectSyncQueryResultBytes = $VsanHostVsanObjectSyncQueryResult->totalBytesToSync;
+								my $VsanHostVsanObjectSyncQueryResultObj = $VsanHostVsanObjectSyncQueryResult->totalObjectsToSync;
+								foreach my $VsanSystemExSyncComponents (@$VsanHostVsanObjectSyncQueryResultObjs) {
+									foreach my $VsanSystemExSyncComponentsUuid ($VsanSystemExSyncComponents->components) {
+										foreach my $VsanSystemExSyncComponentsDiskUuid (@$VsanSystemExSyncComponentsUuid) {
+											my $VsanSystemExSyncComponentsBytesToSync = $VsanSystemExSyncComponentsDiskUuid->{bytesToSync};
+											my $VsanSystemExSyncComponentsReasons = $VsanSystemExSyncComponentsDiskUuid->{reasons};
+											my $VsanSystemExSyncComponentsReason = join('-', @$VsanSystemExSyncComponentsReasons);
+											$VsanSystemExSync->{$VsanSystemExSyncComponentsReason} += $VsanSystemExSyncComponentsBytesToSync;
+											$VsanHostVsanObjectSyncQueryResultUuids++;
+										}
+									}
+								}
+								foreach my $VsanSystemExSyncReason (keys %{$VsanSystemExSync}) {
+									$graphite->send(
+									path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync." . "$VsanSystemExSyncReason",
+									value => $VsanSystemExSync->{$VsanSystemExSyncReason},
+									time => time(),
+									);
+								}
 
-						my $host_vsan_syncing_objects = $shuffle_host_vsan_view->QuerySyncingVsanObjects();
-						my $host_vsan_syncing_objects_json = from_json($host_vsan_syncing_objects);
-						my $host_vsan_syncing_objects_json_domobjs = $host_vsan_syncing_objects_json->{dom_objects};
-
-						if ($host_vsan_syncing_objects_json_domobjs) {
-						
-							$logger->info("[INFO] Processing resync objects of VSAN cluster $cluster_name");
-						
-							my $vsan_bytesToSync = 0;
-							my $vsan_recoveryETA = 0;
-							my $vsan_sync_objs = 0;
-
-							foreach my $uuid (keys %$host_vsan_syncing_objects_json_domobjs) {
-								my $return = {};
-								getObj($host_vsan_syncing_objects_json_domobjs->{$uuid}->{'config'}->{'content'}, $fields, $return);
-
-								$vsan_bytesToSync += sum(@{$return->{bytesToSync}});
-								$vsan_recoveryETA += sum(@{$return->{recoveryETA}});
-								$vsan_sync_objs += @{$return->{bytesToSync}};
+								my $VsanSystemExSync_h = {
+									time() => {
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA", $VsanHostVsanObjectSyncQueryResultEta,
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync", $VsanHostVsanObjectSyncQueryResultBytes,
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync", $VsanHostVsanObjectSyncQueryResultObj,
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync", $VsanHostVsanObjectSyncQueryResultUuids,
+									},
+								};
+								$graphite->send(path => "vsan.", data => $VsanSystemExSync_h);
 							}
-							
-							my $vsan_syncing_objects_attributes_h = {
-								time() => {
-									"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.bytesToSync", $vsan_bytesToSync,
-									"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.recoveryETA", $vsan_recoveryETA,
-									"$vcenter_name.$datacentre_name.$cluster_name.vsan.dom_objects.config.content.attributes.objectsToSync", $vsan_sync_objs,
-								},
-							};
-							$graphite->send(path => "vsan.", data => $vsan_syncing_objects_attributes_h);
-							last;
-						}	
+					} else {
+							my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
+
+							my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
+							$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
+
+							my $host_vsan_syncing_objects = $shuffle_host_vsan_view->QuerySyncingVsanObjects();
+							my $host_vsan_syncing_objects_json = from_json($host_vsan_syncing_objects);
+							my $host_vsan_syncing_objects_json_domobjs = $host_vsan_syncing_objects_json->{dom_objects};
+
+							if ($host_vsan_syncing_objects_json_domobjs) {
+
+								$logger->info("[INFO] Processing resync objects of VSAN cluster $cluster_name");
+
+								my $vsan_bytesToSync = 0;
+								my $vsan_recoveryETA = 0;
+								my $vsan_sync_objs = 0;
+								my $vsan_recoveryETAmid = 0;
+
+								foreach my $uuid (keys %$host_vsan_syncing_objects_json_domobjs) {
+									my $return = {};
+									getObj($host_vsan_syncing_objects_json_domobjs->{$uuid}->{'config'}->{'content'}, $fields, $return);
+									$vsan_bytesToSync += sum(@{$return->{bytesToSync}});
+									$vsan_recoveryETA += sum(@{$return->{recoveryETA}});
+									$vsan_sync_objs += @{$return->{bytesToSync}};
+								}
+
+								if ($vsan_sync_objs >= 1) {
+									$vsan_recoveryETAmid = $vsan_recoveryETA / $vsan_sync_objs;
+								}
+
+								my $vsan_syncing_objects_attributes_h = {
+									time() => {
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA", $vsan_recoveryETAmid,
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync", $vsan_bytesToSync,
+										"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync", $vsan_sync_objs,
+									},
+								};
+								$graphite->send(path => "vsan.", data => $vsan_syncing_objects_attributes_h);
+							}
+						}
 					}
+					last;
 				}
-				
+
+
+
 				foreach my $host_view (@$hosts_views) {
-					
+
 					if ($host_view->{'runtime.connectionState'}->val eq "connected" && $host_view->{'runtime.inMaintenanceMode'} eq "false") {
-					
+
 						my $host_vsan_view = Vim::get_view(mo_ref => $host_view->{'configManager.vsanInternalSystem'});
 						my $host_vsan_query_vsan_stats = $host_vsan_view->QueryVsanStatistics(labels => ['dom', 'lsom', 'dom-objects', 'disks']);
 						my $host_vsan_query_vsan_stats_json = from_json($host_vsan_query_vsan_stats);
 						my $host_name = lc ($host_view->{'config.network.dnsConfig.hostName'});
-											
+
 						if ($host_vsan_query_vsan_stats_json) {
-							
+
 							# processing dom
 							my $host_vsan_stats_json_compmgr = $host_vsan_query_vsan_stats_json->{'dom.compmgr.stats'};
 							my $host_vsan_stats_json_client = $host_vsan_query_vsan_stats_json->{'dom.client.stats'};
@@ -309,7 +365,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								time => time(),
 								);
 							}
-							
+
 							foreach my $clientkey (keys %{ $host_vsan_stats_json_client }) {
 								$graphite->send(
 								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.stats." . "$clientkey",
@@ -317,7 +373,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								time => time(),
 								);
 							}
-							
+
 							foreach my $ownerkey (keys %{ $host_vsan_stats_json_owner }) {
 								$graphite->send(
 								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.owner.stats." . "$ownerkey",
@@ -325,7 +381,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								time => time(),
 								);
 							}
-							
+
 							foreach my $schedkey (keys %{ $host_vsan_stats_json_sched }) {
 								$graphite->send(
 								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
@@ -333,7 +389,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								time => time(),
 								);
 							}
-							
+
 							foreach my $cachestats (keys %{ $host_vsan_stats_json_cachestats }) {
 								$graphite->send(
 								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.cachestats." . "$cachestats",
@@ -394,7 +450,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 									$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_ssd_h);
 								}
 							}
-							
+
 							# processing dom-objects
 							my $host_vsan_dom_objects_json_stats = $host_vsan_query_vsan_stats_json->{'dom.owners.stats'};
 
@@ -430,7 +486,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 							foreach my $naa (keys %{ $host_vsan_disks_json_stats }) {
 								my $host_vsan_disks_json_stats_latency = $host_vsan_disks_json_stats->{$naa}->{latency};
-								
+
 								my $host_vsan_disks_json_stats_latency_h = {
 									time() => {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.totalTimeWrites", $host_vsan_disks_json_stats_latency->{totalTimeWrites},
