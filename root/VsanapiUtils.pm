@@ -18,7 +18,8 @@ use VMware::VIMRuntime;
 our @ISA= qw( Exporter );
 our @EXPORT = qw(load_vsanmgmt_binding_files
                  get_vsan_vc_mos
-                 get_vsan_esx_mos );
+                 get_vsan_esx_mos
+                 get_vsan_esx_mos_ex );
 
 no strict 'refs';
 no warnings 'redefine';
@@ -111,7 +112,7 @@ sub load_vsanmgmt_binding_files {
    my @stub = ();
    local $/;
    for(@_) {
-      Util::trace(0, "loading $_\n");
+      #Util::trace(0, "loading $_\n");
       open STUB, $_ or die $!;
       push @stub, split /\n####+?\n/, <STUB>;
       close STUB or die $!;
@@ -327,6 +328,10 @@ sub get_vsan_vc_mos {
          _create_mo_view(type => "VsanPhoneHomeSystem",
                          value => "vsan-phonehome-system",
                          vim => $vsan_vim),
+      "vsan-vum-system" =>
+         _create_mo_view(type => "VsanVumSystem",
+                         value => "vsan-vum-system",
+                         vim => $vsan_vim),
    );
 
    return %vc_mos;
@@ -348,6 +353,10 @@ sub get_vsan_esx_mos {
          _create_mo_view(type => "VsanPerformanceManager",
                          value => "vsan-performance-manager",
                          vim => $vsan_vim),
+      "vsan-cluster-health-system" =>
+         _create_mo_view(type => "VsanVcClusterHealthSystem",
+                         value => "vsan-cluster-health-system",
+                         vim => $vsan_vim),
       "ha-vsan-health-system" =>
          _create_mo_view(type => "HostVsanHealthSystem",
                          value => "ha-vsan-health-system",
@@ -365,16 +374,35 @@ sub get_vsan_esx_mos {
                          value => "vsan-capability-system",
                          vim => $vsan_vim),
       "vsanSystemEx" =>
-         _create_mo_view(type => "vsanSystemEx",
+         _create_mo_view(type => "VsanSystemEx",
                          value => "vsanSystemEx",
                          vim => $vsan_vim),
       "vsan-update-manager" =>
          _create_mo_view(type => "VsanUpdateManager",
                          value => "vsan-update-manager",
                          vim => $vsan_vim),
+      "vsan-cluster-iscsi-target-system" =>
+         _create_mo_view(type => "VsanIscsiTargetSystem",
+                         value => "vsan-cluster-iscsi-target-system",
+                         vim => $vsan_vim),
    );
 
    return %esx_mos;
+}
+
+sub get_vsan_esx_mos_ex {
+  my ($esx_moid) = @_;
+  my $url = new URI::URL Vim::get_service_url();
+  my $vsan_vim = _get_vsan_vim(host => $url->host,
+                               api_type => "VirtualCenter");
+   my %esx_mos_ex = (
+      "vsanSystemEx" =>
+         _create_mo_view(type => "VsanSystemEx",
+                         value => "vsanSystemEx-$esx_moid",
+                         vim => $vsan_vim),
+   );
+
+   return %esx_mos_ex;
 }
 
 1;
