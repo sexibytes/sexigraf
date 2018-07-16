@@ -19,7 +19,7 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": ""
+          "datasource": "",
           "editable": true,
           "error": false,
           "fill": 0,
