@@ -128,7 +128,7 @@
       {
         "allValue": "*",
         "current": {},
-        "datasource": "${DS_LOCAL}",
+        "datasource": "",
         "hide": 0,
         "includeAll": true,
         "label": "",
