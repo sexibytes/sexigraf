@@ -73,18 +73,21 @@
               "hide": false,
               "refId": "C",
               "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, #A), 'cpu.usage')",
+              "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')",
               "textEditor": false
             },
             {
               "hide": false,
               "refId": "D",
               "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
+              "targetFull": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')), 'mem.usage')",
               "textEditor": false
             },
             {
               "hide": false,
               "refId": "E",
               "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
+              "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), 'mem.allocated')",
               "textEditor": false
             }
           ],
@@ -454,6 +457,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "",
+          "decimals": 0,
           "editable": true,
           "error": false,
           "fill": 4,
@@ -461,12 +465,12 @@
           "id": 3,
           "legend": {
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -476,7 +480,14 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "hosts",
+              "lines": false,
+              "stack": false,
+              "yaxis": 2
+            }
+          ],
           "spaceLength": 10,
           "span": 6,
           "stack": true,
@@ -488,7 +499,13 @@
             },
             {
               "refId": "B",
-              "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')"
+              "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')",
+              "targetFull": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')), 'vm.registered')"
+            },
+            {
+              "refId": "C",
+              "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
+              "textEditor": false
             }
           ],
           "thresholds": [],
@@ -1488,5 +1505,5 @@
   },
   "timezone": "browser",
   "title": "VMware Cluster FullStats",
-  "version": 0
+  "version": 1
 }
