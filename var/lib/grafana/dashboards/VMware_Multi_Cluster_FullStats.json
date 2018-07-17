@@ -451,6 +451,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "",
+          "decimals": 0,
           "editable": true,
           "error": false,
           "fill": 4,
@@ -458,12 +459,12 @@
           "id": 3,
           "legend": {
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -473,7 +474,14 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "hosts",
+              "lines": false,
+              "stack": false,
+              "yaxis": 2
+            }
+          ],
           "spaceLength": 10,
           "span": 6,
           "stack": true,
@@ -485,7 +493,13 @@
             },
             {
               "refId": "B",
-              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total), #A), 'vm.registered')"
+              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total), #A), 'vm.registered')",
+              "targetFull": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total), alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 'vm.on')), 'vm.registered')"
+            },
+            {
+              "refId": "C",
+              "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
+              "textEditor": false
             }
           ],
           "thresholds": [],
@@ -1398,5 +1412,5 @@
   },
   "timezone": "browser",
   "title": "VMware All Cluster FullStats",
-  "version": 2
+  "version": 1
 }
