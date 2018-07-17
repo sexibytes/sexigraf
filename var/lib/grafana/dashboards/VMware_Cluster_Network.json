@@ -148,7 +148,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": ""
+        "datasource": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -171,7 +171,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": ""
+        "datasource": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -194,7 +194,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": ""
+        "datasource": "",
         "hide": 0,
         "includeAll": false,
         "label": null,
