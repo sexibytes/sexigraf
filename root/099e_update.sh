@@ -9,6 +9,7 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  mv /root/genisoimage /usr/bin/
  chmod +x /usr/bin/genisoimage
  chown grafana:grafana /var/lib/grafana/dashboards/*.json
+ mv /etc/cron.daily/logrotate /etc/cron.hourly/
  service grafana-server restart
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
