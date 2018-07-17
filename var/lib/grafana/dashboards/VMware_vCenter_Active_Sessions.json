@@ -53,6 +53,7 @@
             },
             {
               "alias": "/sessionCount/",
+              "dashes": false,
               "legend": true,
               "linewidth": 2
             }
