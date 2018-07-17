@@ -217,7 +217,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": ""
+        "datasource": "",
         "hide": 0,
         "hideLabel": false,
         "includeAll": true,
