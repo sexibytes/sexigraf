@@ -1,1 +1,1 @@
-3 */6  * * * root /usr/bin/perl /root/getInventory.pl
+3 *  * * * root /usr/bin/perl /root/getInventory.pl
