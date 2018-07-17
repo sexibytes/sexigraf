@@ -241,7 +241,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": ""
+        "datasource": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
