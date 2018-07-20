@@ -857,6 +857,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "",
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 0,
