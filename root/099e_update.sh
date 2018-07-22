@@ -16,7 +16,7 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
  echo "Pimp Your Stats!"
- service apache2 restart
+ apachectl graceful
 else
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
