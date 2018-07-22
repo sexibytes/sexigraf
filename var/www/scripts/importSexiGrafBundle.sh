@@ -10,6 +10,11 @@ find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
 # Import cron entries
 /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
 
+# Import Offline Inventory file
+/bin/cp /media/cdrom/offline-vminventory.html /var/www/admin/
+chown www-data:www-data /var/www/admin/offline-vminventory.html
+chmod 644 /var/www/admin/offline-vminventory.html
+
 # Import credential store items
 openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /root/vicredentials.conf -pass pass:sexigraf
 for creditem in $(cat /root/vicredentials.conf)
