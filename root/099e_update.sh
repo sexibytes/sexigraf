@@ -11,9 +11,12 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  chown grafana:grafana /var/lib/grafana/dashboards/*.json
  mv /etc/cron.daily/logrotate /etc/cron.hourly/
  service grafana-server restart
+ a2enmod rewrite
+ a2enmod ssl
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
  echo "Pimp Your Stats!"
+ service apache2 restart
 else
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
