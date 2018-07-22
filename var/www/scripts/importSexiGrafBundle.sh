@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Import whiper files and re-apply Graphite ownership and correct access rights
+/etc/init.d/carbon-cache stop
 /bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
 chown _graphite:_graphite -R /var/lib/graphite/whisper/*
 find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
@@ -21,7 +22,7 @@ done
 rm -f /root/vicredentials.conf
 
 # Restart services
-/etc/init.d/carbon-cache restart
+/etc/init.d/carbon-cache start
 /etc/init.d/collectd restart
 /etc/init.d/grafana-server restart
 /etc/init.d/apache2 restart
