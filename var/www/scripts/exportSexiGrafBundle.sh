@@ -23,6 +23,9 @@ cp /etc/cron.d/vsan_* /root/sexigraf-dump/conf/cron.d/
 # Retrieve version file
 cp /etc/sexigraf_version /root/sexigraf-dump/
 
+# Retrieve Offline Inventory
+cp /var/www/admin/offline-vminventory.html /root/sexigraf-dump/
+
 # Retrieve credential store items
 for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/\s/;/")
 do
