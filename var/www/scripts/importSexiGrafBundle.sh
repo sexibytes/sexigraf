@@ -30,7 +30,7 @@ rm -f /root/vicredentials.conf
 /etc/init.d/carbon-cache start
 /etc/init.d/collectd restart
 /etc/init.d/grafana-server restart
-/etc/init.d/apache2 restart
+apachectl graceful
 
 # Eject iso file to prevent a "code 40"
 eject
