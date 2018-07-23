@@ -33,4 +33,4 @@ rm -f /root/vicredentials.conf
 /etc/init.d/apache2 restart
 
 # Eject iso file to prevent a "code 40"
-eject -v /dev/cdrom
+eject
