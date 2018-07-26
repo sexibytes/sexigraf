@@ -114,7 +114,6 @@ if ($sessionList) {
    $sessionListH->{$sessionActive->userName}++;
  }
  $sessionCount = scalar(@$sessionList);
- print Dumper($sessionList);
 }
 
 my $perfMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->perfManager));
