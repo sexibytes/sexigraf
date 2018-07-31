@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.524";
+$Util::script_version = "0.9.525";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -562,7 +562,7 @@ foreach my $datacentre_view (@$datacentres_views) {
        # $cluster_vm_view_path_uni =~ s/[^A-Za-z0-9-_]/_/g; # Replace all non-alphanumericals with _
 
        $cluster_vm_views_vcpus += $cluster_vm_view->{'config.hardware.numCPU'};
-       $cluster_vm_views_vram += $cluster_vm_view->{'runtime.maxCpuUsage'};
+       $cluster_vm_views_vram += $cluster_vm_view->{'runtime.maxMemoryUsage'};
 
        my $cluster_vm_view_files = $cluster_vm_view->{'layoutEx.file'};
        # http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
