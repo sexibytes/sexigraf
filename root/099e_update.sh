@@ -15,6 +15,7 @@ if grep -i -q "Nova Prospekt" /etc/sexigraf_version; then
  a2enmod ssl
  rm -rf /root/vmware-vsphere-cli-distrib
  rm -f /root/VMware-vSphere-Perl-SDK-6.7.0-8156551.x86_64.tar.gz
+ rm -f /var/lib/graphite/whisper/vmw/*/*/*/quickstats/vRAM.wsp
  echo "Pimp Your Stats!"
  apachectl graceful
  rm -f /root/099e_update.sh
