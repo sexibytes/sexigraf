@@ -27,7 +27,7 @@ cp /etc/sexigraf_version /root/sexigraf-dump/
 cp /var/www/admin/offline-vminventory.html /root/sexigraf-dump/
 
 # Retrieve credential store items
-for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/\s/;/")
+for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/[[:space:]]\+/;/")
 do
     vcenter=$(echo $creditem | cut -d ";" -f 1)
     username=$(echo $creditem | cut -d ";" -f 2)
