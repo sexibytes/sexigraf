@@ -71,20 +71,16 @@ function rcopy($src, $dest){
 function php_file_tree_dir($directory, $first_call = true) {
 	$directories = glob($directory."/*", GLOB_ONLYDIR);
         natcasesort($directories);
-        $php_file_tree = "";
-
-        if( count($directories) > 2 ) {
-                $php_file_tree = "<ul";
-                if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
-                $php_file_tree .= ">";
-                foreach( $directories as $this_directory ) {
-			$displayedDirectory = str_replace($directory."/", "", $this_directory);
-			$php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$this_directory\"> <a href=\"#\"><strong>" . htmlspecialchars($displayedDirectory) . "</strong></a>";
-			$php_file_tree .= php_file_tree_dir("$this_directory" , false);
-			$php_file_tree .= "</li>";
-                }
-                $php_file_tree .= "</ul>";
-        }
+	$php_file_tree = "<ul";
+	if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
+	$php_file_tree .= ">";
+	foreach( $directories as $this_directory ) {
+		$displayedDirectory = str_replace($directory."/", "", $this_directory);
+		$php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$this_directory\"> <a href=\"#\"><strong>" . htmlspecialchars($displayedDirectory) . "</strong></a>";
+		$php_file_tree .= php_file_tree_dir("$this_directory" , false);
+		$php_file_tree .= "</li>";
+	}
+	$php_file_tree .= "</ul>";
         return $php_file_tree;
 }
 

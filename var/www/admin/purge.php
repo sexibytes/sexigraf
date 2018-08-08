@@ -92,7 +92,7 @@ require("helper.php");
         }
 ?>
                 <div class="panel panel-warning">
-                        <div class="panel-body"><ul>
+                        <div class="panel-body">
                         <form action="purge.php" method="post">
                         Autopurge is currently
                         <?php

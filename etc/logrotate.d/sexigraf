@@ -1,7 +1,7 @@
 /var/log/sexigraf/*.log {
-  daily
+  hourly
   missingok
-  rotate 14
+  rotate 24
   compress
   delaycompress
   notifempty

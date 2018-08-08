@@ -2,7 +2,26 @@
 
 ## [Unreleased](https://github.com/sexibytes/sexigraf/tree/HEAD)
 
-[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99c...HEAD)
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99d...HEAD)
+
+**Implemented enhancements:**
+
+- Display appliance version in SexiMenu [\#122](https://github.com/sexibytes/sexigraf/issues/122)
+- Dashboard init failed Template variables could not be initialized: undefined [\#62](https://github.com/sexibytes/sexigraf/issues/62)
+
+**Fixed bugs:**
+
+- House Cleaner not expanding subfolders [\#120](https://github.com/sexibytes/sexigraf/issues/120)
+- Dashboard init failed Template variables could not be initialized: undefined [\#62](https://github.com/sexibytes/sexigraf/issues/62)
+- dashboard metrics definition  [\#26](https://github.com/sexibytes/sexigraf/issues/26)
+
+**Closed issues:**
+
+- lower Y-Max from 180 to 150 on cpu/ram usage graph [\#117](https://github.com/sexibytes/sexigraf/issues/117)
+- Time data request Error on graph [\#37](https://github.com/sexibytes/sexigraf/issues/37)
+
+## [0.99d](https://github.com/sexibytes/sexigraf/tree/0.99d) (2017-07-13)
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99c...0.99d)
 
 **Implemented enhancements:**
 
@@ -16,6 +35,7 @@
 - Add link to filtered dashboard [\#81](https://github.com/sexibytes/sexigraf/issues/81)
 - add datastore selection in capacity planning dashboards [\#80](https://github.com/sexibytes/sexigraf/issues/80)
 - Add vSphere "ready" metric per vm [\#79](https://github.com/sexibytes/sexigraf/issues/79)
+- Add https connection test before auth test against vCenter [\#73](https://github.com/sexibytes/sexigraf/issues/73)
 - add auto archive/delete whisper files [\#69](https://github.com/sexibytes/sexigraf/issues/69)
 
 **Fixed bugs:**
@@ -29,6 +49,8 @@
 
 **Closed issues:**
 
+- Datacenter names with ÅÄÖ will cause problems [\#114](https://github.com/sexibytes/sexigraf/issues/114)
+- VSAN Disk Utilization dashboard [\#113](https://github.com/sexibytes/sexigraf/issues/113)
 - Document what the different graphs mean [\#108](https://github.com/sexibytes/sexigraf/issues/108)
 - Only 1 host being discovered [\#104](https://github.com/sexibytes/sexigraf/issues/104)
 - doesn't match vsan resyrn value. [\#101](https://github.com/sexibytes/sexigraf/issues/101)
@@ -49,6 +71,7 @@
 
 **Merged pull requests:**
 
+- Update to 0.99d [\#116](https://github.com/sexibytes/sexigraf/pull/116) ([vmdude](https://github.com/vmdude))
 - Import last DEV environment before master merge [\#111](https://github.com/sexibytes/sexigraf/pull/111) ([vmdude](https://github.com/vmdude))
 
 ## [0.99c](https://github.com/sexibytes/sexigraf/tree/0.99c) (2016-05-18)

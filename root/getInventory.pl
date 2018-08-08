@@ -88,7 +88,7 @@ sub sexiprocess {
           $h_host{$StandaloneResourceVMHost[0][0]->{'mo_ref'}->value} = $StandaloneResourceVMHostName;
         }
       }
-      $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage']);
+      $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.connectionState','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage'], filter => {'runtime.connectionState' => "connected"});
       foreach my $vm_view (@$vm_views) {
         my $vnics = $vm_view->guest->net;
         my @vm_pg_string = ();
@@ -113,20 +113,21 @@ sub sexiprocess {
         }
         my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
         my $cluster = $h_cluster{($h_hostcluster{$vm_view->{'runtime.host'}->value} ? $h_hostcluster{$vm_view->{'runtime.host'}->value} : "domain-c000")};
+        my $txtCluster = ($cluster eq "N/A") ? $cluster : '<a href="/dashboard/file/VMware_Cluster_FullStats.json?var-cluster=' . $cluster . '" target="_blank">' . $cluster . '</a>';
         my %h_vm : shared = (
-          VM => '<a href="/dashboard/file/VMware_Multi_Cluster_Top_N_VM_Stats.json?var-vm=' . lc($vm_view->name) . '&var-N=1" target="_blank">' . $vm_view->name . '</a>',
+          VM => '<a href="/dashboard/file/VMware_Multi_Cluster_Top_N_VM_Stats.json?var-vm=' . lc($vm_view->name) . '&var-N=9" target="_blank">' . $vm_view->name . '</a>',
           VCENTER => $vcentersdk->host,
-          CLUSTER => '<a href="/dashboard/file/VMware_Cluster_FullStats.json?var-cluster=' . $cluster . '" target="_blank">' . $cluster . '</a>',
+          CLUSTER => $txtCluster,
           HOST => $h_host{$vm_view->{'runtime.host'}->value},
           VMXPATH => $vm_view->{'summary.config.vmPathName'},
-          PORTGROUP => join(',', @vm_pg_string),
-          IP => join(',', @vm_ip_string),
+          PORTGROUP => join(';', @vm_pg_string),
+          IP => join(';', @vm_ip_string),
           NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "N/A"),
           MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "N/A"),
           COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
           PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
           DATASTORE => (split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1],
-          MAC => join(',', @vm_mac),
+          MAC => join(';', @vm_mac),
           FOLDERPATH => uri_unescape($vmPath)
         );
         push( @{$listVM_ref}, \%h_vm );

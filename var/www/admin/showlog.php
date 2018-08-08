@@ -231,6 +231,7 @@ console.log(e);
                                         <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Stats Remover</a></li>
                                         <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
                                         <li><a href="showlog.php"><i class="glyphicon glyphicon-search glyphicon-custom"></i> Log Viewer</a></li>
+                                        <li><a href="export-import.php"><i class="glyphicon glyphicon-transfer glyphicon-custom"></i> Export / Import</a></li>
                                 </ul>
                         </li>
            </ul>
