@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.539";
+$Util::script_version = "0.9.551";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -45,7 +45,7 @@ my $graphite = Net::Graphite->new(
 );
 
 BEGIN {
-				Log::Log4perl::init('/etc/log4perl.conf');
+			Log::Log4perl::init('/etc/log4perl.conf');
 	$SIG{__WARN__} = sub {
 			my $logger = get_logger('sexigraf.ViPullStatistics');
 			local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
@@ -236,17 +236,17 @@ foreach my $datacentre_view (@$datacentres_views) {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.ballooned", $cluster_root_pool_quickStats->balloonedMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.compressed", $cluster_root_pool_quickStats->compressedMemory,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.consumedOverhead", $cluster_root_pool_quickStats->consumedOverheadMemory,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.distributedCpuEntitlement", $cluster_root_pool_quickStats->distributedCpuEntitlement,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.distributedMemoryEntitlement", $cluster_root_pool_quickStats->distributedMemoryEntitlement,
+					# "$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.consumedOverhead", $cluster_root_pool_quickStats->consumedOverheadMemory,
+					# "$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.distributedCpuEntitlement", $cluster_root_pool_quickStats->distributedCpuEntitlement,
+					# "$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.distributedMemoryEntitlement", $cluster_root_pool_quickStats->distributedMemoryEntitlement,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.guest", $cluster_root_pool_quickStats->guestMemoryUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.usage", $cluster_root_pool_quickStats->hostMemoryUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.demand", $cluster_root_pool_quickStats->overallCpuDemand,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.usage", $cluster_root_pool_quickStats->overallCpuUsage,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.overhead", $cluster_root_pool_quickStats->overheadMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.private", $cluster_root_pool_quickStats->privateMemory,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.staticCpuEntitlement", $cluster_root_pool_quickStats->staticCpuEntitlement,
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.staticMemoryEntitlement", $cluster_root_pool_quickStats->staticMemoryEntitlement,
+					# "$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.staticCpuEntitlement", $cluster_root_pool_quickStats->staticCpuEntitlement,
+					# "$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.staticMemoryEntitlement", $cluster_root_pool_quickStats->staticMemoryEntitlement,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.shared", $cluster_root_pool_quickStats->sharedMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.swapped", $cluster_root_pool_quickStats->swappedMemory,
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.mem.effective", $cluster_view->summary->effectiveMemory,
@@ -342,25 +342,25 @@ foreach my $datacentre_view (@$datacentres_views) {
 						}
 					}
 				}
-			} elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
-				my $unshared_datastore_name = lc ($cluster_datastore_view->summary->name);
-				$unshared_datastore_name =~ s/[ .()]/_/g;
-				$unshared_datastore_name = NFD($unshared_datastore_name);
-				$unshared_datastore_name =~ s/[^[:ascii:]]//g;
-				$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+			# } elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
+			# 	my $unshared_datastore_name = lc ($cluster_datastore_view->summary->name);
+			# 	$unshared_datastore_name =~ s/[ .()]/_/g;
+			# 	$unshared_datastore_name = NFD($unshared_datastore_name);
+			# 	$unshared_datastore_name =~ s/[^[:ascii:]]//g;
+			# 	$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-				my $unshared_datastore_uncommitted = 0;
-				if ($cluster_datastore_view->summary->uncommitted) {
-					$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
-				}
-				my $cluster_unshared_datastore_view_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
-						"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
-						"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
-					},
-				};
-				$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
+			# 	my $unshared_datastore_uncommitted = 0;
+			# 	if ($cluster_datastore_view->summary->uncommitted) {
+			# 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
+			# 	}
+			# 	my $cluster_unshared_datastore_view_h = {
+			# 		time() => {
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
+			# 		},
+			# 	};
+			# 	$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
 			}
 		}
 
@@ -492,13 +492,13 @@ foreach my $datacentre_view (@$datacentres_views) {
 		my $cluster_vm_views_files_dedup = {};
 		my $cluster_vm_views_files_dedup_total = {};
 		my $cluster_vm_views_files_snaps = 0;
-		my $cluster_vm_views_bak_snaps = 0;
+		# my $cluster_vm_views_bak_snaps = 0;
 		my $cluster_vm_views_vm_snaps = 0;
 
 		my $cluster_vm_views_off_files_dedup = {};
 		my $cluster_vm_views_off_files_dedup_total = {};
 		my $cluster_vm_views_off_files_snaps = 0;
-		my $cluster_vm_views_off_bak_snaps = 0;
+		# my $cluster_vm_views_off_bak_snaps = 0;
 		my $cluster_vm_views_off_vm_snaps = 0;
 
 		if (scalar @$cluster_vm_views > 0) {
@@ -573,11 +573,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 					getSnapshotTreeRaw($cluster_vm_view->snapshot->rootSnapshotList);
 
-					foreach my $snaps (@cluster_vm_view_snap_tree) {
-						if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
-							$cluster_vm_views_bak_snaps++;
-						}
-					}
+					# foreach my $snaps (@cluster_vm_view_snap_tree) {
+					# 	if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
+					# 		$cluster_vm_views_bak_snaps++;
+					# 	}
+					# }
 
 					@cluster_vm_view_snap_tree = ();
 
@@ -789,14 +789,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 					$graphite->send(path => "vmw", data => $cluster_vm_views_files_snaps_h);
 				}
 
-				if ($cluster_vm_views_bak_snaps) {
-					my $cluster_vm_views_bak_snaps_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name" . ".storage." . "BakSnapshotCount", $cluster_vm_views_bak_snaps,
-						},
-					};
-					$graphite->send(path => "vmw", data => $cluster_vm_views_bak_snaps_h);
-				}
+				# if ($cluster_vm_views_bak_snaps) {
+				# 	my $cluster_vm_views_bak_snaps_h = {
+				# 		time() => {
+				# 			"$vcenter_name.$datacentre_name.$cluster_name" . ".storage." . "BakSnapshotCount", $cluster_vm_views_bak_snaps,
+				# 		},
+				# 	};
+				# 	$graphite->send(path => "vmw", data => $cluster_vm_views_bak_snaps_h);
+				# }
 
 				if ($cluster_vm_views_vm_snaps) {
 					my $cluster_vm_views_vm_snaps_h = {
@@ -827,11 +827,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 					getSnapshotTreeRaw($cluster_vm_view_off->snapshot->rootSnapshotList);
 
-					foreach my $snaps (@cluster_vm_view_snap_tree) {
-						if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
-							$cluster_vm_views_off_bak_snaps++;
-						}
-					}
+					# foreach my $snaps (@cluster_vm_view_snap_tree) {
+					# 	if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
+					# 		$cluster_vm_views_off_bak_snaps++;
+					# 	}
+					# }
 
 					@cluster_vm_view_snap_tree = ();
 
@@ -912,14 +912,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 					$graphite->send(path => "vmw", data => $cluster_vm_views_off_files_snaps_h);
 				}
 
-				if ($cluster_vm_views_off_bak_snaps) {
-					my $cluster_vm_views_off_bak_snaps_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name" . ".storage." . "BakSnapshotCount", $cluster_vm_views_off_bak_snaps,
-						},
-					};
-					$graphite->send(path => "vmw", data => $cluster_vm_views_off_bak_snaps_h);
-				}
+				# if ($cluster_vm_views_off_bak_snaps) {
+				# 	my $cluster_vm_views_off_bak_snaps_h = {
+				# 		time() => {
+				# 			"$vcenter_name.$datacentre_name.$cluster_name" . ".storage." . "BakSnapshotCount", $cluster_vm_views_off_bak_snaps,
+				# 		},
+				# 	};
+				# 	$graphite->send(path => "vmw", data => $cluster_vm_views_off_bak_snaps_h);
+				# }
 
 				if ($cluster_vm_views_off_vm_snaps) {
 					my $cluster_vm_views_off_vm_snaps_h = {
