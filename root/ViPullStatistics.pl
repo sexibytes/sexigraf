@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.561";
+$Util::script_version = "0.9.593";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -194,6 +194,50 @@ sub FatQueryPerf {
 	return %fatmetrics;
 }
 
+sub FatQueryPerfAll {
+	my ($query_entity_views, $query_group, $query_counter, $query_rollup, $query_instance) = @_;
+	my $perfKey = $perfCntr{"$query_group.$query_counter.$query_rollup"}->key;
+
+	my @metricIDs = ();
+	my $metricId = PerfMetricId->new(counterId => $perfKey, instance => $query_instance);
+	push @metricIDs,$metricId;
+
+	my @perfQuerySpecs = ();
+
+	foreach (@$query_entity_views) {
+		my $perfQuerySpec = PerfQuerySpec->new(entity => $_, maxSample => 15, intervalId => 20, metricId => \@metricIDs);
+		push @perfQuerySpecs,$perfQuerySpec;
+	}
+
+	my $metrics = $perfMgr->QueryPerf(querySpec => [@perfQuerySpecs]);
+
+	my %fatmetrics = ();
+
+	foreach(@$metrics) {
+		my $VmMoref = $_->entity->value;
+		my $perfValues = $_->value;
+		my $perfavg;
+			foreach(@$perfValues) {
+				my $perfinstance = $_->id->instance;
+				my $values = $_->value;
+				my @s_values = sort { $a <=> $b } @$values;
+				my $sum = 0;
+				my $count = 0;
+				foreach (@s_values) {
+					if ($count < 13) {
+						$sum += $_;
+						$count += 1;
+					}
+				}
+				$perfavg = $sum/$count;
+				$perfavg =~ s/\.\d+$//;
+				$fatmetrics{$VmMoref}{$perfinstance} = $perfavg;
+			}
+	}
+
+	return %fatmetrics;
+}
+
 my @cluster_vm_view_snap_tree = ();
 
 sub getSnapshotTreeRaw {
@@ -360,6 +404,26 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 		my $cluster_hosts_views_pcpus = 0;
 
+		my $hostnetmetricsstart = Time::HiRes::gettimeofday();
+		my %hostnetbytesRx = FatQueryPerfAll($cluster_hosts_views, 'net', 'bytesRx', 'average', '*');
+		my %hostnetbytesTx = FatQueryPerfAll($cluster_hosts_views, 'net', 'bytesTx', 'average', '*');
+		my %hostnetdroppedRx = FatQueryPerfAll($cluster_hosts_views, 'net', 'droppedRx', 'summation', '*');
+		my %hostnetdroppedTx = FatQueryPerfAll($cluster_hosts_views, 'net', 'droppedTx', 'summation', '*');
+		my %hostneterrorsRx = FatQueryPerfAll($cluster_hosts_views, 'net', 'errorsRx', 'summation', '*');
+		my %hostneterrorsTx = FatQueryPerfAll($cluster_hosts_views, 'net', 'errorsTx', 'summation', '*');
+		my $hostnetmetricssend = Time::HiRes::gettimeofday();
+		my $hostnetmetricstimelapse = $hostnetmetricssend - $hostnetmetricsstart;
+
+		$logger->info("[DEBUG] computed hosts net metrics in cluster $cluster_name in $hostnetmetricstimelapse sec");
+
+		my $hosthbametricsstart = Time::HiRes::gettimeofday();
+		my %hosthbaread = FatQueryPerfAll($cluster_hosts_views, 'storageAdapter', 'read', 'average', '*');
+		my %hosthbawrite = FatQueryPerfAll($cluster_hosts_views, 'storageAdapter', 'write', 'average', '*');
+		my $hosthbametricssend = Time::HiRes::gettimeofday();
+		my $hosthbametricstimelapse = $hosthbametricssend - $hosthbametricsstart;
+
+		$logger->info("[DEBUG] computed hosts hba metrics in cluster $cluster_name in $hosthbametricstimelapse sec");
+
 		foreach my $cluster_host_view (@$cluster_hosts_views) {
 			my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
 				if ($host_name eq "localhost") {
@@ -373,9 +437,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
-					my $NetbytesRx = QuickQueryPerf($cluster_host_view, 'net', 'bytesRx', 'average', $cluster_host_vmnic->device, 100000000);
+					my $NetbytesRx = $hostnetbytesRx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NetbytesRx)) { $NetbytesRx = 0; }
-					my $NetbytesTx = QuickQueryPerf($cluster_host_view, 'net', 'bytesTx', 'average', $cluster_host_vmnic->device, 100000000);
+					my $NetbytesTx = $hostnetbytesTx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NetbytesTx)) { $NetbytesTx = 0; }
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
 
@@ -392,9 +456,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
-					my $NetdroppedRx = QuickQueryPerf($cluster_host_view, 'net', 'droppedRx', 'summation', $cluster_host_vmnic->device, 100000000);
+					my $NetdroppedRx = $hostnetdroppedRx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NetdroppedRx)) { $NetdroppedRx = 0; }
-					my $NetdroppedTx = QuickQueryPerf($cluster_host_view, 'net', 'droppedTx', 'summation', $cluster_host_vmnic->device, 100000000);
+					my $NetdroppedTx = $hostnetdroppedTx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NetdroppedTx)) { $NetdroppedTx = 0; }
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
 
@@ -410,9 +474,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
-					my $NeterrorsRx = QuickQueryPerf($cluster_host_view, 'net', 'errorsRx', 'summation', $cluster_host_vmnic->device, 100000000);
+					my $NeterrorsRx = $hostneterrorsRx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NeterrorsRx)) { $NeterrorsRx = 0; }
-					my $NeterrorsTx = QuickQueryPerf($cluster_host_view, 'net', 'errorsTx', 'summation', $cluster_host_vmnic->device, 100000000);
+					my $NeterrorsTx = $hostneterrorsTx{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 					if (!defined($NeterrorsTx)) { $NeterrorsTx = 0; }
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
 
@@ -427,9 +491,9 @@ foreach my $datacentre_view (@$datacentres_views) {
 			}
 
 			foreach my $cluster_host_vmhba (@{$cluster_host_view->{'config.storageDevice.hostBusAdapter'}}) {
-					my $HbabytesRead = QuickQueryPerf($cluster_host_view, 'storageAdapter', 'read', 'average', $cluster_host_vmhba->device, 100000000);
+					my $HbabytesRead = $hosthbaread{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmhba->device};
 					if (!defined($HbabytesRead)) { $HbabytesRead = 0; }
-					my $HbabytesWrite = QuickQueryPerf($cluster_host_view, 'storageAdapter', 'write', 'average', $cluster_host_vmhba->device, 100000000);
+					my $HbabytesWrite = $hosthbawrite{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmhba->device};
 					if (!defined($HbabytesWrite)) { $HbabytesWrite = 0; }
 					my $cluster_host_vmhba_name = $cluster_host_vmhba->device;
 
