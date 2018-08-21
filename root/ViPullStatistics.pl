@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.551";
+$Util::script_version = "0.9.561";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -258,17 +258,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 			};
 			$graphite->send(path => "vmw", data => $cluster_root_pool_view_h);
 		}
-		if (my $cluster_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime.powerState'])) {
-			my $cluster_vm_views_on = Vim::find_entity_views(view_type => 'VirtualMachine', begin_entity => $cluster_view, properties => ['runtime.powerState'], filter => {'runtime.powerState' => "poweredOn"});
 
-			my $cluster_vm_views_h = {
-				time() => {
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.total", scalar(@$cluster_vm_views),
-					"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.on", scalar(@$cluster_vm_views_on),
-				},
-			};
-			$graphite->send(path => "vmw", data => $cluster_vm_views_h);
-		}
 		my $cluster_datastores = $cluster_view->datastore;
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name datastores in datacenter $datacentre_name");
@@ -931,6 +921,15 @@ foreach my $datacentre_view (@$datacentres_views) {
 				}
 			}
 		}
+
+		my $cluster_vm_views_h = {
+			time() => {
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.total", (scalar(@$cluster_vm_views) + scalar @$cluster_vm_views_off),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".runtime.vm.on", scalar(@$cluster_vm_views),
+			},
+		};
+		$graphite->send(path => "vmw", data => $cluster_vm_views_h);
+
 	}
 
 	my $StandaloneComputeResources = Vim::find_entity_views(view_type => 'ComputeResource', filter => {'summary.numHosts' => "1"}, properties => ['summary', 'resourcePool', 'host', 'datastore'], begin_entity => $datacentre_view);
