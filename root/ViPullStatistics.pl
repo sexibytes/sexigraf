@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.593";
+$Util::script_version = "0.9.599";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -251,6 +251,20 @@ sub getSnapshotTreeRaw {
 	return;
 }
 
+sub median
+{
+    my @vals = sort {$a <=> $b} @_;
+    my $len = @vals;
+    if($len%2) #odd?
+    {
+        return $vals[int($len/2)];
+    }
+    else #even
+    {
+        return ($vals[int($len/2)-1] + $vals[int($len/2)])/2;
+    }
+}
+
 # retreive datacenter(s) list
 my $datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name']);
 
@@ -301,101 +315,6 @@ foreach my $datacentre_view (@$datacentres_views) {
 				},
 			};
 			$graphite->send(path => "vmw", data => $cluster_root_pool_view_h);
-		}
-
-		my $cluster_datastores = $cluster_view->datastore;
-
-		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name datastores in datacenter $datacentre_name");
-
-		foreach my $cluster_datastore (@$cluster_datastores) {
-			my $cluster_datastore_view = Vim::get_view(mo_ref => $cluster_datastore, properties => ['summary','iormConfiguration','host']);
-			if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
-				my $shared_datastore_name = lc ($cluster_datastore_view->summary->name);
-				$shared_datastore_name =~ s/[ .()]/_/g;
-				$shared_datastore_name = NFD($shared_datastore_name);
-				$shared_datastore_name =~ s/[^[:ascii:]]//g;
-				$shared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-				my $shared_datastore_uncommitted = 0;
-				if ($cluster_datastore_view->summary->uncommitted) {
-					$shared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
-				}
-				my $cluster_shared_datastore_view_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
-						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
-						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
-					},
-				};
-				$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
-
-				if (($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) and !$cluster_datastore_view->iormConfiguration->statsAggregationDisabled) {
-					foreach (shuffle @{$cluster_datastore_view->host}) {
-
-						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
-
-						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
-
-						my @vmpath = split("/", $_->mountInfo->path);
-						my $uuid = $vmpath[-1];
-
-						my $DsNormalizedDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', $uuid, 30000000);
-						my $DsdatastoreIops = QuickQueryPerf($_->key, 'datastore', 'datastoreIops', 'average', $uuid, 500000);
-
-						my $DsQuickQueryPerf_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $DsNormalizedDatastoreLatency,
-								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $DsdatastoreIops,
-							},
-						};
-						$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
-						last;
-						}
-					}
-				} elsif ($cluster_datastore_view->summary->type ne "vsan") {
-					foreach (shuffle @{$cluster_datastore_view->host}) {
-
-						my $target_host_view = Vim::get_view(mo_ref => $_->key, properties => ['runtime']);
-
-						if ($_->mountInfo->accessible and $_->mountInfo->mounted and $target_host_view->runtime->connectionState->val eq "connected") {
-
-						my @vmpath = split("/", $_->mountInfo->path);
-						my $uuid = $vmpath[-1];
-
-						my $WriteDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalWriteLatency', 'average', $uuid, 30000) * 1000;
-						my $ReadDatastoreLatency = QuickQueryPerf($_->key, 'datastore', 'totalReadLatency', 'average', $uuid, 30000) * 1000;
-						my $sizeNormalizedDatastoreLatency = max($ReadDatastoreLatency,$WriteDatastoreLatency);
-
-						my $DsQuickQueryPerf_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency
-							},
-						};
-						$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
-						last;
-						}
-					}
-				}
-			# } elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
-			# 	my $unshared_datastore_name = lc ($cluster_datastore_view->summary->name);
-			# 	$unshared_datastore_name =~ s/[ .()]/_/g;
-			# 	$unshared_datastore_name = NFD($unshared_datastore_name);
-			# 	$unshared_datastore_name =~ s/[^[:ascii:]]//g;
-			# 	$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-			# 	my $unshared_datastore_uncommitted = 0;
-			# 	if ($cluster_datastore_view->summary->uncommitted) {
-			# 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
-			# 	}
-			# 	my $cluster_unshared_datastore_view_h = {
-			# 		time() => {
-			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
-			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
-			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
-			# 		},
-			# 	};
-			# 	$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
-			}
 		}
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
@@ -533,6 +452,114 @@ foreach my $datacentre_view (@$datacentres_views) {
 				},
 			};
 			$graphite->send(path => "vmw", data => $cluster_host_view_h);
+		}
+
+		my $cluster_datastores = $cluster_view->datastore;
+
+		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name datastores in datacenter $datacentre_name");
+
+		my $dsiormmetricsstart = Time::HiRes::gettimeofday();
+		my %dsiormlatency = FatQueryPerfAll($cluster_hosts_views, 'datastore', 'sizeNormalizedDatastoreLatency', 'average', '*');
+		my %dsiormiops = FatQueryPerfAll($cluster_hosts_views, 'datastore', 'datastoreIops', 'average', '*');
+		my %dstotalWriteLatency = FatQueryPerfAll($cluster_hosts_views, 'datastore', 'totalWriteLatency', 'average', '*');
+		my %dstotalReadLatency = FatQueryPerfAll($cluster_hosts_views, 'datastore', 'totalReadLatency', 'average', '*');
+		my $dsiormmetricssend = Time::HiRes::gettimeofday();
+		my $dsiormmetricstimelapse = $dsiormmetricssend - $dsiormmetricsstart;
+
+		$logger->info("[DEBUG] computed datastore iorm metrics in cluster $cluster_name in $dsiormmetricstimelapse sec");
+
+		foreach my $cluster_datastore (@$cluster_datastores) {
+			my $cluster_datastore_view = Vim::get_view(mo_ref => $cluster_datastore, properties => ['summary','iormConfiguration','host']);
+			if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
+				my $shared_datastore_name = lc ($cluster_datastore_view->summary->name);
+				$shared_datastore_name =~ s/[ .()]/_/g;
+				$shared_datastore_name = NFD($shared_datastore_name);
+				$shared_datastore_name =~ s/[^[:ascii:]]//g;
+				$shared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+				my $shared_datastore_uncommitted = 0;
+				if ($cluster_datastore_view->summary->uncommitted) {
+					$shared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
+				}
+				my $cluster_shared_datastore_view_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
+						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
+						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
+					},
+				};
+				$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
+
+				if ($cluster_datastore_view->iormConfiguration->enabled or $cluster_datastore_view->iormConfiguration->statsCollectionEnabled) {
+
+					my @vmpath = split("/", $cluster_datastore_view->summary->url);
+					my $uuid = $vmpath[-1];
+
+					my @dsiormlatencyuuid;
+					my @dsiormiopsuuid;
+					
+					foreach my $ds_host_view (keys %dsiormlatency) {
+						push @dsiormlatencyuuid,$dsiormlatency{$ds_host_view}{$uuid};
+					}
+
+					foreach my $ds_host_view (keys %dsiormiops) {
+						push @dsiormiopsuuid,$dsiormiops{$ds_host_view}{$uuid};
+					}
+
+					my $DsQuickQueryPerf_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", median(@dsiormlatencyuuid),
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", median(@dsiormiopsuuid),
+						},
+					};
+					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
+
+				} elsif ($cluster_datastore_view->summary->type ne "vsan") {
+
+					my @vmpath = split("/", $cluster_datastore_view->summary->url);
+					my $uuid = $vmpath[-1];
+
+					my @dstotalWriteLatencyuuid;
+					my @dstotalReadLatencyuuid;
+					
+					foreach my $ds_host_view (keys %dstotalWriteLatency) {
+						push @dstotalWriteLatencyuuid,$dstotalWriteLatency{$ds_host_view}{$uuid};
+					}
+
+					foreach my $ds_host_view (keys %dstotalReadLatency) {
+						push @dstotalReadLatencyuuid,$dstotalReadLatency{$ds_host_view}{$uuid};
+					}
+
+					my $sizeNormalizedDatastoreLatency = max(median(@dstotalWriteLatencyuuid),median(@dstotalReadLatencyuuid));
+
+					my $DsQuickQueryPerf_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency
+						},
+					};
+					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
+
+				}
+			# } elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
+			# 	my $unshared_datastore_name = lc ($cluster_datastore_view->summary->name);
+			# 	$unshared_datastore_name =~ s/[ .()]/_/g;
+			# 	$unshared_datastore_name = NFD($unshared_datastore_name);
+			# 	$unshared_datastore_name =~ s/[^[:ascii:]]//g;
+			# 	$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+			# 	my $unshared_datastore_uncommitted = 0;
+			# 	if ($cluster_datastore_view->summary->uncommitted) {
+			# 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
+			# 	}
+			# 	my $cluster_unshared_datastore_view_h = {
+			# 		time() => {
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
+			# 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
+			# 		},
+			# 	};
+			# 	$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
+			}
 		}
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name vms in datacenter $datacentre_name");
