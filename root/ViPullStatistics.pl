@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.599";
+$Util::script_version = "0.9.601";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -497,19 +497,33 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 					my @dsiormlatencyuuid;
 					my @dsiormiopsuuid;
+					my $middsiormlatencyuuid;
+					my $middsiormiopsuuid;
 					
 					foreach my $ds_host_view (keys %dsiormlatency) {
 						push @dsiormlatencyuuid,$dsiormlatency{$ds_host_view}{$uuid};
+					}
+
+					if (scalar @dsiormlatencyuuid == 0) {
+						$middsiormlatencyuuid = 0;
+					} else {
+						$middsiormlatencyuuid = median(@dsiormlatencyuuid)
 					}
 
 					foreach my $ds_host_view (keys %dsiormiops) {
 						push @dsiormiopsuuid,$dsiormiops{$ds_host_view}{$uuid};
 					}
 
+					if (scalar @dsiormiopsuuid == 0) {
+						$middsiormiopsuuid = 0;
+					} else {
+						$middsiormiopsuuid = median(@dsiormiopsuuid)
+					}
+
 					my $DsQuickQueryPerf_h = {
 						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", median(@dsiormlatencyuuid),
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", median(@dsiormiopsuuid),
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsiormlatencyuuid,
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", my $middsiormiopsuuid,
 						},
 					};
 					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
@@ -521,20 +535,34 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 					my @dstotalWriteLatencyuuid;
 					my @dstotalReadLatencyuuid;
+					my $middstotalWriteLatencyuuid;
+					my $middstotalReadLatencyuuid;
 					
 					foreach my $ds_host_view (keys %dstotalWriteLatency) {
 						push @dstotalWriteLatencyuuid,$dstotalWriteLatency{$ds_host_view}{$uuid};
+					}
+
+					if (scalar @dstotalWriteLatencyuuid == 0) {
+						$middstotalWriteLatencyuuid = 0;
+					} else {
+						$middstotalWriteLatencyuuid = median(@dstotalWriteLatencyuuid)
 					}
 
 					foreach my $ds_host_view (keys %dstotalReadLatency) {
 						push @dstotalReadLatencyuuid,$dstotalReadLatency{$ds_host_view}{$uuid};
 					}
 
-					my $sizeNormalizedDatastoreLatency = max(median(@dstotalWriteLatencyuuid),median(@dstotalReadLatencyuuid));
+					if (scalar @dstotalReadLatencyuuid == 0) {
+						$middstotalReadLatencyuuid = 0;
+					} else {
+						$middstotalReadLatencyuuid = median(@dstotalReadLatencyuuid)
+					}
+
+					my $sizeNormalizedDatastoreLatency = max($middstotalWriteLatencyuuid,$middstotalReadLatencyuuid);
 
 					my $DsQuickQueryPerf_h = {
 						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency * 1000
 						},
 					};
 					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
