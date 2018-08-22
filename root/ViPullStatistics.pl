@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.601";
+$Util::script_version = "0.9.603";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -523,7 +523,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 					my $DsQuickQueryPerf_h = {
 						time() => {
 							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsiormlatencyuuid,
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", my $middsiormiopsuuid,
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $middsiormiopsuuid,
 						},
 					};
 					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
@@ -558,11 +558,11 @@ foreach my $datacentre_view (@$datacentres_views) {
 						$middstotalReadLatencyuuid = median(@dstotalReadLatencyuuid)
 					}
 
-					my $sizeNormalizedDatastoreLatency = max($middstotalWriteLatencyuuid,$middstotalReadLatencyuuid);
+					my $sizeNormalizedDatastoreLatency = max($middstotalWriteLatencyuuid,$middstotalReadLatencyuuid) * 1000;
 
 					my $DsQuickQueryPerf_h = {
 						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency * 1000
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $sizeNormalizedDatastoreLatency,
 						},
 					};
 					$graphite->send(path => "vmw", data => $DsQuickQueryPerf_h);
