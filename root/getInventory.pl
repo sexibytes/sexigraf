@@ -16,7 +16,7 @@ use Log::Log4perl qw(:easy);
 use Number::Bytes::Human qw(format_bytes);
 use POSIX qw(strftime);
 
-$Util::script_version = "0.2";
+$Util::script_version = "0.3";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 sub sexiprocess {
@@ -73,23 +73,29 @@ sub sexiprocess {
             foreach my $cluster_view (@$clusters_views) {
                     my $cluster_name = lc ($cluster_view->name);
         $h_cluster{%$cluster_view{'mo_ref'}->value} = $cluster_name;
-        my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', begin_entity => $cluster_view , properties => [ 'name' ]);
-                    foreach my $cluster_host_view (@$cluster_hosts_views) {
-                            my $host_name = lc ($cluster_host_view->{'name'});
-          $h_host{%$cluster_host_view{'mo_ref'}->value} = $host_name;
-          $h_hostcluster{%$cluster_host_view{'mo_ref'}->value} = %$cluster_view{'mo_ref'}->value;
-        }
       }
-      my $StandaloneComputeResources = Vim::find_entity_views(view_type => 'ComputeResource', filter => {'summary.numHosts' => "1"}, properties => [ 'host' ]);
-      foreach my $StandaloneComputeResource (@$StandaloneComputeResources) {
-        if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
-          my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['name']);
-          my $StandaloneResourceVMHostName = $StandaloneResourceVMHost[0][0]->{'name'};
-          $h_host{$StandaloneResourceVMHost[0][0]->{'mo_ref'}->value} = $StandaloneResourceVMHostName;
+
+	my $cluster_hosts_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['name', 'parent']);
+        foreach my $cluster_host_view (@$cluster_hosts_views) {
+			my $host_name = lc ($cluster_host_view->{'name'});
+			if ($cluster_host_view->{'parent'}->type eq "ClusterComputeResource") {
+				$h_host{%$cluster_host_view{'mo_ref'}->value} = $host_name;
+				$h_hostcluster{%$cluster_host_view{'mo_ref'}->value} = $cluster_host_view->{'parent'}->value;
+			} else {
+				$h_host{%$cluster_host_view{'mo_ref'}->value} = $host_name;
+			}
         }
-      }
+
+    #   my $StandaloneComputeResources = Vim::find_entity_views(view_type => 'ComputeResource', filter => {'summary.numHosts' => "^1\$"}, properties => [ 'host' ]);
+    #   foreach my $StandaloneComputeResource (@$StandaloneComputeResources) {
+    #     if  ($StandaloneComputeResource->{'mo_ref'}->type eq "ComputeResource" ) {
+    #       my @StandaloneResourceVMHost = Vim::get_views(mo_ref_array => $StandaloneComputeResource->host, properties => ['name']);
+    #       my $StandaloneResourceVMHostName = $StandaloneResourceVMHost[0][0]->{'name'};
+    #       $h_host{$StandaloneResourceVMHost[0][0]->{'mo_ref'}->value} = $StandaloneResourceVMHostName;
+    #     }
+    #   }
       $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.connectionState','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage'], filter => {'runtime.connectionState' => "connected"});
-      foreach my $vm_view (@$vm_views) {
+	  foreach my $vm_view (@$vm_views) {
         my $vnics = $vm_view->guest->net;
         my @vm_pg_string = ();
         my @vm_ip_string = ();
