@@ -18,7 +18,7 @@ use POSIX qw(strftime);
 use utf8;
 use Unicode::Normalize;
 
-$Util::script_version = "0.45";
+$Util::script_version = "0.47";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 
@@ -28,19 +28,21 @@ my %all_folder_views_parent_table = ();
 
 sub getVmPath {
 	my ($child_object) = @_;
-	if ($all_folder_views_name_table{$child_object->{'parent'}}) {
-		my $VmPathTree = "/";
-		my $parent_folder = $child_object->{'parent'}->value;
+	if (defined $child_object->{'parent'}) {
+		if ($all_folder_views_name_table{$child_object->{'parent'}->value}) {
+			my $VmPathTree = "/";
+			my $parent_folder = $child_object->{'parent'}->value;
 
-		while ($all_folder_views_type_table{$all_folder_views_parent_table{$parent_folder}}) {
-			if ($all_folder_views_type_table{$parent_folder} eq "Folder") {
-				$VmPathTree = "/" . "$all_folder_views_name_table{$parent_folder}" . "$VmPathTree";
+			while ($all_folder_views_type_table{$all_folder_views_parent_table{$parent_folder}}) {
+				if ($all_folder_views_type_table{$parent_folder} eq "Folder") {
+					$VmPathTree = "/" . "$all_folder_views_name_table{$parent_folder}" . "$VmPathTree";
+				}
+				if ($all_folder_views_type_table{$all_folder_views_parent_table{$parent_folder}}) {
+					$parent_folder = $all_folder_views_parent_table{$parent_folder};
+				}
 			}
-			if ($all_folder_views_type_table{$all_folder_views_parent_table{$parent_folder}}) {
-				$parent_folder = $all_folder_views_parent_table{$parent_folder};
-			}
+			return $VmPathTree;
 		}
-		return $VmPathTree;
 	}
 }
 
@@ -109,7 +111,7 @@ sub sexiprocess {
 					$h_host{%$cluster_host_view{'mo_ref'}->value} = $host_name;
 				}
 			}
-			
+
 			%all_folder_views_name_table = ();
 			%all_folder_views_type_table = ();
 			%all_folder_views_parent_table = ();
