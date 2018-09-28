@@ -18,7 +18,7 @@ use POSIX qw(strftime);
 use utf8;
 use Unicode::Normalize;
 
-$Util::script_version = "0.43";
+$Util::script_version = "0.45";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 
@@ -93,6 +93,9 @@ sub sexiprocess {
 			my %h_cluster = ("domain-c000" => "N/A");
 			my %h_host = ();
 			my %h_hostcluster = ();
+			%all_folder_views_name_table = ();
+			%all_folder_views_type_table = ();
+			%all_folder_views_parent_table = ();
 			my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name', 'host']);
 			foreach my $cluster_view (@$clusters_views) {
 				my $cluster_name = lc ($cluster_view->name);
