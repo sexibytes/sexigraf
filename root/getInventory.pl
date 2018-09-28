@@ -28,7 +28,7 @@ my %all_folder_views_parent_table = ();
 
 sub getVmPath {
 	my ($child_object) = @_;
-	if ($all_folder_views_name_table{$child_object->{'parent'}->value}) {
+	if ($all_folder_views_name_table{$child_object->{'parent'}}) {
 		my $VmPathTree = "/";
 		my $parent_folder = $child_object->{'parent'}->value;
 
@@ -93,9 +93,6 @@ sub sexiprocess {
 			my %h_cluster = ("domain-c000" => "N/A");
 			my %h_host = ();
 			my %h_hostcluster = ();
-			%all_folder_views_name_table = ();
-			%all_folder_views_type_table = ();
-			%all_folder_views_parent_table = ();
 			my $clusters_views = Vim::find_entity_views(view_type => 'ClusterComputeResource', properties => ['name', 'host']);
 			foreach my $cluster_view (@$clusters_views) {
 				my $cluster_name = lc ($cluster_view->name);
@@ -112,7 +109,10 @@ sub sexiprocess {
 					$h_host{%$cluster_host_view{'mo_ref'}->value} = $host_name;
 				}
 			}
-
+			
+			%all_folder_views_name_table = ();
+			%all_folder_views_type_table = ();
+			%all_folder_views_parent_table = ();
 			my $all_folder_views = Vim::find_entity_views(view_type => 'Folder', properties => ['name', 'parent']);
 			foreach my $all_folder_view (@$all_folder_views) {
 				if ($all_folder_view->{'parent'}) { # skip folder-group-d1
