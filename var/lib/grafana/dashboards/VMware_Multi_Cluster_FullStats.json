@@ -795,13 +795,13 @@
             },
             {
               "hide": false,
-              "refId": "D",
+              "refId": "C",
               "target": "alias(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000)), 'demand')",
               "textEditor": false
             },
             {
               "hide": false,
-              "refId": "C",
+              "refId": "D",
               "target": "alias(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000)), 'usage')",
               "textEditor": false
             },
