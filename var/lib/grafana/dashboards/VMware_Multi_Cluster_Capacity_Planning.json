@@ -165,7 +165,7 @@
             },
             {
               "refId": "B",
-              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on),'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.total),'vm.left')",
               "textEditor": true
             },
             {
