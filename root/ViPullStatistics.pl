@@ -14,11 +14,11 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.786";
+$Util::script_version = "0.9.789";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
-if ($ARGV[6] == "BFG_Mode") {$BFG_Mode = 1};
+if (defined ($ARGV[6]) &&  ($ARGV[6] eq "BFG_Mode")) {$BFG_Mode = 1};
 
 Opts::parse();
 Opts::validate();
@@ -563,13 +563,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 		my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
 		if (defined($cluster_host_view_cpu_latency)) {
-			# my $cluster_host_view_h = {
-			# 	time() => {
-			# 		"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".fatstats.cpu_latency", $cluster_host_view_cpu_latency,
-			# 	},
-			# };
-			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-			push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency);
+			push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
 		}
 
 		my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
