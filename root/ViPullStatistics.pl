@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.783";
+$Util::script_version = "0.9.786";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -247,7 +247,7 @@ sub median {
 }
 
 $logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
-if ($BFG_Mode) {$logger->info("[DEBUG] BFG Mode activated");}
+if ($BFG_Mode) {$logger->info("[DEBUG] BFG Mode activated for vCenter $vcenterserver");}
 
 ### retreive viobjets and build moref-objects tables
 
@@ -387,6 +387,14 @@ if (!$BFG_Mode){
 
 }
 
+my $cluster_hosts_views_pcpus;
+my @cluster_hosts_vms_moref;
+my @cluster_hosts_cpu_latency;
+my @cluster_hosts_net_bytesRx;
+my @cluster_hosts_net_bytesTx;
+my @cluster_hosts_hba_bytesRead;
+my @cluster_hosts_hba_bytesWrite;
+my @cluster_hosts_power_usage;
 
 foreach my $cluster_view (@$all_cluster_views) {
 	my $cluster_name = lc ($cluster_view->name);
@@ -442,16 +450,18 @@ foreach my $cluster_view (@$all_cluster_views) {
 		}
 	}
 
-	my $cluster_hosts_views_pcpus = 0;
-	my @cluster_hosts_vms_moref = ();
-	my @cluster_hosts_cpu_latency = ();
-	my @cluster_hosts_net_bytesRx = ();
-	my @cluster_hosts_net_bytesTx = ();
-	my @cluster_hosts_hba_bytesRead = ();
-	my @cluster_hosts_hba_bytesWrite = ();
-	my @cluster_hosts_power_usage = ();
+	$cluster_hosts_views_pcpus = 0;
+	@cluster_hosts_vms_moref = ();
+	@cluster_hosts_cpu_latency = ();
+	@cluster_hosts_net_bytesRx = ();
+	@cluster_hosts_net_bytesTx = ();
+	@cluster_hosts_hba_bytesRead = ();
+	@cluster_hosts_hba_bytesWrite = ();
+	@cluster_hosts_power_usage = ();
 
 	foreach my $cluster_host_view (@cluster_hosts_views) {
+
+		
 		my $host_name = lc ($cluster_host_view->{'config.network.dnsConfig.hostName'});
 			if ($host_name eq "localhost") {
 				my $cluster_host_view_Vmk0 = $cluster_host_view->{'config.network.vnic'}[0];
