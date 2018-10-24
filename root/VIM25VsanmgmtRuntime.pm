@@ -51,12 +51,13 @@ sub get_property_list {
 package ClusterComputeResource;
 our @ISA = qw(ComputeResource ClusterComputeResourceOperations);
 
-VIMRuntime::make_get_set('ClusterComputeResource', 'configuration', 'recommendation', 'drsRecommendation', 'migrationHistory', 'actionHistory', 'drsFault');
+VIMRuntime::make_get_set('ClusterComputeResource', 'configuration', 'recommendation', 'drsRecommendation', 'hciConfig', 'migrationHistory', 'actionHistory', 'drsFault');
 
 our @property_list = (
    ['configuration', 'ClusterConfigInfo', undef],
    ['recommendation', 'ClusterRecommendation', 'true'],
    ['drsRecommendation', 'ClusterDrsRecommendation', 'true'],
+   ['hciConfig', 'ClusterComputeResourceHCIConfigInfo', undef],
    ['migrationHistory', 'ClusterDrsMigration', 'true'],
    ['actionHistory', 'ClusterActionHistory', 'true'],
    ['drsFault', 'ClusterDrsFaults', 'true'],
@@ -2996,6 +2997,40 @@ sub CertMgrRevokeCertificates {
 ##################################################################################
 package ClusterComputeResourceOperations;
 our @ISA = qw(ComputeResourceOperations);
+sub ConfigureHCI_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('ConfigureHCI_Task', %args));
+   return $response
+}
+
+sub ConfigureHCI {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->ConfigureHCI_Task(%args));
+}
+
+sub ExtendHCI_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('ExtendHCI_Task', %args));
+   return $response
+}
+
+sub ExtendHCI {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->ExtendHCI_Task(%args));
+}
+
+sub AbandonHciWorkflow {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('AbandonHciWorkflow', %args));
+   return $response
+}
+
+sub ValidateHCIConfiguration {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('ValidateHCIConfiguration', %args));
+   return $response
+}
+
 sub ReconfigureCluster_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('ReconfigureCluster_Task', %args));
@@ -3232,6 +3267,12 @@ sub CheckCustomizationResources {
 ##################################################################################
 package DatacenterOperations;
 our @ISA = qw(ManagedEntityOperations);
+sub BatchQueryConnectInfo {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('BatchQueryConnectInfo', %args));
+   return $response
+}
+
 sub QueryConnectionInfo {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('QueryConnectionInfo', %args));
@@ -3845,6 +3886,28 @@ sub CreateStoragePod {
    return $response
 }
 
+sub BatchAddStandaloneHosts_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('BatchAddStandaloneHosts_Task', %args));
+   return $response
+}
+
+sub BatchAddStandaloneHosts {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->BatchAddStandaloneHosts_Task(%args));
+}
+
+sub BatchAddHostsToCluster_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('BatchAddHostsToCluster_Task', %args));
+   return $response
+}
+
+sub BatchAddHostsToCluster {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->BatchAddHostsToCluster_Task(%args));
+}
+
 
 1;
 ##################################################################################
@@ -4201,6 +4264,23 @@ sub ConfigureCryptoKey {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('ConfigureCryptoKey', %args));
    return $response
+}
+
+sub QueryProductLockerLocation {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryProductLockerLocation', %args));
+   return $response
+}
+
+sub UpdateProductLockerLocation_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('UpdateProductLockerLocation_Task', %args));
+   return $response
+}
+
+sub UpdateProductLockerLocation {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->UpdateProductLockerLocation_Task(%args));
 }
 
 
@@ -6405,6 +6485,18 @@ sub VosSetVsanObjectPolicy {
    return $response
 }
 
+sub VsanQueryInaccessibleVmSwapObjects {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryInaccessibleVmSwapObjects', %args));
+   return $response
+}
+
+sub VsanDeleteObjects_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanDeleteObjects_Task', %args));
+   return $response
+}
+
 sub VsanQueryObjectIdentities {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQueryObjectIdentities', %args));
@@ -6555,6 +6647,12 @@ sub VsanQuerySpaceUsage {
 
 ##################################################################################
 package VsanVcClusterConfigSystemOperations;
+sub VsanQueryClusterDrsStats {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryClusterDrsStats', %args));
+   return $response
+}
+
 sub VsanClusterGetConfig {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanClusterGetConfig', %args));
@@ -6657,6 +6755,12 @@ sub VsanQueryVcClusterVmdkLoadHistoryTest {
    return $response
 }
 
+sub VsanHealthIsRebalanceRunning {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHealthIsRebalanceRunning', %args));
+   return $response
+}
+
 sub VsanQueryVcClusterCreateVmHealthTest {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQueryVcClusterCreateVmHealthTest', %args));
@@ -6717,6 +6821,12 @@ sub VsanQueryVcClusterHealthSummary {
    return $response
 }
 
+sub VsanQueryVcClusterHealthSummaryTask {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryVcClusterHealthSummaryTask', %args));
+   return $response
+}
+
 sub VsanStopRebalanceCluster {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanStopRebalanceCluster', %args));
@@ -6765,9 +6875,9 @@ sub VsanHealthSetVsanClusterTelemetryConfig {
    return $response
 }
 
-sub VsanHealthIsRebalanceRunning {
+sub VsanDownloadAndInstallVendorTool_Task {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanHealthIsRebalanceRunning', %args));
+   my $response = Util::check_fault($self->invoke('VsanDownloadAndInstallVendorTool_Task', %args));
    return $response
 }
 
@@ -6789,9 +6899,9 @@ sub InitializeDiskMappings {
    return $response
 }
 
-sub RetrieveAllFlashCapabilities {
+sub QueryDiskMappings {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('RetrieveAllFlashCapabilities', %args));
+   my $response = Util::check_fault($self->invoke('QueryDiskMappings', %args));
    return $response
 }
 
@@ -6801,9 +6911,15 @@ sub QueryClusterDataEfficiencyCapacityState {
    return $response
 }
 
-sub QueryDiskMappings {
+sub RetrieveAllFlashCapabilities {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('QueryDiskMappings', %args));
+   my $response = Util::check_fault($self->invoke('RetrieveAllFlashCapabilities', %args));
+   return $response
+}
+
+sub RebuildDiskMapping {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('RebuildDiskMapping', %args));
    return $response
 }
 
@@ -6873,6 +6989,12 @@ sub VSANVcRemoveWitnessHost {
 
 ##################################################################################
 package VsanVumSystemOperations;
+sub VsanHostUpdateFirmware {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostUpdateFirmware', %args));
+   return $response
+}
+
 sub FetchIsoDepotCookie {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('FetchIsoDepotCookie', %args));
@@ -6882,6 +7004,12 @@ sub FetchIsoDepotCookie {
 sub GetVsanVumConfig {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('GetVsanVumConfig', %args));
+   return $response
+}
+
+sub VsanVcUploadReleaseDb {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanVcUploadReleaseDb', %args));
    return $response
 }
 
@@ -9375,9 +9503,21 @@ sub RecommissionVsanNode {
 
 ##################################################################################
 package VsanSystemExOperations;
+sub VsanUnmountDiskMappingEx {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanUnmountDiskMappingEx', %args));
+   return $response
+}
+
 sub VsanQuerySyncingVsanObjects {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQuerySyncingVsanObjects', %args));
+   return $response
+}
+
+sub VsanQueryHostDrsStats {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryHostDrsStats', %args));
    return $response
 }
 
