@@ -1211,7 +1211,7 @@ if (!$BFG_Mode) {
 
 		my $StandaloneResourceVMHost = $all_host_views_table{$StandaloneComputeResourceHosts[0][0]->value};
 
-		if (!defined $StandaloneResourceVMHost && $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
+		if (!defined $StandaloneResourceVMHost or $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
 		my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
