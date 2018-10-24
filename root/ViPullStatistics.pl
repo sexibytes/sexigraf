@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.789";
+$Util::script_version = "0.9.791";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -282,10 +282,10 @@ foreach my $all_cluster_view (@$all_cluster_views) {
 	$all_cluster_views_table{$all_cluster_view->{'mo_ref'}->value} = $all_cluster_view;
 }
 
-my %all_compute_views_table = ();
-foreach my $all_compute_view (@$all_compute_views) {
-	$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
-}
+# my %all_compute_views_table = ();
+# foreach my $all_compute_view (@$all_compute_views) {
+# 	$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
+# }
 
 my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm'], filter => {'runtime.connectionState' => "connected"});
 my %all_host_views_table = ();
@@ -648,7 +648,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 		}
 	}
 
-	my $cluster_datastores_count = ();
+	my $cluster_datastores_count = 0;
 	my @cluster_datastores_capacity = ();
 	my @cluster_datastores_freeSpace = ();
 	my @cluster_datastores_uncommitted = ();
@@ -800,7 +800,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 		}
 	}
 
-	if (scalar $cluster_datastores_count > 0) {
+	if ($cluster_datastores_count > 0) {
 		my $cluster_shared_datastore_view_h = {
 			time() => {
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.count", $cluster_datastores_count,
@@ -1211,7 +1211,7 @@ if (!$BFG_Mode) {
 
 		my $StandaloneResourceVMHost = $all_host_views_table{$StandaloneComputeResourceHosts[0][0]->value};
 
-		if ($StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
+		if (defined $StandaloneResourceVMHost && $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
 		my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
