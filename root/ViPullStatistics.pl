@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.791";
+$Util::script_version = "0.9.796";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -299,7 +299,7 @@ foreach my $all_datastore_view (@$all_datastore_views) {
 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 }
 
-my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'config.hardware.device', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState'], filter => {'summary.runtime.connectionState' => "connected"});
+my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState'], filter => {'summary.runtime.connectionState' => "connected"});
 my %all_vm_views_table = ();
 foreach my $all_vm_view (@$all_vm_views) {
 	$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
@@ -871,29 +871,29 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 				}
 
-				my $cluster_vm_view_devices = $cluster_vm_view->{'config.hardware.device'};
+				# my $cluster_vm_view_devices = $cluster_vm_view->{'config.hardware.device'};
 
 				### my @cluster_vm_view_vdisk = ();
-				my $cluster_vm_view_has_snap = 0;
+				# my $cluster_vm_view_has_snap = 0;
 
-				foreach my $cluster_vm_view_device (@$cluster_vm_view_devices) {
-					if  ($cluster_vm_view_device->isa('VirtualDisk')) {
-						my $cluster_vm_view_device_back = $cluster_vm_view_device->backing;
-						### push (@cluster_vm_view_vdisk, $cluster_vm_view_device_back);
-						if ($cluster_vm_view_device_back->parent) {
-							$cluster_vm_view_has_snap = 1;
-						}
-					}
-				}
+				# foreach my $cluster_vm_view_device (@$cluster_vm_view_devices) {
+				# 	if  ($cluster_vm_view_device->isa('VirtualDisk')) {
+				# 		my $cluster_vm_view_device_back = $cluster_vm_view_device->backing;
+				# 		### push (@cluster_vm_view_vdisk, $cluster_vm_view_device_back);
+				# 		if ($cluster_vm_view_device_back->parent) {
+				# 			$cluster_vm_view_has_snap = 1;
+				# 		}
+				# 	}
+				# }
 
 				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name}) { #would need name & moref
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name} = $cluster_vm_view_file->size;
-						if ($cluster_vm_view_has_snap eq 1 and ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+						if ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
-						} elsif ($cluster_vm_view_has_snap eq 1 and $cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
 							$cluster_vm_views_files_snaps++;
+						} elsif ($cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-rdm\.vmdk/) {
@@ -1070,28 +1070,28 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 				}
 
-				my $cluster_vm_view_off_devices = $cluster_vm_view_off->{'config.hardware.device'};
+				# my $cluster_vm_view_off_devices = $cluster_vm_view_off->{'config.hardware.device'};
 
 				### my @cluster_vm_view_off_vdisk = ();
-				my $cluster_vm_view_off_has_snap = 0;
+				# my $cluster_vm_view_off_has_snap = 0;
 
-				foreach my $cluster_vm_view_off_device (@$cluster_vm_view_off_devices) {
-					if  ($cluster_vm_view_off_device->isa('VirtualDisk')) {
-						my $cluster_vm_view_off_device_back = $cluster_vm_view_off_device->backing;
-						### push (@cluster_vm_view_off_vdisk, $cluster_vm_view_off_device_back);
-						if ($cluster_vm_view_off_device_back->parent) {
-							$cluster_vm_view_off_has_snap = 1;
-						}
-					}
-				}
+				# foreach my $cluster_vm_view_off_device (@$cluster_vm_view_off_devices) {
+				# 	if  ($cluster_vm_view_off_device->isa('VirtualDisk')) {
+				# 		my $cluster_vm_view_off_device_back = $cluster_vm_view_off_device->backing;
+				# 		### push (@cluster_vm_view_off_vdisk, $cluster_vm_view_off_device_back);
+				# 		if ($cluster_vm_view_off_device_back->parent) {
+				# 			$cluster_vm_view_off_has_snap = 1;
+				# 		}
+				# 	}
+				# }
 
 				foreach my $cluster_vm_view_off_file (@$cluster_vm_view_off_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_off_file->name}) { #would need name & moref
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_off_file->name} = $cluster_vm_view_off_file->size;
-						if ($cluster_vm_view_off_has_snap eq 1 and ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+						if ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_off_file->size;
 							$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
-						} elsif ($cluster_vm_view_off_has_snap eq 1 and $cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
+						} elsif ($cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
 								$cluster_vm_views_files_snaps++;
 								$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_off_file->size;
 								$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
@@ -1211,7 +1211,7 @@ if (!$BFG_Mode) {
 
 		my $StandaloneResourceVMHost = $all_host_views_table{$StandaloneComputeResourceHosts[0][0]->value};
 
-		if (defined $StandaloneResourceVMHost && $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
+		if (!defined $StandaloneResourceVMHost && $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
 		my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
@@ -1341,12 +1341,12 @@ if (!$BFG_Mode) {
 					$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
 					$Standalone_vm_views_on++;
 
-					my $standalone_vm_view_CpuUtilization;
+					my $standalone_vm_view_CpuUtilization = 0;
 					if ($standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
 						$standalone_vm_view_CpuUtilization = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $standalone_vm_view->{'runtime.maxCpuUsage'};
 					}
 
-					my $standalone_vm_view_MemUtilization;
+					my $standalone_vm_view_MemUtilization = 0;
 					if ($standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
 						$standalone_vm_view_MemUtilization = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $standalone_vm_view->{'runtime.maxMemoryUsage'};
 					}
