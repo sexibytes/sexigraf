@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.181";
+$Util::script_version = "0.9.184";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -37,28 +37,28 @@ my @user_list = VMware::VICredStore::get_usernames (server => $vcenterserver);
 
 # set graphite target
 my $graphite = Net::Graphite->new(
-	# except for host, these hopefully have reasonable defaults, so are optional
+	### except for host, these hopefully have reasonable defaults, so are optional
 	host                  => '127.0.0.1',
 	port                  => 2003,
-	trace                 => 0,                # if true, copy what's sent to STDERR
-	proto                 => 'tcp',            # can be 'udp'
-	timeout               => 1,                # timeout of socket connect in seconds
-	fire_and_forget       => 1,                # if true, ignore sending errors
-	return_connect_error  => 0,                # if true, forward connect error to caller
+	trace                 => 0,                ### if true, copy what's sent to STDERR
+	proto                 => 'tcp',            ### can be 'udp'
+	timeout               => 1,                ### timeout of socket connect in seconds
+	fire_and_forget       => 1,                ### if true, ignore sending errors
+	return_connect_error  => 0,                ### if true, forward connect error to caller
 );
 
 BEGIN {
-        Log::Log4perl::init('/etc/log4perl.conf');
+	Log::Log4perl::init('/etc/log4perl.conf');
 	$SIG{__WARN__} = sub {
-		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
-		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
-		   $logger->warn("WARN @_");
-	   };
+		my $logger = get_logger('sexigraf.ViPullStatistics');
+		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		$logger->warn("WARN @_");
+	};
 	$SIG{__DIE__} = sub {
-		   my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
-		   local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
-		   $logger->fatal("DIE @_");
-	   };
+		my $logger = get_logger('sexigraf.ViPullStatistics');
+		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		$logger->fatal("DIE @_");
+	};
 }
 
 $logger->info("[INFO] Looking for another VsanPullStatistics from $vcenterserver");
@@ -67,13 +67,13 @@ $logger->info("[INFO] Looking for another VsanPullStatistics from $vcenterserver
 $0 = "VsanPullStatistics from $vcenterserver";
 my $PullProcess = 0;
 foreach my $file (glob("/proc/[0-9]*/cmdline")) {
-        open FILE, "<$file";
-        if (grep(/^VsanPullStatistics from $vcenterserver/, <FILE>) ) {
-                $PullProcess++;
-        }
-        close FILE;
+	open FILE, "<$file";
+	if (grep(/^VsanPullStatistics from $vcenterserver/, <FILE>) ) {
+		$PullProcess++;
+	}
+	close FILE;
 }
-if (scalar $PullProcess  > 1) {$logger->logdie ("[ERROR] VsanPullStatistics from $vcenterserver is already running!")}
+if (scalar $PullProcess	> 1) {$logger->logdie ("[ERROR] VsanPullStatistics from $vcenterserver is already running!")}
 
 $logger->info("[INFO] Start processing vCenter $vcenterserver");
 
@@ -96,12 +96,12 @@ if (scalar @user_list == 0) {
 			Vim::save_session(session_file => $sessionfile);
 			$logger->info("[INFO] vCenter $vcenterserver session file saved");
 		}
-	}
+	}		
 }
 
 sub getParent {
-        my ($parent) = @_;
-        if($parent->parent) { getParent($parent->parent); }
+	my ($parent) = @_;
+	if($parent->parent) { getParent($parent->parent); }
 	return $parent;
 }
 
@@ -133,7 +133,7 @@ $vcenter_fqdn =~ s/[ .]/_/g;
 my $vcenter_name = lc ($vcenter_fqdn);
 
 my $service_content = Vim::get_service_content();
-my $apiType = $service_content->about->apiType;
+# my $apiType = $service_content->about->apiType;
 my $fullApiVersion = $service_content->about->apiVersion;
 my $majorApiVersion = (split /\./, $fullApiVersion)[0];
 $logger->info("[INFO] The Virtual Center $vcenterserver version is $fullApiVersion");
@@ -186,7 +186,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
 								if ($VsanSpaceUsageReport) {
 								$logger->info("[INFO] Processing spaceUsageByObjectType in VSAN cluster $cluster_name (v6.2+)");
-								my $VsanSpaceUsageReportObjList  = $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
+								my $VsanSpaceUsageReportObjList	= $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
 									foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
 										my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
 										my $VsanSpaceUsageReportObjType_h = {
@@ -402,7 +402,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 							my $host_vsan_lsom_json_disks = $host_vsan_query_vsan_stats_json->{'lsom.disks'};
 
 							foreach my $lsomkey (keys %{ $host_vsan_lsom_json_disks }) {
-								if ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} ne "NA") {
+								if ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} ne "NA" && $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity}) {
 									my $lsomkeyCapacityUsed = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacityUsed};
 									my $lsomkeyCapacity = $host_vsan_lsom_json_disks->{$lsomkey}->{info}->{capacity};
 									my $lsomkeyCapacityUsedPercent = $lsomkeyCapacityUsed * 100 / $lsomkeyCapacity;
