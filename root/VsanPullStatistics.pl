@@ -50,12 +50,12 @@ my $graphite = Net::Graphite->new(
 BEGIN {
 	Log::Log4perl::init('/etc/log4perl.conf');
 	$SIG{__WARN__} = sub {
-		my $logger = get_logger('sexigraf.ViPullStatistics');
+		my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
 		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
 		$logger->warn("WARN @_");
 	};
 	$SIG{__DIE__} = sub {
-		my $logger = get_logger('sexigraf.ViPullStatistics');
+		my $logger = get_logger('sexigraf.VsanDisksPullStatistics');
 		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
 		$logger->fatal("DIE @_");
 	};
