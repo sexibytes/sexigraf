@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.796";
+$Util::script_version = "0.9.805";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -299,7 +299,7 @@ foreach my $all_datastore_view (@$all_datastore_views) {
 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 }
 
-my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState'], filter => {'summary.runtime.connectionState' => "connected"});
+my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks'], filter => {'summary.runtime.connectionState' => "connected"});
 my %all_vm_views_table = ();
 foreach my $all_vm_view (@$all_vm_views) {
 	$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
@@ -503,7 +503,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 			if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
 				my $NetdroppedRx = $hostmultistats{$perfCntr{"net.droppedRx.summation"}->key}{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
 				my $NetdroppedTx = $hostmultistats{$perfCntr{"net.droppedTx.summation"}->key}{$cluster_host_view->{'mo_ref'}->value}{$cluster_host_vmnic->device};
-				if (defined($NetdroppedTx) && defined($NetdroppedRx)) {
+				if ((defined($NetdroppedTx) && defined($NetdroppedRx)) && ($NetdroppedTx > 0 or $NetdroppedRx > 0)) {
 					my $cluster_host_vmnic_name = $cluster_host_vmnic->device;
 					my $cluster_host_vmnic_h = {
 						time() => {
@@ -697,7 +697,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 				my $middsiormiopsuuid;
 				
 				foreach my $ds_host_view (@$ds_hosts_view) {
-					if ($ds_host_view->{'mountInfo.mounted'} = 1 && $ds_host_view->{'mountInfo.accessible'} = 1) {
+					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
 						if ($hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
 							push @dsiormlatencyuuid,$hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
 						}
@@ -740,7 +740,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 				my $middsLegacyiopsuuid;
 
 				foreach my $ds_host_view (@$ds_hosts_view) {
-					if ($ds_host_view->{'mountInfo.mounted'} = 1 && $ds_host_view->{'mountInfo.accessible'} = 1) {
+					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
 						if ($hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
 							push @dstotalReadLatencyuuid,$hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
 						}
@@ -854,10 +854,11 @@ foreach my $cluster_view (@$all_cluster_views) {
 				### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
 
 				my $cluster_vm_view_snap_size = 0;
+				my $cluster_vm_view_has_snap = 0;
 
 				if ($cluster_vm_view->snapshot) {
 
-					getSnapshotTreeRaw($cluster_vm_view->snapshot->rootSnapshotList);
+					### getSnapshotTreeRaw($cluster_vm_view->snapshot->rootSnapshotList);
 
 					### foreach my $snaps (@cluster_vm_view_snap_tree) {
 					### 	if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
@@ -865,41 +866,44 @@ foreach my $cluster_view (@$all_cluster_views) {
 					### 	}
 					### }
 
-					@cluster_vm_view_snap_tree = ();
-
+					### @cluster_vm_view_snap_tree = ();
+					$cluster_vm_view_has_snap = 1;
 					$cluster_vm_views_vm_snaps++;
 
 				}
 
-				# my $cluster_vm_view_devices = $cluster_vm_view->{'config.hardware.device'};
+				my $cluster_vm_view_num_vdisk = $cluster_vm_view->{'summary.config.numVirtualDisks'};
+				my $cluster_vm_view_real_vdisk = 0;
+				my $cluster_vm_view_has_diskExtent = 0;
 
-				### my @cluster_vm_view_vdisk = ();
-				# my $cluster_vm_view_has_snap = 0;
+				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
+					if ($cluster_vm_view_file->type eq "diskDescriptor") {
+						$cluster_vm_view_real_vdisk++;
+					} elsif ($cluster_vm_view_file->type eq "diskExtent") {
+						$cluster_vm_view_has_diskExtent++;
+					}
+				}
 
-				# foreach my $cluster_vm_view_device (@$cluster_vm_view_devices) {
-				# 	if  ($cluster_vm_view_device->isa('VirtualDisk')) {
-				# 		my $cluster_vm_view_device_back = $cluster_vm_view_device->backing;
-				# 		### push (@cluster_vm_view_vdisk, $cluster_vm_view_device_back);
-				# 		if ($cluster_vm_view_device_back->parent) {
-				# 			$cluster_vm_view_has_snap = 1;
-				# 		}
-				# 	}
-				# }
+				if (($cluster_vm_view_real_vdisk > $cluster_vm_view_num_vdisk)) {
+					$cluster_vm_view_has_snap = 1;
+				}
 
 				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name}) { #would need name & moref
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_file->name} = $cluster_vm_view_file->size;
-						if ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
+						if (($cluster_vm_view_has_snap == 1) && ($cluster_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
 							$cluster_vm_views_files_snaps++;
-						} elsif ($cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/) {
+						} elsif (($cluster_vm_view_has_snap == 1) && ($cluster_vm_view_file->name =~ /-[0-9]{6}\.vmdk/)) {
 							$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_file->size;
 							$cluster_vm_view_snap_size += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-rdm\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{rdmExtent} += $cluster_vm_view_file->size;
 						} elsif ($cluster_vm_view_file->name =~ /-rdmp\.vmdk/) {
 							$cluster_vm_views_files_dedup_total->{rdmpExtent} += $cluster_vm_view_file->size;
+						} elsif (($cluster_vm_view_has_diskExtent == 0) && ($cluster_vm_view_file->type eq "diskDescriptor")) {
+							$cluster_vm_views_files_dedup_total->{virtualExtent} += $cluster_vm_view_file->size;
 						} else {
 							$cluster_vm_views_files_dedup_total->{$cluster_vm_view_file->type} += $cluster_vm_view_file->size;
 						}
@@ -1053,10 +1057,11 @@ foreach my $cluster_view (@$all_cluster_views) {
 				### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
 
 				my $cluster_vm_view_off_snap_size = 0;
+				my $cluster_vm_view_off_has_snap = 0;
 
 				if ($cluster_vm_view_off->snapshot) {
 
-					getSnapshotTreeRaw($cluster_vm_view_off->snapshot->rootSnapshotList);
+					### getSnapshotTreeRaw($cluster_vm_view_off->snapshot->rootSnapshotList);
 
 					### foreach my $snaps (@cluster_vm_view_snap_tree) {
 					### 	if ($snaps->name =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/ || $snaps->description =~ /(Consolidate|Helper|VEEAM|Veeam|TSM-VM|Restore Point)/) {
@@ -1064,34 +1069,35 @@ foreach my $cluster_view (@$all_cluster_views) {
 					### 	}
 					### }
 
-					@cluster_vm_view_snap_tree = ();
-
+					### @cluster_vm_view_snap_tree = ();
+					$cluster_vm_view_off_has_snap = 1;
 					$cluster_vm_views_vm_snaps++;
 
 				}
 
-				# my $cluster_vm_view_off_devices = $cluster_vm_view_off->{'config.hardware.device'};
+				my $cluster_vm_view_off_num_vdisk = $cluster_vm_view_off->{'summary.config.numVirtualDisks'};
+				my $cluster_vm_view_off_real_vdisk = 0;
+				my $cluster_vm_view_off_has_diskExtent = 0;
 
-				### my @cluster_vm_view_off_vdisk = ();
-				# my $cluster_vm_view_off_has_snap = 0;
+				foreach my $cluster_vm_view_off_file (@$cluster_vm_view_off_files) {
+					if ($cluster_vm_view_off_file->type eq "diskDescriptor") {
+						$cluster_vm_view_off_real_vdisk++;
+					} elsif ($cluster_vm_view_off_file->type eq "diskExtent") {
+						$cluster_vm_view_off_has_diskExtent++;
+					}
+				}
 
-				# foreach my $cluster_vm_view_off_device (@$cluster_vm_view_off_devices) {
-				# 	if  ($cluster_vm_view_off_device->isa('VirtualDisk')) {
-				# 		my $cluster_vm_view_off_device_back = $cluster_vm_view_off_device->backing;
-				# 		### push (@cluster_vm_view_off_vdisk, $cluster_vm_view_off_device_back);
-				# 		if ($cluster_vm_view_off_device_back->parent) {
-				# 			$cluster_vm_view_off_has_snap = 1;
-				# 		}
-				# 	}
-				# }
+				if (($cluster_vm_view_off_real_vdisk > $cluster_vm_view_off_num_vdisk)) {
+					$cluster_vm_view_off_has_snap = 1;
+				}
 
 				foreach my $cluster_vm_view_off_file (@$cluster_vm_view_off_files) {
 					if (!$cluster_vm_views_files_dedup->{$cluster_vm_view_off_file->name}) { #would need name & moref
 						$cluster_vm_views_files_dedup->{$cluster_vm_view_off_file->name} = $cluster_vm_view_off_file->size;
-						if ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/) {
+						if (($cluster_vm_view_off_has_snap == 1) && ($cluster_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $cluster_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
 							$cluster_vm_views_files_dedup_total->{snapshotExtent} += $cluster_vm_view_off_file->size;
 							$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
-						} elsif ($cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/) {
+						} elsif (($cluster_vm_view_off_has_snap == 1) && ($cluster_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/)) {
 								$cluster_vm_views_files_snaps++;
 								$cluster_vm_views_files_dedup_total->{snapshotDescriptor} += $cluster_vm_view_off_file->size;
 								$cluster_vm_view_off_snap_size += $cluster_vm_view_off_file->size;
@@ -1099,6 +1105,8 @@ foreach my $cluster_view (@$all_cluster_views) {
 								$cluster_vm_views_files_dedup_total->{rdmExtent} += $cluster_vm_view_off_file->size;
 						} elsif ($cluster_vm_view_off_file->name =~ /-rdmp\.vmdk/) {
 								$cluster_vm_views_files_dedup_total->{rdmpExtent} += $cluster_vm_view_off_file->size;
+						} elsif (($cluster_vm_view_off_has_diskExtent == 0) && ($cluster_vm_view_off_file->type eq "diskDescriptor")) {
+							$cluster_vm_views_files_dedup_total->{virtualExtent} += $cluster_vm_view_off_file->size;
 						} else {
 							$cluster_vm_views_files_dedup_total->{$cluster_vm_view_off_file->type} += $cluster_vm_view_off_file->size;
 						}
