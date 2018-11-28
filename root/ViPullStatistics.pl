@@ -14,7 +14,7 @@ use utf8;
 use Unicode::Normalize;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.805";
+$Util::script_version = "0.9.806";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -342,7 +342,7 @@ if (!$BFG_Mode){
 		["datastore", "totalReadLatency", "average"],
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
-		["cpu", "latency", "average"],
+		# ["cpu", "latency", "average"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
@@ -378,7 +378,7 @@ if (!$BFG_Mode){
 		["datastore", "totalReadLatency", "average"],
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
-		["cpu", "latency", "average"],
+		# ["cpu", "latency", "average"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
@@ -389,7 +389,7 @@ if (!$BFG_Mode){
 
 my $cluster_hosts_views_pcpus;
 my @cluster_hosts_vms_moref;
-my @cluster_hosts_cpu_latency;
+# my @cluster_hosts_cpu_latency;
 my @cluster_hosts_net_bytesRx;
 my @cluster_hosts_net_bytesTx;
 my @cluster_hosts_hba_bytesRead;
@@ -452,7 +452,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 	$cluster_hosts_views_pcpus = 0;
 	@cluster_hosts_vms_moref = ();
-	@cluster_hosts_cpu_latency = ();
+	# @cluster_hosts_cpu_latency = ();
 	@cluster_hosts_net_bytesRx = ();
 	@cluster_hosts_net_bytesTx = ();
 	@cluster_hosts_hba_bytesRead = ();
@@ -561,10 +561,10 @@ foreach my $cluster_view (@$all_cluster_views) {
 			$graphite->send(path => "vmw", data => $cluster_host_view_h);
 		}
 
-		my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
-		if (defined($cluster_host_view_cpu_latency)) {
-			push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
-		}
+		# my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
+		# if (defined($cluster_host_view_cpu_latency)) {
+		# 	push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
+		# }
 
 		my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
 		my $cluster_host_view_status_val;
@@ -600,14 +600,14 @@ foreach my $cluster_view (@$all_cluster_views) {
 		$graphite->send(path => "vmw", data => $cluster_host_view_h);	
 	}
 
-	if (scalar @cluster_hosts_cpu_latency > 0) {
-		my $cluster_host_view_h = {
-			time() => {
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.cpu.latency", median(@cluster_hosts_cpu_latency),
-			},
-		};
-		$graphite->send(path => "vmw", data => $cluster_host_view_h);		
-	}
+	# if (scalar @cluster_hosts_cpu_latency > 0) {
+	# 	my $cluster_host_view_h = {
+	# 		time() => {
+	# 			"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.cpu.latency", median(@cluster_hosts_cpu_latency),
+	# 		},
+	# 	};
+	# 	$graphite->send(path => "vmw", data => $cluster_host_view_h);		
+	# }
 
 	if (scalar @cluster_hosts_net_bytesRx > 0 && scalar @cluster_hosts_net_bytesTx > 0) {
 		my $cluster_host_view_h = {
