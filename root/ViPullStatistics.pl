@@ -16,7 +16,7 @@ use Time::Piece;
 use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.822";
+$Util::script_version = "0.9.823";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1479,11 +1479,13 @@ if ($eventCount > 0) {
 			if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
 				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan)/) {
 					push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+				} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
+					push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
 				}
 			} else {
-				if ($eventInfo->category =~ m/(warning|error)/) {
-					push (@filteredEvents,'vim.event.' . $eventInfo->key);
-				}
+				# if ($eventInfo->category =~ m/(warning|error)/) {
+				# 	push (@filteredEvents,'vim.event.' . $eventInfo->key);
+				# }
 			}
 		}
 	}
