@@ -12,9 +12,11 @@ use List::Util qw[shuffle max sum];
 use Log::Log4perl qw(:easy);
 use utf8;
 use Unicode::Normalize;
+use Time::Piece;
+use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.806";
+$Util::script_version = "0.9.822";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -31,7 +33,12 @@ my $sessionfile = Opts::get_option('sessionfile');
 my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
+my $t_0 = localtime;
+my $t_5 = localtime;
+
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
+$logger->info("[DEBUG] ViPullStatistics v$Util::script_version");
+
 VMware::VICredStore::init (filename => $credstorefile) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
 my @user_list = VMware::VICredStore::get_usernames (server => $vcenterserver);
 
@@ -1412,18 +1419,19 @@ if (!$BFG_Mode) {
 		}
 	}
 }
+
+
 my $sessionCount;
 my $sessionListH = {};
 my $sessionMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->sessionManager));
 my $sessionList = $sessionMgr->sessionList;
+
 if ($sessionList) {
 	foreach my $sessionActive (@$sessionList) {
 		$sessionListH->{$sessionActive->userName}++;
 	}
 	$sessionCount = scalar(@$sessionList);
-}
 
-if ($sessionList) {
 	my $vcenter_session_count_h = {
 		time() => {
 			"$vcenter_name.vi" . ".exec.sessionCount", $sessionCount,
@@ -1431,9 +1439,7 @@ if ($sessionList) {
 	};
 
 	$graphite->send(path => "vi", data => $vcenter_session_count_h);
-}
 
-if ($sessionListH) {
 	foreach my $sessionListNode (keys %{$sessionListH}) {
 		my $sessionListNodeClean = lc $sessionListNode;
 		$sessionListNodeClean =~ s/[ .]/_/g;
@@ -1449,8 +1455,10 @@ if ($sessionListH) {
 }
 
 
-my $eventCount;
+$logger->info("[INFO] Processing vCenter $vcenterserver events");
 my $eventMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->eventManager));
+
+my $eventCount;
 my $eventLast = $eventMgr->latestEvent;
 $eventCount = $eventLast->key;
 
@@ -1461,8 +1469,62 @@ if ($eventCount > 0) {
 		},
 	};
 	$graphite->send(path => "vi", data => $eventCount_h);
+
+	## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
+	my $eventsInfo = $eventMgr->description->eventInfo;
+	my @filteredEvents;
+	if ($eventsInfo) {
+		foreach my $eventInfo (@$eventsInfo) {
+			## if (($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) and (split(/\|/, $eventInfo->fullFormat))[0]) {
+			if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
+				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan)/) {
+					push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+				}
+			} else {
+				if ($eventInfo->category =~ m/(warning|error)/) {
+					push (@filteredEvents,'vim.event.' . $eventInfo->key);
+				}
+			}
+		}
+	}
+
+	$t_5 -= ONE_MINUTE;
+	$t_5 -= ONE_MINUTE;
+	$t_5 -= ONE_MINUTE;
+	$t_5 -= ONE_MINUTE;
+	$t_5 -= ONE_MINUTE;
+
+	my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
+	my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
+	my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
+
+	my $eventCollector = Vim::get_view(mo_ref => $evtResults);
+	## $eventCollector->ResetCollector();
+
+	## my $exEvents = $eventCollector->latestPage;
+	my $exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
+
+	my $vc_events_count_per_id = {};
+
+	if ($exEvents) {
+		foreach my $exEvent (@$exEvents) {
+			$vc_events_count_per_id->{$exEvent->eventTypeId} += 1;
+		}
+
+		foreach my $vc_event_id (keys %$vc_events_count_per_id) {
+			my $vc_event_id_def = $vc_event_id;
+			$vc_event_id_def =~ s/[ .]/_/g;
+			my $events_count_per_id_h = {
+				time() => {
+					"$vcenter_name.vi" . ".exec.eventid." . "$vc_event_id_def", $vc_events_count_per_id->{$vc_event_id},
+				},
+			};
+			$graphite->send(path => "vi", data => $events_count_per_id_h);
+		}
+	}
 }
 
+# $logger->info("[INFO] Processing vCenter $vcenterserver tasks");
 # my $taskCount;
 # my $taskMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->taskManager));
 # my $recentTask = $taskMgr->recentTask;
