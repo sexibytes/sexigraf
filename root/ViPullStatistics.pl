@@ -16,7 +16,7 @@ use Time::Piece;
 use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.823";
+$Util::script_version = "0.9.824";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -289,10 +289,10 @@ foreach my $all_cluster_view (@$all_cluster_views) {
 	$all_cluster_views_table{$all_cluster_view->{'mo_ref'}->value} = $all_cluster_view;
 }
 
-# my %all_compute_views_table = ();
-# foreach my $all_compute_view (@$all_compute_views) {
-# 	$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
-# }
+my %all_compute_views_table = ();
+foreach my $all_compute_view (@$all_compute_views) {
+	$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
+}
 
 my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm'], filter => {'runtime.connectionState' => "connected"});
 my %all_host_views_table = ();
