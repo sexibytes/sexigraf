@@ -16,7 +16,7 @@ use Time::Piece;
 use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.824";
+$Util::script_version = "0.9.830";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1476,11 +1476,15 @@ if ($eventCount > 0) {
 	if ($eventsInfo) {
 		foreach my $eventInfo (@$eventsInfo) {
 			## if (($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) and (split(/\|/, $eventInfo->fullFormat))[0]) {
+			# if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/ and (!(split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/)) {
 			if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
-				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan)/) {
-					push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
-				} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
-					push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/) {
+				} else {
+					if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.)/) {
+						push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+					} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
+						push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+					}
 				}
 			} else {
 				# if ($eventInfo->category =~ m/(warning|error)/) {
@@ -1500,11 +1504,20 @@ if ($eventCount > 0) {
 	my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
 	my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
 
-	my $eventCollector = Vim::get_view(mo_ref => $evtResults);
-	## $eventCollector->ResetCollector();
+	my $eventCollector;
+	my $exEvents;
 
-	## my $exEvents = $eventCollector->latestPage;
-	my $exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
+	eval {
+		$eventCollector = Vim::get_view(mo_ref => $evtResults);
+		## $eventCollector->ResetCollector();
+
+		## my $exEvents = $eventCollector->latestPage;
+		$exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
+	};	
+	if($@) {
+		$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vcenterserver");
+		unlink $sessionfile;
+	}
 
 	my $vc_events_count_per_id = {};
 
@@ -1524,6 +1537,8 @@ if ($eventCount > 0) {
 			$graphite->send(path => "vi", data => $events_count_per_id_h);
 		}
 	}
+
+	$eventCollector->DestroyCollector;
 }
 
 # $logger->info("[INFO] Processing vCenter $vcenterserver tasks");
