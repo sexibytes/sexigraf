@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.184";
+$Util::script_version = "0.9.187";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -247,7 +247,13 @@ foreach my $datacentre_view (@$datacentres_views) {
 						my $VsanSystemEx;
 						my $VsanHostVsanObjectSyncQueryResult;
 						my $host_api = $_->{'config.product.apiVersion'};
-						if ($host_api >= 6.7) {
+						(my $major_host_api) = $host_api =~ m/(^\d\.\d)*/;
+
+						my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
+						my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
+						$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
+
+						if ($major_host_api >= 6.7) {
 							my $VsanSystemExSync = {};
 							my $VsanHostVsanObjectSyncQueryResultObjs;
 							my $VsanHostVsanObjectSyncQueryResultUuids = 0;
@@ -293,11 +299,7 @@ foreach my $datacentre_view (@$datacentres_views) {
 								};
 								$graphite->send(path => "vsan.", data => $VsanSystemExSync_h);
 							}
-					} else {
-							my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
-
-							my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
-							$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
+						} else {
 
 							my $host_vsan_syncing_objects = $shuffle_host_vsan_view->QuerySyncingVsanObjects();
 							my $host_vsan_syncing_objects_json = from_json($host_vsan_syncing_objects);
@@ -348,6 +350,8 @@ foreach my $datacentre_view (@$datacentres_views) {
 						my $host_vsan_query_vsan_stats = $host_vsan_view->QueryVsanStatistics(labels => ['dom', 'lsom', 'dom-objects', 'disks']);
 						my $host_vsan_query_vsan_stats_json = from_json($host_vsan_query_vsan_stats);
 						my $host_name = lc ($host_view->{'config.network.dnsConfig.hostName'});
+
+						$logger->info("[INFO] Processing $host_name in VSAN cluster $cluster_name");
 
 						if ($host_vsan_query_vsan_stats_json) {
 
