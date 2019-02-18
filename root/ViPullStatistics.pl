@@ -16,7 +16,7 @@ use Time::Piece;
 use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.830";
+$Util::script_version = "0.9.832";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -306,7 +306,7 @@ foreach my $all_datastore_view (@$all_datastore_views) {
 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 }
 
-my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks'], filter => {'summary.runtime.connectionState' => "connected"});
+my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'guest.disk', 'guest.disk'], filter => {'summary.runtime.connectionState' => "connected"});
 my %all_vm_views_table = ();
 foreach my $all_vm_view (@$all_vm_views) {
 	$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
@@ -349,7 +349,7 @@ if (!$BFG_Mode){
 		["datastore", "totalReadLatency", "average"],
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
-		# ["cpu", "latency", "average"],
+		["cpu", "latency", "average"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
@@ -385,7 +385,7 @@ if (!$BFG_Mode){
 		["datastore", "totalReadLatency", "average"],
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
-		# ["cpu", "latency", "average"],
+		["cpu", "latency", "average"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
@@ -396,7 +396,7 @@ if (!$BFG_Mode){
 
 my $cluster_hosts_views_pcpus;
 my @cluster_hosts_vms_moref;
-# my @cluster_hosts_cpu_latency;
+my @cluster_hosts_cpu_latency;
 my @cluster_hosts_net_bytesRx;
 my @cluster_hosts_net_bytesTx;
 my @cluster_hosts_hba_bytesRead;
@@ -459,7 +459,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 	$cluster_hosts_views_pcpus = 0;
 	@cluster_hosts_vms_moref = ();
-	# @cluster_hosts_cpu_latency = ();
+	@cluster_hosts_cpu_latency = ();
 	@cluster_hosts_net_bytesRx = ();
 	@cluster_hosts_net_bytesTx = ();
 	@cluster_hosts_hba_bytesRead = ();
@@ -568,10 +568,10 @@ foreach my $cluster_view (@$all_cluster_views) {
 			$graphite->send(path => "vmw", data => $cluster_host_view_h);
 		}
 
-		# my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
-		# if (defined($cluster_host_view_cpu_latency)) {
-		# 	push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
-		# }
+		my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
+		if (defined($cluster_host_view_cpu_latency)) {
+			push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
+		}
 
 		my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
 		my $cluster_host_view_status_val;
@@ -607,14 +607,14 @@ foreach my $cluster_view (@$all_cluster_views) {
 		$graphite->send(path => "vmw", data => $cluster_host_view_h);	
 	}
 
-	# if (scalar @cluster_hosts_cpu_latency > 0) {
-	# 	my $cluster_host_view_h = {
-	# 		time() => {
-	# 			"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.cpu.latency", median(@cluster_hosts_cpu_latency),
-	# 		},
-	# 	};
-	# 	$graphite->send(path => "vmw", data => $cluster_host_view_h);		
-	# }
+	if (scalar @cluster_hosts_cpu_latency > 0) {
+		my $cluster_host_view_h = {
+			time() => {
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.cpu.latency", median(@cluster_hosts_cpu_latency),
+			},
+		};
+		$graphite->send(path => "vmw", data => $cluster_host_view_h);		
+	}
 
 	if (scalar @cluster_hosts_net_bytesRx > 0 && scalar @cluster_hosts_net_bytesTx > 0) {
 		my $cluster_host_view_h = {
@@ -1475,8 +1475,6 @@ if ($eventCount > 0) {
 	my @filteredEvents;
 	if ($eventsInfo) {
 		foreach my $eventInfo (@$eventsInfo) {
-			## if (($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) and (split(/\|/, $eventInfo->fullFormat))[0]) {
-			# if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/ and (!(split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/)) {
 			if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
 				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/) {
 				} else {
@@ -1494,11 +1492,9 @@ if ($eventCount > 0) {
 		}
 	}
 
-	$t_5 -= ONE_MINUTE;
-	$t_5 -= ONE_MINUTE;
-	$t_5 -= ONE_MINUTE;
-	$t_5 -= ONE_MINUTE;
-	$t_5 -= ONE_MINUTE;
+	foreach my $i (0..5) {
+		$t_5 -= ONE_MINUTE;
+	}
 
 	my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
 	my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
@@ -1510,7 +1506,6 @@ if ($eventCount > 0) {
 	eval {
 		$eventCollector = Vim::get_view(mo_ref => $evtResults);
 		## $eventCollector->ResetCollector();
-
 		## my $exEvents = $eventCollector->latestPage;
 		$exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
 	};	
@@ -1522,19 +1517,38 @@ if ($eventCount > 0) {
 	my $vc_events_count_per_id = {};
 
 	if ($exEvents) {
+
 		foreach my $exEvent (@$exEvents) {
-			$vc_events_count_per_id->{$exEvent->eventTypeId} += 1;
+			if ($exEvent->datacenter && $exEvent->computeResource) {
+				my $evt_datacentre_name = lc ($exEvent->datacenter->name);
+				$evt_datacentre_name =~ s/[ .]/_/g;
+				$evt_datacentre_name = NFD($evt_datacentre_name);
+				$evt_datacentre_name =~ s/[^[:ascii:]]//g;
+				$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+				my $evt_cluster_name = lc ($exEvent->computeResource->name);
+				$evt_cluster_name =~ s/[ .]/_/g;
+				$evt_cluster_name = NFD($evt_cluster_name);
+				$evt_cluster_name =~ s/[^[:ascii:]]//g;
+				$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+				$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+			}
 		}
 
-		foreach my $vc_event_id (keys %$vc_events_count_per_id) {
-			my $vc_event_id_def = $vc_event_id;
-			$vc_event_id_def =~ s/[ .]/_/g;
-			my $events_count_per_id_h = {
-				time() => {
-					"$vcenter_name.vi" . ".exec.eventid." . "$vc_event_id_def", $vc_events_count_per_id->{$vc_event_id},
-				},
-			};
-			$graphite->send(path => "vi", data => $events_count_per_id_h);
+		foreach my $dc_vc_event_id (keys %$vc_events_count_per_id) {
+			foreach my $clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}) {
+				foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}) {
+					my $clean_evt_clu_dc_vc_event_id = $evt_clu_dc_vc_event_id;
+					$clean_evt_clu_dc_vc_event_id =~ s/[ .]/_/g;
+					my $events_count_per_id_h = {
+						time() => {
+							"$vcenter_name.vi" . ".exec.ExEvent." . "$dc_vc_event_id.$clu_dc_vc_event_id.$clean_evt_clu_dc_vc_event_id", $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id},
+						},
+					};
+					$graphite->send(path => "vi", data => $events_count_per_id_h);
+				}
+			}
 		}
 	}
 
