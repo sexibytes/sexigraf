@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.187";
+$Util::script_version = "0.9.188";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -32,6 +32,8 @@ my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
 my $logger = Log::Log4perl->get_logger('sexigraf.VsanDisksPullStatistics');
+$logger->info("[DEBUG] VsanDisksPullStatistics v$Util::script_version");
+
 VMware::VICredStore::init (filename => $credstorefile) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
 my @user_list = VMware::VICredStore::get_usernames (server => $vcenterserver);
 
@@ -168,15 +170,14 @@ foreach my $datacentre_view (@$datacentres_views) {
 
 		if(scalar $cluster_view->host > 1) {
 
-			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.product.apiVersion','config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','configManager.advancedOption'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
+			my $hosts_views = Vim::find_entity_views(view_type => 'HostSystem' , properties => ['config.product.apiVersion','config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','config.optionDef'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/}, begin_entity => $cluster_view);
 
 			if (@$hosts_views[0]) {
 
 				my $vsan_cluster_uuid = @$hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
 
-				my $advConfigurations = Vim::get_view(mo_ref => @$hosts_views[0]->{'configManager.advancedOption'});
-				my $advSupportedOptions = $advConfigurations->supportedOption();
+				my $advSupportedOptions = @$hosts_views[0]->{'config.optionDef'};
 
 				foreach my $advSupportedOption (@$advSupportedOptions) {
 					if ($advSupportedOption->key eq "VSAN.DedupScope") {
