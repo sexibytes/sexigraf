@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("./VIM25VsanmgmtStub.pm","./VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.188";
+$Util::script_version = "0.9.189";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -178,31 +178,29 @@ foreach my $datacentre_view (@$datacentres_views) {
 				$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
 
 				my $advSupportedOptions = @$hosts_views[0]->{'config.optionDef'};
+				my $VsanSpaceUsageReport;
 
 				foreach my $advSupportedOption (@$advSupportedOptions) {
 					if ($advSupportedOption->key eq "VSAN.DedupScope") {
 						if ($vsan_cluster_space_report_system) {
-							eval { $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view) };
+							eval { $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view) };
 							if (!$@) {
-								my $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view);
-								if ($VsanSpaceUsageReport) {
 								$logger->info("[INFO] Processing spaceUsageByObjectType in VSAN cluster $cluster_name (v6.2+)");
 								my $VsanSpaceUsageReportObjList	= $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
-									foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
-										my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
-										my $VsanSpaceUsageReportObjType_h = {
-											time() => {
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overheadB", $vsanObjType->overheadB,
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType->physicalUsedB,
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overReservedB", $vsanObjType->{'overReservedB'},
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.usedB", $vsanObjType->usedB,
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType->temporaryOverheadB,
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType->primaryCapacityB,
-												"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
-											},
-										};
-										$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
-									}
+								foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
+									my $VsanSpaceUsageReportObjType = $vsanObjType->{objType};
+									my $VsanSpaceUsageReportObjType_h = {
+										time() => {
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overheadB", $vsanObjType->overheadB,
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType->physicalUsedB,
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.overReservedB", $vsanObjType->{'overReservedB'},
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.usedB", $vsanObjType->usedB,
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType->temporaryOverheadB,
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType->primaryCapacityB,
+											"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
+										},
+									};
+									$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
 								}
 							}
 						}
