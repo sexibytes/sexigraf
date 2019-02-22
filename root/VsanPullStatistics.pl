@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.192";
+$Util::script_version = "0.9.195";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -207,15 +207,11 @@ foreach my $all_compute_view (@$all_compute_views) {
 
 my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['parent','config.product.apiVersion','config.vsanHostConfig.clusterInfo.uuid','config.network.dnsConfig.hostName','configManager.vsanInternalSystem','runtime.connectionState','runtime.inMaintenanceMode','config.optionDef'] , filter => {'config.vsanHostConfig.clusterInfo.uuid' => qr/-/});
 my %all_host_views_table = ();
+my %all_host_vsan_views_table = ();
 foreach my $all_host_view (@$all_host_views) {
 	$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
+	$all_host_vsan_views_table{$all_host_view->{'configManager.vsanInternalSystem'}->value} = $all_host_view->{'mo_ref'}->value;
 }
-
-# my $all_datastore_views = Vim::find_entity_views(view_type => 'Datastore', properties => ['summary', 'iormConfiguration.enabled', 'iormConfiguration.statsCollectionEnabled', 'host'], filter => {'summary.multipleHostAccess' => "true"});
-# my %all_datastore_views_table = ();
-# foreach my $all_datastore_view (@$all_datastore_views) {
-# 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
-# }
 
 my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['config.hardware.device','runtime.host'], filter => {'summary.runtime.connectionState' => "connected"});
 my %all_vm_views_table = ();
@@ -237,6 +233,8 @@ if ($all_datacentres_views and $all_cluster_views and $all_compute_views and $al
 }
 
 my @cluster_hosts_vms_moref;
+my $configManagerVsanInternalSystemView;
+my %hosts_vsan_views_table;
 
 foreach my $cluster_view (@$all_cluster_views) {
 	my $cluster_name = lc ($cluster_view->name);
@@ -251,19 +249,28 @@ foreach my $cluster_view (@$all_cluster_views) {
 	$datacentre_name =~ s/[^[:ascii:]]//g;
 	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-	if(scalar $cluster_view->host > 1) {
+	%hosts_vsan_views_table = ();
 
-		$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
+	if(scalar $cluster_view->host > 1) {
 
 		my @cluster_hosts_views;
 		my $cluster_hosts_moref = $cluster_view->host;
 		foreach my $cluster_host_moref (@$cluster_hosts_moref) {
 			if ($all_host_views_table{$cluster_host_moref->{'value'}}) {
 				push (@cluster_hosts_views,$all_host_views_table{$cluster_host_moref->{'value'}});
+				push (@$configManagerVsanInternalSystemView,$all_host_views_table{$cluster_host_moref->{'value'}}->{'configManager.vsanInternalSystem'});
 			}
 		}
 
+		my $hosts_vsan_views = Vim::get_views(mo_ref_array => $configManagerVsanInternalSystemView);
+
+		foreach my $hosts_vsan_view (@$hosts_vsan_views) {
+			$hosts_vsan_views_table{$all_host_vsan_views_table{$hosts_vsan_view->{'mo_ref'}->value}} = $hosts_vsan_view;
+		}
+
 		if (@cluster_hosts_views[0]) {
+
+			$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
 
 			my $vsan_cluster_uuid = @cluster_hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 			$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
@@ -275,7 +282,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 				if ($advSupportedOption->key eq "VSAN.DedupScope") {
 					if ($vsan_cluster_space_report_system) {
 						eval { $VsanSpaceUsageReport = $vsan_cluster_space_report_system->VsanQuerySpaceUsage(cluster => $cluster_view) };
-						if (!$@) {
+						if (!$@ and $VsanSpaceUsageReport) {
 							$logger->info("[INFO] Processing spaceUsageByObjectType in VSAN cluster $cluster_name (v6.2+)");
 							my $VsanSpaceUsageReportObjList	= $VsanSpaceUsageReport->{'spaceDetail'}->{'spaceUsageByObjectType'};
 							foreach my $vsanObjType (@$VsanSpaceUsageReportObjList) {
@@ -353,7 +360,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 					my $host_api = $_->{'config.product.apiVersion'};
 					(my $major_host_api) = $host_api =~ m/(^\d\.\d)*/;
 
-					my $shuffle_host_vsan_view = Vim::get_view(mo_ref => $_->{'configManager.vsanInternalSystem'});
+					my $shuffle_host_vsan_view = $hosts_vsan_views_table{$_->{'mo_ref'}->value};
 					my $host_vsan_physical_disks = $shuffle_host_vsan_view->QueryPhysicalVsanDisks();
 					$host_vsan_physical_disks_json = from_json($host_vsan_physical_disks);
 
@@ -445,13 +452,11 @@ foreach my $cluster_view (@$all_cluster_views) {
 				last;
 			}
 
-
-
 			foreach my $host_view (@cluster_hosts_views) {
 
 				if ($host_view->{'runtime.connectionState'}->val eq "connected" && $host_view->{'runtime.inMaintenanceMode'} eq "false") {
 
-					my $host_vsan_view = Vim::get_view(mo_ref => $host_view->{'configManager.vsanInternalSystem'});
+					my $host_vsan_view = $hosts_vsan_views_table{$host_view->{'mo_ref'}->value};
 					my $host_vsan_query_vsan_stats = $host_vsan_view->QueryVsanStatistics(labels => ['dom', 'lsom', 'dom-objects', 'disks']);
 					my $host_vsan_query_vsan_stats_json = from_json($host_vsan_query_vsan_stats);
 					my $host_name = lc ($host_view->{'config.network.dnsConfig.hostName'});
