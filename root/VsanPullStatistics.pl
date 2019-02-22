@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.195";
+$Util::script_version = "0.9.196";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -268,14 +268,14 @@ foreach my $cluster_view (@$all_cluster_views) {
 			$hosts_vsan_views_table{$all_host_vsan_views_table{$hosts_vsan_view->{'mo_ref'}->value}} = $hosts_vsan_view;
 		}
 
-		if (@cluster_hosts_views[0]) {
+		if ($cluster_hosts_views[0]) {
 
 			$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
 
-			my $vsan_cluster_uuid = @cluster_hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
+			my $vsan_cluster_uuid = $cluster_hosts_views[0]->{'config.vsanHostConfig.clusterInfo.uuid'};
 			$logger->info("[INFO] Processing vCenter $vcenterserver VSAN cluster $cluster_name $vsan_cluster_uuid");
 
-			my $advSupportedOptions = @cluster_hosts_views[0]->{'config.optionDef'};
+			my $advSupportedOptions = $cluster_hosts_views[0]->{'config.optionDef'};
 			my $VsanSpaceUsageReport;
 
 			foreach my $advSupportedOption (@$advSupportedOptions) {
