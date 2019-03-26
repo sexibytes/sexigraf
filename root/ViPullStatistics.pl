@@ -16,7 +16,7 @@ use Time::Piece;
 use Time::Seconds;
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.832";
+$Util::script_version = "0.9.833";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -253,7 +253,7 @@ sub median {
     }
 }
 
-$logger->info("[INFO] Processing vCenter $vcenterserver datacenters");
+$logger->info("[INFO] Processing vCenter $vcenterserver objects");
 if ($BFG_Mode) {$logger->info("[DEBUG] BFG Mode activated for vCenter $vcenterserver");}
 
 ### retreive viobjets and build moref-objects tables
@@ -271,6 +271,7 @@ my $all_cluster_root_pool_views = Vim::find_entity_views(view_type => 'ResourceP
 my %all_cluster_root_pool_views_table = ();
 foreach my $all_cluster_root_pool_view (@$all_cluster_root_pool_views) {
 	$all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'parent'}->value} = $all_cluster_root_pool_view;
+	# $all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'mo_ref'}->value} = $all_cluster_root_pool_view;
 }
 
 my $all_cluster_views;
@@ -1456,103 +1457,103 @@ if ($sessionList) {
 
 
 $logger->info("[INFO] Processing vCenter $vcenterserver events");
-my $eventMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->eventManager));
+eval {
+	my $eventMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->eventManager));
 
-my $eventCount;
-my $eventLast = $eventMgr->latestEvent;
-$eventCount = $eventLast->key;
+	my $eventCount;
+	my $eventLast = $eventMgr->latestEvent;
+	$eventCount = $eventLast->key;
 
-if ($eventCount > 0) {
-	my $eventCount_h = {
-		time() => {
-			"$vcenter_name.vi" . ".exec.events", $eventCount,
-		},
-	};
-	$graphite->send(path => "vi", data => $eventCount_h);
+	if ($eventCount > 0) {
+		my $eventCount_h = {
+			time() => {
+				"$vcenter_name.vi" . ".exec.events", $eventCount,
+			},
+		};
+		$graphite->send(path => "vi", data => $eventCount_h);
 
-	## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
-	my $eventsInfo = $eventMgr->description->eventInfo;
-	my @filteredEvents;
-	if ($eventsInfo) {
-		foreach my $eventInfo (@$eventsInfo) {
-			if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
-				if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/) {
-				} else {
-					if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.)/) {
-						push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
-					} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
-						push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+		## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
+		my $eventsInfo = $eventMgr->description->eventInfo;
+		my @filteredEvents;
+		if ($eventsInfo) {
+			foreach my $eventInfo (@$eventsInfo) {
+				if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
+					if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/) {
+					} else {
+						if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.)/) {
+							push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+						} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
+							push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
+						}
 					}
+				} else {
+					# if ($eventInfo->category =~ m/(warning|error)/) {
+					# 	push (@filteredEvents,'vim.event.' . $eventInfo->key);
+					# }
 				}
-			} else {
-				# if ($eventInfo->category =~ m/(warning|error)/) {
-				# 	push (@filteredEvents,'vim.event.' . $eventInfo->key);
-				# }
 			}
 		}
-	}
 
-	foreach my $i (0..5) {
-		$t_5 -= ONE_MINUTE;
-	}
+		foreach my $i (0..5) {
+			$t_5 -= ONE_MINUTE;
+		}
 
-	my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
-	my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
-	my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
+		my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
+		my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
+		my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
 
-	my $eventCollector;
-	my $exEvents;
+		my $eventCollector;
+		my $exEvents;
 
-	eval {
 		$eventCollector = Vim::get_view(mo_ref => $evtResults);
 		## $eventCollector->ResetCollector();
 		## my $exEvents = $eventCollector->latestPage;
 		$exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
-	};	
-	if($@) {
-		$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vcenterserver");
-		unlink $sessionfile;
-	}
+		
+		my $vc_events_count_per_id = {};
 
-	my $vc_events_count_per_id = {};
+		if ($exEvents) {
 
-	if ($exEvents) {
+			foreach my $exEvent (@$exEvents) {
+				if ($exEvent->datacenter && $exEvent->computeResource) {
+					my $evt_datacentre_name = lc ($exEvent->datacenter->name);
+					$evt_datacentre_name =~ s/[ .]/_/g;
+					$evt_datacentre_name = NFD($evt_datacentre_name);
+					$evt_datacentre_name =~ s/[^[:ascii:]]//g;
+					$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-		foreach my $exEvent (@$exEvents) {
-			if ($exEvent->datacenter && $exEvent->computeResource) {
-				my $evt_datacentre_name = lc ($exEvent->datacenter->name);
-				$evt_datacentre_name =~ s/[ .]/_/g;
-				$evt_datacentre_name = NFD($evt_datacentre_name);
-				$evt_datacentre_name =~ s/[^[:ascii:]]//g;
-				$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $evt_cluster_name = lc ($exEvent->computeResource->name);
+					$evt_cluster_name =~ s/[ .]/_/g;
+					$evt_cluster_name = NFD($evt_cluster_name);
+					$evt_cluster_name =~ s/[^[:ascii:]]//g;
+					$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-				my $evt_cluster_name = lc ($exEvent->computeResource->name);
-				$evt_cluster_name =~ s/[ .]/_/g;
-				$evt_cluster_name = NFD($evt_cluster_name);
-				$evt_cluster_name =~ s/[^[:ascii:]]//g;
-				$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-				$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+					$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+				}
 			}
-		}
 
-		foreach my $dc_vc_event_id (keys %$vc_events_count_per_id) {
-			foreach my $clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}) {
-				foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}) {
-					my $clean_evt_clu_dc_vc_event_id = $evt_clu_dc_vc_event_id;
-					$clean_evt_clu_dc_vc_event_id =~ s/[ .]/_/g;
-					my $events_count_per_id_h = {
-						time() => {
-							"$vcenter_name.vi" . ".exec.ExEvent." . "$dc_vc_event_id.$clu_dc_vc_event_id.$clean_evt_clu_dc_vc_event_id", $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id},
-						},
-					};
-					$graphite->send(path => "vi", data => $events_count_per_id_h);
+			foreach my $dc_vc_event_id (keys %$vc_events_count_per_id) {
+				foreach my $clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}) {
+					foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}) {
+						my $clean_evt_clu_dc_vc_event_id = $evt_clu_dc_vc_event_id;
+						$clean_evt_clu_dc_vc_event_id =~ s/[ .]/_/g;
+						my $events_count_per_id_h = {
+							time() => {
+								"$vcenter_name.vi" . ".exec.ExEvent." . "$dc_vc_event_id.$clu_dc_vc_event_id.$clean_evt_clu_dc_vc_event_id", $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id},
+							},
+						};
+						$graphite->send(path => "vi", data => $events_count_per_id_h);
+					}
 				}
 			}
 		}
-	}
 
-	$eventCollector->DestroyCollector;
+		$eventCollector->DestroyCollector;
+	}
+};
+if($@) {
+	$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vcenterserver");
+	unlink $sessionfile;
 }
 
 # $logger->info("[INFO] Processing vCenter $vcenterserver tasks");
