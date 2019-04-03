@@ -6,7 +6,8 @@ use warnings;
 use VMware::VIRuntime;
 use VMware::VICredStore;
 use JSON;
-# use Data::Dumper;
+use Data::Dumper;
+use Scalar::Util qw(reftype);
 use Net::Graphite;
 use List::Util qw[shuffle max sum];
 use Log::Log4perl qw(:easy);
@@ -15,8 +16,8 @@ use Unicode::Normalize;
 use Time::Piece;
 use Time::Seconds;
 
-# $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.833";
+$Data::Dumper::Indent = 1;
+$Util::script_version = "0.9.838";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1478,7 +1479,7 @@ eval {
 		if ($eventsInfo) {
 			foreach my $eventInfo (@$eventsInfo) {
 				if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
-					if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency)/) {
+					if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency|esx\.audit\.net\.firewall\.config\.changed)/) {
 					} else {
 						if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.)/) {
 							push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
@@ -1487,9 +1488,9 @@ eval {
 						}
 					}
 				} else {
-					# if ($eventInfo->category =~ m/(warning|error)/) {
-					# 	push (@filteredEvents,'vim.event.' . $eventInfo->key);
-					# }
+					if ($eventInfo->category =~ m/(warning|error)/ &&  $eventInfo->longDescription =~ m/(vim\.event\.)/) {
+						push (@filteredEvents,$eventInfo->key);
+					}
 				}
 			}
 		}
@@ -1515,20 +1516,59 @@ eval {
 		if ($exEvents) {
 
 			foreach my $exEvent (@$exEvents) {
-				if ($exEvent->datacenter && $exEvent->computeResource) {
-					my $evt_datacentre_name = lc ($exEvent->datacenter->name);
-					$evt_datacentre_name =~ s/[ .]/_/g;
-					$evt_datacentre_name = NFD($evt_datacentre_name);
-					$evt_datacentre_name =~ s/[^[:ascii:]]//g;
-					$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-					my $evt_cluster_name = lc ($exEvent->computeResource->name);
-					$evt_cluster_name =~ s/[ .]/_/g;
-					$evt_cluster_name = NFD($evt_cluster_name);
-					$evt_cluster_name =~ s/[^[:ascii:]]//g;
-					$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+				if (%$exEvent{"eventTypeId"}) {
+					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+						my $evt_datacentre_name = lc ($exEvent->datacenter->name);
+						$evt_datacentre_name =~ s/[ .]/_/g;
+						$evt_datacentre_name = NFD($evt_datacentre_name);
+						$evt_datacentre_name =~ s/[^[:ascii:]]//g;
+						$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-					$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+						my $evt_cluster_name = lc ($exEvent->computeResource->name);
+						$evt_cluster_name =~ s/[ .]/_/g;
+						$evt_cluster_name = NFD($evt_cluster_name);
+						$evt_cluster_name =~ s/[^[:ascii:]]//g;
+						$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+						$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+					}
+				} elsif (%$exEvent{"messageInfo"}) {
+					eval {
+						if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+							my $evt_datacentre_name = lc ($exEvent->datacenter->name);
+							$evt_datacentre_name =~ s/[ .]/_/g;
+							$evt_datacentre_name = NFD($evt_datacentre_name);
+							$evt_datacentre_name =~ s/[^[:ascii:]]//g;
+							$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+							my $evt_cluster_name = lc ($exEvent->computeResource->name);
+							$evt_cluster_name =~ s/[ .]/_/g;
+							$evt_cluster_name = NFD($evt_cluster_name);
+							$evt_cluster_name =~ s/[^[:ascii:]]//g;
+							$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+							$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->messageInfo->id} += 1;
+						}
+					{;
+				} else {
+					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+						my $exEventRef = ref($exEvent);
+
+						my $evt_datacentre_name = lc ($exEvent->datacenter->name);
+						$evt_datacentre_name =~ s/[ .]/_/g;
+						$evt_datacentre_name = NFD($evt_datacentre_name);
+						$evt_datacentre_name =~ s/[^[:ascii:]]//g;
+						$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+						my $evt_cluster_name = lc ($exEvent->computeResource->name);
+						$evt_cluster_name =~ s/[ .]/_/g;
+						$evt_cluster_name = NFD($evt_cluster_name);
+						$evt_cluster_name =~ s/[^[:ascii:]]//g;
+						$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+						$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEventRef} += 1;
+					}
 				}
 			}
 
