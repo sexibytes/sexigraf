@@ -1550,7 +1550,7 @@ eval {
 
 							$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->messageInfo->id} += 1;
 						}
-					{;
+					};
 				} else {
 					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
 						my $exEventRef = ref($exEvent);
