@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.838";
+$Util::script_version = "0.9.845";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -448,6 +448,26 @@ foreach my $cluster_view (@$all_cluster_views) {
 			},
 		};
 		$graphite->send(path => "vmw", data => $cluster_root_pool_view_h);
+
+		if ($cluster_root_pool_quickStats->overallCpuUsage > 0 && $cluster_view->summary->effectiveCpu > 0) {
+			my $cluster_root_pool_quickStats_cpu = $cluster_root_pool_quickStats->overallCpuUsage * 100 / $cluster_view->summary->effectiveCpu;
+			my $cluster_host_view_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.cpu.utilization", $cluster_root_pool_quickStats_cpu,
+				},
+			};
+			$graphite->send(path => "vmw", data => $cluster_host_view_h);	
+		}
+
+		if ($cluster_root_pool_quickStats->hostMemoryUsage > 0 && $cluster_view->summary->effectiveMemory > 0) {
+			my $cluster_root_pool_quickStats_ram = $cluster_root_pool_quickStats->hostMemoryUsage * 100 / $cluster_view->summary->effectiveMemory;
+			my $cluster_host_view_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.mem.utilization", $cluster_root_pool_quickStats_ram,
+				},
+			};
+			$graphite->send(path => "vmw", data => $cluster_host_view_h);	
+		}		
 	}
 
 
@@ -1155,9 +1175,11 @@ foreach my $cluster_view (@$all_cluster_views) {
 		}
 
 		if ($cluster_vm_views_vram > 0) {
+			my $cluster_root_pool_quickStats_vram = $cluster_vm_views_vram * 100 / $cluster_view->summary->effectiveMemory;
 			my $cluster_vm_views_vram_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.vRAM", $cluster_vm_views_vram,
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.mem.allocated", $cluster_root_pool_quickStats_vram,
 				},
 			};
 			$graphite->send(path => "vmw", data => $cluster_vm_views_vram_h);
@@ -1218,207 +1240,210 @@ if (!$BFG_Mode) {
 
 	foreach my $StandaloneComputeResource (@$all_compute_views) {
 
-		my $datacentre_name = lc (getRootDc $StandaloneComputeResource);
-		$datacentre_name =~ s/[ .]/_/g;
-		$datacentre_name = NFD($datacentre_name);
-		$datacentre_name =~ s/[^[:ascii:]]//g;
-		$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+		eval {
 
-		my @StandaloneComputeResourceHosts = $StandaloneComputeResource->host;
+			my $datacentre_name = lc (getRootDc $StandaloneComputeResource);
+			$datacentre_name =~ s/[ .]/_/g;
+			$datacentre_name = NFD($datacentre_name);
+			$datacentre_name =~ s/[^[:ascii:]]//g;
+			$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-		my $StandaloneResourceVMHost = $all_host_views_table{$StandaloneComputeResourceHosts[0][0]->value};
+			my @StandaloneComputeResourceHosts = $StandaloneComputeResource->host;
 
-		if (!defined $StandaloneResourceVMHost or $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
+			my $StandaloneResourceVMHost = $all_host_views_table{$StandaloneComputeResourceHosts[0][0]->value};
 
-		my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
+			if (!defined $StandaloneResourceVMHost or $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
-		my $StandaloneResourceVMHostName = $StandaloneResourceVMHost->{'config.network.dnsConfig.hostName'};
-		if ($StandaloneResourceVMHostName eq "localhost") {
-			my $StandaloneResourceVMHostVmk0 = $StandaloneResourceVMHost->{'config.network.vnic'}[0];
-			my $StandaloneResourceVMHostVmk0Ip = $StandaloneResourceVMHostVmk0->spec->ip->ipAddress;
-			$StandaloneResourceVMHostVmk0Ip =~ s/[ .]/_/g;
-			$StandaloneResourceVMHostName = $StandaloneResourceVMHostVmk0Ip;
-		}
+			my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
-		my $StandaloneResourceVMHost_status = $StandaloneResourceVMHost->{'overallStatus'}->val;
-		my $StandaloneResourceVMHost_status_val;
-			if ($StandaloneResourceVMHost_status eq "green") {
-				$StandaloneResourceVMHost_status_val = 1;
-			} elsif ($StandaloneResourceVMHost_status eq "yellow") {
-				$StandaloneResourceVMHost_status_val = 2;
-			} elsif ($StandaloneResourceVMHost_status eq "red") {
-				$StandaloneResourceVMHost_status_val = 3;
-			} elsif ($StandaloneResourceVMHost_status eq "gray") {
-				$StandaloneResourceVMHost_status_val = 0;
+			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost->{'config.network.dnsConfig.hostName'};
+			if ($StandaloneResourceVMHostName eq "localhost") {
+				my $StandaloneResourceVMHostVmk0 = $StandaloneResourceVMHost->{'config.network.vnic'}[0];
+				my $StandaloneResourceVMHostVmk0Ip = $StandaloneResourceVMHostVmk0->spec->ip->ipAddress;
+				$StandaloneResourceVMHostVmk0Ip =~ s/[ .]/_/g;
+				$StandaloneResourceVMHostName = $StandaloneResourceVMHostVmk0Ip;
 			}
 
-		my $StandaloneComputeResource_h = {
-			time() => {
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.ballooned", $StandaloneResourcePool->{'summary.quickStats'}->balloonedMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.compressed", $StandaloneResourcePool->{'summary.quickStats'}->compressedMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.consumedOverhead", $StandaloneResourcePool->{'summary.quickStats'}->consumedOverheadMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.guest", $StandaloneResourcePool->{'summary.quickStats'}->guestMemoryUsage,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.usage", $StandaloneResourcePool->{'summary.quickStats'}->hostMemoryUsage,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.demand", $StandaloneResourcePool->{'summary.quickStats'}->overallCpuDemand,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.usage", $StandaloneResourcePool->{'summary.quickStats'}->overallCpuUsage,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.overhead", $StandaloneResourcePool->{'summary.quickStats'}->overheadMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.private", $StandaloneResourcePool->{'summary.quickStats'}->privateMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.shared", $StandaloneResourcePool->{'summary.quickStats'}->sharedMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.swapped", $StandaloneResourcePool->{'summary.quickStats'}->swappedMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.effective", $StandaloneComputeResource->summary->effectiveMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.total", $StandaloneComputeResource->summary->totalMemory,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.effective", $StandaloneComputeResource->summary->effectiveCpu,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total", $StandaloneComputeResource->summary->totalCpu,
-				"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.overallStatus", $StandaloneResourceVMHost_status_val,
-			},
+			my $StandaloneResourceVMHost_status = $StandaloneResourceVMHost->{'overallStatus'}->val;
+			my $StandaloneResourceVMHost_status_val;
+				if ($StandaloneResourceVMHost_status eq "green") {
+					$StandaloneResourceVMHost_status_val = 1;
+				} elsif ($StandaloneResourceVMHost_status eq "yellow") {
+					$StandaloneResourceVMHost_status_val = 2;
+				} elsif ($StandaloneResourceVMHost_status eq "red") {
+					$StandaloneResourceVMHost_status_val = 3;
+				} elsif ($StandaloneResourceVMHost_status eq "gray") {
+					$StandaloneResourceVMHost_status_val = 0;
+				}
+
+			my $StandaloneComputeResource_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.ballooned", $StandaloneResourcePool->{'summary.quickStats'}->balloonedMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.compressed", $StandaloneResourcePool->{'summary.quickStats'}->compressedMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.consumedOverhead", $StandaloneResourcePool->{'summary.quickStats'}->consumedOverheadMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.guest", $StandaloneResourcePool->{'summary.quickStats'}->guestMemoryUsage,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.usage", $StandaloneResourcePool->{'summary.quickStats'}->hostMemoryUsage,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.demand", $StandaloneResourcePool->{'summary.quickStats'}->overallCpuDemand,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.usage", $StandaloneResourcePool->{'summary.quickStats'}->overallCpuUsage,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.overhead", $StandaloneResourcePool->{'summary.quickStats'}->overheadMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.private", $StandaloneResourcePool->{'summary.quickStats'}->privateMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.shared", $StandaloneResourcePool->{'summary.quickStats'}->sharedMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.swapped", $StandaloneResourcePool->{'summary.quickStats'}->swappedMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.effective", $StandaloneComputeResource->summary->effectiveMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.total", $StandaloneComputeResource->summary->totalMemory,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.effective", $StandaloneComputeResource->summary->effectiveCpu,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total", $StandaloneComputeResource->summary->totalCpu,
+					"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.overallStatus", $StandaloneResourceVMHost_status_val,
+				},
+			};
+			$graphite->send(path => "esx", data => $StandaloneComputeResource_h);
+
+			$logger->info("[INFO] Processing vCenter $vcenterserver standalone host $StandaloneResourceVMHostName datastores in datacenter $datacentre_name");
+
+			my @StandaloneResourceDatastoresViews;
+			my $StandaloneResourceDatastoresMoref = $StandaloneComputeResource->datastore;
+			foreach my $StandaloneComputeResourceDatastoreMoref (@$StandaloneResourceDatastoresMoref) {
+				if ($all_datastore_views_table{$StandaloneComputeResourceDatastoreMoref->{'value'}}) {
+					push (@StandaloneResourceDatastoresViews,$all_datastore_views_table{$StandaloneComputeResourceDatastoreMoref->{'value'}})
+				}
+			}
+
+			foreach my $StandaloneResourceDatastore (@StandaloneResourceDatastoresViews) {
+				if ($StandaloneResourceDatastore->summary->accessible) {
+					my $StandaloneResourceDatastore_name = lc ($StandaloneResourceDatastore->summary->name);
+					$StandaloneResourceDatastore_name =~ s/[ .()]/_/g;
+					$StandaloneResourceDatastore_name = NFD($StandaloneResourceDatastore_name);
+					$StandaloneResourceDatastore_name =~ s/[^[:ascii:]]//g;
+					$StandaloneResourceDatastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $StandaloneResourceDatastore_uncommitted = 0;
+					if ($StandaloneResourceDatastore->summary->uncommitted) {
+						$StandaloneResourceDatastore_uncommitted = $StandaloneResourceDatastore->summary->uncommitted;
+					}
+					my $StandaloneResourceVMHost_datastore_view_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.capacity", $StandaloneResourceDatastore->summary->capacity,
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.freeSpace", $StandaloneResourceDatastore->summary->freeSpace,
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.uncommitted", $StandaloneResourceDatastore_uncommitted,
+						},
+					};
+					$graphite->send(path => "esx", data => $StandaloneResourceVMHost_datastore_view_h);
+				}
+			}
+
+			foreach my $StandaloneResourceVMHost_vmnic (@{$StandaloneResourceVMHost->{'config.network.pnic'}}) {
+				if ($StandaloneResourceVMHost_vmnic->linkSpeed && $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb >= 100) {
+					my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
+					my $NetbytesRx = $hostmultistats{$perfCntr{"net.bytesRx.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmnic_name};
+					my $NetbytesTx = $hostmultistats{$perfCntr{"net.bytesTx.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmnic_name};
+
+					if (defined($NetbytesRx) && defined($NetbytesTx)) {
+						my $StandaloneResourceVMHost_vmnic_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx", $NetbytesRx,
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx", $NetbytesTx,
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.linkSpeed", $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb,
+							},
+						};
+						$graphite->send(path => "esx", data => $StandaloneResourceVMHost_vmnic_h);
+					}
+				}
+			}
+
+			my @StandaloneResourceVMHostVmsMoref;
+			if ($StandaloneResourceVMHost->vm && (scalar($StandaloneResourceVMHost->vm) > 0)) {
+				push (@StandaloneResourceVMHostVmsMoref,$StandaloneResourceVMHost->vm);
+			}
+
+			my @StandaloneResourceVMHostVmsViews;
+			if (scalar(@StandaloneResourceVMHostVmsMoref) > 0) {
+				my @StandaloneResourceVMHostVmsMorefs = map {@$_} @StandaloneResourceVMHostVmsMoref;
+				foreach my $StandaloneResourceVMHostVmMoref (@StandaloneResourceVMHostVmsMorefs) {
+					push (@StandaloneResourceVMHostVmsViews,$all_vm_views_table{$StandaloneResourceVMHostVmMoref->{'value'}});
+				}
+			}
+
+			if (scalar(@StandaloneResourceVMHostVmsViews) > 0) {
+
+				my $standalone_vm_views_vcpus = 0;
+				my $Standalone_vm_views_on;
+
+				$logger->info("[INFO] Processing vCenter $vcenterserver standalone host $StandaloneResourceVMHostName vms in datacenter $datacentre_name");
+
+				foreach my $standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
+
+					my $standalone_vm_view_name = lc ($standalone_vm_view->name);
+					$standalone_vm_view_name =~ s/[ .()]/_/g;
+					$standalone_vm_view_name = NFD($standalone_vm_view_name);
+					$standalone_vm_view_name =~ s/[^[:ascii:]]//g;
+					$standalone_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+					if ($standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
+
+						$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
+						$Standalone_vm_views_on++;
+
+						my $standalone_vm_view_CpuUtilization = 0;
+						if ($standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
+							$standalone_vm_view_CpuUtilization = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $standalone_vm_view->{'runtime.maxCpuUsage'};
+						}
+
+						my $standalone_vm_view_MemUtilization = 0;
+						if ($standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
+							$standalone_vm_view_MemUtilization = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $standalone_vm_view->{'runtime.maxMemoryUsage'};
+						}
+
+						my $standalone_vm_view_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuUsage", $standalone_vm_view->{'summary.quickStats.overallCpuUsage'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuDemand", $standalone_vm_view->{'summary.quickStats.overallCpuDemand'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.HostMemoryUsage", $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.GuestMemoryUsage", $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.committed", $standalone_vm_view->{'summary.storage.committed'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.uncommitted", $standalone_vm_view->{'summary.storage.uncommitted'},
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.CpuUtilization", $standalone_vm_view_CpuUtilization,
+								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.MemUtilization", $standalone_vm_view_MemUtilization,
+							},
+						};
+						$graphite->send(path => "esx", data => $standalone_vm_view_h);
+
+						if ($standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
+							my $standalone_vm_view_ballooned_h = {
+								time() => {
+									"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.BalloonedMemory", $standalone_vm_view->{'summary.quickStats.balloonedMemory'},
+								},
+							};
+							$graphite->send(path => "esx", data => $standalone_vm_view_ballooned_h);
+						}
+
+						if ($standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
+							my $standalone_vm_view_compressed_h = {
+								time() => {
+									"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.CompressedMemory", $standalone_vm_view->{'summary.quickStats.compressedMemory'},
+								},
+							};
+							$graphite->send(path => "esx", data => $standalone_vm_view_compressed_h);
+						}
+
+						if ($standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
+							my $standalone_vm_view_swapped_h = {
+								time() => {
+									"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.SwappedMemory", $standalone_vm_view->{'summary.quickStats.swappedMemory'},
+								},
+							};
+							$graphite->send(path => "esx", data => $standalone_vm_view_swapped_h);
+						}
+					}
+
+					my $Standalone_vm_views_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.total", scalar(@StandaloneResourceVMHostVmsViews),
+							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.on", $Standalone_vm_views_on,
+						},
+					};
+					$graphite->send(path => "esx", data => $Standalone_vm_views_h);
+				}
+			}
 		};
-		$graphite->send(path => "esx", data => $StandaloneComputeResource_h);
-
-		$logger->info("[INFO] Processing vCenter $vcenterserver standalone host $StandaloneResourceVMHostName datastores in datacenter $datacentre_name");
-
-		my @StandaloneResourceDatastoresViews;
-		my $StandaloneResourceDatastoresMoref = $StandaloneComputeResource->datastore;
-		foreach my $StandaloneComputeResourceDatastoreMoref (@$StandaloneResourceDatastoresMoref) {
-			if ($all_datastore_views_table{$StandaloneComputeResourceDatastoreMoref->{'value'}}) {
-				push (@StandaloneResourceDatastoresViews,$all_datastore_views_table{$StandaloneComputeResourceDatastoreMoref->{'value'}})
-			}
-		}
-
-		foreach my $StandaloneResourceDatastore (@StandaloneResourceDatastoresViews) {
-			if ($StandaloneResourceDatastore->summary->accessible) {
-				my $StandaloneResourceDatastore_name = lc ($StandaloneResourceDatastore->summary->name);
-				$StandaloneResourceDatastore_name =~ s/[ .()]/_/g;
-				$StandaloneResourceDatastore_name = NFD($StandaloneResourceDatastore_name);
-				$StandaloneResourceDatastore_name =~ s/[^[:ascii:]]//g;
-				$StandaloneResourceDatastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-				my $StandaloneResourceDatastore_uncommitted = 0;
-				if ($StandaloneResourceDatastore->summary->uncommitted) {
-					$StandaloneResourceDatastore_uncommitted = $StandaloneResourceDatastore->summary->uncommitted;
-				}
-				my $StandaloneResourceVMHost_datastore_view_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.capacity", $StandaloneResourceDatastore->summary->capacity,
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.freeSpace", $StandaloneResourceDatastore->summary->freeSpace,
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.uncommitted", $StandaloneResourceDatastore_uncommitted,
-					},
-				};
-				$graphite->send(path => "esx", data => $StandaloneResourceVMHost_datastore_view_h);
-			}
-		}
-
-		foreach my $StandaloneResourceVMHost_vmnic (@{$StandaloneResourceVMHost->{'config.network.pnic'}}) {
-			if ($StandaloneResourceVMHost_vmnic->linkSpeed && $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb >= 100) {
-				my $StandaloneResourceVMHost_vmnic_name = $StandaloneResourceVMHost_vmnic->device;
-				my $NetbytesRx = $hostmultistats{$perfCntr{"net.bytesRx.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmnic_name};
-				my $NetbytesTx = $hostmultistats{$perfCntr{"net.bytesTx.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmnic_name};
-
-				if (defined($NetbytesRx) && defined($NetbytesTx)) {
-					my $StandaloneResourceVMHost_vmnic_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx", $NetbytesRx,
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx", $NetbytesTx,
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.linkSpeed", $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb,
-						},
-					};
-					$graphite->send(path => "esx", data => $StandaloneResourceVMHost_vmnic_h);
-				}
-			}
-		}
-
-		my @StandaloneResourceVMHostVmsMoref;
-		if ($StandaloneResourceVMHost->vm && (scalar($StandaloneResourceVMHost->vm) > 0)) {
-			push (@StandaloneResourceVMHostVmsMoref,$StandaloneResourceVMHost->vm);
-		}
-
-		my @StandaloneResourceVMHostVmsViews;
-		if (scalar(@StandaloneResourceVMHostVmsMoref) > 0) {
-			my @StandaloneResourceVMHostVmsMorefs = map {@$_} @StandaloneResourceVMHostVmsMoref;
-			foreach my $StandaloneResourceVMHostVmMoref (@StandaloneResourceVMHostVmsMorefs) {
-				push (@StandaloneResourceVMHostVmsViews,$all_vm_views_table{$StandaloneResourceVMHostVmMoref->{'value'}});
-			}
-		}
-
-		if (scalar(@StandaloneResourceVMHostVmsViews) > 0) {
-
-			my $standalone_vm_views_vcpus = 0;
-			my $Standalone_vm_views_on;
-
-			$logger->info("[INFO] Processing vCenter $vcenterserver standalone host $StandaloneResourceVMHostName vms in datacenter $datacentre_name");
-
-			foreach my $standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
-
-				my $standalone_vm_view_name = lc ($standalone_vm_view->name);
-				$standalone_vm_view_name =~ s/[ .()]/_/g;
-				$standalone_vm_view_name = NFD($standalone_vm_view_name);
-				$standalone_vm_view_name =~ s/[^[:ascii:]]//g;
-				$standalone_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-				if ($standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
-
-					$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
-					$Standalone_vm_views_on++;
-
-					my $standalone_vm_view_CpuUtilization = 0;
-					if ($standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
-						$standalone_vm_view_CpuUtilization = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $standalone_vm_view->{'runtime.maxCpuUsage'};
-					}
-
-					my $standalone_vm_view_MemUtilization = 0;
-					if ($standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
-						$standalone_vm_view_MemUtilization = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $standalone_vm_view->{'runtime.maxMemoryUsage'};
-					}
-
-					my $standalone_vm_view_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuUsage", $standalone_vm_view->{'summary.quickStats.overallCpuUsage'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuDemand", $standalone_vm_view->{'summary.quickStats.overallCpuDemand'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.HostMemoryUsage", $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.GuestMemoryUsage", $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.committed", $standalone_vm_view->{'summary.storage.committed'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.uncommitted", $standalone_vm_view->{'summary.storage.uncommitted'},
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.CpuUtilization", $standalone_vm_view_CpuUtilization,
-							"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.MemUtilization", $standalone_vm_view_MemUtilization,
-						},
-					};
-					$graphite->send(path => "esx", data => $standalone_vm_view_h);
-
-					if ($standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
-						my $standalone_vm_view_ballooned_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.BalloonedMemory", $standalone_vm_view->{'summary.quickStats.balloonedMemory'},
-							},
-						};
-						$graphite->send(path => "esx", data => $standalone_vm_view_ballooned_h);
-					}
-
-					if ($standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
-						my $standalone_vm_view_compressed_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.CompressedMemory", $standalone_vm_view->{'summary.quickStats.compressedMemory'},
-							},
-						};
-						$graphite->send(path => "esx", data => $standalone_vm_view_compressed_h);
-					}
-
-					if ($standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
-						my $standalone_vm_view_swapped_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.SwappedMemory", $standalone_vm_view->{'summary.quickStats.swappedMemory'},
-							},
-						};
-						$graphite->send(path => "esx", data => $standalone_vm_view_swapped_h);
-					}
-				}
-
-				my $Standalone_vm_views_h = {
-					time() => {
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.total", scalar(@StandaloneResourceVMHostVmsViews),
-						"$vcenter_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.on", $Standalone_vm_views_on,
-					},
-				};
-				$graphite->send(path => "esx", data => $Standalone_vm_views_h);
-			}
-		}
 	}
 }
 
@@ -1548,7 +1573,16 @@ eval {
 							$evt_cluster_name =~ s/[^[:ascii:]]//g;
 							$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-							$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->messageInfo->id} += 1;
+							my $evt_msg_info = $exEvent->messageInfo;
+                            my $evt_msg_info_0 = @$evt_msg_info[0];
+                            my $evt_msg_info_id = %$evt_msg_info_0{"id"};
+                            my $evt_id_name = lc ($evt_msg_info_id);
+                            $evt_id_name =~ s/[ .]/_/g;
+                            $evt_id_name = NFD($evt_id_name);
+                            $evt_id_name =~ s/[^[:ascii:]]//g;
+                            $evt_id_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+							$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$evt_id_name} += 1;
 						}
 					};
 				} else {
@@ -1573,8 +1607,10 @@ eval {
 			}
 
 			foreach my $dc_vc_event_id (keys %$vc_events_count_per_id) {
-				foreach my $clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}) {
-					foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}) {
+				my $clu_dc_vc_event_id_h = $vc_events_count_per_id->{$dc_vc_event_id};
+				foreach my $clu_dc_vc_event_id (keys %$clu_dc_vc_event_id_h) {
+					my $vc_events_count_per_id_h = $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id};
+					foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id_h) {
 						my $clean_evt_clu_dc_vc_event_id = $evt_clu_dc_vc_event_id;
 						$clean_evt_clu_dc_vc_event_id =~ s/[ .]/_/g;
 						my $events_count_per_id_h = {
