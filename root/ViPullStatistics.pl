@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.845";
+$Util::script_version = "0.9.851";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -38,9 +38,9 @@ my $t_0 = localtime;
 my $t_5 = localtime;
 
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
-$logger->info("[DEBUG] ViPullStatistics v$Util::script_version");
+$logger->info("[DEBUG] ViPullStatistics v$Util::script_version for vCenter $vcenterserver");
 
-VMware::VICredStore::init (filename => $credstorefile) or $logger->logdie ("[ERROR] Unable to initialize Credential Store.");
+VMware::VICredStore::init (filename => $credstorefile) or $logger->logdie ("[ERROR] Unable to initialize Credential Store for vCenter $vcenterserver");
 my @user_list = VMware::VICredStore::get_usernames (server => $vcenterserver);
 
 ### set graphite target
@@ -308,6 +308,12 @@ foreach my $all_datastore_view (@$all_datastore_views) {
 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 }
 
+my $all_pod_views = Vim::find_entity_views(view_type => 'StoragePod', properties => ['name','summary','parent']);
+my %all_pod_views_table = ();
+foreach my $all_pod_view (@$all_pod_views) {
+	$all_pod_views_table{$all_pod_view->{'mo_ref'}->value} = $all_pod_view;
+}
+
 my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'guest.disk', 'guest.disk'], filter => {'summary.runtime.connectionState' => "connected"});
 my %all_vm_views_table = ();
 foreach my $all_vm_view (@$all_vm_views) {
@@ -317,8 +323,8 @@ foreach my $all_vm_view (@$all_vm_views) {
 
 ### create parents,types,names hashtables to get root datacenter when needed with getRootDc function
 
-if ($all_datacentres_views and $all_cluster_views and $all_compute_views and $all_host_views and $all_folder_views) {
-	foreach my $all_xfolder (@$all_datacentres_views, @$all_cluster_views, @$all_compute_views, @$all_host_views, @$all_folder_views) {
+if ($all_datacentres_views and $all_cluster_views and $all_compute_views and $all_host_views and $all_folder_views and $all_pod_views ) {
+	foreach my $all_xfolder (@$all_datacentres_views, @$all_cluster_views, @$all_compute_views, @$all_host_views, @$all_folder_views, @$all_pod_views) {
 		if ($all_xfolder->{'parent'}) { ### skip folder-group-d1
 			if (!$all_xfolders_parent_table{$all_xfolder->{'mo_ref'}->value}) {$all_xfolders_parent_table{$all_xfolder->{'mo_ref'}->value} = $all_xfolder->{'parent'}->value}
 			if (!$all_xfolders_type_table{$all_xfolder->{'mo_ref'}->value}) {$all_xfolders_type_table{$all_xfolder->{'mo_ref'}->value} = $all_xfolder->{'mo_ref'}->type}
@@ -356,7 +362,7 @@ if (!$BFG_Mode){
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
 	my $hostmultimetricstimelapse = $hostmultimetricsend - $hostmultimetricsstart;
-	$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec");
+	$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec for vCenter $vcenterserver");
 
 	my $vmmultimetricsstart = Time::HiRes::gettimeofday();
 	my @vmmultimetrics = (
@@ -370,7 +376,7 @@ if (!$BFG_Mode){
 	%vmmultistats = MultiQueryPerf($all_vm_views, @vmmultimetrics);
 	my $vmmultimetricsend = Time::HiRes::gettimeofday();
 	my $vmmultimetricstimelapse = $vmmultimetricsend - $vmmultimetricsstart;
-	$logger->info("[DEBUG] computed all vms multi metrics in $vmmultimetricstimelapse sec");
+	$logger->info("[DEBUG] computed all vms multi metrics in $vmmultimetricstimelapse sec for vCenter $vcenterserver");
 
 } else {
 
@@ -392,7 +398,7 @@ if (!$BFG_Mode){
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
 	my $hostmultimetricstimelapse = $hostmultimetricsend - $hostmultimetricsstart;
-	$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec");
+	$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec for vCenter $vcenterserver");
 
 }
 
@@ -830,11 +836,13 @@ foreach my $cluster_view (@$all_cluster_views) {
 	}
 
 	if ($cluster_datastores_count > 0) {
+		my $cluster_datastores_utilization = (sum(@cluster_datastores_capacity) - sum(@cluster_datastores_freeSpace)) * 100 / sum(@cluster_datastores_capacity);
 		my $cluster_shared_datastore_view_h = {
 			time() => {
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.count", $cluster_datastores_count,
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.capacity", sum(@cluster_datastores_capacity),
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.freeSpace", sum(@cluster_datastores_freeSpace),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.utilization", $cluster_datastores_utilization,
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.uncommitted", sum(@cluster_datastores_uncommitted),
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.max_latency", max(@cluster_datastores_latency),
 				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.mid_latency", median(@cluster_datastores_latency),
@@ -1232,6 +1240,32 @@ foreach my $cluster_view (@$all_cluster_views) {
 		},
 	};
 	$graphite->send(path => "vmw", data => $cluster_vm_views_h);
+
+}
+
+foreach my $pod_view (@$all_pod_views) {
+	my $pod_name = lc ($pod_view->name);
+	$pod_name =~ s/[ .]/_/g;
+	$pod_name = NFD($pod_name);
+	$pod_name =~ s/[^[:ascii:]]//g;
+	$pod_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+	my $datacentre_name = lc (getRootDc $pod_view);
+	$datacentre_name =~ s/[ .]/_/g;
+	$datacentre_name = NFD($datacentre_name);
+	$datacentre_name =~ s/[^[:ascii:]]//g;
+	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+
+	$logger->info("[INFO] Processing vCenter $vcenterserver pod $pod_name in datacenter $datacentre_name");
+
+	my $pod_summary = $pod_view->{'summary'};
+	my $pod_view_h = {
+		time() => {
+			"$vcenter_name.$datacentre_name.$pod_name" . ".summary.capacity", $pod_summary->capacity,
+			"$vcenter_name.$datacentre_name.$pod_name" . ".summary.freeSpace", $pod_summary->freeSpace,
+		},
+	};
+	$graphite->send(path => "pod", data => $pod_view_h);
 
 }
 
@@ -1634,19 +1668,24 @@ if($@) {
 
 # $logger->info("[INFO] Processing vCenter $vcenterserver tasks");
 # my $taskCount;
-# my $taskMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->taskManager));
-# my $recentTask = $taskMgr->recentTask;
-# if ($recentTask) {
-# 	$taskCount = (split(/-/, @$recentTask[-1]->value))[1];
+# eval {
+	# my $taskMgr = (Vim::get_view(mo_ref => Vim::get_service_content()->taskManager));
+	# my $recentTask = $taskMgr->recentTask;
+	# if ($recentTask) {
+	# 	$taskCount = (split(/-/, @$recentTask[-1]->value))[1];
 
-# 	if ($taskCount > 0) {
-# 		my $taskCount_h = {
-# 			time() => {
-# 				"$vcenter_name.vi" . ".exec.tasks", $taskCount,
-# 			},
-# 		};
-# 		$graphite->send(path => "vi", data => $taskCount_h);
-# 	}
+	# 	if ($taskCount > 0) {
+	# 		my $taskCount_h = {
+	# 			time() => {
+	# 				"$vcenter_name.vi" . ".exec.tasks", $taskCount,
+	# 			},
+	# 		};
+	# 		$graphite->send(path => "vi", data => $taskCount_h);
+	# 	}
+	# }
+# if($@) {
+# 	$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vcenterserver");
+# 	unlink $sessionfile;
 # }
 
 my $exec_duration = time - $exec_start;
