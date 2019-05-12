@@ -10,7 +10,6 @@ if grep -i -q "White Forest" /etc/sexigraf_version; then
  sqlite3 /var/lib/grafana/grafana.db "UPDATE data_source SET json_data= X'7B22677261706869746556657273696F6E223A22302E39227D' WHERE id = '1';"
  service grafana-server restart
  echo "Pimp Your Stats!"
- apachectl graceful
  rm -f /root/099f_update.sh
 else
  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
