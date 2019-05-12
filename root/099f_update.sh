@@ -1,7 +1,7 @@
 if grep -i -q "White Forest" /etc/sexigraf_version; then
  /bin/cp -rf /tmp/sexigraf-update/sexigraf-master/etc/* /etc/
  /bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/* /root/
- dpkg -i grafana_4.6.5_amd64.deb
+ dpkg -i /root/grafana_4.6.5_amd64.deb
  /bin/cp -rf /tmp/sexigraf-update/sexigraf-master/usr/* /usr/
  /bin/cp -rf /tmp/sexigraf-update/sexigraf-master/var/* /var/
  rm -f /root/grafana_4.6.5_amd64.deb
