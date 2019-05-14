@@ -20,7 +20,7 @@ require("helper.php");
                   <th class="col-sm-3">Username</th>
                   <th class="col-sm-2">Password</th>
                   <th class="col-sm-1">VI</th>
-                  <th class="col-sm-1">VSAN</th>
+                  <th class="col-sm-1">vSAN</th>
                   <th class="col-sm-1">&nbsp;</th>
                 </tr></thead>
               <tbody>
@@ -58,9 +58,9 @@ require("helper.php");
                                 echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vi">Enable VI</button></li>';
                         }
                         if (isVsanEnabled($lineObjects[0])) {
-                                echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="disable-vsan">Disable VSAN</button></li>';
+                                echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="disable-vsan">Disable vSAN</button></li>';
                         } else {
-                                echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vsan">Enable VSAN</button></li>';
+                                echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vsan">Enable vSAN</button></li>';
                         }
                         echo '                          <li role="separator" class="divider"></li>
                           <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
@@ -163,7 +163,7 @@ require("helper.php");
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
-                VSAN query successfully enabled for ' . $_POST["input-vcenter"] . ', refreshing...
+                vSAN query successfully enabled for ' . $_POST["input-vcenter"] . ', refreshing...
         </div>
         <script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
                                 break;
@@ -181,7 +181,7 @@ require("helper.php");
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
-                VSAN query successfully disabled for ' . $_POST["input-vcenter"] . ', refreshing...
+                vSAN query successfully disabled for ' . $_POST["input-vcenter"] . ', refreshing...
         </div>
         <script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
                                 break;

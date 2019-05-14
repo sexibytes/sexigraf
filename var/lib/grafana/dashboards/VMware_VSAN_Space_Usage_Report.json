@@ -1,9 +1,9 @@
 {
   "id": null,
-  "title": "VMware VSAN Space Usage Report",
-  "originalTitle": "VMware VSAN Space Usage Report",
+  "title": "VMware vSAN Space Usage Report",
+  "originalTitle": "VMware vSAN Space Usage Report",
   "tags": [
-    "VSAN"
+    "vSAN"
   ],
   "style": "light",
   "timezone": "browser",

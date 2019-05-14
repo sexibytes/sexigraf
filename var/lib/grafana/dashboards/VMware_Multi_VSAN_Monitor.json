@@ -1,9 +1,9 @@
 {
   "id": null,
-  "title": "VMware Multi VSAN Monitor",
-  "originalTitle": "VMware Multi VSAN Monitor",
+  "title": "VMware Multi vSAN Monitor",
+  "originalTitle": "VMware Multi vSAN Monitor",
   "tags": [
-    "VSAN",
+    "vSAN",
     "HDD",
     "SSD"
   ],

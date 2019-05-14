@@ -1,12 +1,12 @@
 {
   "id": null,
-  "title": "VMware VSAN Monitor 66",
-  "originalTitle": "VMware VSAN Monitor 66",
+  "title": "VMware vSAN Monitor 66",
+  "originalTitle": "VMware vSAN Monitor 66",
   "tags": [
-    "VSAN",
+    "vSAN",
     "HDD",
     "SSD",
-    "VSAN66"
+    "vSAN66"
   ],
   "style": "light",
   "timezone": "browser",

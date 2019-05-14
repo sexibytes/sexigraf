@@ -1,9 +1,9 @@
 {
   "id": 63,
-  "title": "VMware VSAN Disk Utilization",
-  "originalTitle": "VMware VSAN Disk Utilization",
+  "title": "VMware vSAN Disk Utilization",
+  "originalTitle": "VMware vSAN Disk Utilization",
   "tags": [
-    "VSAN",
+    "vSAN",
     "HDD",
     "SSD"
   ],
