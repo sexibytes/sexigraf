@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.851";
+$Util::script_version = "0.9.853";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -308,7 +308,7 @@ foreach my $all_datastore_view (@$all_datastore_views) {
 	$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 }
 
-my $all_pod_views = Vim::find_entity_views(view_type => 'StoragePod', properties => ['name','summary','parent']);
+my $all_pod_views = Vim::find_entity_views(view_type => 'StoragePod', properties => ['name','summary','parent','childEntity']);
 my %all_pod_views_table = ();
 foreach my $all_pod_view (@$all_pod_views) {
 	$all_pod_views_table{$all_pod_view->{'mo_ref'}->value} = $all_pod_view;
@@ -1244,29 +1244,48 @@ foreach my $cluster_view (@$all_cluster_views) {
 }
 
 foreach my $pod_view (@$all_pod_views) {
-	my $pod_name = lc ($pod_view->name);
-	$pod_name =~ s/[ .]/_/g;
-	$pod_name = NFD($pod_name);
-	$pod_name =~ s/[^[:ascii:]]//g;
-	$pod_name =~ s/[^A-Za-z0-9-_]/_/g;
+	if ($pod_view->childEntity) {	
+		my $pod_name = lc ($pod_view->name);
+		$pod_name =~ s/[ .]/_/g;
+		$pod_name = NFD($pod_name);
+		$pod_name =~ s/[^[:ascii:]]//g;
+		$pod_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-	my $datacentre_name = lc (getRootDc $pod_view);
-	$datacentre_name =~ s/[ .]/_/g;
-	$datacentre_name = NFD($datacentre_name);
-	$datacentre_name =~ s/[^[:ascii:]]//g;
-	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+		my $datacentre_name = lc (getRootDc $pod_view);
+		$datacentre_name =~ s/[ .]/_/g;
+		$datacentre_name = NFD($datacentre_name);
+		$datacentre_name =~ s/[^[:ascii:]]//g;
+		$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
 
-	$logger->info("[INFO] Processing vCenter $vcenterserver pod $pod_name in datacenter $datacentre_name");
+		$logger->info("[INFO] Processing vCenter $vcenterserver pod $pod_name in datacenter $datacentre_name");
 
-	my $pod_summary = $pod_view->{'summary'};
-	my $pod_view_h = {
-		time() => {
-			"$vcenter_name.$datacentre_name.$pod_name" . ".summary.capacity", $pod_summary->capacity,
-			"$vcenter_name.$datacentre_name.$pod_name" . ".summary.freeSpace", $pod_summary->freeSpace,
-		},
-	};
-	$graphite->send(path => "pod", data => $pod_view_h);
+		my @pod_datastores_views;
+		my $pod_datastores_moref = $pod_view->childEntity;
+		foreach my $pod_datastore_moref (@$pod_datastores_moref) {
+			if ($all_datastore_views_table{$pod_datastore_moref->{'value'}}) {
+				push (@pod_datastores_views,$all_datastore_views_table{$pod_datastore_moref->{'value'}});
+			}
+		}
 
+		my @pod_datastores_uncommitted;
+		foreach my $pod_datastores_view (@pod_datastores_views) {
+			my $pod_datastore_uncommitted = 0;
+			if ($pod_datastores_view->summary->uncommitted) {
+				$pod_datastore_uncommitted = $pod_datastores_view->summary->uncommitted;
+			}
+			push (@pod_datastores_uncommitted,$pod_datastore_uncommitted);
+		}
+
+		my $pod_summary = $pod_view->{'summary'};
+		my $pod_view_h = {
+			time() => {
+				"$vcenter_name.$datacentre_name.$pod_name" . ".summary.capacity", $pod_summary->capacity,
+				"$vcenter_name.$datacentre_name.$pod_name" . ".summary.freeSpace", $pod_summary->freeSpace,
+				"$vcenter_name.$datacentre_name.$pod_name" . ".summary.uncommitted", sum(@pod_datastores_uncommitted),
+			},
+		};
+		$graphite->send(path => "pod", data => $pod_view_h);
+	}
 }
 
 if (!$BFG_Mode) {
