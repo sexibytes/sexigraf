@@ -1642,7 +1642,7 @@ eval {
 					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
 						my $exEventRef = ref($exEvent);
 						if ($exEventRef eq "BadUsernameSessionEvent" && $exEvent->userName) {
-							$evt_username = $exEvent->userName
+							my $evt_username = $exEvent->userName
 							$evt_username =~ s/[ .]/_/g;
 							$evt_username = NFD($evt_ievt_usernamed_name);
 							$evt_username =~ s/[^[:ascii:]]//g;
