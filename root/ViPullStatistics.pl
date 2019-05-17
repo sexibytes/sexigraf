@@ -1643,10 +1643,10 @@ eval {
 						my $exEventRef = ref($exEvent);
 						if ($exEventRef eq "BadUsernameSessionEvent" && $exEvent->userName) {
 							$evt_username = $exEvent->userName
-                            $evt_username =~ s/[ .]/_/g;
-                            $evt_username = NFD($evt_ievt_usernamed_name);
-                            $evt_username =~ s/[^[:ascii:]]//g;
-                            $evt_username =~ s/[^A-Za-z0-9-_]/_/g;
+							$evt_username =~ s/[ .]/_/g;
+							$evt_username = NFD($evt_ievt_usernamed_name);
+							$evt_username =~ s/[^[:ascii:]]//g;
+							$evt_username =~ s/[^A-Za-z0-9-_]/_/g;
 							$exEventRef = $exEventRef . "_" . $evt_username ;
 						}
 
