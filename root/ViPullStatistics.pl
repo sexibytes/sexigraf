@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.854";
+$Util::script_version = "0.9.855";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1642,7 +1642,12 @@ eval {
 					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
 						my $exEventRef = ref($exEvent);
 						if ($exEventRef eq "BadUsernameSessionEvent" && $exEvent->userName) {
-								$exEventRef = $exEventRef . "_" . $exEvent->userName;
+							$evt_username = $exEvent->userName
+                            $evt_username =~ s/[ .]/_/g;
+                            $evt_username = NFD($evt_ievt_usernamed_name);
+                            $evt_username =~ s/[^[:ascii:]]//g;
+                            $evt_username =~ s/[^A-Za-z0-9-_]/_/g;
+							$exEventRef = $exEventRef . "_" . $evt_username ;
 						}
 
 						my $evt_datacentre_name = lc ($exEvent->datacenter->name);
