@@ -370,7 +370,7 @@ if (!$BFG_Mode){
 		["cpu", "latency", "average"],
 		["disk", "maxTotalLatency", "latest"],
 		["disk", "usage", "average"],
-		["disk", "commandsAveraged", "average"],
+		# ["disk", "commandsAveraged", "average"],
 		["net", "usage", "average"],
 	);
 	%vmmultistats = MultiQueryPerf($all_vm_views, @vmmultimetrics);
@@ -1068,15 +1068,15 @@ foreach my $cluster_view (@$all_cluster_views) {
 						$graphite->send(path => "vmw", data => $cluster_vm_view_netusage_h);
 					}
 
-					if ($vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
-						my $vmcommandsAveragedval = $vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
-						my $cluster_vm_view_commandsAveraged_h = {
-							time() => {
-								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskCommands", $vmcommandsAveragedval,
-							},
-						};
-						$graphite->send(path => "vmw", data => $cluster_vm_view_commandsAveraged_h);
-					}
+					# if ($vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
+					# 	my $vmcommandsAveragedval = $vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
+					# 	my $cluster_vm_view_commandsAveraged_h = {
+					# 		time() => {
+					# 			"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskCommands", $vmcommandsAveragedval,
+					# 		},
+					# 	};
+					# 	$graphite->send(path => "vmw", data => $cluster_vm_view_commandsAveraged_h);
+					# }
 				}
 
 			} elsif ($cluster_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOff") {
