@@ -17,7 +17,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.196";
+$Util::script_version = "0.9.197";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -298,7 +298,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 										"$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$VsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType->reservedCapacityB,
 									},
 								};
-								$graphite->send(path => "vsan.", data => $VsanSpaceUsageReportObjType_h);
+								$graphite->send(path => "vsan", data => $VsanSpaceUsageReportObjType_h);
 							}
 						}
 					}
@@ -394,7 +394,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 							}
 							foreach my $VsanSystemExSyncReason (keys %{$VsanSystemExSync}) {
 								$graphite->send(
-								path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync." . "$VsanSystemExSyncReason",
+								path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync." . "$VsanSystemExSyncReason",
 								value => $VsanSystemExSync->{$VsanSystemExSyncReason},
 								time => time(),
 								);
@@ -408,7 +408,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 									"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync", $VsanHostVsanObjectSyncQueryResultUuids,
 								},
 							};
-							$graphite->send(path => "vsan.", data => $VsanSystemExSync_h);
+							$graphite->send(path => "vsan", data => $VsanSystemExSync_h);
 						}
 
 					} else {
@@ -445,7 +445,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 									"$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync", $vsan_sync_objs,
 								},
 							};
-							$graphite->send(path => "vsan.", data => $vsan_syncing_objects_attributes_h);
+							$graphite->send(path => "vsan", data => $vsan_syncing_objects_attributes_h);
 						}
 					}
 				}
@@ -474,7 +474,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 						foreach my $compmgrkey (keys %{ $host_vsan_stats_json_compmgr }) {
 							$graphite->send(
-							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.stats." . "$compmgrkey",
+							path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.stats." . "$compmgrkey",
 							value => $host_vsan_stats_json_compmgr->{$compmgrkey},
 							time => time(),
 							);
@@ -482,7 +482,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 						foreach my $clientkey (keys %{ $host_vsan_stats_json_client }) {
 							$graphite->send(
-							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.stats." . "$clientkey",
+							path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.stats." . "$clientkey",
 							value => $host_vsan_stats_json_client->{$clientkey},
 							time => time(),
 							);
@@ -490,7 +490,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 						foreach my $ownerkey (keys %{ $host_vsan_stats_json_owner }) {
 							$graphite->send(
-							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.owner.stats." . "$ownerkey",
+							path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.owner.stats." . "$ownerkey",
 							value => $host_vsan_stats_json_owner->{$ownerkey},
 							time => time(),
 							);
@@ -498,7 +498,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 						foreach my $schedkey (keys %{ $host_vsan_stats_json_sched }) {
 							$graphite->send(
-							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
+							path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.schedStats." . "$schedkey",
 							value => $host_vsan_stats_json_sched->{$schedkey},
 							time => time(),
 							);
@@ -506,7 +506,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 						foreach my $cachestats (keys %{ $host_vsan_stats_json_cachestats }) {
 							$graphite->send(
-							path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.cachestats." . "$cachestats",
+							path => "vsan" . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.client.cachestats." . "$cachestats",
 							value => $host_vsan_stats_json_cachestats->{$cachestats},
 							time => time(),
 							);
@@ -532,7 +532,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 												"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.diskgroup." . "$vsan_cache_ssd_clean_naa[1]" . "." . "$lsomkey" . ".percentUsed", $lsomkeyCapacityUsedPercent,
 											},
 										};
-										$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_disks_h);
+										$graphite->send(path => "vsan", data => $host_vsan_lsom_json_disks_h);
 									}
 							}
 							elsif ($host_vsan_lsom_json_disks->{$lsomkey}->{info}->{ssd} eq "NA") {
@@ -561,7 +561,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 										"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.lsom.ssd." . "$lsomkey" . ".capacity", $lsomkeyCapacity,
 									},
 								};
-								$graphite->send(path => "vsan.", data => $host_vsan_lsom_json_ssd_h);
+								$graphite->send(path => "vsan", data => $host_vsan_lsom_json_ssd_h);
 							}
 						}
 
@@ -580,7 +580,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$root_dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeBytes},
 										},
 									};
-									$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h_snap);
+									$graphite->send(path => "vsan", data => $host_vsan_dom_objects_json_stats_h_snap);
 								} else {
 									my $host_vsan_dom_objects_json_stats_h = {
 										time() => {
@@ -590,7 +590,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 											"$vcenter_name.$datacentre_name.$cluster_name" . ".vsan.dom.owners.stats." . "$dom_objects_key.$VirtualDisks->{$dom_objects_key}" . ".writeBytes", $host_vsan_dom_objects_json_stats->{$dom_objects_key}->{writeBytes},
 										},
 									};
-									$graphite->send(path => "vsan.", data => $host_vsan_dom_objects_json_stats_h);
+									$graphite->send(path => "vsan", data => $host_vsan_dom_objects_json_stats_h);
 								}
 							}
 						}
@@ -611,7 +611,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 									"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$naa.writeOps", $host_vsan_disks_json_stats->{$naa}->{writeOps},
 								},
 							};
-							$graphite->send(path => "vsan.", data => $host_vsan_disks_json_stats_latency_h);
+							$graphite->send(path => "vsan", data => $host_vsan_disks_json_stats_latency_h);
 						}
 					}
 				}
