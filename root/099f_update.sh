@@ -7,6 +7,7 @@ if grep -i -q "White Forest" /etc/sexigraf_version; then
  rm -f /root/grafana_4.6.5_amd64.deb
  mv -f /usr/share/grafana/public/img/grafana_icon.svg /usr/share/grafana/public/img/grafana_icon_orig.svg
  ln -s /usr/share/grafana/public/img/sexigraf.svg /usr/share/grafana/public/img/grafana_icon.svg
+ service grafana-server restart
  sqlite3 /var/lib/grafana/grafana.db "UPDATE data_source SET json_data= X'7B22677261706869746556657273696F6E223A22302E39227D' WHERE id = '1';"
  service grafana-server restart
  echo "Pimp Your Stats!"
