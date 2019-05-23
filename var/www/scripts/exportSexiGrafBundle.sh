@@ -15,7 +15,8 @@ echo "Built on server" $(hostname) "on" $(date) > /root/sexigraf-dump/dump.info
 
 # Retrieve whiper files
 # cp -R /var/lib/graphite/whisper/* /root/sexigraf-dump/whisper/
-ln -s /var/lib/graphite/whisper /root/sexigraf-dump/
+# ln -s /var/lib/graphite/whisper /root/sexigraf-dump/
+tar -zcvf /root/sexigraf-dump/whisper.tgz -C /var/lib/graphite/whisper .
 
 # Retrieve cron entries
 cp /etc/cron.d/vi_* /root/sexigraf-dump/conf/cron.d/
