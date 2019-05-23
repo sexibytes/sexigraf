@@ -29,3 +29,7 @@ Soon. http://www.sexigraf.fr/hp-c7000-sexipanels/
 ## S.M.A.R.T.
 
 Soon. http://www.sexigraf.fr/s-m-a-r-t-sexipanels/
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
