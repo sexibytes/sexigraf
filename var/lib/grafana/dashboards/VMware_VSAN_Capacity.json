@@ -1,9 +1,9 @@
 {
   "id": null,
-  "title": "VMware VSAN Capacity",
-  "originalTitle": "VMware VSAN Capacity",
+  "title": "VMware vSAN Capacity",
+  "originalTitle": "VMware vSAN Capacity",
   "tags": [
-    "VSAN",
+    "vSAN",
     "HDD",
     "SSD"
   ],

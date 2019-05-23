@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <update>
-        <version>0.99e "White Forest"</version>
+        <version>0.99f "Traptown"</version>
         <commands>
-                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/099e_update.sh /root</command>
-                <command>/bin/bash /root/099e_update.sh</command>
+                <command>/bin/cp -rf /tmp/sexigraf-update/sexigraf-master/root/099f_update.sh /root</command>
+                <command>/bin/bash /root/099f_update.sh</command>
         </commands>
 </update>

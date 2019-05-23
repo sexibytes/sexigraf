@@ -1,9 +1,9 @@
 	{
 	  "id": null,
-	  "title": "VMware VSAN Top N vmdk",
-	  "originalTitle": "VMware VSAN Top N vmdk",
+	  "title": "VMware vSAN Top N vmdk",
+	  "originalTitle": "VMware vSAN Top N vmdk",
 	  "tags": [
-		"VSAN",
+		"vSAN",
 		"VM",
 		"vmdk"
 	  ],

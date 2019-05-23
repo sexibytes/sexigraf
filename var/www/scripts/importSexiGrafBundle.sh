@@ -2,7 +2,11 @@
 
 # Import whiper files and re-apply Graphite ownership and correct access rights
 /etc/init.d/carbon-cache stop
-/bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
+if [ -d "/media/cdrom/whisper" ]; then
+    /bin/cp -fR /media/cdrom/whisper/* /var/lib/graphite/whisper/
+else
+    tar -zxvf /media/cdrom/whisper.tgz -C /var/lib/graphite/whisper/
+fi
 chown _graphite:_graphite -R /var/lib/graphite/whisper/*
 find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
 find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;

@@ -1,9 +1,9 @@
 {
   "id": null,
-  "title": "VMware VSAN DiskGroup Capacity",
-  "originalTitle": "VMware VSAN DiskGroup Capacity",
+  "title": "VMware vSAN DiskGroup Capacity",
+  "originalTitle": "VMware vSAN DiskGroup Capacity",
   "tags": [
-    "VSAN",
+    "vSAN",
     "HDD"
   ],
   "style": "light",

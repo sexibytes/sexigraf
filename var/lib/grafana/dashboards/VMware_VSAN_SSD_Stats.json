@@ -1,9 +1,9 @@
 {
   "id": null,
-  "title": "VMware VSAN SSD Stats",
-  "originalTitle": "VMware VSAN SSD Stats",
+  "title": "VMware vSAN SSD Stats",
+  "originalTitle": "VMware vSAN SSD Stats",
   "tags": [
-    "VSAN",
+    "vSAN",
     "SSD"
   ],
   "style": "light",

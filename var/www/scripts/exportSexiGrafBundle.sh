@@ -6,7 +6,7 @@ rm -f /var/www/admin/sexigraf-dump.iso
 
 # create root folders
 mkdir /root/sexigraf-dump/
-mkdir /root/sexigraf-dump/whisper/
+# mkdir /root/sexigraf-dump/whisper/
 mkdir /root/sexigraf-dump/conf/
 mkdir /root/sexigraf-dump/conf/cron.d/
 
@@ -14,7 +14,9 @@ mkdir /root/sexigraf-dump/conf/cron.d/
 echo "Built on server" $(hostname) "on" $(date) > /root/sexigraf-dump/dump.info
 
 # Retrieve whiper files
-cp -R /var/lib/graphite/whisper/* /root/sexigraf-dump/whisper/
+# cp -R /var/lib/graphite/whisper/* /root/sexigraf-dump/whisper/
+# ln -s /var/lib/graphite/whisper /root/sexigraf-dump/
+tar -zcvf /root/sexigraf-dump/whisper.tgz -C /var/lib/graphite/whisper .
 
 # Retrieve cron entries
 cp /etc/cron.d/vi_* /root/sexigraf-dump/conf/cron.d/
@@ -41,7 +43,7 @@ rm -f /root/sexigraf-dump/conf/vicredentials.conf
 #openssl des3 -d -salt -in /root/sexigraf-dump/conf/vicredentials.conf.ss -out /root/sexigraf-dump/conf/vicredentials.conf2 -pass pass:sexigraf
 
 # create ISO file from export folder
-genisoimage -J -joliet-long -r -U -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
+genisoimage -f -J -joliet-long -r -U -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
 
 # cleanup
 rm -rf /root/sexigraf-dump/

@@ -1,6 +1,16 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "gnetId": null,
@@ -23,7 +33,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "",
-          "decimals": 0,
+          "decimals": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -53,6 +63,16 @@
               "lines": false,
               "stack": false,
               "yaxis": 2
+            },
+            {
+              "alias": "vm.vcpu",
+              "lines": false,
+              "yaxis": 2
+            },
+            {
+              "alias": "vm.mb",
+              "lines": false,
+              "yaxis": 2
             }
           ],
           "spaceLength": 10,
@@ -75,6 +95,16 @@
               "refId": "C",
               "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
               "textEditor": false
+            },
+            {
+              "refId": "D",
+              "target": "alias(divideSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs,vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), \"vm.vcpu\")",
+              "textEditor": true
+            },
+            {
+              "refId": "E",
+              "target": "alias(divideSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private,vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), \"vm.mb\")",
+              "textEditor": true
             }
           ],
           "thresholds": [],
@@ -83,7 +113,7 @@
           "title": "Compute",
           "tooltip": {
             "shared": true,
-            "sort": 2,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -116,7 +146,8 @@
         {
           "aliasColors": {
             "vm.left": "#BF1B00",
-            "vm.on": "#EAB839"
+            "vm.on": "#EAB839",
+            "vm.total": "#EAB839"
           },
           "bars": false,
           "dashLength": 10,
@@ -152,6 +183,11 @@
               "lines": false,
               "stack": false,
               "yaxis": 2
+            },
+            {
+              "alias": "vm.gb",
+              "lines": false,
+              "yaxis": 2
             }
           ],
           "spaceLength": 10,
@@ -161,16 +197,21 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 5, 6)"
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 5, 6)"
             },
             {
               "refId": "B",
-              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.on),'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.total),'vm.left')",
               "textEditor": true
             },
             {
               "refId": "C",
               "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace), 'datastores')"
+            },
+            {
+              "refId": "D",
+              "target": "alias(divideSeries(scale(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)),0.000000001),vmw.$vcenter.$datacentre.$cluster.runtime.vm.total),\"vm.gb\")",
+              "textEditor": true
             }
           ],
           "thresholds": [],
@@ -205,7 +246,7 @@
               "logBase": 1,
               "max": null,
               "min": null,
-              "show": false
+              "show": true
             }
           ]
         }
@@ -229,11 +270,11 @@
     "list": [
       {
         "allFormat": "wildcard",
-        "allValue": "*",
+        "allValue": "",
         "current": {},
         "datasource": "",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": null,
         "multi": true,
         "multiFormat": "glob",

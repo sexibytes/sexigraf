@@ -23,6 +23,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "",
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -795,13 +796,13 @@
             },
             {
               "hide": false,
-              "refId": "D",
+              "refId": "C",
               "target": "alias(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000)), 'demand')",
               "textEditor": false
             },
             {
               "hide": false,
-              "refId": "C",
+              "refId": "D",
               "target": "alias(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000)), 'usage')",
               "textEditor": false
             },
