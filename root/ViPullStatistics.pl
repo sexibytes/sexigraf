@@ -1183,7 +1183,10 @@ foreach my $cluster_view (@$all_cluster_views) {
 		}
 
 		if ($cluster_vm_views_vram > 0) {
-			my $cluster_root_pool_quickStats_vram = $cluster_vm_views_vram * 100 / $cluster_view->summary->effectiveMemory;
+			my $cluster_root_pool_quickStats_vram = 0;
+			if($cluster_view->summary->effectiveMemory != 0){
+				my $cluster_root_pool_quickStats_vram = $cluster_vm_views_vram * 100 / $cluster_view->summary->effectiveMemory;
+			}
 			my $cluster_vm_views_vram_h = {
 				time() => {
 					"$vcenter_name.$datacentre_name.$cluster_name" . ".quickstats.vRAM", $cluster_vm_views_vram,
