@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.855";
+$Util::script_version = "0.9.858";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -254,6 +254,17 @@ sub median {
     }
 }
 
+sub nameCleaner {
+	my ($nameToClean) = @_;
+	my $nameCleaned = lc $nameToClean;
+	$nameCleaned =~ s/[ .()]/_/g;
+	$nameCleaned = NFD($nameCleaned);
+	$nameCleaned =~ s/[^[:ascii:]]//g;
+	$nameCleaned =~ s/[^A-Za-z0-9-_]/_/g;
+
+	return $nameCleaned
+}
+
 $logger->info("[INFO] Processing vCenter $vcenterserver objects");
 if ($BFG_Mode) {$logger->info("[DEBUG] BFG Mode activated for vCenter $vcenterserver");}
 
@@ -358,6 +369,7 @@ if (!$BFG_Mode){
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
 		["cpu", "latency", "average"],
+		# ["rescpu", "actav5", "latest"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
 	my $hostmultimetricsend = Time::HiRes::gettimeofday();
@@ -412,17 +424,10 @@ my @cluster_hosts_hba_bytesWrite;
 my @cluster_hosts_power_usage;
 
 foreach my $cluster_view (@$all_cluster_views) {
-	my $cluster_name = lc ($cluster_view->name);
-	$cluster_name =~ s/[ .]/_/g;
-	$cluster_name = NFD($cluster_name);
-	$cluster_name =~ s/[^[:ascii:]]//g;
-	$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+	my $cluster_name = nameCleaner($cluster_view->name);
 
-	my $datacentre_name = lc (getRootDc $cluster_view);
-	$datacentre_name =~ s/[ .]/_/g;
-	$datacentre_name = NFD($datacentre_name);
-	$datacentre_name =~ s/[^[:ascii:]]//g;
-	$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+	my $datacentre_name = nameCleaner(getRootDc $cluster_view);
+
 
 	$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name hosts in datacenter $datacentre_name");
 
@@ -601,6 +606,8 @@ foreach my $cluster_view (@$all_cluster_views) {
 			push (@cluster_hosts_cpu_latency,$cluster_host_view_cpu_latency); #to scale 0.01
 		}
 
+		# my $cluster_host_view_rescpu_actav5 = $hostmultistats{$perfCntr{"rescpu.actav5.latest"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
+
 		my $cluster_host_view_status = $cluster_host_view->{'overallStatus'}->val;
 		my $cluster_host_view_status_val;
 			if ($cluster_host_view_status eq "green") {
@@ -621,6 +628,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 				"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage", $cluster_host_view->{'summary.quickStats.overallMemoryUsage'},
 				"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.Uptime", $cluster_host_view->{'summary.quickStats.uptime'},
 				"$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallStatus", $cluster_host_view_status_val,
+				# "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".fatstats.load", $cluster_host_view_rescpu_actav5,
 			},
 		};
 		$graphite->send(path => "vmw", data => $cluster_host_view_h);
@@ -673,185 +681,6 @@ foreach my $cluster_view (@$all_cluster_views) {
 		$graphite->send(path => "vmw", data => $cluster_host_view_h);		
 	}
 
-	$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name datastores in datacenter $datacentre_name");
-
-	my @cluster_datastores_views;
-	my $cluster_datastores_moref = $cluster_view->datastore;
-	foreach my $cluster_datastore_moref (@$cluster_datastores_moref) {
-		if ($all_datastore_views_table{$cluster_datastore_moref->{'value'}}) {
-			push (@cluster_datastores_views,$all_datastore_views_table{$cluster_datastore_moref->{'value'}});
-		}
-	}
-
-	my $cluster_datastores_count = 0;
-	my @cluster_datastores_capacity = ();
-	my @cluster_datastores_freeSpace = ();
-	my @cluster_datastores_uncommitted = ();
-	my @cluster_datastores_latency = ();
-	my @cluster_datastores_iops = ();
-
-
-	foreach my $cluster_datastore_view (@cluster_datastores_views) {
-		if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
-			my $shared_datastore_name = lc ($cluster_datastore_view->summary->name);
-			$shared_datastore_name =~ s/[ .()]/_/g;
-			$shared_datastore_name = NFD($shared_datastore_name);
-			$shared_datastore_name =~ s/[^[:ascii:]]//g;
-			$shared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-			$cluster_datastores_count++;
-
-			my $ds_hosts_view = $cluster_datastore_view->host;
-
-			my $shared_datastore_uncommitted = 0;
-			if ($cluster_datastore_view->summary->uncommitted) {
-				$shared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
-			}
-
-			my $cluster_shared_datastore_view_h = {
-				time() => {
-					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
-					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
-					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
-				},
-			};
-			$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
-
-			push (@cluster_datastores_capacity,$cluster_datastore_view->summary->capacity);
-			push (@cluster_datastores_freeSpace,$cluster_datastore_view->summary->freeSpace);
-			push (@cluster_datastores_uncommitted,$shared_datastore_uncommitted);
-
-			if ($cluster_datastore_view->{'iormConfiguration.enabled'} or $cluster_datastore_view->{'iormConfiguration.statsCollectionEnabled'}) {
-
-				my @vmpath = split("/", $cluster_datastore_view->summary->url);
-				my $uuid = $vmpath[-1];
-
-				my @dsiormlatencyuuid;
-				my @dsiormiopsuuid;
-				my $middsiormlatencyuuid;
-				my $middsiormiopsuuid;
-				
-				foreach my $ds_host_view (@$ds_hosts_view) {
-					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
-						if ($hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dsiormlatencyuuid,$hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-						if ($hostmultistats{$perfCntr{"datastore.datastoreIops.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dsiormiopsuuid,$hostmultistats{$perfCntr{"datastore.datastoreIops.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-					}
-				}
-
-				if ((scalar(@dsiormlatencyuuid) > 0) && (scalar(@dsiormiopsuuid) > 0)) {
-					$middsiormlatencyuuid = median(@dsiormlatencyuuid);
-					$middsiormiopsuuid = median(@dsiormiopsuuid);
-
-					push (@cluster_datastores_latency,$middsiormlatencyuuid);
-					push (@cluster_datastores_iops,$middsiormiopsuuid);
-
-					my $DsIormPerf_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsiormlatencyuuid,
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $middsiormiopsuuid,
-						},
-					};
-					$graphite->send(path => "vmw", data => $DsIormPerf_h);
-				}
-
-			} elsif ($cluster_datastore_view->summary->type ne "vsan") {
-
-				my @vmpath = split("/", $cluster_datastore_view->summary->url);
-				my $uuid = $vmpath[-1];
-
-				my @dstotalWriteLatencyuuid;
-				my @dstotalReadLatencyuuid;
-				my @dstotalReadIouuid;
-				my @dstotalWriteIouuid;
-				my $middstotalWriteLatencyuuid;
-				my $middstotalReadLatencyuuid;
-				my $middstotalReadIouuid;
-				my $middstotalWriteIouuid;
-				my $middsLegacylatencyuuid;
-				my $middsLegacyiopsuuid;
-
-				foreach my $ds_host_view (@$ds_hosts_view) {
-					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
-						if ($hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dstotalReadLatencyuuid,$hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-						if ($hostmultistats{$perfCntr{"datastore.totalWriteLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dstotalWriteLatencyuuid,$hostmultistats{$perfCntr{"datastore.totalWriteLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-						if ($hostmultistats{$perfCntr{"datastore.numberReadAveraged.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dstotalReadIouuid,$hostmultistats{$perfCntr{"datastore.numberReadAveraged.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-						if ($hostmultistats{$perfCntr{"datastore.numberWriteAveraged.average"}->key}{$ds_host_view->key->value}{$uuid}) {
-							push @dstotalWriteIouuid,$hostmultistats{$perfCntr{"datastore.numberWriteAveraged.average"}->key}{$ds_host_view->key->value}{$uuid};
-						}
-					}
-				}
-
-				if ((scalar(@dstotalWriteLatencyuuid) > 0) && (scalar(@dstotalReadLatencyuuid) > 0) && (scalar(@dstotalReadIouuid) > 0) && (scalar(@dstotalWriteIouuid) > 0)) {
-					$middstotalWriteLatencyuuid = median(@dstotalWriteLatencyuuid);
-					$middstotalReadLatencyuuid = median(@dstotalReadLatencyuuid);
-					$middstotalWriteIouuid = sum(@dstotalWriteIouuid);
-					$middstotalReadIouuid = sum(@dstotalReadIouuid);
-
-					my $middsLegacylatencyuuid = max($middstotalWriteLatencyuuid,$middstotalReadLatencyuuid) * 1000;
-					my $middsLegacyiopsuuid = sum($middstotalWriteIouuid,$middstotalReadIouuid);
-
-					push (@cluster_datastores_latency,$middsLegacylatencyuuid);
-					push (@cluster_datastores_iops,$middsLegacyiopsuuid);
-
-					my $DsLegacyPerf_h = {
-						time() => {
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsLegacylatencyuuid,
-							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $middsLegacyiopsuuid,
-						},
-					};
-					$graphite->send(path => "vmw", data => $DsLegacyPerf_h);
-
-				}
-			}
-		### } elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
-		### 	my $unshared_datastore_name = lc ($cluster_datastore_view->summary->name);
-		### 	$unshared_datastore_name =~ s/[ .()]/_/g;
-		### 	$unshared_datastore_name = NFD($unshared_datastore_name);
-		### 	$unshared_datastore_name =~ s/[^[:ascii:]]//g;
-		### 	$unshared_datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-
-		### 	my $unshared_datastore_uncommitted = 0;
-		### 	if ($cluster_datastore_view->summary->uncommitted) {
-		### 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
-		### 	}
-		### 	my $cluster_unshared_datastore_view_h = {
-		### 		time() => {
-		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
-		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
-		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
-		### 		},
-		### 	};
-		### 	$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
-		}
-	}
-
-	if ($cluster_datastores_count > 0) {
-		my $cluster_datastores_utilization = (sum(@cluster_datastores_capacity) - sum(@cluster_datastores_freeSpace)) * 100 / sum(@cluster_datastores_capacity);
-		my $cluster_shared_datastore_view_h = {
-			time() => {
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.count", $cluster_datastores_count,
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.capacity", sum(@cluster_datastores_capacity),
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.freeSpace", sum(@cluster_datastores_freeSpace),
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.utilization", $cluster_datastores_utilization,
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.uncommitted", sum(@cluster_datastores_uncommitted),
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.max_latency", max(@cluster_datastores_latency),
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.mid_latency", median(@cluster_datastores_latency),
-				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.iops", sum(@cluster_datastores_iops),
-			},
-		};
-		$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);		
-	}
-
 	$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name vms in datacenter $datacentre_name");
 
 	my @cluster_vms_views;
@@ -865,12 +694,14 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 	my $cluster_vm_views_vcpus = 0;
 	my $cluster_vm_views_vram = 0;
+	my $cluster_vm_views_vnic_usage = 0;	
 	my $cluster_vm_views_files_dedup = {};
 	my $cluster_vm_views_files_dedup_total = {};
 	my $cluster_vm_views_files_snaps = 0;
 	### my $cluster_vm_views_bak_snaps = 0;
 	my $cluster_vm_views_vm_snaps = 0;
 	my $cluster_vm_views_off = 0;
+	my $cluster_vmdk_per_ds = {};
 
 	if (scalar(@cluster_vms_views) > 0) {
 
@@ -878,11 +709,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 			if ($cluster_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
-				my $cluster_vm_view_name = lc ($cluster_vm_view->name);
-				$cluster_vm_view_name =~ s/[ .()]/_/g;
-				$cluster_vm_view_name = NFD($cluster_vm_view_name);
-				$cluster_vm_view_name =~ s/[^[:ascii:]]//g;
-				$cluster_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
+				my $cluster_vm_view_name = nameCleaner($cluster_vm_view->name);
 
 				$cluster_vm_views_vcpus += $cluster_vm_view->{'config.hardware.numCPU'};
 				$cluster_vm_views_vram += $cluster_vm_view->{'runtime.maxMemoryUsage'};
@@ -912,10 +739,14 @@ foreach my $cluster_view (@$all_cluster_views) {
 				my $cluster_vm_view_num_vdisk = $cluster_vm_view->{'summary.config.numVirtualDisks'};
 				my $cluster_vm_view_real_vdisk = 0;
 				my $cluster_vm_view_has_diskExtent = 0;
+				
 
 				foreach my $cluster_vm_view_file (@$cluster_vm_view_files) {
 					if ($cluster_vm_view_file->type eq "diskDescriptor") {
 						$cluster_vm_view_real_vdisk++;
+						(my $cluster_vm_view_file_ds_name) = ((split(/\s+/, $cluster_vm_view_file->name))[0] =~ /\[(.*)\]/);
+						$cluster_vm_view_file_ds_name = nameCleaner($cluster_vm_view_file_ds_name);
+						$cluster_vmdk_per_ds->{$cluster_vm_view_file_ds_name}++;
 					} elsif ($cluster_vm_view_file->type eq "diskExtent") {
 						$cluster_vm_view_has_diskExtent++;
 					}
@@ -1060,6 +891,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 
 					if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
 						my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
+						$cluster_vm_views_vnic_usage += $vmnetusageval;
 						my $cluster_vm_view_netusage_h = {
 							time() => {
 								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.netUsage", $vmnetusageval,
@@ -1084,11 +916,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 				my $cluster_vm_view_off = $cluster_vm_view;
 				$cluster_vm_views_off++;
 
-				my $cluster_vm_view_off_name = lc ($cluster_vm_view_off->name);
-				$cluster_vm_view_off_name =~ s/[ .()]/_/g;
-				$cluster_vm_view_off_name = NFD($cluster_vm_view_off_name);
-				$cluster_vm_view_off_name =~ s/[^[:ascii:]]//g;
-				$cluster_vm_view_off_name =~ s/[^A-Za-z0-9-_]/_/g;
+				my $cluster_vm_view_off_name = nameCleaner($cluster_vm_view_off->name);
 
 				my $cluster_vm_view_off_files = $cluster_vm_view_off->{'layoutEx.file'};
 				### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
@@ -1193,6 +1021,15 @@ foreach my $cluster_view (@$all_cluster_views) {
 			$graphite->send(path => "vmw", data => $cluster_vm_views_vram_h);
 		}
 
+		if ($cluster_vm_views_vnic_usage > 0) {
+			my $cluster_vm_views_vnic_usage_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.net.vmnicUsage", $cluster_vm_views_vnic_usage,
+				},
+			};
+			$graphite->send(path => "vmw", data => $cluster_vm_views_vnic_usage_h);
+		}
+
 		if ($cluster_vm_views_files_dedup_total) {
 
 			foreach my $FileType (keys %$cluster_vm_views_files_dedup_total) {
@@ -1241,21 +1078,193 @@ foreach my $cluster_view (@$all_cluster_views) {
 	};
 	$graphite->send(path => "vmw", data => $cluster_vm_views_h);
 
+	$logger->info("[INFO] Processing vCenter $vcenterserver cluster $cluster_name datastores in datacenter $datacentre_name");
+
+	my @cluster_datastores_views;
+	my $cluster_datastores_moref = $cluster_view->datastore;
+	foreach my $cluster_datastore_moref (@$cluster_datastores_moref) {
+		if ($all_datastore_views_table{$cluster_datastore_moref->{'value'}}) {
+			push (@cluster_datastores_views,$all_datastore_views_table{$cluster_datastore_moref->{'value'}});
+		}
+	}
+
+	my $cluster_datastores_count = 0;
+	my @cluster_datastores_capacity = ();
+	my @cluster_datastores_freeSpace = ();
+	my @cluster_datastores_uncommitted = ();
+	my @cluster_datastores_latency = ();
+	my @cluster_datastores_iops = ();
+
+
+	foreach my $cluster_datastore_view (@cluster_datastores_views) {
+		if ($cluster_datastore_view->summary->accessible && $cluster_datastore_view->summary->multipleHostAccess) {
+			my $shared_datastore_name = nameCleaner($cluster_datastore_view->summary->name);
+
+			$cluster_datastores_count++;
+
+			my $ds_hosts_view = $cluster_datastore_view->host;
+
+			my $shared_datastore_uncommitted = 0;
+			if ($cluster_datastore_view->summary->uncommitted) {
+				$shared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
+			}
+
+			my $cluster_shared_datastore_view_h = {
+				time() => {
+					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
+					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
+					"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted", $shared_datastore_uncommitted,
+				},
+			};
+			$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
+
+			if ($cluster_vmdk_per_ds->{$shared_datastore_name}) {
+				my $cluster_shared_datastorevmdk_per_ds_view_h = {
+					time() => {
+						"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.vmdkCount", $cluster_vmdk_per_ds->{$shared_datastore_name},
+					},
+				};
+				$graphite->send(path => "vmw", data => $cluster_shared_datastorevmdk_per_ds_view_h);				
+			}
+
+			push (@cluster_datastores_capacity,$cluster_datastore_view->summary->capacity);
+			push (@cluster_datastores_freeSpace,$cluster_datastore_view->summary->freeSpace);
+			push (@cluster_datastores_uncommitted,$shared_datastore_uncommitted);
+
+			if ($cluster_datastore_view->{'iormConfiguration.enabled'} or $cluster_datastore_view->{'iormConfiguration.statsCollectionEnabled'}) {
+
+				my @vmpath = split("/", $cluster_datastore_view->summary->url);
+				my $uuid = $vmpath[-1];
+
+				my @dsiormlatencyuuid;
+				my @dsiormiopsuuid;
+				my $middsiormlatencyuuid;
+				my $middsiormiopsuuid;
+				
+				foreach my $ds_host_view (@$ds_hosts_view) {
+					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
+						if ($hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dsiormlatencyuuid,$hostmultistats{$perfCntr{"datastore.sizeNormalizedDatastoreLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+						if ($hostmultistats{$perfCntr{"datastore.datastoreIops.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dsiormiopsuuid,$hostmultistats{$perfCntr{"datastore.datastoreIops.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+					}
+				}
+
+				if ((scalar(@dsiormlatencyuuid) > 0) && (scalar(@dsiormiopsuuid) > 0)) {
+					$middsiormlatencyuuid = median(@dsiormlatencyuuid);
+					$middsiormiopsuuid = median(@dsiormiopsuuid);
+
+					push (@cluster_datastores_latency,$middsiormlatencyuuid);
+					push (@cluster_datastores_iops,$middsiormiopsuuid);
+
+					my $DsIormPerf_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsiormlatencyuuid,
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $middsiormiopsuuid,
+						},
+					};
+					$graphite->send(path => "vmw", data => $DsIormPerf_h);
+				}
+
+			} elsif ($cluster_datastore_view->summary->type ne "vsan") {
+
+				my @vmpath = split("/", $cluster_datastore_view->summary->url);
+				my $uuid = $vmpath[-1];
+
+				my @dstotalWriteLatencyuuid;
+				my @dstotalReadLatencyuuid;
+				my @dstotalReadIouuid;
+				my @dstotalWriteIouuid;
+				my $middstotalWriteLatencyuuid;
+				my $middstotalReadLatencyuuid;
+				my $middstotalReadIouuid;
+				my $middstotalWriteIouuid;
+				my $middsLegacylatencyuuid;
+				my $middsLegacyiopsuuid;
+
+				foreach my $ds_host_view (@$ds_hosts_view) {
+					if ($ds_host_view->{'mountInfo'}->{'mounted'} && $ds_host_view->{'mountInfo'}->{'accessible'}) {
+						if ($hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dstotalReadLatencyuuid,$hostmultistats{$perfCntr{"datastore.totalReadLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+						if ($hostmultistats{$perfCntr{"datastore.totalWriteLatency.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dstotalWriteLatencyuuid,$hostmultistats{$perfCntr{"datastore.totalWriteLatency.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+						if ($hostmultistats{$perfCntr{"datastore.numberReadAveraged.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dstotalReadIouuid,$hostmultistats{$perfCntr{"datastore.numberReadAveraged.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+						if ($hostmultistats{$perfCntr{"datastore.numberWriteAveraged.average"}->key}{$ds_host_view->key->value}{$uuid}) {
+							push @dstotalWriteIouuid,$hostmultistats{$perfCntr{"datastore.numberWriteAveraged.average"}->key}{$ds_host_view->key->value}{$uuid};
+						}
+					}
+				}
+
+				if ((scalar(@dstotalWriteLatencyuuid) > 0) && (scalar(@dstotalReadLatencyuuid) > 0) && (scalar(@dstotalReadIouuid) > 0) && (scalar(@dstotalWriteIouuid) > 0)) {
+					$middstotalWriteLatencyuuid = median(@dstotalWriteLatencyuuid);
+					$middstotalReadLatencyuuid = median(@dstotalReadLatencyuuid);
+					$middstotalWriteIouuid = sum(@dstotalWriteIouuid);
+					$middstotalReadIouuid = sum(@dstotalReadIouuid);
+
+					my $middsLegacylatencyuuid = max($middstotalWriteLatencyuuid,$middstotalReadLatencyuuid) * 1000;
+					my $middsLegacyiopsuuid = sum($middstotalWriteIouuid,$middstotalReadIouuid);
+
+					push (@cluster_datastores_latency,$middsLegacylatencyuuid);
+					push (@cluster_datastores_iops,$middsLegacyiopsuuid);
+
+					my $DsLegacyPerf_h = {
+						time() => {
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency", $middsLegacylatencyuuid,
+							"$vcenter_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops", $middsLegacyiopsuuid,
+						},
+					};
+					$graphite->send(path => "vmw", data => $DsLegacyPerf_h);
+
+				}
+			}
+		### } elsif ($cluster_datastore_view->summary->accessible && !$cluster_datastore_view->summary->multipleHostAccess) {
+		### 	my $unshared_datastore_name = nameCleaner($cluster_datastore_view->summary->name);
+
+		### 	my $unshared_datastore_uncommitted = 0;
+		### 	if ($cluster_datastore_view->summary->uncommitted) {
+		### 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
+		### 	}
+		### 	my $cluster_unshared_datastore_view_h = {
+		### 		time() => {
+		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity", $cluster_datastore_view->summary->capacity,
+		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace", $cluster_datastore_view->summary->freeSpace,
+		### 			"$vcenter_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted", $unshared_datastore_uncommitted,
+		### 		},
+		### 	};
+		### 	$graphite->send(path => "vmw", data => $cluster_unshared_datastore_view_h);
+		}
+	}
+
+	if ($cluster_datastores_count > 0) {
+		my $cluster_datastores_utilization = (sum(@cluster_datastores_capacity) - sum(@cluster_datastores_freeSpace)) * 100 / sum(@cluster_datastores_capacity);
+		my $cluster_shared_datastore_view_h = {
+			time() => {
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.count", $cluster_datastores_count,
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.capacity", sum(@cluster_datastores_capacity),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.freeSpace", sum(@cluster_datastores_freeSpace),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.utilization", $cluster_datastores_utilization,
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.uncommitted", sum(@cluster_datastores_uncommitted),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.max_latency", max(@cluster_datastores_latency),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.mid_latency", median(@cluster_datastores_latency),
+				"$vcenter_name.$datacentre_name.$cluster_name" . ".superstats.datastore.iops", sum(@cluster_datastores_iops),
+			},
+		};
+		$graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);		
+	}
+
 }
 
 foreach my $pod_view (@$all_pod_views) {
 	if ($pod_view->childEntity) {	
-		my $pod_name = lc ($pod_view->name);
-		$pod_name =~ s/[ .]/_/g;
-		$pod_name = NFD($pod_name);
-		$pod_name =~ s/[^[:ascii:]]//g;
-		$pod_name =~ s/[^A-Za-z0-9-_]/_/g;
+		my $pod_name = nameCleaner($pod_view->name);
 
-		my $datacentre_name = lc (getRootDc $pod_view);
-		$datacentre_name =~ s/[ .]/_/g;
-		$datacentre_name = NFD($datacentre_name);
-		$datacentre_name =~ s/[^[:ascii:]]//g;
-		$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+		my $datacentre_name = nameCleaner(getRootDc $pod_view);
 
 		$logger->info("[INFO] Processing vCenter $vcenterserver pod $pod_name in datacenter $datacentre_name");
 
@@ -1295,11 +1304,7 @@ if (!$BFG_Mode) {
 
 		eval {
 
-			my $datacentre_name = lc (getRootDc $StandaloneComputeResource);
-			$datacentre_name =~ s/[ .]/_/g;
-			$datacentre_name = NFD($datacentre_name);
-			$datacentre_name =~ s/[^[:ascii:]]//g;
-			$datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+			my $datacentre_name = nameCleaner(getRootDc $StandaloneComputeResource);
 
 			my @StandaloneComputeResourceHosts = $StandaloneComputeResource->host;
 
@@ -1363,11 +1368,7 @@ if (!$BFG_Mode) {
 
 			foreach my $StandaloneResourceDatastore (@StandaloneResourceDatastoresViews) {
 				if ($StandaloneResourceDatastore->summary->accessible) {
-					my $StandaloneResourceDatastore_name = lc ($StandaloneResourceDatastore->summary->name);
-					$StandaloneResourceDatastore_name =~ s/[ .()]/_/g;
-					$StandaloneResourceDatastore_name = NFD($StandaloneResourceDatastore_name);
-					$StandaloneResourceDatastore_name =~ s/[^[:ascii:]]//g;
-					$StandaloneResourceDatastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $StandaloneResourceDatastore_name = nameCleaner($StandaloneResourceDatastore->summary->name);
 					my $StandaloneResourceDatastore_uncommitted = 0;
 					if ($StandaloneResourceDatastore->summary->uncommitted) {
 						$StandaloneResourceDatastore_uncommitted = $StandaloneResourceDatastore->summary->uncommitted;
@@ -1424,11 +1425,7 @@ if (!$BFG_Mode) {
 
 				foreach my $standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
 
-					my $standalone_vm_view_name = lc ($standalone_vm_view->name);
-					$standalone_vm_view_name =~ s/[ .()]/_/g;
-					$standalone_vm_view_name = NFD($standalone_vm_view_name);
-					$standalone_vm_view_name =~ s/[^[:ascii:]]//g;
-					$standalone_vm_view_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $standalone_vm_view_name = nameCleaner($standalone_vm_view->name);
 
 					if ($standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
@@ -1597,43 +1594,23 @@ eval {
 
 				if (%$exEvent{"eventTypeId"}) {
 					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
-						my $evt_datacentre_name = lc ($exEvent->datacenter->name);
-						$evt_datacentre_name =~ s/[ .]/_/g;
-						$evt_datacentre_name = NFD($evt_datacentre_name);
-						$evt_datacentre_name =~ s/[^[:ascii:]]//g;
-						$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+						my $evt_datacentre_name = nameCleaner($exEvent->datacenter->name);
 
-						my $evt_cluster_name = lc ($exEvent->computeResource->name);
-						$evt_cluster_name =~ s/[ .]/_/g;
-						$evt_cluster_name = NFD($evt_cluster_name);
-						$evt_cluster_name =~ s/[^[:ascii:]]//g;
-						$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+						my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
 
 						$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
 					}
 				} elsif (%$exEvent{"messageInfo"}) {
 					eval {
 						if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
-							my $evt_datacentre_name = lc ($exEvent->datacenter->name);
-							$evt_datacentre_name =~ s/[ .]/_/g;
-							$evt_datacentre_name = NFD($evt_datacentre_name);
-							$evt_datacentre_name =~ s/[^[:ascii:]]//g;
-							$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+							my $evt_datacentre_name = nameCleaner($exEvent->datacenter->name);
 
-							my $evt_cluster_name = lc ($exEvent->computeResource->name);
-							$evt_cluster_name =~ s/[ .]/_/g;
-							$evt_cluster_name = NFD($evt_cluster_name);
-							$evt_cluster_name =~ s/[^[:ascii:]]//g;
-							$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+							my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
 
 							my $evt_msg_info = $exEvent->messageInfo;
                             my $evt_msg_info_0 = @$evt_msg_info[0];
                             my $evt_msg_info_id = %$evt_msg_info_0{"id"};
-                            my $evt_id_name = lc ($evt_msg_info_id);
-                            $evt_id_name =~ s/[ .]/_/g;
-                            $evt_id_name = NFD($evt_id_name);
-                            $evt_id_name =~ s/[^[:ascii:]]//g;
-                            $evt_id_name =~ s/[^A-Za-z0-9-_]/_/g;
+                            my $evt_id_name = nameCleaner($evt_msg_info_id);
 
 							$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$evt_id_name} += 1;
 						}
@@ -1641,26 +1618,10 @@ eval {
 				} else {
 					if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
 						my $exEventRef = ref($exEvent);
-						if ($exEventRef eq "BadUsernameSessionEvent" && $exEvent->userName) {
-							my $evt_username = $exEvent->userName;
-							$evt_username =~ s/[ .]/_/g;
-							$evt_username = NFD($evt_username);
-							$evt_username =~ s/[^[:ascii:]]//g;
-							$evt_username =~ s/[^A-Za-z0-9-_]/_/g;
-							$exEventRef = $exEventRef . "_" . $evt_username ;
-						}
 
-						my $evt_datacentre_name = lc ($exEvent->datacenter->name);
-						$evt_datacentre_name =~ s/[ .]/_/g;
-						$evt_datacentre_name = NFD($evt_datacentre_name);
-						$evt_datacentre_name =~ s/[^[:ascii:]]//g;
-						$evt_datacentre_name =~ s/[^A-Za-z0-9-_]/_/g;
+						my $evt_datacentre_name = nameCleaner($exEvent->datacenter->name);
 
-						my $evt_cluster_name = lc ($exEvent->computeResource->name);
-						$evt_cluster_name =~ s/[ .]/_/g;
-						$evt_cluster_name = NFD($evt_cluster_name);
-						$evt_cluster_name =~ s/[^[:ascii:]]//g;
-						$evt_cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+						my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
 
 						$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEventRef} += 1;
 					}
