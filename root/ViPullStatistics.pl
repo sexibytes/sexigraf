@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.858";
+$Util::script_version = "0.9.860";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -307,7 +307,7 @@ foreach my $all_compute_view (@$all_compute_views) {
 	$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 }
 
-my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm'], filter => {'runtime.connectionState' => "connected"});
+my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name'], filter => {'runtime.connectionState' => "connected"});
 my %all_host_views_table = ();
 foreach my $all_host_view (@$all_host_views) {
 	$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -379,6 +379,8 @@ if (!$BFG_Mode){
 	my $vmmultimetricsstart = Time::HiRes::gettimeofday();
 	my @vmmultimetrics = (
 		["cpu", "ready", "summation"],
+		["cpu", "wait", "summation"],
+		["cpu", "idle", "summation"],
 		["cpu", "latency", "average"],
 		["disk", "maxTotalLatency", "latest"],
 		["disk", "usage", "average"],
@@ -422,6 +424,7 @@ my @cluster_hosts_net_bytesTx;
 my @cluster_hosts_hba_bytesRead;
 my @cluster_hosts_hba_bytesWrite;
 my @cluster_hosts_power_usage;
+# my %clusters_hosts_name_table;
 
 foreach my $cluster_view (@$all_cluster_views) {
 	my $cluster_name = nameCleaner($cluster_view->name);
@@ -487,6 +490,7 @@ foreach my $cluster_view (@$all_cluster_views) {
 	foreach my $cluster_host_moref (@$cluster_hosts_moref) {
 		if ($all_host_views_table{$cluster_host_moref->{'value'}}) {
 			push (@cluster_hosts_views,$all_host_views_table{$cluster_host_moref->{'value'}});
+			# $clusters_hosts_name_table{($all_host_views_table{$cluster_host_moref->{'value'}})->name} = $cluster_name;
 		}
 	}
 
@@ -857,6 +861,17 @@ foreach my $cluster_view (@$all_cluster_views) {
 							},
 						};
 						$graphite->send(path => "vmw", data => $cluster_vm_view_ready_h);
+					}
+
+					if ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""} && $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
+						my $vmwaitavg = ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""} - $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) / $cluster_vm_view->{'config.hardware.numCPU'} / 20000 * 100;
+						### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
+						my $cluster_vm_view_wait_h = {
+							time() => {
+								"$vcenter_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.cpu_wait_no_idle", $vmwaitavg,
+							},
+						};
+						$graphite->send(path => "vmw", data => $cluster_vm_view_wait_h);
 					}
 
 					if ($vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -1589,7 +1604,6 @@ eval {
 		my $vc_events_count_per_id = {};
 
 		if ($exEvents) {
-
 			foreach my $exEvent (@$exEvents) {
 
 				if (%$exEvent{"eventTypeId"}) {
