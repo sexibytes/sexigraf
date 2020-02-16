@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.860";
+$Util::script_version = "0.9.861";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -369,6 +369,7 @@ if (!$BFG_Mode){
 		["datastore", "numberWriteAveraged", "average"],
 		["datastore", "numberReadAveraged", "average"],
 		["cpu", "latency", "average"],
+		["mem", "sysUsage", "average"],
 		# ["rescpu", "actav5", "latest"],
 	);
 	%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
