@@ -22,9 +22,9 @@ Starting from version 9.10, FreeNAS allows users to set a “Remote Graphite Ser
 
 Leveraging the built-in Graphite listener of SexiGraf, we introduced Windows support in version 0.99c with basic cpu-ram-hdd metrics : http://www.sexigraf.fr/windows-sexipanel/
 
-## HP C7000
+## HP C7000 *deprecated*
 
-Soon. http://www.sexigraf.fr/hp-c7000-sexipanels/
+Never. http://www.sexigraf.fr/hp-c7000-sexipanels/
 
 ## S.M.A.R.T.
 
