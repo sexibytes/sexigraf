@@ -18,7 +18,7 @@
       "height": "150px",
       "panels": [
         {
-          "content": "<iframe style=\"border: none\" src=\"/admin/offline-vminventory.html\" onload=\"this.width=window.innerWidth-50;this.height=window.innerHeight-120;\"></iframe>",
+          "content": "<iframe style=\"border: none\" src=\"/sexiadmin/offline-vminventory.html\" onload=\"this.width=window.innerWidth-50;this.height=window.innerHeight-120;\"></iframe>",
           "id": 1,
           "mode": "html",
           "span": 12,
