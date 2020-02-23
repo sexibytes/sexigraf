@@ -13,6 +13,7 @@ use List::Util qw[shuffle sum];
 use utf8;
 use Unicode::Normalize;
 
+use lib '/root';
 use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
