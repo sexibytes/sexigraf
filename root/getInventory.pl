@@ -196,7 +196,7 @@ sub sexiprocess {
 	}
 	my $exec_duration = time - $exec_start;
 	my $vm_exec_duration_h = { time() => { "$normalizedServerName.vm" . ".exec.duration", $exec_duration } };
-	$graphite->send(path => "vi.", data => $vm_exec_duration_h) or $logger->logdie ("[ERROR] Unable to send to graphite instance.");
+	$graphite->send(path => "vi.", data => $vm_exec_duration_h);
 	$logger->info("[INFO] Successfully retrieve " . scalar @$vm_views . " VM for vCenter server $s_item in ${exec_duration}s");
 }
 
