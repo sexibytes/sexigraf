@@ -18,7 +18,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.197";
+$Util::script_version = "0.9.198";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -44,7 +44,7 @@ my $graphite = Net::Graphite->new(
 	host                  => '127.0.0.1',
 	port                  => 2003,
 	trace                 => 0,                ### if true, copy what's sent to STDERR
-	proto                 => 'tcp',            ### can be 'udp'
+	proto                 => 'udp',            ### can be 'udp'
 	timeout               => 1,                ### timeout of socket connect in seconds
 	fire_and_forget       => 1,                ### if true, ignore sending errors
 	return_connect_error  => 0,                ### if true, forward connect error to caller

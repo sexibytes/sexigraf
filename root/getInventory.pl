@@ -18,7 +18,7 @@ use POSIX qw(strftime);
 use utf8;
 use Unicode::Normalize;
 
-$Util::script_version = "0.47";
+$Util::script_version = "0.48";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 
@@ -60,7 +60,7 @@ sub sexiprocess {
           host                  => '127.0.0.1',
           port                  => 2003,
           trace                 => 0,                # if true, copy what's sent to STDERR
-          proto                 => 'tcp',            # can be 'udp'
+          proto                 => 'udp',            # can be 'udp'
           timeout               => 1,                # timeout of socket connect in seconds
           fire_and_forget       => 1,                # if true, ignore sending errors
           return_connect_error  => 0,                # if true, forward connect error to caller
