@@ -896,7 +896,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(aliasSub(collectd.graphite.disk-*.disk_ops.write, 'disk-(\\w+)', '\\1'), 2)"
+          "target": "aliasByNode(aliasSub(collectd.sexigraf.disk-*.disk_ops.write, 'disk-(\\w+)', '\\1'), 2)"
         }
       ],
       "thresholds": [],
@@ -990,7 +990,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(aliasSub(collectd.graphite.disk-*.disk_time.write, 'disk-(\\w+)', '\\1'), 2)"
+          "target": "aliasByNode(aliasSub(collectd.sexigraf.disk-*.disk_time.write, 'disk-(\\w+)', '\\1'), 2)"
         }
       ],
       "thresholds": [],
@@ -1037,7 +1037,7 @@
     },
     {
       "aliasColors": {
-        "collectd.graphite.tail-graphite_web.response_time-retrieval_time_max": "#890F02"
+        "collectd.sexigraf.tail-graphite_web.response_time-retrieval_time_max": "#890F02"
       },
       "bars": false,
       "dashLength": 10,
@@ -1085,12 +1085,12 @@
         {
           "hide": false,
           "refId": "A",
-          "target": "aliasByNode(scale(collectd.graphite.tail-graphite_web.response_time-retrieval_time_avg, 100), 3)"
+          "target": "aliasByNode(scale(collectd.sexigraf.tail-graphite_web.response_time-retrieval_time_avg, 100), 3)"
         },
         {
           "hide": false,
           "refId": "B",
-          "target": "aliasByNode(scale(collectd.graphite.tail-graphite_web.response_time-retrieval_time_max, 100), 3)"
+          "target": "aliasByNode(scale(collectd.sexigraf.tail-graphite_web.response_time-retrieval_time_max, 100), 3)"
         }
       ],
       "thresholds": [],
@@ -1182,7 +1182,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(scaleToSeconds(collectd.graphite.interface-ens160.if_octets.*, 1), 4)"
+          "target": "aliasByNode(scaleToSeconds(collectd.sexigraf.interface-ens160.if_octets.*, 1), 4)"
         }
       ],
       "thresholds": [],
@@ -1274,7 +1274,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(collectd.graphite.load.load.*, 4)"
+          "target": "aliasByNode(collectd.sexigraf.load.load.*, 4)"
         }
       ],
       "thresholds": [],
@@ -1366,27 +1366,27 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-interrupt), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-interrupt), 'cpu-(\\w+)', '\\1'), 3)"
         },
         {
           "refId": "B",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-softirq), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-softirq), 'cpu-(\\w+)', '\\1'), 3)"
         },
         {
           "refId": "C",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-steal), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-steal), 'cpu-(\\w+)', '\\1'), 3)"
         },
         {
           "refId": "D",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-system), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-system), 'cpu-(\\w+)', '\\1'), 3)"
         },
         {
           "refId": "E",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-user), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-user), 'cpu-(\\w+)', '\\1'), 3)"
         },
         {
           "refId": "F",
-          "target": "aliasByNode(aliasSub(averageSeries(collectd.graphite.cpu-*.cpu-wait), 'cpu-(\\w+)', '\\1'), 3)"
+          "target": "aliasByNode(aliasSub(averageSeries(collectd.sexigraf.cpu-*.cpu-wait), 'cpu-(\\w+)', '\\1'), 3)"
         }
       ],
       "thresholds": [],
