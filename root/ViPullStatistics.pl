@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.869";
+$Util::script_version = "0.9.870";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1792,13 +1792,15 @@ if ($apiType eq "VirtualCenter") {
 					$UnamagedResourceVMHost_status_val = 0;
 				}
 
+			my $UnamagedComputeResourceMB = $UnamagedComputeResource->summary->effectiveMemory * 9.5367431640625e-7; # in bytes for unmanaged but in MB for managed
+
 			my $UnamagedComputeResource_h = {
 				time() => {
 					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.usage", $UnamagedResourceVMHost->{'summary.quickStats.overallMemoryUsage'},
 					# "$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.demand", $UnamagedResourcePool->{'summary.quickStats'}->overallCpuDemand,
 					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.usage", $UnamagedResourceVMHost->{'summary.quickStats.overallCpuUsage'},
 					# "$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.overhead", $UnamagedResourcePool->{'summary.quickStats'}->overheadMemory,
-					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.effective", $UnamagedComputeResource->summary->effectiveMemory,
+					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.effective", $UnamagedComputeResourceMB,
 					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.total", $UnamagedComputeResource->summary->totalMemory,
 					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.effective", $UnamagedComputeResource->summary->effectiveCpu,
 					"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.total", $UnamagedComputeResource->summary->totalCpu,
