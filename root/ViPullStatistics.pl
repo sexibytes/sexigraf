@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.870";
+$Util::script_version = "0.9.871";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -276,7 +276,7 @@ if ($apiType eq "VirtualCenter") {
 	### retreive viobjets and build moref-objects tables
 
 	my $all_folder_views = Vim::find_entity_views(view_type => 'Folder', properties => ['name', 'parent']);
-	my %all_folder_views_table = ();
+	my %all_folder_views_table;
 	foreach my $all_folder_view (@$all_folder_views) {
 		$all_folder_views_table{$all_folder_view->{'mo_ref'}->value} = $all_folder_view;
 	}
@@ -285,7 +285,7 @@ if ($apiType eq "VirtualCenter") {
 
 	my $all_cluster_root_pool_views = Vim::find_entity_views(view_type => 'ResourcePool', filter => {name => qr/^Resources$/}, properties => ['summary.quickStats', 'parent']);
 
-	my %all_cluster_root_pool_views_table = ();
+	my %all_cluster_root_pool_views_table;
 	foreach my $all_cluster_root_pool_view (@$all_cluster_root_pool_views) {
 		$all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'parent'}->value} = $all_cluster_root_pool_view;
 		# $all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'mo_ref'}->value} = $all_cluster_root_pool_view;
@@ -302,36 +302,36 @@ if ($apiType eq "VirtualCenter") {
 		}
 	}
 
-	my %all_cluster_views_table = ();
+	my %all_cluster_views_table;
 	foreach my $all_cluster_view (@$all_cluster_views) {
 		$all_cluster_views_table{$all_cluster_view->{'mo_ref'}->value} = $all_cluster_view;
 	}
 
-	my %all_compute_views_table = ();
+	my %all_compute_views_table;
 	foreach my $all_compute_view (@$all_compute_views) {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
 	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name'], filter => {'runtime.connectionState' => "connected"});
-	my %all_host_views_table = ();
+	my %all_host_views_table;
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
 	}
 
 	my $all_datastore_views = Vim::find_entity_views(view_type => 'Datastore', properties => ['summary', 'iormConfiguration.enabled', 'iormConfiguration.statsCollectionEnabled', 'host'], filter => {'summary.multipleHostAccess' => "true"});
-	my %all_datastore_views_table = ();
+	my %all_datastore_views_table;
 	foreach my $all_datastore_view (@$all_datastore_views) {
 		$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 	}
 
 	my $all_pod_views = Vim::find_entity_views(view_type => 'StoragePod', properties => ['name','summary','parent','childEntity']);
-	my %all_pod_views_table = ();
+	my %all_pod_views_table;
 	foreach my $all_pod_view (@$all_pod_views) {
 		$all_pod_views_table{$all_pod_view->{'mo_ref'}->value} = $all_pod_view;
 	}
 
 	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'guest.disk', 'guest.disk'], filter => {'summary.runtime.connectionState' => "connected"});
-	my %all_vm_views_table = ();
+	my %all_vm_views_table;
 	foreach my $all_vm_view (@$all_vm_views) {
 		$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
 	}
@@ -501,13 +501,13 @@ if ($apiType eq "VirtualCenter") {
 		}
 
 		$cluster_hosts_views_pcpus = 0;
-		@cluster_hosts_vms_moref = ();
-		@cluster_hosts_cpu_latency = ();
-		@cluster_hosts_net_bytesRx = ();
-		@cluster_hosts_net_bytesTx = ();
-		@cluster_hosts_hba_bytesRead = ();
-		@cluster_hosts_hba_bytesWrite = ();
-		@cluster_hosts_power_usage = ();
+		@cluster_hosts_vms_moref;
+		@cluster_hosts_cpu_latency;
+		@cluster_hosts_net_bytesRx;
+		@cluster_hosts_net_bytesTx;
+		@cluster_hosts_hba_bytesRead;
+		@cluster_hosts_hba_bytesWrite;
+		@cluster_hosts_power_usage;
 
 		foreach my $cluster_host_view (@cluster_hosts_views) {
 
@@ -740,7 +740,7 @@ if ($apiType eq "VirtualCenter") {
 						### 	}
 						### }
 
-						### @cluster_vm_view_snap_tree = ();
+						### @cluster_vm_view_snap_tree;
 						$cluster_vm_view_has_snap = 1;
 						$cluster_vm_views_vm_snaps++;
 
@@ -955,7 +955,7 @@ if ($apiType eq "VirtualCenter") {
 						### 	}
 						### }
 
-						### @cluster_vm_view_snap_tree = ();
+						### @cluster_vm_view_snap_tree;
 						$cluster_vm_view_off_has_snap = 1;
 						$cluster_vm_views_vm_snaps++;
 
@@ -1110,11 +1110,11 @@ if ($apiType eq "VirtualCenter") {
 		}
 
 		my $cluster_datastores_count = 0;
-		my @cluster_datastores_capacity = ();
-		my @cluster_datastores_freeSpace = ();
-		my @cluster_datastores_uncommitted = ();
-		my @cluster_datastores_latency = ();
-		my @cluster_datastores_iops = ();
+		my @cluster_datastores_capacity;
+		my @cluster_datastores_freeSpace;
+		my @cluster_datastores_uncommitted;
+		my @cluster_datastores_latency;
+		my @cluster_datastores_iops;
 
 
 		foreach my $cluster_datastore_view (@cluster_datastores_views) {
@@ -1710,7 +1710,7 @@ if ($apiType eq "VirtualCenter") {
 
 	my $all_cluster_root_pool_views = Vim::find_entity_views(view_type => 'ResourcePool', filter => {name => qr/^Resources$/}, properties => ['summary.quickStats', 'parent']);
 
-	my %all_cluster_root_pool_views_table = ();
+	my %all_cluster_root_pool_views_table;
 	foreach my $all_cluster_root_pool_view (@$all_cluster_root_pool_views) {
 		$all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'parent'}->value} = $all_cluster_root_pool_view;
 		# $all_cluster_root_pool_views_table{$all_cluster_root_pool_view->{'mo_ref'}->value} = $all_cluster_root_pool_view;
@@ -1724,25 +1724,25 @@ if ($apiType eq "VirtualCenter") {
 		}
 	}
 
-	my %all_compute_views_table = ();
+	my %all_compute_views_table;
 	foreach my $all_compute_view (@$all_compute_views) {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
 	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name'], filter => {'runtime.connectionState' => "connected"});
-	my %all_host_views_table = ();
+	my %all_host_views_table;
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
 	}
 
 	my $all_datastore_views = Vim::find_entity_views(view_type => 'Datastore', properties => ['summary']);
-	my %all_datastore_views_table = ();
+	my %all_datastore_views_table;
 	foreach my $all_datastore_view (@$all_datastore_views) {
 		$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 	}
 
 	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'guest.disk', 'summary.quickStats.privateMemory', 'summary.quickStats.consumedOverheadMemory', 'summary.quickStats.sharedMemory'], filter => {'summary.runtime.connectionState' => "connected"});
-	my %all_vm_views_table = ();
+	my %all_vm_views_table;
 	foreach my $all_vm_view (@$all_vm_views) {
 		$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
 	}
