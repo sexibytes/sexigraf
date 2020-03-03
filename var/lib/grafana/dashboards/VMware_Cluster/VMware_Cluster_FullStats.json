@@ -51,6 +51,11 @@
               "alias": "mem.allocated",
               "fill": 0,
               "stack": false
+            },
+            {
+              "alias": "cpu.latency",
+              "fill": 0,
+              "stack": false
             }
           ],
           "spaceLength": 10,
@@ -89,6 +94,12 @@
               "refId": "E",
               "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
               "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), 'mem.allocated')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "refId": "F",
+              "target": "alias(scale(averageSeries(vmw.$vcenter.$datacentre.$cluster.superstats.cpu.latency), 0.01), 'cpu.latency')",
               "textEditor": false
             }
           ],
