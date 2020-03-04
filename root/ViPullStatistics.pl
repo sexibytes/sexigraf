@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.875";
+$Util::script_version = "0.9.876";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -2057,7 +2057,6 @@ if ($apiType eq "VirtualCenter") {
 			
 			my $Unamaged_vm_views_vcpus = 0;
 			my $Unamaged_vm_views_on;
-			my $UnamagedComputeResourceCarbonHash;
 
 			if (scalar(@UnamagedResourceVMHostVmsViews) > 0) {
 
