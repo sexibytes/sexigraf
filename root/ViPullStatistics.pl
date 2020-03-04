@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.874";
+$Util::script_version = "0.9.875";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -2138,19 +2138,20 @@ if ($apiType eq "VirtualCenter") {
 
 			}
 		};
+	}
 
-		my $exec_duration = time - $exec_start;
-		my $esx_exec_duration_h = {
-			time() => {
-				"$esx_name.vi" . ".exec.duration", $exec_duration,
-			},
-		};
-		$graphite->send(path => "vi", data => $esx_exec_duration_h);
+	my $exec_duration = time - $exec_start;
+	my $esx_exec_duration_h = {
+		time() => {
+			"$esx_name.vi" . ".exec.duration", $exec_duration,
+		},
+	};
+	$graphite->send(path => "vi", data => $esx_exec_duration_h);
 
-		$logger->info("[INFO] End processing ESX $vmware_server");		
-	}	
+	$logger->info("[INFO] End processing ESX $vmware_server");		
+}	
 
-}
+
 
 ### disconnect from the vmware server
 ### Util::disconnect();
