@@ -439,7 +439,6 @@ if ($apiType eq "VirtualCenter") {
 		my $datacentre_name = nameCleaner(getRootDc $cluster_view);
 
 		my $clusterCarbonHash;
-		my %clusterCarbonHH;
 
 		$logger->info("[INFO] Processing vCenter $vmware_server cluster $cluster_name hosts in datacenter $datacentre_name");
 
@@ -472,21 +471,21 @@ if ($apiType eq "VirtualCenter") {
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_root_pool_view_h);
 
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.ballooned"} = $cluster_root_pool_quickStats->balloonedMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.compressed"} = $cluster_root_pool_quickStats->compressedMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.consumedOverhead"} = $cluster_root_pool_quickStats->consumedOverheadMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.guest"} = $cluster_root_pool_quickStats->guestMemoryUsage;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.usage"} = $cluster_root_pool_quickStats->hostMemoryUsage;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.demand"} = $cluster_root_pool_quickStats->overallCpuDemand;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.usage"} = $cluster_root_pool_quickStats->overallCpuUsage;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.private"} = $cluster_root_pool_quickStats->privateMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.shared"} = $cluster_root_pool_quickStats->sharedMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.swapped"} = $cluster_root_pool_quickStats->swappedMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.effective"} = $cluster_view->summary->effectiveMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.mem.total"} = $cluster_view->summary->totalMemory;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.effective"} = $cluster_view->summary->effectiveCpu;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.cpu.total"} = $cluster_view->summary->totalCpu;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.numVmotions"} = $cluster_view->summary->numVmotions;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"{"ballooned"} = $cluster_root_pool_quickStats->balloonedMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"compressed"} = $cluster_root_pool_quickStats->compressedMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"consumedOverhead"} = $cluster_root_pool_quickStats->consumedOverheadMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"guest"} = $cluster_root_pool_quickStats->guestMemoryUsage;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"usage"} = $cluster_root_pool_quickStats->hostMemoryUsage;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"demand"} = $cluster_root_pool_quickStats->overallCpuDemand;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"usage"} = $cluster_root_pool_quickStats->overallCpuUsage;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"private"} = $cluster_root_pool_quickStats->privateMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"shared"} = $cluster_root_pool_quickStats->sharedMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"swapped"} = $cluster_root_pool_quickStats->swappedMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"effective"} = $cluster_view->summary->effectiveMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"mem"}{"total"} = $cluster_view->summary->totalMemory;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"effective"} = $cluster_view->summary->effectiveCpu;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"total"} = $cluster_view->summary->totalCpu;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"numVmotions"} = $cluster_view->summary->numVmotions;
 
 			if ($cluster_root_pool_quickStats->overallCpuUsage > 0 && $cluster_view->summary->effectiveCpu > 0) {
 				my $cluster_root_pool_quickStats_cpu = $cluster_root_pool_quickStats->overallCpuUsage * 100 / $cluster_view->summary->effectiveCpu;
@@ -496,8 +495,7 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_host_view_h);	
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.cpu.utilization"} = $cluster_root_pool_quickStats_cpu;
-				$clusterCarbonHH{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"cpu"}{"utilization"} = $cluster_root_pool_quickStats_cpu;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"cpu"}{"utilization"} = $cluster_root_pool_quickStats_cpu;
 			}
 
 			if ($cluster_root_pool_quickStats->hostMemoryUsage > 0 && $cluster_view->summary->effectiveMemory > 0) {
@@ -508,8 +506,7 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.mem.utilization"} = $cluster_root_pool_quickStats_ram;
-				$clusterCarbonHH{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"mem"}{"utilization"} = $cluster_root_pool_quickStats_ram;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"mem"}{"utilization"} = $cluster_root_pool_quickStats_ram;
 			}		
 		}
 
@@ -524,13 +521,6 @@ if ($apiType eq "VirtualCenter") {
 		}
 
 		$cluster_hosts_views_pcpus = 0;
-		# @cluster_hosts_vms_moref;
-		# @cluster_hosts_cpu_latency;
-		# @cluster_hosts_net_bytesRx;
-		# @cluster_hosts_net_bytesTx;
-		# @cluster_hosts_hba_bytesRead;
-		# @cluster_hosts_hba_bytesWrite;
-		# @cluster_hosts_power_usage;
 
 		foreach my $cluster_host_view (@cluster_hosts_views) {
 
@@ -569,9 +559,9 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_host_vmnic_h);
 
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesRx"} = $NetbytesRx;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.bytesTx"} = $NetbytesTx;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.linkSpeed"} = $cluster_host_vmnic->linkSpeed->speedMb;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"bytesRx"} = $NetbytesRx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"bytesTx"} = $NetbytesTx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"linkSpeed"} = $cluster_host_vmnic->linkSpeed->speedMb;
 					}
 				}
 			}
@@ -591,8 +581,8 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_host_vmnic_h);
 
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.droppedRx"} = $NetdroppedRx;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.droppedTx"} = $NetdroppedTx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"droppedRx"} = $NetdroppedRx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"droppedTx"} = $NetdroppedTx;
 					}
 				}
 			}
@@ -612,8 +602,8 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_host_vmnic_h);
 
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.errorsRx"} = $NeterrorsRx;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".net.$cluster_host_vmnic_name.errorsTx"} = $NeterrorsTx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"errorsRx"} = $NeterrorsRx;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"errorsTx"} = $NeterrorsTx;
 
 					}
 				}
@@ -635,8 +625,8 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_host_vmhba_h);
 
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".hba.$cluster_host_vmhba_name.bytesRead"} = $HbabytesRead;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".hba.$cluster_host_vmhba_name.bytesWrite"} = $HbabytesWrite;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"hba"}{$cluster_host_vmhba_name}{"bytesRead"} = $HbabytesRead;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"hba"}{$cluster_host_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
 
 					}
 			}
@@ -650,7 +640,7 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".fatstats.power"} = $cluster_host_view_power;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"fatstats"}{"power"} = $cluster_host_view_power;
 
 			}
 
@@ -686,13 +676,13 @@ if ($apiType eq "VirtualCenter") {
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
 
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedCpuFairness"} = $cluster_host_view->{'summary.quickStats.distributedCpuFairness'};
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.distributedMemoryFairness"} = $cluster_host_view->{'summary.quickStats.distributedMemoryFairness'};
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallCpuUsage"} = $cluster_host_view->{'summary.quickStats.overallCpuUsage'};
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallMemoryUsage"} = $cluster_host_view->{'summary.quickStats.overallMemoryUsage'};
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.Uptime"} = $cluster_host_view->{'summary.quickStats.uptime'};
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".quickstats.overallStatus"} = $cluster_host_view_status_val;
-			# $clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.esx.$host_name" . ".fatstats.load"} = $cluster_host_view_rescpu_actav5;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"distributedCpuFairness"} = $cluster_host_view->{'summary.quickStats.distributedCpuFairness'};
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"distributedMemoryFairness"} = $cluster_host_view->{'summary.quickStats.distributedMemoryFairness'};
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"overallCpuUsage"} = $cluster_host_view->{'summary.quickStats.overallCpuUsage'};
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"overallMemoryUsage"} = $cluster_host_view->{'summary.quickStats.overallMemoryUsage'};
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"Uptime"} = $cluster_host_view->{'summary.quickStats.uptime'};
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"quickstats"}{"overallStatus"} = $cluster_host_view_status_val;
+			# $clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name{"esx"}{$host_name}{"fatstats"}{"load"} = $cluster_host_view_rescpu_actav5;
 		}
 
 		if (scalar @cluster_hosts_views > 0) {
@@ -702,7 +692,7 @@ if ($apiType eq "VirtualCenter") {
 			# 	},
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);	
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.esx.count"} = scalar @cluster_hosts_views;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"esx"}{"count"} = scalar @cluster_hosts_views;
 		}
 
 		if (scalar @cluster_hosts_cpu_latency > 0) {
@@ -712,7 +702,7 @@ if ($apiType eq "VirtualCenter") {
 			# 	},
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.cpu.latency"} = median(@cluster_hosts_cpu_latency);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"cpu"}{"latency"} = median(@cluster_hosts_cpu_latency);
 		}
 
 		if (scalar @cluster_hosts_net_bytesRx > 0 && scalar @cluster_hosts_net_bytesTx > 0) {
@@ -723,8 +713,8 @@ if ($apiType eq "VirtualCenter") {
 			# 	},
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.net.bytesRx"} = sum(@cluster_hosts_net_bytesRx);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.net.bytesTx"} = sum(@cluster_hosts_net_bytesTx);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"bytesRx"} = sum(@cluster_hosts_net_bytesRx);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"bytesTx"} = sum(@cluster_hosts_net_bytesTx);
 		}
 
 		if (scalar @cluster_hosts_hba_bytesRead > 0 && scalar @cluster_hosts_hba_bytesWrite > 0) {
@@ -735,8 +725,8 @@ if ($apiType eq "VirtualCenter") {
 			# 	},
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.hba.bytesRead"} = sum(@cluster_hosts_hba_bytesRead);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.hba.bytesWrite"} = sum(@cluster_hosts_hba_bytesWrite);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"hba"}{"bytesRead"} = sum(@cluster_hosts_hba_bytesRead);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"hba"}{"bytesWrite"} = sum(@cluster_hosts_hba_bytesWrite);
 
 		}
 
@@ -747,7 +737,7 @@ if ($apiType eq "VirtualCenter") {
 			# 	},
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_host_view_h);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.power"} = sum(@cluster_hosts_power_usage);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"power"} = sum(@cluster_hosts_power_usage);
 
 		}
 
@@ -857,7 +847,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_snap_size_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.delta"} = $cluster_vm_view_snap_size;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".storage.delta"} = $cluster_vm_view_snap_size;
 						}
 
 						if ($cluster_vm_view->{'runtime.maxCpuUsage'} > 0 && $cluster_vm_view->{'summary.quickStats.overallCpuUsage'}) {
@@ -868,7 +858,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_CpuUtilization_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".runtime.CpuUtilization"} = $cluster_vm_view_CpuUtilization;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".runtime.CpuUtilization"} = $cluster_vm_view_CpuUtilization;
 						}
 
 						if ($cluster_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $cluster_vm_view->{'runtime.maxMemoryUsage'}) {
@@ -879,7 +869,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_MemUtilization_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".runtime.MemUtilization"} = $cluster_vm_view_MemUtilization;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".runtime.MemUtilization"} = $cluster_vm_view_MemUtilization;
 						}
 
 						# my $cluster_vm_view_h = {
@@ -894,12 +884,12 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_vm_view_h);
 
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.overallCpuUsage"} = $cluster_vm_view->{'summary.quickStats.overallCpuUsage'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.overallCpuDemand"} = $cluster_vm_view->{'summary.quickStats.overallCpuDemand'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.HostMemoryUsage"} = $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.committed"} = $cluster_vm_view->{'summary.storage.committed'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".storage.uncommitted"} = $cluster_vm_view->{'summary.storage.uncommitted'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.overallCpuUsage"} = $cluster_vm_view->{'summary.quickStats.overallCpuUsage'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.overallCpuDemand"} = $cluster_vm_view->{'summary.quickStats.overallCpuDemand'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.HostMemoryUsage"} = $cluster_vm_view->{'summary.quickStats.hostMemoryUsage'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $cluster_vm_view->{'summary.quickStats.guestMemoryUsage'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".storage.committed"} = $cluster_vm_view->{'summary.storage.committed'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".storage.uncommitted"} = $cluster_vm_view->{'summary.storage.uncommitted'};
 
 						if ($cluster_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
 							# my $cluster_vm_view_ballooned_h = {
@@ -908,7 +898,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_ballooned_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.BalloonedMemory"} = $cluster_vm_view->{'summary.quickStats.balloonedMemory'};
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.BalloonedMemory"} = $cluster_vm_view->{'summary.quickStats.balloonedMemory'};
 						}
 
 						if ($cluster_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
@@ -918,7 +908,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_compressed_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.CompressedMemory"} = $cluster_vm_view->{'summary.quickStats.compressedMemory'};
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.CompressedMemory"} = $cluster_vm_view->{'summary.quickStats.compressedMemory'};
 						}
 
 						if ($cluster_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
@@ -928,7 +918,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_swapped_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".quickstats.SwappedMemory"} = $cluster_vm_view->{'summary.quickStats.swappedMemory'};
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".quickstats.SwappedMemory"} = $cluster_vm_view->{'summary.quickStats.swappedMemory'};
 						}
 
 						if ($vmmultistats{$perfCntr{"cpu.ready.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -940,7 +930,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_ready_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.cpu_ready_summation"} = $vmreadyavg;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.cpu_ready_summation"} = $vmreadyavg;
 						}
 
 						if ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""} && $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -952,7 +942,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_wait_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.cpu_wait_no_idle"} = $vmwaitavg;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.cpu_wait_no_idle"} = $vmwaitavg;
 						}
 
 						if ($vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -963,7 +953,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_latency_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.cpu_latency_average"} = $vmlatencyval;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.cpu_latency_average"} = $vmlatencyval;
 						}
 
 						if ($vmmultistats{$perfCntr{"disk.maxTotalLatency.latest"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -974,7 +964,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_maxtotallatency_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.maxTotalLatency"} = $vmmaxtotallatencyval;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.maxTotalLatency"} = $vmmaxtotallatencyval;
 						}
 
 						if ($vmmultistats{$perfCntr{"disk.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -985,7 +975,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_diskusage_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskUsage"} = $vmdiskusageval;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.diskUsage"} = $vmdiskusageval;
 						}
 
 						if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
@@ -997,12 +987,12 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_netusage_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.netUsage"} = $vmnetusageval;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.netUsage"} = $vmnetusageval;
 						}
 
 						# if ($vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
 						# 	my $vmcommandsAveragedval = $vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
-						# 	$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_name" . ".fatstats.diskCommands"} = $vmcommandsAveragedval;
+						# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_name" . ".fatstats.diskCommands"} = $vmcommandsAveragedval;
 						# }
 					}
 
@@ -1082,7 +1072,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vmw", data => $cluster_vm_view_off_snap_size_h);
-							$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_off_name" . ".storage.delta"} = $cluster_vm_view_off_snap_size;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_off_name" . ".storage.delta"} = $cluster_vm_view_off_snap_size;
 						}
 
 						# my $cluster_vm_view_off_h = {
@@ -1092,8 +1082,8 @@ if ($apiType eq "VirtualCenter") {
 						# 	},
 						# };
 						# $graphite->send(path => "vmw", data => $cluster_vm_view_off_h);
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_off_name" . ".storage.committed"} = $cluster_vm_view_off->{'summary.storage.committed'};
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.vm.$cluster_vm_view_off_name" . ".storage.uncommitted"} = $cluster_vm_view_off->{'summary.storage.uncommitted'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_off_name" . ".storage.committed"} = $cluster_vm_view_off->{'summary.storage.committed'};
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.vm.$cluster_vm_view_off_name" . ".storage.uncommitted"} = $cluster_vm_view_off->{'summary.storage.uncommitted'};
 					}
 				}
 			}
@@ -1106,8 +1096,8 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_vcpus_pcpus_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.vCPUs"} = $cluster_vm_views_vcpus;
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.pCPUs"} = $cluster_hosts_views_pcpus;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".quickstats.vCPUs"} = $cluster_vm_views_vcpus;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".quickstats.pCPUs"} = $cluster_hosts_views_pcpus;
 			}
 
 			if ($cluster_vm_views_vram > 0) {
@@ -1119,8 +1109,8 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_vm_views_vram_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".quickstats.vRAM"} = $cluster_vm_views_vram;
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.mem.allocated"} = $cluster_root_pool_quickStats_vram;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".quickstats.vRAM"} = $cluster_vm_views_vram;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.mem.allocated"} = $cluster_root_pool_quickStats_vram;
 			}
 
 			if ($cluster_vm_views_vnic_usage > 0) {
@@ -1130,8 +1120,8 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_vm_views_vnic_usage_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.net.vnicUsage"} = $cluster_vm_views_vnic_usage;
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.net.vmkUsage"} = ((sum(@cluster_hosts_net_bytesRx) + sum(@cluster_hosts_net_bytesTx)) - $cluster_vm_views_vnic_usage);
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.net.vnicUsage"} = $cluster_vm_views_vnic_usage;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.net.vmkUsage"} = ((sum(@cluster_hosts_net_bytesRx) + sum(@cluster_hosts_net_bytesTx)) - $cluster_vm_views_vnic_usage);
 			}
 
 			if ($cluster_vm_views_files_dedup_total) {
@@ -1143,7 +1133,7 @@ if ($apiType eq "VirtualCenter") {
 					# 	},
 					# };
 					# $graphite->send(path => "vmw", data => $cluster_vm_views_files_type_h);
-					$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".storage.FileType." . "$FileType"} = $cluster_vm_views_files_dedup_total->{$FileType};
+					$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".storage.FileType." . "$FileType"} = $cluster_vm_views_files_dedup_total->{$FileType};
 				}
 
 				if ($cluster_vm_views_files_snaps) {
@@ -1153,11 +1143,11 @@ if ($apiType eq "VirtualCenter") {
 					# 	},
 					# };
 					# $graphite->send(path => "vmw", data => $cluster_vm_views_files_snaps_h);
-					$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".storage." . "SnapshotCount"} = $cluster_vm_views_files_snaps;
+					$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".storage." . "SnapshotCount"} = $cluster_vm_views_files_snaps;
 				}
 
 				### if ($cluster_vm_views_bak_snaps) {
-				###		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".storage." . "BakSnapshotCount"} = $cluster_vm_views_bak_snaps;
+				###		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".storage." . "BakSnapshotCount"} = $cluster_vm_views_bak_snaps;
 				### }
 
 				if ($cluster_vm_views_vm_snaps) {
@@ -1167,7 +1157,7 @@ if ($apiType eq "VirtualCenter") {
 					# 	},
 					# };
 					# $graphite->send(path => "vmw", data => $cluster_vm_views_vm_snaps_h);
-					$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".storage." . "VmSnapshotCount"} = $cluster_vm_views_vm_snaps;
+					$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".storage." . "VmSnapshotCount"} = $cluster_vm_views_vm_snaps;
 				}
 			}
 		}
@@ -1179,8 +1169,8 @@ if ($apiType eq "VirtualCenter") {
 		# 	},
 		# };
 		# $graphite->send(path => "vmw", data => $cluster_vm_views_h);
-		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".runtime.vm.total"} = scalar(@cluster_vms_views);
-		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".runtime.vm.on"} = (scalar(@cluster_vms_views) - $cluster_vm_views_off);
+		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".runtime.vm.total"} = scalar(@cluster_vms_views);
+		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".runtime.vm.on"} = (scalar(@cluster_vms_views) - $cluster_vm_views_off);
 
 		$logger->info("[INFO] Processing vCenter $vmware_server cluster $cluster_name datastores in datacenter $datacentre_name");
 
@@ -1221,9 +1211,9 @@ if ($apiType eq "VirtualCenter") {
 				# 	},
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.capacity"} = $cluster_datastore_view->summary->capacity;
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.freeSpace"} = $cluster_datastore_view->summary->freeSpace;
-				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.uncommitted"} = $shared_datastore_uncommitted;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".summary.capacity"} = $cluster_datastore_view->summary->capacity;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".summary.freeSpace"} = $cluster_datastore_view->summary->freeSpace;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".summary.uncommitted"} = $shared_datastore_uncommitted;
 
 				if ($cluster_vmdk_per_ds->{$shared_datastore_name}) {
 					# my $cluster_shared_datastorevmdk_per_ds_view_h = {
@@ -1232,7 +1222,7 @@ if ($apiType eq "VirtualCenter") {
 					# 	},
 					# };
 					# $graphite->send(path => "vmw", data => $cluster_shared_datastorevmdk_per_ds_view_h);
-					$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".summary.vmdkCount"} = $cluster_vmdk_per_ds->{$shared_datastore_name};				
+					$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".summary.vmdkCount"} = $cluster_vmdk_per_ds->{$shared_datastore_name};				
 				}
 
 				push (@cluster_datastores_capacity,$cluster_datastore_view->summary->capacity);
@@ -1274,8 +1264,8 @@ if ($apiType eq "VirtualCenter") {
 						# 	},
 						# };
 						# $graphite->send(path => "vmw", data => $DsIormPerf_h);
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency"} = $middsiormlatencyuuid;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops"} = $middsiormiopsuuid;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency"} = $middsiormlatencyuuid;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".iorm.datastoreIops"} = $middsiormiopsuuid;
 					}
 
 				} elsif ($cluster_datastore_view->summary->type ne "vsan") {
@@ -1330,8 +1320,8 @@ if ($apiType eq "VirtualCenter") {
 						# 	},
 						# };
 						# $graphite->send(path => "vmw", data => $DsLegacyPerf_h);
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency"} = $middsLegacylatencyuuid;
-						$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.datastore.$shared_datastore_name" . ".iorm.datastoreIops"} = $middsLegacyiopsuuid;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".iorm.sizeNormalizedDatastoreLatency"} = $middsLegacylatencyuuid;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.datastore.$shared_datastore_name" . ".iorm.datastoreIops"} = $middsLegacyiopsuuid;
 
 					}
 				}
@@ -1342,9 +1332,9 @@ if ($apiType eq "VirtualCenter") {
 			### 	if ($cluster_datastore_view->summary->uncommitted) {
 			### 		$unshared_datastore_uncommitted = $cluster_datastore_view->summary->uncommitted;
 			### 	}
-			###		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.capacity"} = $cluster_datastore_view->summary->capacity;
-			###		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace"} = $cluster_datastore_view->summary->freeSpace;
-			###		$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted"} = $unshared_datastore_uncommitted;
+			###		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.UNdatastore.$unshared_datastore_name" . ".summary.capacity"} = $cluster_datastore_view->summary->capacity;
+			###		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.UNdatastore.$unshared_datastore_name" . ".summary.freeSpace"} = $cluster_datastore_view->summary->freeSpace;
+			###		$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}.UNdatastore.$unshared_datastore_name" . ".summary.uncommitted"} = $unshared_datastore_uncommitted;
 			}
 		}
 
@@ -1364,14 +1354,14 @@ if ($apiType eq "VirtualCenter") {
 			# };
 			# $graphite->send(path => "vmw", data => $cluster_shared_datastore_view_h);
 
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.count"} = $cluster_datastores_count;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.capacity"} = sum(@cluster_datastores_capacity);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.freeSpace"} = sum(@cluster_datastores_freeSpace);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.utilization"} = $cluster_datastores_utilization;
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.uncommitted"} = sum(@cluster_datastores_uncommitted);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.max_latency"} = max(@cluster_datastores_latency);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.mid_latency"} = median(@cluster_datastores_latency);
-			$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.datastore.iops"} = sum(@cluster_datastores_iops);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.count"} = $cluster_datastores_count;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.capacity"} = sum(@cluster_datastores_capacity);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.freeSpace"} = sum(@cluster_datastores_freeSpace);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.utilization"} = $cluster_datastores_utilization;
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.uncommitted"} = sum(@cluster_datastores_uncommitted);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.max_latency"} = max(@cluster_datastores_latency);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.mid_latency"} = median(@cluster_datastores_latency);
+			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}" . ".superstats.datastore.iops"} = sum(@cluster_datastores_iops);
 		}
 
 		my $clusterCarbonHashTimed = {time() => $clusterCarbonHash};
@@ -1478,22 +1468,22 @@ if ($apiType eq "VirtualCenter") {
 				# };
 				# $graphite->send(path => "esx", data => $StandaloneComputeResource_h);
 
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.ballooned"} = $StandaloneResourcePool->{'summary.quickStats'}->balloonedMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.compressed"} = $StandaloneResourcePool->{'summary.quickStats'}->compressedMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.consumedOverhead"} = $StandaloneResourcePool->{'summary.quickStats'}->consumedOverheadMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.guest"} = $StandaloneResourcePool->{'summary.quickStats'}->guestMemoryUsage;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.usage"} = $StandaloneResourcePool->{'summary.quickStats'}->hostMemoryUsage;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.demand"} = $StandaloneResourcePool->{'summary.quickStats'}->overallCpuDemand;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.usage"} = $StandaloneResourcePool->{'summary.quickStats'}->overallCpuUsage;
-				# $StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.overhead"} = $StandaloneResourcePool->{'summary.quickStats'}->overheadMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.private"} = $StandaloneResourcePool->{'summary.quickStats'}->privateMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.shared"} = $StandaloneResourcePool->{'summary.quickStats'}->sharedMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.swapped"} = $StandaloneResourcePool->{'summary.quickStats'}->swappedMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.effective"} = StandaloneComputeResource->summary->effectiveMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.total"} = $StandaloneComputeResource->summary->totalMemory;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.effective"} = $StandaloneComputeResource->summary->effectiveCpu;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total"} = $StandaloneComputeResource->summary->totalCpu;
-				$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.overallStatus"} = $StandaloneResourceVMHost_status_val;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.ballooned"} = $StandaloneResourcePool->{'summary.quickStats'}->balloonedMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.compressed"} = $StandaloneResourcePool->{'summary.quickStats'}->compressedMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.consumedOverhead"} = $StandaloneResourcePool->{'summary.quickStats'}->consumedOverheadMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.guest"} = $StandaloneResourcePool->{'summary.quickStats'}->guestMemoryUsage;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.usage"} = $StandaloneResourcePool->{'summary.quickStats'}->hostMemoryUsage;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.demand"} = $StandaloneResourcePool->{'summary.quickStats'}->overallCpuDemand;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.usage"} = $StandaloneResourcePool->{'summary.quickStats'}->overallCpuUsage;
+				# $StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.overhead"} = $StandaloneResourcePool->{'summary.quickStats'}->overheadMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.private"} = $StandaloneResourcePool->{'summary.quickStats'}->privateMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.shared"} = $StandaloneResourcePool->{'summary.quickStats'}->sharedMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.swapped"} = $StandaloneResourcePool->{'summary.quickStats'}->swappedMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.effective"} = StandaloneComputeResource->summary->effectiveMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.mem.total"} = $StandaloneComputeResource->summary->totalMemory;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.effective"} = $StandaloneComputeResource->summary->effectiveCpu;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.cpu.total"} = $StandaloneComputeResource->summary->totalCpu;
+				$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".quickstats.overallStatus"} = $StandaloneResourceVMHost_status_val;
 
 				$logger->info("[INFO] Processing vCenter $vmware_server standalone host $StandaloneResourceVMHostName datastores in datacenter $datacentre_name");
 
@@ -1521,9 +1511,9 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "esx", data => $StandaloneResourceVMHost_datastore_view_h);
 
-						$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.capacity"} = $StandaloneResourceDatastore->summary->capacity;
-						$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.freeSpace"} = $StandaloneResourceDatastore->summary->freeSpace;
-						$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.uncommitted"} = $StandaloneResourceDatastore_uncommitted;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.capacity"} = $StandaloneResourceDatastore->summary->capacity;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.freeSpace"} = $StandaloneResourceDatastore->summary->freeSpace;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.datastore.$StandaloneResourceDatastore_name" . ".summary.uncommitted"} = $StandaloneResourceDatastore_uncommitted;
 					}
 				}
 
@@ -1543,9 +1533,9 @@ if ($apiType eq "VirtualCenter") {
 							# };
 							# $graphite->send(path => "esx", data => $StandaloneResourceVMHost_vmnic_h);
 
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx"} = $NetbytesRx;
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx"} = $NetbytesTx;
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.linkSpeed"} = $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb; #ToClean?
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesRx"} = $NetbytesRx;
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.bytesTx"} = $NetbytesTx;
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".net.$StandaloneResourceVMHost_vmnic_name.linkSpeed"} = $StandaloneResourceVMHost_vmnic->linkSpeed->speedMb; #ToClean?
 						}
 					}
 				}
@@ -1603,14 +1593,14 @@ if ($apiType eq "VirtualCenter") {
 							# };
 							# $graphite->send(path => "esx", data => $standalone_vm_view_h);
 
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuUsage"} = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuDemand"} = $standalone_vm_view->{'summary.quickStats.overallCpuDemand'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.HostMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.committed"} = $standalone_vm_view->{'summary.storage.committed'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.uncommitted"} = $standalone_vm_view->{'summary.storage.uncommitted'};
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.CpuUtilization"} = $standalone_vm_view_CpuUtilization;
-							$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.MemUtilization"} = $standalone_vm_view_MemUtilization;
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuUsage"} = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.overallCpuDemand"} = $standalone_vm_view->{'summary.quickStats.overallCpuDemand'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.HostMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.committed"} = $standalone_vm_view->{'summary.storage.committed'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".storage.uncommitted"} = $standalone_vm_view->{'summary.storage.uncommitted'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.CpuUtilization"} = $standalone_vm_view_CpuUtilization;
+							$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".runtime.MemUtilization"} = $standalone_vm_view_MemUtilization;
 
 
 							if ($standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
@@ -1620,7 +1610,7 @@ if ($apiType eq "VirtualCenter") {
 								# 	},
 								# };
 								# $graphite->send(path => "esx", data => $standalone_vm_view_ballooned_h);
-								$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.BalloonedMemory"} = $standalone_vm_view->{'summary.quickStats.balloonedMemory'};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.BalloonedMemory"} = $standalone_vm_view->{'summary.quickStats.balloonedMemory'};
 							}
 
 							if ($standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
@@ -1630,7 +1620,7 @@ if ($apiType eq "VirtualCenter") {
 								# 	},
 								# };
 								# $graphite->send(path => "esx", data => $standalone_vm_view_compressed_h);
-								$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.CompressedMemory"} = $standalone_vm_view->{'summary.quickStats.compressedMemory'};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.CompressedMemory"} = $standalone_vm_view->{'summary.quickStats.compressedMemory'};
 							}
 
 							if ($standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
@@ -1640,7 +1630,7 @@ if ($apiType eq "VirtualCenter") {
 								# 	},
 								# };
 								# $graphite->send(path => "esx", data => $standalone_vm_view_swapped_h);
-								$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.SwappedMemory"} = $standalone_vm_view->{'summary.quickStats.swappedMemory'};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName.vm.$standalone_vm_view_name" . ".quickstats.SwappedMemory"} = $standalone_vm_view->{'summary.quickStats.swappedMemory'};
 							}
 						}
 
@@ -1652,8 +1642,8 @@ if ($apiType eq "VirtualCenter") {
 						# };
 						# $graphite->send(path => "esx", data => $Standalone_vm_views_h);
 
-						$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.total"} = scalar(@StandaloneResourceVMHostVmsViews);
-						$StandaloneResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.on"} = $Standalone_vm_views_on;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.total"} = scalar(@StandaloneResourceVMHostVmsViews);
+						$StandaloneResourceCarbonHash->{$vmware_server_name}$datacentre_name.$StandaloneResourceVMHostName" . ".runtime.vm.on"} = $Standalone_vm_views_on;
 
 						my $StandaloneResourceCarbonHashTimed = {time() => $StandaloneResourceCarbonHash};
 						$graphite->send(path => "esx", data => $StandaloneResourceCarbonHashTimed);
@@ -1683,7 +1673,7 @@ if ($apiType eq "VirtualCenter") {
 		# 	},
 		# };
 
-		$sessionCarbonHash->{"$vmware_server_name.vi" . ".exec.sessionCount"} = $sessionCount;
+		$sessionCarbonHash->{$vmware_server_name}vi" . ".exec.sessionCount"} = $sessionCount;
 
 		# $graphite->send(path => "vi", data => $vcenter_session_count_h);
 
@@ -1698,7 +1688,7 @@ if ($apiType eq "VirtualCenter") {
 			# 	value => $sessionListH->{$sessionListNode},
 			# 	time => time(),
 			# );
-			$sessionCarbonHash->{"$vmware_server_name.vi" . ".exec.sessionList." . "$sessionListNodeClean"} = $sessionListH->{$sessionListNode};
+			$sessionCarbonHash->{$vmware_server_name}vi" . ".exec.sessionList." . "$sessionListNodeClean"} = $sessionListH->{$sessionListNode};
 		}
 
 		my $sessionCarbonHashTimed = {time() => $sessionCarbonHash};
@@ -1725,7 +1715,7 @@ if ($apiType eq "VirtualCenter") {
 			# };
 			# $graphite->send(path => "vi", data => $eventCount_h);
 
-			$eventCarbonHash->{"$vmware_server_name.vi" . ".exec.events"} = $eventCount;
+			$eventCarbonHash->{$vmware_server_name}vi" . ".exec.events"} = $eventCount;
 
 			## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
 			my $eventsInfo = $eventMgr->description->eventInfo;
@@ -1819,7 +1809,7 @@ if ($apiType eq "VirtualCenter") {
 							# 	},
 							# };
 							# $graphite->send(path => "vi", data => $events_count_per_id_h);
-							$eventCarbonHash->{"$vmware_server_name.vi" . ".exec.ExEvent." . "$dc_vc_event_id.$clu_dc_vc_event_id.$clean_evt_clu_dc_vc_event_id"} = $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id};
+							$eventCarbonHash->{$vmware_server_name}vi" . ".exec.ExEvent." . "$dc_vc_event_id.$clu_dc_vc_event_id.$clean_evt_clu_dc_vc_event_id"} = $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id};
 						}
 					}
 				}
@@ -1972,13 +1962,13 @@ if ($apiType eq "VirtualCenter") {
 			# };
 			# $graphite->send(path => "esx", data => $UnamagedComputeResource_h);
 
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallMemoryUsage'};
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallCpuUsage'};
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.effective"} = $UnamagedComputeResourceMB;
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.total"} = $UnamagedComputeResource->summary->totalMemory;
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.effective"} = $UnamagedComputeResource->summary->effectiveCpu;
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.total"} = $UnamagedComputeResource->summary->totalCpu;
-			$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.overallStatus"} = $UnamagedResourceVMHost_status_val;
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallMemoryUsage'};
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallCpuUsage'};
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.effective"} = $UnamagedComputeResourceMB;
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.total"} = $UnamagedComputeResource->summary->totalMemory;
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.effective"} = $UnamagedComputeResource->summary->effectiveCpu;
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.cpu.total"} = $UnamagedComputeResource->summary->totalCpu;
+			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.overallStatus"} = $UnamagedResourceVMHost_status_val;
 
 			$logger->info("[INFO] Processing vCenter $vmware_server Unamaged host $UnamagedResourceVMHostName datastores in datacenter $datacentre_name");
 
@@ -2006,9 +1996,9 @@ if ($apiType eq "VirtualCenter") {
 					# };
 					# $graphite->send(path => "esx", data => $UnamagedResourceVMHost_datastore_view_h);
 
-					$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.capacity"} = $UnamagedResourceDatastore->summary->capacity;
-					$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.freeSpace"} = $UnamagedResourceDatastore->summary->freeSpace;
-					$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.uncommitted"} = $UnamagedResourceDatastore_uncommitted;
+					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.capacity"} = $UnamagedResourceDatastore->summary->capacity;
+					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.freeSpace"} = $UnamagedResourceDatastore->summary->freeSpace;
+					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.datastore.$UnamagedResourceDatastore_name" . ".summary.uncommitted"} = $UnamagedResourceDatastore_uncommitted;
 				}
 			}
 
@@ -2085,27 +2075,27 @@ if ($apiType eq "VirtualCenter") {
 							$Unamaged_vm_view_MemUtilization = $Unamaged_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $Unamaged_vm_view->{'runtime.maxMemoryUsage'};
 						}
 
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.overallCpuUsage"} = $Unamaged_vm_view->{'summary.quickStats.overallCpuUsage'};
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.HostMemoryUsage"} = $Unamaged_vm_view->{'summary.quickStats.hostMemoryUsage'};
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $Unamaged_vm_view->{'summary.quickStats.guestMemoryUsage'};
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".storage.committed"} = $Unamaged_vm_view->{'summary.storage.committed'};
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".storage.uncommitted"} = $Unamaged_vm_view->{'summary.storage.uncommitted'};
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".runtime.CpuUtilization"} = $Unamaged_vm_view_CpuUtilization;
-						$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".runtime.MemUtilization"} = $Unamaged_vm_view_MemUtilization;
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.overallCpuUsage"} = $Unamaged_vm_view->{'summary.quickStats.overallCpuUsage'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.HostMemoryUsage"} = $Unamaged_vm_view->{'summary.quickStats.hostMemoryUsage'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.GuestMemoryUsage"} = $Unamaged_vm_view->{'summary.quickStats.guestMemoryUsage'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".storage.committed"} = $Unamaged_vm_view->{'summary.storage.committed'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".storage.uncommitted"} = $Unamaged_vm_view->{'summary.storage.uncommitted'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".runtime.CpuUtilization"} = $Unamaged_vm_view_CpuUtilization;
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".runtime.MemUtilization"} = $Unamaged_vm_view_MemUtilization;
 
 						if ($Unamaged_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
 							push (@UnamagedResourcePoolBalloonedMemory,$Unamaged_vm_view->{'summary.quickStats.balloonedMemory'});
-							$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.BalloonedMemory"} = $Unamaged_vm_view->{'summary.quickStats.balloonedMemory'};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.BalloonedMemory"} = $Unamaged_vm_view->{'summary.quickStats.balloonedMemory'};
 						}
 
 						if ($Unamaged_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
 							push (@UnamagedResourcePoolCompressedMemory,$Unamaged_vm_view->{'summary.quickStats.compressedMemory'});
-							$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.CompressedMemory"} = $Unamaged_vm_view->{'summary.quickStats.compressedMemory'};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.CompressedMemory"} = $Unamaged_vm_view->{'summary.quickStats.compressedMemory'};
 						}
 
 						if ($Unamaged_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
 							push (@UnamagedResourcePoolSwappedMemory,$Unamaged_vm_view->{'summary.quickStats.swappedMemory'});
-							$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.SwappedMemory"} = $Unamaged_vm_view->{'summary.quickStats.swappedMemory'};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName.vm.$Unamaged_vm_view_name" . ".quickstats.SwappedMemory"} = $Unamaged_vm_view->{'summary.quickStats.swappedMemory'};
 						}
 
 						if ($Unamaged_vm_view->{'summary.quickStats.privateMemory'} > 0) {
@@ -2126,15 +2116,15 @@ if ($apiType eq "VirtualCenter") {
 					}
 				}
 
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".runtime.vm.total"} = scalar(@UnamagedResourceVMHostVmsViews);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".runtime.vm.on"} = $Unamaged_vm_views_on;
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.ballooned"} = sum(@UnamagedResourcePoolBalloonedMemory);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.compressed"} = sum(@UnamagedResourcePoolCompressedMemory);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.guest"} = sum(@UnamagedResourcePoolGuestMemoryUsage);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.private"} = sum(@UnamagedResourcePoolPrivateMemory);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.shared"} = sum(@UnamagedResourcePoolSharedMemory);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.swapped"} = sum(@UnamagedResourcePoolSwappedMemory);
-				$UnamagedComputeResourceCarbonHash->{"$vmware_server_name.$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.consumedOverhead"} = sum(@UnamagedResourcePoolConsumedOverheadMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".runtime.vm.total"} = scalar(@UnamagedResourceVMHostVmsViews);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".runtime.vm.on"} = $Unamaged_vm_views_on;
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.ballooned"} = sum(@UnamagedResourcePoolBalloonedMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.compressed"} = sum(@UnamagedResourcePoolCompressedMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.guest"} = sum(@UnamagedResourcePoolGuestMemoryUsage);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.private"} = sum(@UnamagedResourcePoolPrivateMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.shared"} = sum(@UnamagedResourcePoolSharedMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.swapped"} = sum(@UnamagedResourcePoolSwappedMemory);
+				$UnamagedComputeResourceCarbonHash->{$vmware_server_name}$datacentre_name.$UnamagedResourceVMHostName" . ".quickstats.mem.consumedOverhead"} = sum(@UnamagedResourcePoolConsumedOverheadMemory);
 
 				my $UnamagedComputeResourceCarbonHashTimed = {time() => $UnamagedComputeResourceCarbonHash};
 				$graphite->send(path => "esx", data => $UnamagedComputeResourceCarbonHashTimed);
