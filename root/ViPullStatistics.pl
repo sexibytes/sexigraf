@@ -53,6 +53,7 @@ my $graphite = Net::Graphite->new(
 	timeout               => 1,                ### timeout of socket connect in seconds
 	fire_and_forget       => 1,                ### if true, ignore sending errors
 	return_connect_error  => 0,                ### if true, forward connect error to caller
+	flush_limit           => 0,                ### if true, send after this many metrics are ready
 );
 
 BEGIN {
@@ -438,6 +439,7 @@ if ($apiType eq "VirtualCenter") {
 		my $datacentre_name = nameCleaner(getRootDc $cluster_view);
 
 		my $clusterCarbonHash;
+		my %clusterCarbonHH;
 
 		$logger->info("[INFO] Processing vCenter $vmware_server cluster $cluster_name hosts in datacenter $datacentre_name");
 
@@ -495,6 +497,7 @@ if ($apiType eq "VirtualCenter") {
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_host_view_h);	
 				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.cpu.utilization"} = $cluster_root_pool_quickStats_cpu;
+				$clusterCarbonHH{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"cpu"}{"utilization"} = $cluster_root_pool_quickStats_cpu;
 			}
 
 			if ($cluster_root_pool_quickStats->hostMemoryUsage > 0 && $cluster_view->summary->effectiveMemory > 0) {
@@ -506,6 +509,7 @@ if ($apiType eq "VirtualCenter") {
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_host_view_h);
 				$clusterCarbonHash->{"$vmware_server_name.$datacentre_name.$cluster_name" . ".superstats.mem.utilization"} = $cluster_root_pool_quickStats_ram;
+				$clusterCarbonHH{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"mem"}{"utilization"} = $cluster_root_pool_quickStats_ram;
 			}		
 		}
 
@@ -520,13 +524,13 @@ if ($apiType eq "VirtualCenter") {
 		}
 
 		$cluster_hosts_views_pcpus = 0;
-		@cluster_hosts_vms_moref;
-		@cluster_hosts_cpu_latency;
-		@cluster_hosts_net_bytesRx;
-		@cluster_hosts_net_bytesTx;
-		@cluster_hosts_hba_bytesRead;
-		@cluster_hosts_hba_bytesWrite;
-		@cluster_hosts_power_usage;
+		# @cluster_hosts_vms_moref;
+		# @cluster_hosts_cpu_latency;
+		# @cluster_hosts_net_bytesRx;
+		# @cluster_hosts_net_bytesTx;
+		# @cluster_hosts_hba_bytesRead;
+		# @cluster_hosts_hba_bytesWrite;
+		# @cluster_hosts_power_usage;
 
 		foreach my $cluster_host_view (@cluster_hosts_views) {
 
