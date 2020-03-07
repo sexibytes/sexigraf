@@ -18,7 +18,7 @@ use VsanapiUtils;
 load_vsanmgmt_binding_files("/root/VIM25VsanmgmtStub.pm","/root/VIM25VsanmgmtRuntime.pm");
 
 # $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.200";
+$Util::script_version = "0.9.201";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -44,10 +44,11 @@ my $graphite = Net::Graphite->new(
 	host                  => '127.0.0.1',
 	port                  => 2003,
 	trace                 => 0,                ### if true, copy what's sent to STDERR
-	proto                 => 'udp',            ### can be 'udp'
+	proto                 => 'tcp',            ### can be 'udp'
 	timeout               => 1,                ### timeout of socket connect in seconds
 	fire_and_forget       => 1,                ### if true, ignore sending errors
 	return_connect_error  => 0,                ### if true, forward connect error to caller
+	flush_limit           => 0,                ### if true, send after this many metrics are ready
 );
 
 BEGIN {
@@ -477,7 +478,7 @@ if ($apiType eq "VirtualCenter") {
 							my $host_vsan_stats_json_cachestats = $host_vsan_query_vsan_stats_json->{'dom.client.cachestats'};
 
 							foreach my $compmgrkey (keys %{ $host_vsan_stats_json_compmgr }) {
-								if (!$compmgrkey =~ /Histogram/) {
+								if (!($compmgrkey =~ /Histogram/)) {
 									$graphite->send(
 										path => "vsan." . "$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name" . ".vsan.compmgr.stats." . "$compmgrkey",
 										value => $host_vsan_stats_json_compmgr->{$compmgrkey},
