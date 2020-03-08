@@ -8,7 +8,8 @@ providers:
   # <string, required> name of the dashboard folder. Required
   folder: 'SexiGraf'
   # <string> folder UID. will be automatically generated if not specified
-  folderUid: ''
+  # CRC32 of name
+  folderUid: '40fb8002'
   # <string, required> provider type. Required
   type: file
   # <bool> disable dashboard deletion

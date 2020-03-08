@@ -8,7 +8,8 @@ providers:
   # <string, required> name of the dashboard folder. Required
   folder: 'VMware VM'
   # <string> folder UID. will be automatically generated if not specified
-  folderUid: ''
+  # CRC32 of name
+  folderUid: 'b530c7dd'
   # <string, required> provider type. Required
   type: file
   # <bool> disable dashboard deletion
