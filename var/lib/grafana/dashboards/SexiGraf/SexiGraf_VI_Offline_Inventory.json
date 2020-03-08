@@ -15,7 +15,7 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "1000px",
+      "height": "1100px",
       "panels": [
         {
           "content": "<iframe style=\"border: none\" src=\"/sexiadmin/offline-vminventory.html\" onload=\"this.width=window.innerWidth-120;this.height=window.innerHeight-120;\"></iframe>",
