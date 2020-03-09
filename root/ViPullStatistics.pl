@@ -1121,7 +1121,6 @@ if ($apiType eq "VirtualCenter") {
 				# };
 				# $graphite->send(path => "vmw", data => $cluster_vm_views_vnic_usage_h);
 				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"vnicUsage"} = $cluster_vm_views_vnic_usage;
-				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"vmkUsage"} = ((sum(@cluster_hosts_net_bytesRx) + sum(@cluster_hosts_net_bytesTx)) - $cluster_vm_views_vnic_usage);
 			}
 
 			if ($cluster_vm_views_files_dedup_total) {
