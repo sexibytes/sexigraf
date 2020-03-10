@@ -14,9 +14,6 @@ if [ -d "/zfs/whisper" ]; then
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
     chown -R carbon /zfs/whisper
 
-    # Import cron entries
-    /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
-
     # Import Offline Inventory file
     /bin/cp /media/cdrom/offline-vminventory.html /var/www/admin/
     chown www-data:www-data /var/www/admin/offline-vminventory.html
@@ -32,6 +29,9 @@ if [ -d "/zfs/whisper" ]; then
         /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
     done
     rm -f /root/vicredentials.conf
+
+    # Import cron entries
+    /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
 
 else
 
@@ -47,9 +47,6 @@ else
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
     chown -R carbon /opt/graphite/storage/whisper
 
-    # Import cron entries
-    /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
-
     # Import Offline Inventory file
     /bin/cp /media/cdrom/offline-vminventory.html /var/www/admin/
     chown www-data:www-data /var/www/admin/offline-vminventory.html
@@ -65,6 +62,9 @@ else
         /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
     done
     rm -f /root/vicredentials.conf
+
+    # Import cron entries
+    /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
 
 fi
 
