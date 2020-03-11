@@ -375,7 +375,7 @@ if ($apiType eq "VirtualCenter") {
 			["datastore", "numberWriteAveraged", "average"],
 			["datastore", "numberReadAveraged", "average"],
 			["cpu", "latency", "average"],
-			["mem", "sysUsage", "average"],
+			# ["mem", "sysUsage", "average"],
 			# ["rescpu", "actav5", "latest"],
 		);
 		%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
