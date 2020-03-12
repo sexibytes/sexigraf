@@ -7,7 +7,7 @@
   notifempty
   create 600 www-data www-data
 }
-/var/log/carbon-cache-a/*.log {
+/var/log/sexigraf/carbon-cache-a/*.log {
   hourly
   missingok
   rotate 24
