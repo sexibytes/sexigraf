@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.881";
+$Util::script_version = "0.9.882";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
