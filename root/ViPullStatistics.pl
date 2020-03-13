@@ -521,6 +521,13 @@ if ($apiType eq "VirtualCenter") {
 		}
 
 		$cluster_hosts_views_pcpus = 0;
+		@cluster_hosts_vms_moref = ();
+		@cluster_hosts_cpu_latency = ();
+		@cluster_hosts_net_bytesRx = ();
+		@cluster_hosts_net_bytesTx = ();
+		@cluster_hosts_hba_bytesRead = ();
+		@cluster_hosts_hba_bytesWrite = ();
+		@cluster_hosts_power_usage = ();
 
 		foreach my $cluster_host_view (@cluster_hosts_views) {
 
