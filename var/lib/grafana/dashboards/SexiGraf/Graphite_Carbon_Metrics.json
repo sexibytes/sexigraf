@@ -1182,7 +1182,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(scaleToSeconds(collectd.sexigraf.interface-ens160.if_octets.*, 1), 4)"
+          "target": "aliasByNode(scaleToSeconds(collectd.sexigraf.interface-ens192.if_octets.*, 1), 4)"
         }
       ],
       "thresholds": [],
