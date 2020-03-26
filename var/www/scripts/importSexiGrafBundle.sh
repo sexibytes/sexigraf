@@ -4,6 +4,7 @@ if [ -d "/zfs/whisper" ]; then
 
     # Import whiper files and re-apply Graphite ownership and correct access rights
     /etc/init.d/carbon-cache stop
+    /etc/init.d/cron stop
     if [ -d "/media/cdrom/whisper" ]; then
         /bin/cp -fR /media/cdrom/whisper/* /zfs/whisper/
     else
@@ -37,6 +38,7 @@ else
 
     # Import whiper files and re-apply Graphite ownership and correct access rights
     /etc/init.d/carbon-cache stop
+    /etc/init.d/cron stop
     if [ -d "/media/cdrom/whisper" ]; then
         /bin/cp -fR /media/cdrom/whisper/* /opt/graphite/storage/whisper/
     else
@@ -70,6 +72,7 @@ fi
 
 # Restart services
 /etc/init.d/carbon-cache start
+/etc/init.d/cron start
 /etc/init.d/collectd restart
 /etc/init.d/grafana-server restart
 apachectl restart
