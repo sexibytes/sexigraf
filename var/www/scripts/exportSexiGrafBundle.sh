@@ -42,7 +42,7 @@ if [ -d "/zfs/whisper" ]; then
         echo "$vcenter;$username;$password" >> /zfs/sexigraf-dump/conf/vicredentials.conf
     done
     # File encoding
-    openssl des3 -salt -in /root/sexigraf-dump/conf/vicredentials.conf -out /zfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
+    openssl des3 -salt -in /zfs/sexigraf-dump/conf/vicredentials.conf -out /zfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
     rm -f /zfs/sexigraf-dump/conf/vicredentials.conf
 
     # create ISO file from export folder
