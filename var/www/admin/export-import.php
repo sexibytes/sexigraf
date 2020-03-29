@@ -49,7 +49,7 @@ if ($nbProcess > 1) : ?>
         <div class="alert alert-success" role="alert">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             <span class="sr-only">Success:</span>
-            SexiGraf export file generated on <?php echo date ("r", filemtime('/var/www/admin/sexigraf-dump.iso')); ?>, you can download it here: <strong><a href="/admin/sexigraf-dump.iso">sexigraf-dump.iso</a></strong>
+            SexiGraf export file generated on <?php echo date ("r", filemtime('/var/www/admin/sexigraf-dump.iso')); ?>, you can download it here: <strong><a href="/sexiadmin/sexigraf-dump.iso">sexigraf-dump.iso</a></strong>
         </div>
 <?php else : ?>
 <div class="alert alert-warning" role="alert">

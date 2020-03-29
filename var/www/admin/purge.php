@@ -73,13 +73,13 @@ require("helper.php");
                 </ul>
                 <div class="tab-content" style="padding-top: 10px;">
                         <div role="tabpanel" class="tab-pane fade in active" id="whisper">
-                        ' . php_file_tree_dir("/var/lib/graphite/whisper") . '
+                        ' . php_file_tree_dir("/zfs/whisper") . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="vcenter">
                         ' . php_file_tree("/tmp", "dat") . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="oldies">
-                        ' . php_file_tree_top_oldest("/var/lib/graphite/whisper", $topn) . '
+                        ' . php_file_tree_top_oldest("/zfs/whisper", $topn) . '
                         </div>
                 </div>
                 <button name="submit" class="btn btn-danger" value="purge-files">Purge</button>
