@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.885";
+$Util::script_version = "0.9.887";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1205,6 +1205,17 @@ if ($apiType eq "VirtualCenter") {
 					}
 				}
 
+			foreach my $StandaloneResourceVMHost_vmhba (@{$StandaloneResourceVMHost->{'config.storageDevice.hostBusAdapter'}}) {
+					my $HbabytesRead = $hostmultistats{$perfCntr{"storageAdapter.read.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
+					my $HbabytesWrite = $hostmultistats{$perfCntr{"storageAdapter.write.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
+					if (defined($HbabytesRead) && defined($HbabytesWrite)) {
+						my $StandaloneResourceVMHost_vmhba_name = $StandaloneResourceVMHost_vmhba->device;
+
+						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesRead"} = $HbabytesRead;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
+					}
+			}
+
 				my @StandaloneResourceVMHostVmsMoref = ();
 				if ($StandaloneResourceVMHost->vm && (scalar($StandaloneResourceVMHost->vm) > 0)) {
 					push (@StandaloneResourceVMHostVmsMoref,$StandaloneResourceVMHost->vm);
@@ -1630,6 +1641,17 @@ if ($apiType eq "VirtualCenter") {
 						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"net"}{$UnamagedResourceVMHost_vmnic_name}{"linkSpeed"} = $UnamagedResourceVMHost_vmnic->linkSpeed->speedMb;
 					}
 				}
+			}
+
+			foreach my $UnamagedResourceVMHost_vmhba (@{$UnamagedResourceVMHost->{'config.storageDevice.hostBusAdapter'}}) {
+					my $HbabytesRead = $hostmultistats{$perfCntr{"storageAdapter.read.average"}->key}{$UnamagedResourceVMHost->{'mo_ref'}->value}{$UnamagedResourceVMHost_vmhba->device};
+					my $HbabytesWrite = $hostmultistats{$perfCntr{"storageAdapter.write.average"}->key}{$UnamagedResourceVMHost->{'mo_ref'}->value}{$UnamagedResourceVMHost_vmhba->device};
+					if (defined($HbabytesRead) && defined($HbabytesWrite)) {
+						my $UnamagedResourceVMHost_vmhba_name = $UnamagedResourceVMHost_vmhba->device;
+
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"hba"}{$UnamagedResourceVMHost_vmhba_name}{"bytesRead"} = $HbabytesRead;
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"hba"}{$UnamagedResourceVMHost_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
+					}
 			}
 
 			my @UnamagedResourceVMHostVmsMoref = ();
