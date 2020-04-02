@@ -63,6 +63,9 @@ require("helper.php");
                                 case "disable-autopurge":
                                         disableAutopurge();
                                 break;
+                                case "force-autopurge":
+                                        forceAutopurge(intval($_POST["nb_days_purge"]));
+                                break;
                         }
                 }
                 $topn = 50;
@@ -93,9 +96,9 @@ require("helper.php");
                 </script>';
         }
 ?>
+                <form action="purge.php" method="post">
                 <div class="panel panel-warning">
                         <div class="panel-body">
-                        <form action="purge.php" method="post">
                         Autopurge is currently
                         <?php
                         if (isAutopurgeEnabled()) {
@@ -107,9 +110,14 @@ require("helper.php");
                                 echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="120" style="width:80px;"> days';
                         }
                         ?>
-                        </form>
                         </div>
                 </div>
+                <div class="panel panel-warning">
+                        <div class="panel-body">
+                        Force purge items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="30" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
+                        </div>
+                </div>
+                </form>
         </div>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
