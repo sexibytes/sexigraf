@@ -26,9 +26,15 @@ function disableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/
 
 function disableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeVsanCrontab.sh " . $inputvcenter); }
 
-function enableAutopurge() { shell_exec("sudo /bin/bash /var/www/scripts/addAutopurgeCrontab.sh"); }
+function enableAutopurge($nbPurgeDays) {
+        file_put_contents('./graphite_autopurge', $nbPurgeDays);
+        shell_exec("sudo /bin/bash /var/www/scripts/addAutopurgeCrontab.sh " . $nbPurgeDays);
+}
 
-function disableAutopurge() { shell_exec("sudo /bin/bash /var/www/scripts/removeAutopurgeCrontab.sh"); }
+function disableAutopurge() {
+        shell_exec("sudo /bin/bash /var/www/scripts/removeAutopurgeCrontab.sh");
+        unlink('./graphite_autopurge');
+}
 
 function humanFileSize($size,$unit="") {
         if( (!$unit && $size >= 1<<30) || $unit == "GB")
