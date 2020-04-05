@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.889";
+$Util::script_version = "0.9.890";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1284,7 +1284,7 @@ if ($apiType eq "VirtualCenter") {
 							if ($Standalone_vm_view_snap_size > 0) {
 								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"storage"}{"delta"} = $Standalone_vm_view_snap_size;
 							}
-							
+
 							my $Standalone_vm_view_CpuUtilization = 0;
 							if ($Standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $Standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
 								$Standalone_vm_view_CpuUtilization = $Standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $Standalone_vm_view->{'runtime.maxCpuUsage'};
@@ -1638,8 +1638,7 @@ if ($apiType eq "VirtualCenter") {
 		["storageAdapter", "read", "average"],
 		["storageAdapter", "write", "average"],
 		# ["power", "power", "average"],
-		# ["datastore", "sizeNormalizedDatastoreLatency", "average"],
-		# ["datastore", "datastoreIops", "average"],
+		# ["datastore", "datastoreVMObservedLatency", "latest"],
 		# ["datastore", "totalWriteLatency", "average"],
 		# ["datastore", "totalReadLatency", "average"],
 		# ["datastore", "numberWriteAveraged", "average"],
@@ -1737,6 +1736,10 @@ if ($apiType eq "VirtualCenter") {
 
 			foreach my $UnamagedResourceDatastore (@UnamagedResourceDatastoresViews) {
 				if ($UnamagedResourceDatastore->summary->accessible) {
+
+					my @vmpath = split("/", $UnamagedResourceDatastore->summary->url);
+					my $uuid = $vmpath[-1];
+
 					my $UnamagedResourceDatastore_name = nameCleaner($UnamagedResourceDatastore->summary->name);
 					my $UnamagedResourceDatastore_uncommitted = 0;
 					if ($UnamagedResourceDatastore->summary->uncommitted) {
@@ -1746,6 +1749,11 @@ if ($apiType eq "VirtualCenter") {
 					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"datastore"}{$UnamagedResourceDatastore_name}{"summary"}{"capacity"} = $UnamagedResourceDatastore->summary->capacity;
 					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"datastore"}{$UnamagedResourceDatastore_name}{"summary"}{"freeSpace"} = $UnamagedResourceDatastore->summary->freeSpace;
 					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"datastore"}{$UnamagedResourceDatastore_name}{"summary"}{"uncommitted"} = $UnamagedResourceDatastore_uncommitted;
+
+					# if ($hostmultistats{$perfCntr{"datastore.datastoreVMObservedLatency.latest"}->key}{$UnamagedResourceVMHost->{'mo_ref'}->value}{$uuid}) {
+					# 	my $UnamagedResourceDatastoreVmLatency = $hostmultistats{$perfCntr{"datastore.datastoreVMObservedLatency.latest"}->key}{$UnamagedResourceVMHost->{'mo_ref'}->value}{$uuid};
+					# 	$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"datastore"}{$UnamagedResourceDatastore_name}{"iorm"}{"sizeNormalizedDatastoreLatency"} = $UnamagedResourceDatastoreVmLatency;
+					# }
 				}
 			}
 
