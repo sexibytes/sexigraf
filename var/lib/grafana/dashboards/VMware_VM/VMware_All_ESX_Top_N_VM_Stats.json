@@ -51,7 +51,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(scale(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), 5)",
+              "target": "aliasByNode(sortByMaxima(scale(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.quickstats.overallCpuUsage, $N), 1000000)), 5)",
               "textEditor": true
             }
           ],
@@ -127,7 +127,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.GuestMemoryUsage, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.quickstats.GuestMemoryUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -202,7 +202,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.quickstats.HostMemoryUsage, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.quickstats.HostMemoryUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -277,7 +277,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.committed, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.storage.committed, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -352,7 +352,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.uncommitted, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.storage.uncommitted, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -427,7 +427,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.storage.delta, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.storage.delta, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -502,7 +502,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.diskUsage, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.diskUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -577,7 +577,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.netUsage, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.netUsage, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -664,7 +664,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.CpuUtilization, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.runtime.CpuUtilization, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -739,7 +739,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.runtime.MemUtilization, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.runtime.MemUtilization, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -814,7 +814,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_ready_summation, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.cpu_ready_summation, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -889,7 +889,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(scale(highest$view(sortByMaxima(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_latency_average), $N), 0.01), 5)",
+              "target": "aliasByNode(scale(highest$view(sortByMaxima(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.cpu_latency_average), $N), 0.01), 5)",
               "textEditor": true
             }
           ],
@@ -964,7 +964,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.maxTotalLatency, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.maxTotalLatency, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -1039,7 +1039,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.cpu_wait_no_idle, $N)), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(esx.$vcenter.$datacentre.$esx.vm.$vm.fatstats.cpu_wait_no_idle, $N)), 5)",
               "textEditor": true
             }
           ],
@@ -1109,7 +1109,7 @@
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [],
-        "query": "vmw.*",
+        "query": "esx.*",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1132,7 +1132,7 @@
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [],
-        "query": "vmw.$vcenter.*",
+        "query": "esx.$vcenter.*",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1153,9 +1153,9 @@
         "label": null,
         "multi": true,
         "multiFormat": "glob",
-        "name": "cluster",
+        "name": "esx",
         "options": [],
-        "query": "vmw.$vcenter.$datacentre.*",
+        "query": "esx.$vcenter.$datacentre.*",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1178,7 +1178,7 @@
         "multiFormat": "glob",
         "name": "vm",
         "options": [],
-        "query": "vmw.$vcenter.$datacentre.$cluster.vm.*",
+        "query": "esx.$vcenter.$datacentre.$esx.vm.*",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1308,7 +1308,7 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware All Cluster Top N VM Stats",
-  "uid": "57cb1704",
+  "title": "VMware All ESX Top N VM Stats",
+  "uid": "12bfd741",
   "version": 5
 }
