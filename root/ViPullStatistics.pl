@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.887";
+$Util::script_version = "0.9.889";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -1231,51 +1231,171 @@ if ($apiType eq "VirtualCenter") {
 
 				if (scalar(@StandaloneResourceVMHostVmsViews) > 0) {
 
-					my $standalone_vm_views_vcpus = 0;
+					# my $Standalone_vm_views_vcpus = 0;
 					my $Standalone_vm_views_on = 0;
+					my $Standalone_vm_views_files_dedup = {};
 
 					$logger->info("[INFO] Processing vCenter $vmware_server standalone host $StandaloneResourceVMHostName vms in datacenter $datacentre_name");
 
-					foreach my $standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
+					foreach my $Standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
 
-						my $standalone_vm_view_name = nameCleaner($standalone_vm_view->name);
+						my $Standalone_vm_view_name = nameCleaner($Standalone_vm_view->name);
 
-						if ($standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
+						if ($Standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
-							$standalone_vm_views_vcpus += $standalone_vm_view->{'config.hardware.numCPU'};
+							# $Standalone_vm_views_vcpus += $Standalone_vm_view->{'config.hardware.numCPU'};
 							$Standalone_vm_views_on++;
 
-							my $standalone_vm_view_CpuUtilization = 0;
-							if ($standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
-								$standalone_vm_view_CpuUtilization = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $standalone_vm_view->{'runtime.maxCpuUsage'};
+							my $Standalone_vm_view_files = $Standalone_vm_view->{'layoutEx.file'};
+							### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
+
+							my $Standalone_vm_view_snap_size = 0;
+							my $Standalone_vm_view_has_snap = 0;
+
+							if ($Standalone_vm_view->snapshot) {
+								$Standalone_vm_view_has_snap = 1;
 							}
 
-							my $standalone_vm_view_MemUtilization = 0;
-							if ($standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
-								$standalone_vm_view_MemUtilization = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $standalone_vm_view->{'runtime.maxMemoryUsage'};
+							my $Standalone_vm_view_num_vdisk = $Standalone_vm_view->{'summary.config.numVirtualDisks'};
+							my $Standalone_vm_view_real_vdisk = 0;
+							
+
+							foreach my $Standalone_vm_view_file (@$Standalone_vm_view_files) {
+								if ($Standalone_vm_view_file->type eq "diskDescriptor") {
+									$Standalone_vm_view_real_vdisk++;
+								}
 							}
 
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"overallCpuUsage"} = $standalone_vm_view->{'summary.quickStats.overallCpuUsage'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"overallCpuDemand"} = $standalone_vm_view->{'summary.quickStats.overallCpuDemand'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"HostMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.hostMemoryUsage'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"GuestMemoryUsage"} = $standalone_vm_view->{'summary.quickStats.guestMemoryUsage'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"storage"}{"committed"} = $standalone_vm_view->{'summary.storage.committed'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"storage"}{"uncommitted"} = $standalone_vm_view->{'summary.storage.uncommitted'};
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"runtime"}{"CpuUtilization"} = $standalone_vm_view_CpuUtilization;
-							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"runtime"}{"MemUtilization"} = $standalone_vm_view_MemUtilization;
-
-
-							if ($standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
-								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"BalloonedMemory"} = $standalone_vm_view->{'summary.quickStats.balloonedMemory'};
+							if (($Standalone_vm_view_real_vdisk > $Standalone_vm_view_num_vdisk)) {
+								$Standalone_vm_view_has_snap = 1;
 							}
 
-							if ($standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
-								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"CompressedMemory"} = $standalone_vm_view->{'summary.quickStats.compressedMemory'};
+							foreach my $Standalone_vm_view_file (@$Standalone_vm_view_files) {
+								if (!$Standalone_vm_views_files_dedup->{$Standalone_vm_view_file->name}) { #would need name & moref
+									$Standalone_vm_views_files_dedup->{$Standalone_vm_view_file->name} = $Standalone_vm_view_file->size;
+									if (($Standalone_vm_view_has_snap == 1) && ($Standalone_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $Standalone_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+										$Standalone_vm_view_snap_size += $Standalone_vm_view_file->size;
+									} elsif (($Standalone_vm_view_has_snap == 1) && ($Standalone_vm_view_file->name =~ /-[0-9]{6}\.vmdk/)) {
+										$Standalone_vm_view_snap_size += $Standalone_vm_view_file->size;
+									}
+								}
 							}
 
-							if ($standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
-								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$standalone_vm_view_name}{"quickstats"}{"SwappedMemory"} = $standalone_vm_view->{'summary.quickStats.swappedMemory'};
+							if ($Standalone_vm_view_snap_size > 0) {
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"storage"}{"delta"} = $Standalone_vm_view_snap_size;
 							}
+							
+							my $Standalone_vm_view_CpuUtilization = 0;
+							if ($Standalone_vm_view->{'runtime.maxCpuUsage'} > 0 && $Standalone_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
+								$Standalone_vm_view_CpuUtilization = $Standalone_vm_view->{'summary.quickStats.overallCpuUsage'} * 100 / $Standalone_vm_view->{'runtime.maxCpuUsage'};
+							}
+
+							my $Standalone_vm_view_MemUtilization = 0;
+							if ($Standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} > 0 && $Standalone_vm_view->{'runtime.maxMemoryUsage'} > 0) {
+								$Standalone_vm_view_MemUtilization = $Standalone_vm_view->{'summary.quickStats.guestMemoryUsage'} * 100 / $Standalone_vm_view->{'runtime.maxMemoryUsage'};
+							}
+
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"overallCpuUsage"} = $Standalone_vm_view->{'summary.quickStats.overallCpuUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"overallCpuDemand"} = $Standalone_vm_view->{'summary.quickStats.overallCpuDemand'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"HostMemoryUsage"} = $Standalone_vm_view->{'summary.quickStats.hostMemoryUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"GuestMemoryUsage"} = $Standalone_vm_view->{'summary.quickStats.guestMemoryUsage'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"storage"}{"committed"} = $Standalone_vm_view->{'summary.storage.committed'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"storage"}{"uncommitted"} = $Standalone_vm_view->{'summary.storage.uncommitted'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"runtime"}{"CpuUtilization"} = $Standalone_vm_view_CpuUtilization;
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"runtime"}{"MemUtilization"} = $Standalone_vm_view_MemUtilization;
+
+
+							if ($Standalone_vm_view->{'summary.quickStats.balloonedMemory'} > 0) {
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"BalloonedMemory"} = $Standalone_vm_view->{'summary.quickStats.balloonedMemory'};
+							}
+
+							if ($Standalone_vm_view->{'summary.quickStats.compressedMemory'} > 0) {
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"CompressedMemory"} = $Standalone_vm_view->{'summary.quickStats.compressedMemory'};
+							}
+
+							if ($Standalone_vm_view->{'summary.quickStats.swappedMemory'} > 0) {
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"quickstats"}{"SwappedMemory"} = $Standalone_vm_view->{'summary.quickStats.swappedMemory'};
+							}
+
+							if ($vmmultistats{$perfCntr{"cpu.ready.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmreadyavg = $vmmultistats{$perfCntr{"cpu.ready.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""} / $Standalone_vm_view->{'config.hardware.numCPU'} / 20000 * 100;
+								### https://kb.vmware.com/kb/2002181
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"cpu_ready_summation"} = $vmreadyavg;
+							}
+
+							if ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""} && $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmwaitavg = ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""} - $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) / $Standalone_vm_view->{'config.hardware.numCPU'} / 20000 * 100;
+								### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"cpu_wait_no_idle"} = $vmwaitavg;
+							}
+
+							if ($vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmlatencyval = $vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"cpu_latency_average"} = $vmlatencyval;
+							}
+
+							if ($vmmultistats{$perfCntr{"disk.maxTotalLatency.latest"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmmaxtotallatencyval = $vmmultistats{$perfCntr{"disk.maxTotalLatency.latest"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"maxTotalLatency"} = $vmmaxtotallatencyval;
+							}
+
+							if ($vmmultistats{$perfCntr{"disk.usage.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmdiskusageval = $vmmultistats{$perfCntr{"disk.usage.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"diskUsage"} = $vmdiskusageval;
+							}
+
+							if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""}) {
+								my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$Standalone_vm_view->{'mo_ref'}->value}{""};
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
+							}
+
+						} elsif ($Standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOff") {
+
+							my $Standalone_vm_view_off = $Standalone_vm_view;
+
+							my $Standalone_vm_view_off_name = nameCleaner($Standalone_vm_view_off->name);
+
+							my $Standalone_vm_view_off_files = $Standalone_vm_view_off->{'layoutEx.file'};
+							### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
+
+							my $Standalone_vm_view_off_snap_size = 0;
+							my $Standalone_vm_view_off_has_snap = 0;
+
+							if ($Standalone_vm_view_off->snapshot) {
+								$Standalone_vm_view_off_has_snap = 1;
+							}
+
+							my $Standalone_vm_view_off_num_vdisk = $Standalone_vm_view_off->{'summary.config.numVirtualDisks'};
+							my $Standalone_vm_view_off_real_vdisk = 0;
+
+							foreach my $Standalone_vm_view_off_file (@$Standalone_vm_view_off_files) {
+								if ($Standalone_vm_view_off_file->type eq "diskDescriptor") {
+									$Standalone_vm_view_off_real_vdisk++;
+								}
+							}
+
+							if (($Standalone_vm_view_off_real_vdisk > $Standalone_vm_view_off_num_vdisk)) {
+								$Standalone_vm_view_off_has_snap = 1;
+							}
+
+							foreach my $Standalone_vm_view_off_file (@$Standalone_vm_view_off_files) {
+								if (!$Standalone_vm_views_files_dedup->{$Standalone_vm_view_off_file->name}) { #would need name & moref
+									$Standalone_vm_views_files_dedup->{$Standalone_vm_view_off_file->name} = $Standalone_vm_view_off_file->size;
+									if (($Standalone_vm_view_off_has_snap == 1) && ($Standalone_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $Standalone_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+										$Standalone_vm_view_off_snap_size += $Standalone_vm_view_off_file->size;
+									} elsif (($Standalone_vm_view_off_has_snap == 1) && ($Standalone_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/)) {
+											$Standalone_vm_view_off_snap_size += $Standalone_vm_view_off_file->size;
+									}
+								}
+							}
+
+							if ($Standalone_vm_view_off_snap_size > 0) {
+								$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_off_name}{"storage.delta"} = $Standalone_vm_view_off_snap_size;
+							}
+
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_off_name}{"storage.committed"} = $Standalone_vm_view_off->{'summary.storage.committed'};
+							$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"vm"}{$Standalone_vm_view_off_name}{"storage.uncommitted"} = $Standalone_vm_view_off->{'summary.storage.uncommitted'};
+
 						}
 
 						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"runtime"}{"vm"}{"total"} = scalar(@StandaloneResourceVMHostVmsViews);
@@ -1517,14 +1637,14 @@ if ($apiType eq "VirtualCenter") {
 		# ["net", "errorsTx", "summation"],
 		["storageAdapter", "read", "average"],
 		["storageAdapter", "write", "average"],
-		["power", "power", "average"],
-		["datastore", "sizeNormalizedDatastoreLatency", "average"],
-		["datastore", "datastoreIops", "average"],
-		["datastore", "totalWriteLatency", "average"],
-		["datastore", "totalReadLatency", "average"],
-		["datastore", "numberWriteAveraged", "average"],
-		["datastore", "numberReadAveraged", "average"],
-		["cpu", "latency", "average"],
+		# ["power", "power", "average"],
+		# ["datastore", "sizeNormalizedDatastoreLatency", "average"],
+		# ["datastore", "datastoreIops", "average"],
+		# ["datastore", "totalWriteLatency", "average"],
+		# ["datastore", "totalReadLatency", "average"],
+		# ["datastore", "numberWriteAveraged", "average"],
+		# ["datastore", "numberReadAveraged", "average"],
+		# ["cpu", "latency", "average"],
 		# ["mem", "sysUsage", "average"],
 		# ["rescpu", "actav5", "latest"],
 	);
@@ -1682,8 +1802,9 @@ if ($apiType eq "VirtualCenter") {
 			my @UnamagedResourcePoolConsumedOverheadMemory = ();
 			push (@UnamagedResourcePoolConsumedOverheadMemory,0);
 			
-			my $Unamaged_vm_views_vcpus = 0;
+			# my $Unamaged_vm_views_vcpus = 0;
 			my $Unamaged_vm_views_on = 0;
+			my $Unamaged_vm_views_files_dedup = {};
 
 			if (scalar(@UnamagedResourceVMHostVmsViews) > 0) {
 
@@ -1695,8 +1816,47 @@ if ($apiType eq "VirtualCenter") {
 
 					if ($Unamaged_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
-						$Unamaged_vm_views_vcpus += $Unamaged_vm_view->{'config.hardware.numCPU'};
+						# $Unamaged_vm_views_vcpus += $Unamaged_vm_view->{'config.hardware.numCPU'};
 						$Unamaged_vm_views_on++;
+
+						my $Unamaged_vm_view_files = $Unamaged_vm_view->{'layoutEx.file'};
+						### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
+
+						my $Unamaged_vm_view_snap_size = 0;
+						my $Unamaged_vm_view_has_snap = 0;
+
+						if ($Unamaged_vm_view->snapshot) {
+							$Unamaged_vm_view_has_snap = 1;
+						}
+
+						my $Unamaged_vm_view_num_vdisk = $Unamaged_vm_view->{'summary.config.numVirtualDisks'};
+						my $Unamaged_vm_view_real_vdisk = 0;
+						
+
+						foreach my $Unamaged_vm_view_file (@$Unamaged_vm_view_files) {
+							if ($Unamaged_vm_view_file->type eq "diskDescriptor") {
+								$Unamaged_vm_view_real_vdisk++;
+							}
+						}
+
+						if (($Unamaged_vm_view_real_vdisk > $Unamaged_vm_view_num_vdisk)) {
+							$Unamaged_vm_view_has_snap = 1;
+						}
+
+						foreach my $Unamaged_vm_view_file (@$Unamaged_vm_view_files) {
+							if (!$Unamaged_vm_views_files_dedup->{$Unamaged_vm_view_file->name}) { #would need name & moref
+								$Unamaged_vm_views_files_dedup->{$Unamaged_vm_view_file->name} = $Unamaged_vm_view_file->size;
+								if (($Unamaged_vm_view_has_snap == 1) && ($Unamaged_vm_view_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $Unamaged_vm_view_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+									$Unamaged_vm_view_snap_size += $Unamaged_vm_view_file->size;
+								} elsif (($Unamaged_vm_view_has_snap == 1) && ($Unamaged_vm_view_file->name =~ /-[0-9]{6}\.vmdk/)) {
+									$Unamaged_vm_view_snap_size += $Unamaged_vm_view_file->size;
+								}
+							}
+						}
+
+						if ($Unamaged_vm_view_snap_size > 0) {
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"storage"}{"delta"} = $Unamaged_vm_view_snap_size;
+						}
 
 						my $Unamaged_vm_view_CpuUtilization = 0;
 						if ($Unamaged_vm_view->{'runtime.maxCpuUsage'} > 0 && $Unamaged_vm_view->{'summary.quickStats.overallCpuUsage'} > 0) {
@@ -1731,6 +1891,38 @@ if ($apiType eq "VirtualCenter") {
 							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"quickstats"}{"SwappedMemory"} = $Unamaged_vm_view->{'summary.quickStats.swappedMemory'};
 						}
 
+						if ($vmmultistats{$perfCntr{"cpu.ready.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmreadyavg = $vmmultistats{$perfCntr{"cpu.ready.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""} / $Unamaged_vm_view->{'config.hardware.numCPU'} / 20000 * 100;
+							### https://kb.vmware.com/kb/2002181
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"cpu_ready_summation"} = $vmreadyavg;
+						}
+
+						if ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""} && $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmwaitavg = ($vmmultistats{$perfCntr{"cpu.wait.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""} - $vmmultistats{$perfCntr{"cpu.idle.summation"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) / $Unamaged_vm_view->{'config.hardware.numCPU'} / 20000 * 100;
+							### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"cpu_wait_no_idle"} = $vmwaitavg;
+						}
+
+						if ($vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmlatencyval = $vmmultistats{$perfCntr{"cpu.latency.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"cpu_latency_average"} = $vmlatencyval;
+						}
+
+						if ($vmmultistats{$perfCntr{"disk.maxTotalLatency.latest"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmmaxtotallatencyval = $vmmultistats{$perfCntr{"disk.maxTotalLatency.latest"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"maxTotalLatency"} = $vmmaxtotallatencyval;
+						}
+
+						if ($vmmultistats{$perfCntr{"disk.usage.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmdiskusageval = $vmmultistats{$perfCntr{"disk.usage.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"diskUsage"} = $vmdiskusageval;
+						}
+
+						if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$Unamaged_vm_view->{'mo_ref'}->value}{""};
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
+						}
+
 						if ($Unamaged_vm_view->{'summary.quickStats.privateMemory'} > 0) {
 							push (@UnamagedResourcePoolPrivateMemory,$Unamaged_vm_view->{'summary.quickStats.privateMemory'});
 						}
@@ -1746,6 +1938,54 @@ if ($apiType eq "VirtualCenter") {
 						if ($Unamaged_vm_view->{'summary.quickStats.consumedOverheadMemory'} > 0) {
 							push (@UnamagedResourcePoolConsumedOverheadMemory,$Unamaged_vm_view->{'summary.quickStats.consumedOverheadMemory'});
 						}
+
+					} elsif ($Unamaged_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOff") {
+
+						my $Unamaged_vm_view_off = $Unamaged_vm_view;
+
+						my $Unamaged_vm_view_off_name = nameCleaner($Unamaged_vm_view_off->name);
+
+						my $Unamaged_vm_view_off_files = $Unamaged_vm_view_off->{'layoutEx.file'};
+						### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wssdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
+
+						my $Unamaged_vm_view_off_snap_size = 0;
+						my $Unamaged_vm_view_off_has_snap = 0;
+
+						if ($Unamaged_vm_view_off->snapshot) {
+							$Unamaged_vm_view_off_has_snap = 1;
+						}
+
+						my $Unamaged_vm_view_off_num_vdisk = $Unamaged_vm_view_off->{'summary.config.numVirtualDisks'};
+						my $Unamaged_vm_view_off_real_vdisk = 0;
+
+						foreach my $Unamaged_vm_view_off_file (@$Unamaged_vm_view_off_files) {
+							if ($Unamaged_vm_view_off_file->type eq "diskDescriptor") {
+								$Unamaged_vm_view_off_real_vdisk++;
+							}
+						}
+
+						if (($Unamaged_vm_view_off_real_vdisk > $Unamaged_vm_view_off_num_vdisk)) {
+							$Unamaged_vm_view_off_has_snap = 1;
+						}
+
+						foreach my $Unamaged_vm_view_off_file (@$Unamaged_vm_view_off_files) {
+							if (!$Unamaged_vm_views_files_dedup->{$Unamaged_vm_view_off_file->name}) { #would need name & moref
+								$Unamaged_vm_views_files_dedup->{$Unamaged_vm_view_off_file->name} = $Unamaged_vm_view_off_file->size;
+								if (($Unamaged_vm_view_off_has_snap == 1) && ($Unamaged_vm_view_off_file->name =~ /-[0-9]{6}-delta\.vmdk/ or $Unamaged_vm_view_off_file->name =~ /-[0-9]{6}-sesparse\.vmdk/)) {
+									$Unamaged_vm_view_off_snap_size += $Unamaged_vm_view_off_file->size;
+								} elsif (($Unamaged_vm_view_off_has_snap == 1) && ($Unamaged_vm_view_off_file->name =~ /-[0-9]{6}\.vmdk/)) {
+										$Unamaged_vm_view_off_snap_size += $Unamaged_vm_view_off_file->size;
+								}
+							}
+						}
+
+						if ($Unamaged_vm_view_off_snap_size > 0) {
+							$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_off_name}{"storage.delta"} = $Unamaged_vm_view_off_snap_size;
+						}
+
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_off_name}{"storage.committed"} = $Unamaged_vm_view_off->{'summary.storage.committed'};
+						$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"vm"}{$Unamaged_vm_view_off_name}{"storage.uncommitted"} = $Unamaged_vm_view_off->{'summary.storage.uncommitted'};
+
 					}
 				}
 
