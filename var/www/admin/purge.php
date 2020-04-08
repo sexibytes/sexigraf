@@ -68,23 +68,18 @@ require("helper.php");
                                 break;
                         }
                 }
-                $topn = 50;
                 echo '                <div id="purgeTree" style="display:none;">
                 <form action="purge.php" method="post">
                 <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#whisper" aria-controls="whisper" role="tab" data-toggle="tab">Whisper repository</a></li>
                         <li role="presentation"><a href="#vcenter" aria-controls="vcenter" role="tab" data-toggle="tab">vCenter session files</a></li>
-                        <li role="presentation"><a href="#oldies" aria-controls="oldies" role="tab" data-toggle="tab">Top ' . $topn . ' oldest whisper files</a></li>
                 </ul>
                 <div class="tab-content" style="padding-top: 10px;">
                         <div role="tabpanel" class="tab-pane fade in active" id="whisper">
-                        ' . php_file_tree_dir("/zfs/whisper") . '
+                        ' . php_file_tree_dir_v2("/zfs/whisper", 2) . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="vcenter">
                         ' . php_file_tree("/tmp", "dat") . '
-                        </div>
-                        <div role="tabpanel" class="tab-pane fade" id="oldies">
-                        ' . php_file_tree_top_oldest("/zfs/whisper", $topn) . '
                         </div>
                 </div>
                 <button name="submit" class="btn btn-danger" value="purge-files">Purge</button>
