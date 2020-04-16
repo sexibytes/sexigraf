@@ -1,19 +1,19 @@
 #!/bin/bash
 
-if [ -d "/zfs/whisper" ]; then
+if [ -d "/mnt/wfs/whisper" ]; then
 
     # Import whiper files and re-apply Graphite ownership and correct access rights
     /etc/init.d/carbon-cache stop
     /etc/init.d/cron stop
     if [ -d "/media/cdrom/whisper" ]; then
-        /bin/cp -fR /media/cdrom/whisper/* /zfs/whisper/
+        /bin/cp -fR /media/cdrom/whisper/* /mnt/wfs/whisper/
     else
-        tar -zxvf /media/cdrom/whisper.tgz -C /zfs/whisper/
+        tar -zxvf /media/cdrom/whisper.tgz -C /mnt/wfs/whisper/
     fi
     # chown _graphite:_graphite -R /var/lib/graphite/whisper/*
     # find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
-    chown -R carbon /zfs/whisper
+    chown -R carbon /mnt/wfs/whisper
 
     # Import Offline Inventory file
     /bin/cp /media/cdrom/offline-vminventory.html /var/www/admin/

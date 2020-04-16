@@ -124,7 +124,7 @@ FETCH_TIMEOUT = 10.0  # Timeout to fetch series data
 # NOTE: If any directory is unreadable in STANDARD_DIRS it will break metric browsing
 #
 #CERES_DIR = '/opt/graphite/storage/ceres'
-WHISPER_DIR = '/zfs/whisper'
+WHISPER_DIR = '/mnt/wfs/whisper'
 #RRD_DIR = '/opt/graphite/storage/rrd'
 #
 # Data directories using the "Standard" metrics finder (i.e. not Ceres)

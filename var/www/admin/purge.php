@@ -76,7 +76,7 @@ require("helper.php");
                 </ul>
                 <div class="tab-content" style="padding-top: 10px;">
                         <div role="tabpanel" class="tab-pane fade in active" id="whisper">
-                        ' . php_file_tree_dir_v2("/zfs/whisper", 2) . '
+                        ' . php_file_tree_dir_v2("/mnt/wfs/whisper", 2) . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="vcenter">
                         ' . php_file_tree("/tmp", "dat") . '
