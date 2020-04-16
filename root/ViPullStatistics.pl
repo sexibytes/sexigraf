@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.890";
+$Util::script_version = "0.9.892";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -2010,6 +2010,119 @@ if ($apiType eq "VirtualCenter") {
 				my $UnamagedComputeResourceCarbonHashTimed = {time() => $UnamagedComputeResourceCarbonHash};
 				$graphite->send(path => "esx", data => $UnamagedComputeResourceCarbonHashTimed);
 
+			}
+
+			my $sessionCount = 0;
+			my $sessionCarbonHash;
+			my $sessionMgr = (Vim::get_view(mo_ref => $service_content->sessionManager));
+
+			$logger->info("[INFO] Processing vCenter $vmware_server events");
+
+			eval {
+				my $eventMgr = (Vim::get_view(mo_ref => $service_content->eventManager));
+
+				my $eventCount = 0;
+				my $eventCarbonHash = ();
+
+				my $eventLast = $eventMgr->latestEvent;
+				$eventCount = $eventLast->key;
+
+				if ($eventCount > 0) {
+
+					$eventCarbonHash->{$UnamagedResourceVMHostName}{"vi"}{"exec"}{"events"} = $eventCount;
+
+					## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
+					my $eventsInfo = $eventMgr->description->eventInfo;
+
+					my @filteredEvents
+					# our (@ViEvents70);
+					# require '/root/ViEvents.pl';
+					# @filteredEvents = @ViEvents70;
+
+					if ($eventsInfo) {
+						foreach my $eventInfo (@$eventsInfo) {
+							if ($eventInfo->category =~ m/(warning|error)/ &&  $eventInfo->longDescription =~ m/(vim\.event\.)/) {
+								# my $EventLongDescriptionId = $eventInfo->longDescription;
+								# $EventLongDescriptionId =~ /vim\.event\.([a-zA-Z0-9]+)/;
+								# push (@filteredEvents,$1);
+								push (@filteredEvents,$eventInfo->key);
+							}
+						}
+					}
+
+					foreach my $i (0..5) {
+						$t_5 -= ONE_MINUTE;
+					}
+
+					my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
+					my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
+					my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
+
+					my $eventCollector = Vim::get_view(mo_ref => $evtResults);
+					# $eventCollector->ResetCollector();
+					## my $exEvents = $eventCollector->latestPage;
+					my $exEvents = $eventCollector->ReadNextEvents(maxCount => 1000);
+					
+					my $vc_events_count_per_id = {};
+
+					if ($exEvents) {
+						foreach my $exEvent (@$exEvents) {
+
+							if (%$exEvent{"eventTypeId"}) {
+								if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+									my $evt_datacentre_name = $datacentre_name;
+									my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
+
+									$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEvent->eventTypeId} += 1;
+								}
+							} elsif (%$exEvent{"messageInfo"}) {
+								eval {
+									if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+										my $evt_datacentre_name = $datacentre_name;
+										my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
+
+										my $evt_msg_info = $exEvent->messageInfo;
+										my $evt_msg_info_0 = @$evt_msg_info[0];
+										my $evt_msg_info_id = %$evt_msg_info_0{"id"};
+										my $evt_id_name = nameCleaner($evt_msg_info_id);
+
+										$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$evt_id_name} += 1;
+									}
+								};
+							} else {
+								if (%$exEvent{"datacenter"} && %$exEvent{"computeResource"}) {
+									my $exEventRef = ref($exEvent);
+									my $evt_datacentre_name = $datacentre_name;
+									my $evt_cluster_name = nameCleaner($exEvent->computeResource->name);
+
+									$vc_events_count_per_id->{$evt_datacentre_name}->{$evt_cluster_name}->{$exEventRef} += 1;
+								}
+							}
+						}
+
+						foreach my $dc_vc_event_id (keys %$vc_events_count_per_id) {
+							my $clu_dc_vc_event_id_h = $vc_events_count_per_id->{$dc_vc_event_id};
+							foreach my $clu_dc_vc_event_id (keys %$clu_dc_vc_event_id_h) {
+								my $vc_events_count_per_id_h = $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id};
+								foreach my $evt_clu_dc_vc_event_id (keys %$vc_events_count_per_id_h) {
+									my $clean_evt_clu_dc_vc_event_id = $evt_clu_dc_vc_event_id;
+									$clean_evt_clu_dc_vc_event_id =~ s/[ .]/_/g;
+									$eventCarbonHash->{$vmware_server_name}{"vi"}{"exec"}{"ExEvent"}{$dc_vc_event_id}{$clu_dc_vc_event_id}{$clean_evt_clu_dc_vc_event_id} = $vc_events_count_per_id->{$dc_vc_event_id}->{$clu_dc_vc_event_id}->{$evt_clu_dc_vc_event_id};
+								}
+							}
+						}
+					}
+
+					$eventCollector->DestroyCollector;
+
+					my $eventCarbonHashTimed = {time() => $eventCarbonHash};
+					$graphite->send(path => "vi", data => $eventCarbonHashTimed);
+
+				}
+			};
+			if($@) {
+				$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vmware_server");
+				unlink $sessionfile;
 			}
 		};
 	}
