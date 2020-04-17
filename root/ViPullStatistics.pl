@@ -2034,7 +2034,7 @@ if ($apiType eq "VirtualCenter") {
 					## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
 					my $eventsInfo = $eventMgr->description->eventInfo;
 
-					my @filteredEvents
+					my @filteredEvents;
 					# our (@ViEvents70);
 					# require '/root/ViEvents.pl';
 					# @filteredEvents = @ViEvents70;
