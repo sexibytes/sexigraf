@@ -66,7 +66,7 @@ MEMCACHE_HOSTS = ['10.10.10.10:11211']
 # to the cache duration for the results. This allows for larger queries to be
 # cached for longer periods of times. All times are in seconds. If the policy is
 # empty or undefined, all results will be cached for DEFAULT_CACHE_DURATION.
-DEFAULT_CACHE_DURATION = 10 # Cache images and data for 1 minute
+#DEFAULT_CACHE_DURATION = 60 # Cache images and data for 1 minute
 #DEFAULT_CACHE_POLICY = [(0, 60), # default is 60 seconds
 #                        (7200, 120), # >= 2 hour queries are cached 2 minutes
 #                        (21600, 180)] # >= 6 hour queries are cached 3 minutes
