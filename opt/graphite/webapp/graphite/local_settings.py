@@ -32,7 +32,7 @@ SECRET_KEY = 'Sex1Gr4f'
 # Logging
 # These can also be configured using Django's LOGGING:
 # https://docs.djangoproject.com/en/1.11/topics/logging/
-#LOG_ROTATION = True
+LOG_ROTATION = False
 #LOG_ROTATION_COUNT = 1
 #LOG_RENDERING_PERFORMANCE = True
 #LOG_CACHE_PERFORMANCE = True
@@ -109,7 +109,7 @@ FETCH_TIMEOUT = 10.0  # Timeout to fetch series data
 #CONF_DIR = '/opt/graphite/conf'
 #STORAGE_DIR = '/opt/graphite/storage'
 #STATIC_ROOT = '/opt/graphite/static'
-#LOG_DIR = '/opt/graphite/storage/log/webapp'
+LOG_DIR = '/var/log/sexigraf/graphite'
 #INDEX_FILE = '/opt/graphite/storage/index'     # Search index file
 
 # To further or fully customize the paths, modify the following. Note that the
