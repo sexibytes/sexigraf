@@ -59,7 +59,7 @@ LOG_ROTATION = False
 # as every webapp in the cluster should use the exact same values to prevent
 # unneeded cache misses. Set to [] to disable caching of images and fetched data
 #MEMCACHE_HOSTS = ['10.10.10.10:11211', '10.10.10.11:11211', '10.10.10.12:11211']
-MEMCACHE_HOSTS = ['10.10.10.10:11211']
+MEMCACHE_HOSTS = ['127.0.0.1:11211']
 
 # Metric data and graphs are cached for one minute by default. If defined,
 # DEFAULT_CACHE_POLICY is a list of tuples of minimum query time ranges mapped
