@@ -448,21 +448,21 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(collectd.sexigraf.df-zfs-whisper.df_complex-reserved, 3)",
+          "target": "aliasByNode(collectd.sexigraf.df-mnt-wfs.df_complex-reserved, 3)",
           "textEditor": false
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(collectd.sexigraf.df-zfs-whisper.df_complex-used, 3)",
+          "target": "aliasByNode(collectd.sexigraf.df-mnt-wfs.df_complex-used, 3)",
           "textEditor": false
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "C",
-          "target": "aliasByNode(collectd.sexigraf.df-zfs-whisper.df_complex-free, 3)",
+          "target": "aliasByNode(collectd.sexigraf.df-mnt-wfs.df_complex-free, 3)",
           "textEditor": false
         }
       ],
@@ -470,7 +470,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "df-zfs",
+      "title": "df-wfs",
       "tooltip": {
         "shared": true,
         "sort": 0,
