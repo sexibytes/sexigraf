@@ -252,6 +252,12 @@
           "refId": "F",
           "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest), 'active')",
           "textEditor": false
+        },
+        {
+          "refId": "G",
+          "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead), 'overhead')",
+          "textEditor": false,
+          "refCount": 0
         }
       ],
       "thresholds": [],
