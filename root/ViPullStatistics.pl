@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.896";
+$Util::script_version = "0.9.897";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -408,6 +408,7 @@ if ($apiType eq "VirtualCenter") {
 	my %hostmultistats = ();
 	my %vmmultistats = ();
 	my %vcmultistats = ();
+	my %clumultistats = ();
 
 	if (!$BFG_Mode){
 
@@ -488,6 +489,16 @@ if ($apiType eq "VirtualCenter") {
 	my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
 	$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
 
+	my $clumultimetricsstart = Time::HiRes::gettimeofday();
+	my @clumultimetrics = (
+		# ["vmop", "numVMotion", "latest"],
+		["vmop", "numSVMotion", "latest"],
+	);
+	%clumultistats = MultiQueryPerf300($all_cluster_views, @clumultimetrics);
+	my $clumultimetricsend = Time::HiRes::gettimeofday();
+	my $clumultimetricstimelapse = $clumultimetricsend - $clumultimetricsstart;
+	$logger->info("[DEBUG] computed all cluster multi metrics in $clumultimetricstimelapse sec for vCenter $vmware_server");
+
 	my $cluster_hosts_views_pcpus = 0;
 	my @cluster_hosts_vms_moref = ();
 	my @cluster_hosts_cpu_latency = ();
@@ -526,6 +537,12 @@ if ($apiType eq "VirtualCenter") {
 			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"effective"} = $cluster_view->summary->effectiveCpu;
 			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"cpu"}{"total"} = $cluster_view->summary->totalCpu;
 			$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"numVmotions"} = $cluster_view->summary->numVmotions;
+
+
+			my $cluster_view_numSVMotion = $clumultistats{$perfCntr{"vmop.numSVMotion.latest"}->key}{$cluster_view->{'mo_ref'}->value}{""};
+			if ($cluster_view_numSVMotion) {
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"numSVMotion"} = $cluster_view_numSVMotion;
+			}
 
 			if ($cluster_root_pool_quickStats->overallCpuUsage > 0 && $cluster_view->summary->effectiveCpu > 0) {
 				my $cluster_root_pool_quickStats_cpu = $cluster_root_pool_quickStats->overallCpuUsage * 100 / $cluster_view->summary->effectiveCpu;
@@ -588,7 +605,7 @@ if ($apiType eq "VirtualCenter") {
 
 						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"bytesRx"} = $NetbytesRx;
 						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"bytesTx"} = $NetbytesTx;
-						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"linkSpeed"} = $cluster_host_vmnic->linkSpeed->speedMb;
+						$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"net"}{$cluster_host_vmnic_name}{"linkSpeed"} = $cluster_host_vmnic->linkSpeed->speedMb; #ToClean
 					}
 				}
 			}
