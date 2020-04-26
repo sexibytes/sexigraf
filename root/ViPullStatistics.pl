@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.892";
+$Util::script_version = "0.9.896";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -36,6 +36,9 @@ my $credstorefile = Opts::get_option('credstore');
 my $exec_start = time;
 my $t_0 = localtime;
 my $t_5 = localtime;
+foreach my $i (0..5) {
+	$t_5 -= ONE_MINUTE;
+}
 
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
 $logger->info("[DEBUG] ViPullStatistics v$Util::script_version for $vmware_server");
@@ -112,6 +115,7 @@ if (scalar(@user_list) == 0) {
 }
 
 my $service_content = Vim::get_service_content();
+# my $service_instance = Vim::get_service_instance();
 my $apiType = $service_content->about->apiType;
 
 my $perfMgr = (Vim::get_view(mo_ref => $service_content->perfManager));
@@ -207,6 +211,51 @@ sub MultiQueryPerf {
 	return %fatmetrics;
 }
 
+sub MultiQueryPerf300 {
+	my ($query_entity_views, @query_perfCntrs) = @_;
+
+	my $perfKey;
+	my @perfKeys = ();
+	for my $row ( 0..$#query_perfCntrs ) {
+		my $perfKey = $perfCntr{"$query_perfCntrs[$row][0].$query_perfCntrs[$row][1].$query_perfCntrs[$row][2]"}->key;
+		push @perfKeys,$perfKey;
+	}
+
+	my $metricId;
+	my @metricIDs = ();
+	foreach (@perfKeys) {
+		$metricId = PerfMetricId->new(counterId => $_, instance => '');
+		push @metricIDs,$metricId;
+	}
+
+	my $perfQuerySpec;
+	my @perfQuerySpecs = ();
+	foreach (@$query_entity_views) {
+		$perfQuerySpec = PerfQuerySpec->new(entity => $_, intervalId => 300, metricId => \@metricIDs, startTime => $t_5->datetime);
+		push @perfQuerySpecs,$perfQuerySpec;
+	}
+
+	my $metrics = $perfMgr->QueryPerf(querySpec => [@perfQuerySpecs]);
+	### https://kb.vmware.com/s/article/2107096
+
+	my %fatmetrics = ();
+	foreach(@$metrics) {
+		my $VmMoref = $_->entity->value;
+		my $perfValues = $_->value;
+		my $perfavg;
+		foreach(@$perfValues) {
+			my $perfinstance = $_->id->instance;
+			my $perfcountid = $_->id->counterId;
+			my $values = $_->value;
+			if (scalar @$values > 0) {
+				$perfavg = median(@$values);
+				$fatmetrics{$perfcountid}{$VmMoref}{$perfinstance} = $perfavg;
+			}
+		}
+	}
+	return %fatmetrics;
+}
+
 my @cluster_vm_view_snap_tree = ();
 sub getSnapshotTreeRaw {
 	my ($tree) = @_;
@@ -278,8 +327,12 @@ if ($apiType eq "VirtualCenter") {
 
 	my $all_folder_views = Vim::find_entity_views(view_type => 'Folder', properties => ['name', 'parent']);
 	my %all_folder_views_table = ();
+	my $FolderGroupD1 = ();
 	foreach my $all_folder_view (@$all_folder_views) {
 		$all_folder_views_table{$all_folder_view->{'mo_ref'}->value} = $all_folder_view;
+		if ($all_folder_view->{'mo_ref'}->value eq "group-d1") {
+			push (@$FolderGroupD1,$all_folder_view);
+		}
 	}
 
 	my $all_datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name', 'parent']);
@@ -354,6 +407,7 @@ if ($apiType eq "VirtualCenter") {
 
 	my %hostmultistats = ();
 	my %vmmultistats = ();
+	my %vcmultistats = ();
 
 	if (!$BFG_Mode){
 
@@ -422,6 +476,17 @@ if ($apiType eq "VirtualCenter") {
 		$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec for vCenter $vmware_server");
 
 	}
+
+	my $vcmultimetricsstart = Time::HiRes::gettimeofday();
+	my @vcmultimetrics = (
+		["vcResources", "virtualmemusage", "average"],
+		["vcResources", "physicalmemusage", "average"],
+		["vcResources", "systemcpuusage", "average"],
+	);
+	%vcmultistats = MultiQueryPerf300($FolderGroupD1, @vcmultimetrics);
+	my $vcmultimetricsend = Time::HiRes::gettimeofday();
+	my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
+	$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
 
 	my $cluster_hosts_views_pcpus = 0;
 	my @cluster_hosts_vms_moref = ();
@@ -1410,6 +1475,19 @@ if ($apiType eq "VirtualCenter") {
 		}
 	}
 
+	if (%vcmultistats) {
+		my $vcresCarbonHash = ();
+
+		my $vcres_virtualmemusage = $vcmultistats{$perfCntr{"vcResources.virtualmemusage.average"}->key}{"group-d1"}{""};
+		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"virtualmemusage"} = $vcres_virtualmemusage;
+		my $vcres_physicalmemusage = $vcmultistats{$perfCntr{"vcResources.physicalmemusage.average"}->key}{"group-d1"}{""};
+		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"physicalmemusage"} = $vcres_physicalmemusage;
+		my $vcres_systemcpuusage = $vcmultistats{$perfCntr{"vcResources.systemcpuusage.average"}->key}{"group-d1"}{""};
+		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"systemcpuusage"} = $vcres_systemcpuusage;
+
+		my $vcresCarbonHashTimed = {time() => $vcresCarbonHash};
+		$graphite->send(path => "vi", data => $vcresCarbonHashTimed);
+	}
 
 	my $sessionCount = 0;
 	my $sessionListH = ();
@@ -1452,8 +1530,6 @@ if ($apiType eq "VirtualCenter") {
 
 		if ($eventCount > 0) {
 
-			$eventCarbonHash->{$vmware_server_name}{"vi"}{"exec"}{"events"} = $eventCount;
-
 			## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
 			my $eventsInfo = $eventMgr->description->eventInfo;
 			my @filteredEvents = ();
@@ -1474,10 +1550,6 @@ if ($apiType eq "VirtualCenter") {
 						}
 					}
 				}
-			}
-
-			foreach my $i (0..5) {
-				$t_5 -= ONE_MINUTE;
 			}
 
 			my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
@@ -2029,15 +2101,13 @@ if ($apiType eq "VirtualCenter") {
 
 				if ($eventCount > 0) {
 
-					$eventCarbonHash->{$UnamagedResourceVMHostName}{"vi"}{"exec"}{"events"} = $eventCount;
-
 					## https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
 					my $eventsInfo = $eventMgr->description->eventInfo;
 
 					my @filteredEvents;
-					# our (@ViEvents70);
-					# require '/root/ViEvents.pl';
-					# @filteredEvents = @ViEvents70;
+
+					my @ViEvents70 = do "/root/ViEvents.pl";
+					@filteredEvents = @ViEvents70;
 
 					if ($eventsInfo) {
 						foreach my $eventInfo (@$eventsInfo) {
@@ -2048,10 +2118,6 @@ if ($apiType eq "VirtualCenter") {
 								push (@filteredEvents,$eventInfo->key);
 							}
 						}
-					}
-
-					foreach my $i (0..5) {
-						$t_5 -= ONE_MINUTE;
 					}
 
 					my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
