@@ -1,11 +1,11 @@
-#!/usr/bin/perl -w
-#
-use strict;
-use warnings;
-#
-our (@ViEvents70);
-#
-@ViEvents70 = (
+# #!/usr/bin/perl -w
+# #
+# use strict;
+# use warnings;
+# #
+# our (@ViEvents70);
+# #
+# @ViEvents70 = (
 "esx.audit.account.locked",
 "esx.audit.account.loginfailures",
 "esx.audit.dcui.defaults.factoryrestore",
@@ -396,4 +396,4 @@ our (@ViEvents70);
 "vprob.vmfs.nfs.server.disconnect",
 "vprob.vmfs.nfs.server.restored",
 "vprob.vmfs.resource.corruptondisk",
-);
+# );
