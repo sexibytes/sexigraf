@@ -489,7 +489,7 @@ if ($apiType eq "VirtualCenter") {
 		my $vcmultimetricsend = Time::HiRes::gettimeofday();
 		my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
 		$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
-	}
+	};
 
 	my $clumultimetricsstart = Time::HiRes::gettimeofday();
 	my @clumultimetrics = (
@@ -501,7 +501,7 @@ if ($apiType eq "VirtualCenter") {
 		my $clumultimetricsend = Time::HiRes::gettimeofday();
 		my $clumultimetricstimelapse = $clumultimetricsend - $clumultimetricsstart;
 		$logger->info("[DEBUG] computed all cluster multi metrics in $clumultimetricstimelapse sec for vCenter $vmware_server");
-	}
+	};
 
 	my $cluster_hosts_views_pcpus = 0;
 	my @cluster_hosts_vms_moref = ();
