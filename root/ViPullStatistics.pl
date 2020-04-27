@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.898";
+$Util::script_version = "0.9.899";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -486,10 +486,10 @@ if ($apiType eq "VirtualCenter") {
 	);
 	eval {
 		%vcmultistats = MultiQueryPerf300($FolderGroupD1, @vcmultimetrics);
-		my $vcmultimetricsend = Time::HiRes::gettimeofday();
-		my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
-		$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
 	};
+	my $vcmultimetricsend = Time::HiRes::gettimeofday();
+	my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
+	$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
 
 	my $clumultimetricsstart = Time::HiRes::gettimeofday();
 	my @clumultimetrics = (
@@ -498,10 +498,10 @@ if ($apiType eq "VirtualCenter") {
 	);
 	eval {
 		%clumultistats = MultiQueryPerf300($all_cluster_views, @clumultimetrics);
-		my $clumultimetricsend = Time::HiRes::gettimeofday();
-		my $clumultimetricstimelapse = $clumultimetricsend - $clumultimetricsstart;
-		$logger->info("[DEBUG] computed all cluster multi metrics in $clumultimetricstimelapse sec for vCenter $vmware_server");
 	};
+	my $clumultimetricsend = Time::HiRes::gettimeofday();
+	my $clumultimetricstimelapse = $clumultimetricsend - $clumultimetricsstart;
+	$logger->info("[DEBUG] computed all cluster multi metrics in $clumultimetricstimelapse sec for vCenter $vmware_server");
 
 	my $cluster_hosts_views_pcpus = 0;
 	my @cluster_hosts_vms_moref = ();
