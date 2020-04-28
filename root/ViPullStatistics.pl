@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.899";
+$Util::script_version = "0.9.900";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -248,7 +248,7 @@ sub MultiQueryPerf300 {
 			my $perfcountid = $_->id->counterId;
 			my $values = $_->value;
 			if (scalar @$values > 0) {
-				$perfavg = median(@$values);
+				$perfavg = max(@$values);
 				$fatmetrics{$perfcountid}{$VmMoref}{$perfinstance} = $perfavg;
 			}
 		}
