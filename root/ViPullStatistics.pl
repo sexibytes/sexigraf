@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.900";
+$Util::script_version = "0.9.901";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -727,7 +727,7 @@ if ($apiType eq "VirtualCenter") {
 
 		my $cluster_vm_views_vcpus = 0;
 		my $cluster_vm_views_vram = 0;
-		my $cluster_vm_views_vnic_usage = 0;	
+		# my $cluster_vm_views_vnic_usage = 0;
 		my $cluster_vm_views_files_dedup = {};
 		my $cluster_vm_views_files_dedup_total = {};
 		my $cluster_vm_views_files_snaps = 0;
@@ -873,11 +873,11 @@ if ($apiType eq "VirtualCenter") {
 							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"diskUsage"} = $vmdiskusageval;
 						}
 
-						if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
-							my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
-							$cluster_vm_views_vnic_usage += $vmnetusageval;
-							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
-						}
+						# if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
+						# 	my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
+						# 	$cluster_vm_views_vnic_usage += $vmnetusageval;
+						# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
+						# }
 
 						# if ($vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
 						# 	my $vmcommandsAveragedval = $vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
@@ -975,9 +975,9 @@ if ($apiType eq "VirtualCenter") {
 				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"mem"}{"allocated"} = $cluster_root_pool_quickStats_vram;
 			}
 
-			if ($cluster_vm_views_vnic_usage > 0) {
-				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"vnicUsage"} = $cluster_vm_views_vnic_usage;
-			}
+			# if ($cluster_vm_views_vnic_usage > 0) {
+			# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"superstats"}{"net"}{"vnicUsage"} = $cluster_vm_views_vnic_usage;
+			# }
 
 			if ($cluster_vm_views_files_dedup_total) {
 
