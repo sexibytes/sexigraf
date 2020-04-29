@@ -1291,7 +1291,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "alias(sumSeries(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotion)), 'svmotion')",
+          "target": "alias(sumSeries(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions)), 'svmotion')",
           "textEditor": false
         }
       ],

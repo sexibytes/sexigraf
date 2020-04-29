@@ -86,7 +86,7 @@
             {
               "refCount": 0,
               "refId": "B",
-              "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotion), 'svmotion')",
+              "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
               "textEditor": false
             }
           ],
