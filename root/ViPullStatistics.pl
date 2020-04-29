@@ -545,7 +545,7 @@ if ($apiType eq "VirtualCenter") {
 
 			my $cluster_view_numSVMotion = $clumultistats{$perfCntr{"vmop.numSVMotion.latest"}->key}{$cluster_view->{'mo_ref'}->value}{""};
 			if ($cluster_view_numSVMotion) {
-				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"numSVMotion"} = $cluster_view_numSVMotion;
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"numSVMotions"} = $cluster_view_numSVMotion;
 			}
 
 			if ($cluster_root_pool_quickStats->overallCpuUsage > 0 && $cluster_view->summary->effectiveCpu > 0) {
