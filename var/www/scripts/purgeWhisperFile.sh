@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ "$1" =~ ^\/var\/lib\/graphite\/whisper\/.*$|^\/tmp\/.*$ ]]
+if [[ "$1" =~ ^\/mnt\/wfs\/whisper\/.*$|^\/tmp\/.*$ ]]
 then
         rm -rf "$1"
 fi
