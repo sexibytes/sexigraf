@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.901";
+$Util::script_version = "0.9.902";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -34,11 +34,11 @@ my $sessionfile = Opts::get_option('sessionfile');
 my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
-my $t_0 = localtime;
-my $t_5 = localtime;
-foreach my $i (0..5) {
-	$t_5 -= ONE_MINUTE;
-}
+# my $t_0 = localtime;
+# my $t_5 = localtime;
+# foreach my $i (0..4) {
+# 	$t_5 -= ONE_MINUTE;
+# }
 
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
 $logger->info("[DEBUG] ViPullStatistics v$Util::script_version for $vmware_server");
@@ -115,7 +115,15 @@ if (scalar(@user_list) == 0) {
 }
 
 my $service_content = Vim::get_service_content();
-# my $service_instance = Vim::get_service_instance();
+my $service_instance = Vim::get_service_instance();
+my $vmware_server_clock = $service_instance->serverClock;
+$vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
+
+my $vmware_server_clock_5 = $vmware_server_clock;
+foreach my $i (0..4) {
+	$vmware_server_clock_5 -= ONE_MINUTE;
+}
+
 my $apiType = $service_content->about->apiType;
 
 my $perfMgr = (Vim::get_view(mo_ref => $service_content->perfManager));
