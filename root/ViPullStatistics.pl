@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.902";
+$Util::script_version = "0.9.903";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -34,11 +34,6 @@ my $sessionfile = Opts::get_option('sessionfile');
 my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
-# my $t_0 = localtime;
-# my $t_5 = localtime;
-# foreach my $i (0..4) {
-# 	$t_5 -= ONE_MINUTE;
-# }
 
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
 $logger->info("[DEBUG] ViPullStatistics v$Util::script_version for $vmware_server");
@@ -239,7 +234,7 @@ sub MultiQueryPerf300 {
 	my $perfQuerySpec;
 	my @perfQuerySpecs = ();
 	foreach (@$query_entity_views) {
-		$perfQuerySpec = PerfQuerySpec->new(entity => $_, intervalId => 300, metricId => \@metricIDs, startTime => $t_5->datetime);
+		$perfQuerySpec = PerfQuerySpec->new(entity => $_, intervalId => 300, metricId => \@metricIDs, startTime => $vmware_server_clock_5->datetime);
 		push @perfQuerySpecs,$perfQuerySpec;
 	}
 
@@ -1581,7 +1576,7 @@ if ($apiType eq "VirtualCenter") {
 				}
 			}
 
-			my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
+			my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $vmware_server_clock_5->datetime, endTime => $vmware_server_clock->datetime);
 			my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
 			my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
 
@@ -2149,7 +2144,7 @@ if ($apiType eq "VirtualCenter") {
 						}
 					}
 
-					my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $t_5->datetime, endTime => $t_0->datetime);
+					my $evtTimeSpec = EventFilterSpecByTime->new(beginTime => $vmware_server_clock_5->datetime, endTime => $vmware_server_clock->datetime);
 					my $filterSpec = EventFilterSpec->new(time => $evtTimeSpec, eventTypeId => [@filteredEvents]);
 					my $evtResults = $eventMgr->CreateCollectorForEvents(filter => $filterSpec);
 
