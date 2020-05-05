@@ -12,7 +12,7 @@
   ],
   "style": "light",
   "timezone": "browser",
-  "editable": true,
+  "editable": false,
   "hideControls": false,
   "sharedCrosshair": false,
   "rows": [
