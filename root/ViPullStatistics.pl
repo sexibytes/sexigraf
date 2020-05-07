@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.903";
+$Util::script_version = "0.9.904";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -111,7 +111,7 @@ if (scalar(@user_list) == 0) {
 
 my $service_content = Vim::get_service_content();
 my $service_instance = Vim::get_service_instance();
-my $vmware_server_clock = $service_instance->serverClock;
+my $vmware_server_clock = $service_instance->CurrentTime();
 $vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
 
 my $vmware_server_clock_5 = $vmware_server_clock;
