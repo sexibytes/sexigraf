@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.904";
+$Util::script_version = "0.9.905";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_Mode = 0;
@@ -111,7 +111,7 @@ if (scalar(@user_list) == 0) {
 
 my $service_content = Vim::get_service_content();
 my $service_instance = Vim::get_service_instance();
-my $vmware_server_clock = $service_instance->CurrentTime();
+my $vmware_server_clock = (split /\./, $service_instance->CurrentTime())[0];
 $vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
 
 my $vmware_server_clock_5 = $vmware_server_clock;
@@ -369,7 +369,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
-	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name'], filter => {'runtime.connectionState' => "connected"});
+	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'], filter => {'runtime.connectionState' => "connected"});
 	my %all_host_views_table = ();
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -600,6 +600,17 @@ if ($apiType eq "VirtualCenter") {
 			}
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
+
+			my $cluster_hosts_sensors = $cluster_host_view->{'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'};
+			# https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.host.NumericSensorInfo.html
+			
+			foreach my $cluster_hosts_sensor (@$cluster_hosts_sensors) {
+				if ($cluster_hosts_sensor->name && $cluster_hosts_sensor->sensorType && $cluster_hosts_sensor->currentReading && $cluster_hosts_sensor->unitModifier) {
+					my $cluster_hosts_sensor_computed_reading = $cluster_hosts_sensor->currentReading * (10**$cluster_hosts_sensor->unitModifier);
+					my $cluster_hosts_sensor_name = nameCleaner($cluster_hosts_sensor->name);
+					$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"sensor"}{$cluster_hosts_sensor->sensorType}{$cluster_hosts_sensor_name} = $cluster_hosts_sensor_computed_reading;
+				}
+			}
 
 			foreach my $cluster_host_vmnic (@{$cluster_host_view->{'config.network.pnic'}}) {
 				if ($cluster_host_vmnic->linkSpeed && $cluster_host_vmnic->linkSpeed->speedMb >= 100) {
@@ -1702,7 +1713,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
-	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name'], filter => {'runtime.connectionState' => "connected"});
+	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'], filter => {'runtime.connectionState' => "connected"});
 	my %all_host_views_table = ();
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -1811,6 +1822,16 @@ if ($apiType eq "VirtualCenter") {
 			my $UnamagedComputeResourceMB = $UnamagedComputeResource->summary->effectiveMemory * 9.5367431640625e-7; # in bytes for unmanaged but in MB for managed
 
 			my $UnamagedComputeResourceCarbonHash = ();
+
+			my $UnamagedResourceVMHost_sensors = $UnamagedResourceVMHost->{'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'};
+			
+			foreach my $UnamagedResourceVMHost_sensor (@$UnamagedResourceVMHost_sensors) {
+				if ($UnamagedResourceVMHost_sensor->name && $UnamagedResourceVMHost_sensor->sensorType && $UnamagedResourceVMHost_sensor->currentReading && $UnamagedResourceVMHost_sensor->unitModifier) {
+					my $UnamagedResourceVMHost_sensor_computed_reading = $UnamagedResourceVMHost_sensor->currentReading * (10**$UnamagedResourceVMHost_sensor->unitModifier);
+					my $UnamagedResourceVMHost_sensor_name = nameCleaner($UnamagedResourceVMHost_sensor->name);
+					$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"sensor"}{$UnamagedResourceVMHost_sensor->sensorType}{$UnamagedResourceVMHost_sensor_name} = $UnamagedResourceVMHost_sensor_computed_reading;
+				}
+			}
 
 			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"quickstats"}{"mem"}{"usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallMemoryUsage'};
 			$UnamagedComputeResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$UnamagedResourceVMHostName}{"quickstats"}{"cpu"}{"usage"} = $UnamagedResourceVMHost->{'summary.quickStats.overallCpuUsage'};
@@ -2231,4 +2252,4 @@ if ($apiType eq "VirtualCenter") {
 
 
 ### disconnect from the vmware server
-### Util::disconnect();
+# Util::disconnect();
