@@ -182,7 +182,7 @@
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": 1,
         "refresh_on_load": true,
-        "regex": "/.*vdi.*/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
