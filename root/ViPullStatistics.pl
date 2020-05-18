@@ -17,11 +17,11 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.905";
+$Util::script_version = "0.9.906";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
-my $BFG_Mode = 0;
-if (defined ($ARGV[6]) &&  ($ARGV[6] eq "BFG_Mode")) {$BFG_Mode = 1};
+my $BFG_MODE = 0;
+if (defined ($ARGV[6]) &&  ($ARGV[6] eq "BFG_MODE")) {$BFG_MODE = 1};
 
 Opts::parse();
 Opts::validate();
@@ -324,7 +324,7 @@ if ($apiType eq "VirtualCenter") {
 	my $vmware_server_name = lc ($vcenter_fqdn);
 		
 	$logger->info("[INFO] Processing vCenter $vmware_server objects");
-	if ($BFG_Mode) {$logger->info("[DEBUG] BFG Mode activated for vCenter $vmware_server");}
+	if ($BFG_MODE) {$logger->info("[DEBUG] BFG Mode activated for vCenter $vmware_server");}
 
 	### retreive viobjets and build moref-objects tables
 
@@ -413,7 +413,7 @@ if ($apiType eq "VirtualCenter") {
 	my %vcmultistats = ();
 	my %clumultistats = ();
 
-	if (!$BFG_Mode){
+	if (!$BFG_MODE){
 
 		my $hostmultimetricsstart = Time::HiRes::gettimeofday();
 		my @hostmultimetrics = (
@@ -825,7 +825,7 @@ if ($apiType eq "VirtualCenter") {
 						}
 					}
 
-					if (!$BFG_Mode) {
+					if (!$BFG_MODE) {
 
 						if ($cluster_vm_view_snap_size > 0) {
 							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"storage"}{"delta"} = $cluster_vm_view_snap_size;
@@ -966,7 +966,7 @@ if ($apiType eq "VirtualCenter") {
 						}
 					}
 
-					if (!$BFG_Mode) {
+					if (!$BFG_MODE) {
 
 						if ($cluster_vm_view_off_snap_size > 0) {
 							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_off_name}{"storage.delta"} = $cluster_vm_view_off_snap_size;
@@ -1209,7 +1209,7 @@ if ($apiType eq "VirtualCenter") {
 		}
 	}
 
-	if (!$BFG_Mode) {
+	if (!$BFG_MODE) {
 		$logger->info("[INFO] Processing vCenter $vmware_server standalone hosts");
 
 		foreach my $StandaloneComputeResource (@$all_compute_views) {
