@@ -1,11 +1,3 @@
-# #!/usr/bin/perl -w
-# #
-# use strict;
-# use warnings;
-# #
-# our (@ViEvents70);
-# #
-# @ViEvents70 = (
 "esx.audit.account.locked",
 "esx.audit.account.loginfailures",
 "esx.audit.dcui.defaults.factoryrestore",
@@ -68,8 +60,6 @@
 "esx.audit.ssh.session.closed",
 "esx.audit.ssh.session.failed",
 "esx.audit.ssh.session.opened",
-"esx.audit.test.test1d",
-"esx.audit.test.test1s",
 "esx.audit.usb.config.changed",
 "esx.audit.uw.secpolicy.alldomains.level.changed",
 "esx.audit.uw.secpolicy.domain.level.changed",
@@ -192,7 +182,6 @@
 "esx.problem.inventory.invalidConfigEntries",
 "esx.problem.iofilter.disabled",
 "esx.problem.iorm.badversion",
-"esx.problem.iorm.nonviworkload",
 "esx.problem.metadatastore.degraded",
 "esx.problem.metadatastore.healthy",
 "esx.problem.migrate.vmotion.default.heap.create.failed",
@@ -297,8 +286,6 @@
 "esx.problem.swap.systemSwap.isPDL.removed.reconfig.failure.2",
 "esx.problem.syslog.config",
 "esx.problem.syslog.nonpersistent",
-"esx.problem.test.test0",
-"esx.problem.test.test2",
 "esx.problem.vfat.filesystem.full.other",
 "esx.problem.vfat.filesystem.full.scratch",
 "esx.problem.visorfs.failure",
@@ -357,10 +344,6 @@
 "esx.problem.vob.vsan.lsom.diskunhealthy",
 "esx.problem.vob.vsan.lsom.stuckio",
 "esx.problem.vob.vsan.pdl.offline",
-"esx.problem.vobdtestcorrelator.test.0",
-"esx.problem.vobdtestcorrelator.test.1d",
-"esx.problem.vobdtestcorrelator.test.1s",
-"esx.problem.vobdtestcorrelator.test.hugestr",
 "esx.problem.vpxa.core.dumped",
 "esx.problem.vpxa.core.dumped.encrypted",
 "esx.problem.vsan.clustering.disabled",
@@ -396,4 +379,3 @@
 "vprob.vmfs.nfs.server.disconnect",
 "vprob.vmfs.nfs.server.restored",
 "vprob.vmfs.resource.corruptondisk",
-# );
