@@ -378,4 +378,4 @@
 "vprob.vmfs.lock.corruptondisk",
 "vprob.vmfs.nfs.server.disconnect",
 "vprob.vmfs.nfs.server.restored",
-"vprob.vmfs.resource.corruptondisk",
+"vprob.vmfs.resource.corruptondisk"
