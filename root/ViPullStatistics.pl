@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.911";
+$Util::script_version = "0.9.912";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
@@ -121,7 +121,7 @@ foreach my $i (0..4) {
 
 my $apiType = $service_content->about->apiType;
 
-my $perfMgr = (Vim::get_view(mo_ref => $service_content->perfManager));
+my $perfMgr = (Vim::get_view(mo_ref => $service_content->perfManager, properties => ['perfCounter']));
 my %perfCntr = map { $_->groupInfo->key . "." . $_->nameInfo->key . "." . $_->rollupType->val => $_ } @{$perfMgr->perfCounter};
 
 sub MultiQueryPerfAll {
@@ -1535,7 +1535,7 @@ if ($apiType eq "VirtualCenter") {
 	my $sessionCount = 0;
 	my $sessionListH = ();
 	my $sessionCarbonHash;
-	my $sessionMgr = (Vim::get_view(mo_ref => $service_content->sessionManager));
+	my $sessionMgr = (Vim::get_view(mo_ref => $service_content->sessionManager, properties => ['sessionList']));
 	my $sessionList = $sessionMgr->sessionList;
 
 	if ($sessionList) {
@@ -1563,7 +1563,7 @@ if ($apiType eq "VirtualCenter") {
 	$logger->info("[INFO] Processing vCenter $vmware_server events");
 
 	eval {
-		my $eventMgr = (Vim::get_view(mo_ref => $service_content->eventManager));
+		my $eventMgr = (Vim::get_view(mo_ref => $service_content->eventManager, properties => ['latestEvent', 'description']));
 
 		my $eventCount = 0;
 		my $eventCarbonHash = ();
@@ -2139,12 +2139,12 @@ if ($apiType eq "VirtualCenter") {
 
 			my $sessionCount = 0;
 			my $sessionCarbonHash;
-			my $sessionMgr = (Vim::get_view(mo_ref => $service_content->sessionManager));
+			my $sessionMgr = (Vim::get_view(mo_ref => $service_content->sessionManager, properties => ['sessionList']));
 
 			$logger->info("[INFO] Processing vCenter $vmware_server events");
 
 			eval {
-				my $eventMgr = (Vim::get_view(mo_ref => $service_content->eventManager));
+				my $eventMgr = (Vim::get_view(mo_ref => $service_content->eventManager, properties => ['latestEvent', 'description']));
 
 				my $eventCount = 0;
 				my $eventCarbonHash = ();
