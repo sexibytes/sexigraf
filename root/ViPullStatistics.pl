@@ -17,7 +17,7 @@ use Time::Piece;
 use Time::Seconds;
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.906";
+$Util::script_version = "0.9.910";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
@@ -34,6 +34,20 @@ my $sessionfile = Opts::get_option('sessionfile');
 my $credstorefile = Opts::get_option('credstore');
 
 my $exec_start = time;
+
+BEGIN {
+	Log::Log4perl::init('/etc/log4perl.conf');
+	$SIG{__WARN__} = sub {
+		my $logger = get_logger('sexigraf.ViPullStatistics');
+		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		$logger->warn("WARN @_");
+	};
+	$SIG{__DIE__} = sub {
+		my $logger = get_logger('sexigraf.ViPullStatistics');
+		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
+		$logger->fatal("DIE @_");
+	};
+}
 
 my $logger = Log::Log4perl->get_logger('sexigraf.ViPullStatistics');
 $logger->info("[DEBUG] ViPullStatistics v$Util::script_version for $vmware_server");
@@ -53,20 +67,6 @@ my $graphite = Net::Graphite->new(
 	return_connect_error  => 0,                ### if true, forward connect error to caller
 	flush_limit           => 0,                ### if true, send after this many metrics are ready
 );
-
-BEGIN {
-	Log::Log4perl::init('/etc/log4perl.conf');
-	$SIG{__WARN__} = sub {
-		my $logger = get_logger('sexigraf.ViPullStatistics');
-		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
-		$logger->warn("WARN @_");
-	};
-	$SIG{__DIE__} = sub {
-		my $logger = get_logger('sexigraf.ViPullStatistics');
-		local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
-		$logger->fatal("DIE @_");
-	};
-}
 
 $logger->info("[INFO] Start processing $vmware_server");
 
@@ -330,12 +330,12 @@ if ($apiType eq "VirtualCenter") {
 
 	my $all_folder_views = Vim::find_entity_views(view_type => 'Folder', properties => ['name', 'parent']);
 	my %all_folder_views_table = ();
-	my $FolderGroupD1 = ();
+	# my $FolderGroupD1 = ();
 	foreach my $all_folder_view (@$all_folder_views) {
 		$all_folder_views_table{$all_folder_view->{'mo_ref'}->value} = $all_folder_view;
-		if ($all_folder_view->{'mo_ref'}->value eq "group-d1") {
-			push (@$FolderGroupD1,$all_folder_view);
-		}
+		# if ($all_folder_view->{'mo_ref'}->value eq "group-d1") {
+		# 	push (@$FolderGroupD1,$all_folder_view);
+		# }
 	}
 
 	my $all_datacentres_views = Vim::find_entity_views(view_type => 'Datacenter', properties => ['name', 'parent']);
@@ -432,11 +432,12 @@ if ($apiType eq "VirtualCenter") {
 			["datastore", "totalReadLatency", "average"],
 			["datastore", "numberWriteAveraged", "average"],
 			["datastore", "numberReadAveraged", "average"],
-			["cpu", "latency", "average"],
-			# ["mem", "sysUsage", "average"],
-			# ["rescpu", "actav5", "latest"],
+			["cpu", "latency", "average"]
 		);
-		%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
+
+		eval {
+			%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
+		};
 		my $hostmultimetricsend = Time::HiRes::gettimeofday();
 		my $hostmultimetricstimelapse = $hostmultimetricsend - $hostmultimetricsstart;
 		$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec for vCenter $vmware_server");
@@ -450,9 +451,12 @@ if ($apiType eq "VirtualCenter") {
 			["disk", "maxTotalLatency", "latest"],
 			["disk", "usage", "average"],
 			# ["disk", "commandsAveraged", "average"],
-			["net", "usage", "average"],
+			["net", "usage", "average"]
 		);
-		%vmmultistats = MultiQueryPerf($all_vm_views, @vmmultimetrics);
+
+		eval {
+			%vmmultistats = MultiQueryPerf($all_vm_views, @vmmultimetrics);
+		};
 		my $vmmultimetricsend = Time::HiRes::gettimeofday();
 		my $vmmultimetricstimelapse = $vmmultimetricsend - $vmmultimetricsstart;
 		$logger->info("[DEBUG] computed all vms multi metrics in $vmmultimetricstimelapse sec for vCenter $vmware_server");
@@ -472,32 +476,34 @@ if ($apiType eq "VirtualCenter") {
 			["datastore", "totalReadLatency", "average"],
 			["datastore", "numberWriteAveraged", "average"],
 			["datastore", "numberReadAveraged", "average"],
-			["cpu", "latency", "average"],
+			["cpu", "latency", "average"]
 		);
-		%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
+
+		eval {
+			%hostmultistats = MultiQueryPerfAll($all_host_views, @hostmultimetrics);
+		};
 		my $hostmultimetricsend = Time::HiRes::gettimeofday();
 		my $hostmultimetricstimelapse = $hostmultimetricsend - $hostmultimetricsstart;
 		$logger->info("[DEBUG] computed all hosts multi metrics in $hostmultimetricstimelapse sec for vCenter $vmware_server");
 
 	}
 
-	my $vcmultimetricsstart = Time::HiRes::gettimeofday();
-	my @vcmultimetrics = (
-		["vcResources", "virtualmemusage", "average"],
-		["vcResources", "physicalmemusage", "average"],
-		["vcResources", "systemcpuusage", "average"],
-	);
-	eval {
-		%vcmultistats = MultiQueryPerf300($FolderGroupD1, @vcmultimetrics);
-	};
-	my $vcmultimetricsend = Time::HiRes::gettimeofday();
-	my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
-	$logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
+	# my $vcmultimetricsstart = Time::HiRes::gettimeofday();
+	# my @vcmultimetrics = (
+	# 	["vcResources", "virtualmemusage", "average"],
+	# 	["vcResources", "physicalmemusage", "average"],
+	# 	["vcResources", "systemcpuusage", "average"],
+	# );
+	# eval {
+	# 	%vcmultistats = MultiQueryPerf300($FolderGroupD1, @vcmultimetrics);
+	# };
+	# my $vcmultimetricsend = Time::HiRes::gettimeofday();
+	# my $vcmultimetricstimelapse = $vcmultimetricsend - $vcmultimetricsstart;
+	# $logger->info("[DEBUG] computed all vc multi metrics in $vcmultimetricstimelapse sec for vCenter $vmware_server");
 
 	my $clumultimetricsstart = Time::HiRes::gettimeofday();
 	my @clumultimetrics = (
-		# ["vmop", "numVMotion", "latest"],
-		["vmop", "numSVMotion", "latest"],
+		["vmop", "numSVMotion", "latest"]
 	);
 	eval {
 		%clumultistats = MultiQueryPerf300($all_cluster_views, @clumultimetrics);
@@ -887,11 +893,11 @@ if ($apiType eq "VirtualCenter") {
 							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"diskUsage"} = $vmdiskusageval;
 						}
 
-						# if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
-						# 	my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
-						# 	$cluster_vm_views_vnic_usage += $vmnetusageval;
-						# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
-						# }
+						if ($vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
+							my $vmnetusageval = $vmmultistats{$perfCntr{"net.usage.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
+							# $cluster_vm_views_vnic_usage += $vmnetusageval;
+							$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"vm"}{$cluster_vm_view_name}{"fatstats"}{"netUsage"} = $vmnetusageval;
+						}
 
 						# if ($vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""}) {
 						# 	my $vmcommandsAveragedval = $vmmultistats{$perfCntr{"disk.commandsAveraged.average"}->key}{$cluster_vm_view->{'mo_ref'}->value}{""};
