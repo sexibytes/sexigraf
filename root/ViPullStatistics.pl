@@ -15,9 +15,10 @@ use utf8;
 use Unicode::Normalize;
 use Time::Piece;
 use Time::Seconds;
+# use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.912";
+$Util::script_version = "0.9.913";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
