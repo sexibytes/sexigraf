@@ -590,75 +590,45 @@
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
         "query": "vsan.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
+        "sort": 0,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
         "query": "vsan.$vcenter.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
+        "sort": 0,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
-        "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
-        ],
         "query": "vsan.$vcenter.$datacentre.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
+        "sort": 0,
         "regex": "",
         "type": "query"
       },
@@ -692,7 +662,7 @@
           }
         ],
         "query": "client,compmgr,owner",
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "custom"
       }
     ]

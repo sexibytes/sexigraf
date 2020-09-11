@@ -219,73 +219,51 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
+        "includeAll": false,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "tags": [],
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
@@ -318,7 +296,7 @@
           }
         ],
         "query": "0.5,0.75,1",
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "custom"
       }
     ]

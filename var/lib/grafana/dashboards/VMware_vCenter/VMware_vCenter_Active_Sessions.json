@@ -19,7 +19,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "",
+          "datasource": null,
           "decimals": 0,
           "description": "This dashboard requires \"view and stop sessions\" privilege on the vCenters",
           "editable": true,
@@ -130,7 +130,7 @@
       {
         "allValue": "*",
         "current": {},
-        "datasource": "",
+        "datasource": "local",
         "hide": 0,
         "includeAll": true,
         "label": "",

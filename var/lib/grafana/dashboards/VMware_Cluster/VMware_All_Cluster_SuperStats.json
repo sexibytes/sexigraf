@@ -1346,7 +1346,7 @@
       "id": 17,
       "panels": [],
       "repeat": null,
-      "title": "IORM",
+      "title": "IOPS",
       "type": "row"
     },
     {
@@ -1559,7 +1559,8 @@
     "VM",
     "vmotion",
     "vmnic",
-    "IORM"
+    "IORM",
+    "vmhba"
   ],
   "templating": {
     "list": [
@@ -1567,11 +1568,8 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
         },
-        "datasource": "",
+        "datasource": "local",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -1597,11 +1595,8 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
         },
-        "datasource": "",
+        "datasource": "local",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -1631,7 +1626,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "",
+        "datasource": "local",
         "definition": "",
         "hide": 0,
         "includeAll": true,

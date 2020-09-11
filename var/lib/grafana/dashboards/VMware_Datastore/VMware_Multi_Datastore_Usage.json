@@ -1,11 +1,10 @@
 {
   "id": null,
-  "title": "VMware Multi Cluster IORM Stats",
-  "uid": "4e764aeb",
-  "originalTitle": "VMware Multi Cluster IORM Stats",
+  "title": "VMware Multi Datastore Usage",
+  "uid": "52388439",
+  "originalTitle": "VMware Multi Datastore Usage",
   "tags": [
-    "HDD",
-    "IORM"
+    "HDD"
   ],
   "style": "light",
   "timezone": "browser",
@@ -16,14 +15,19 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "200px",
+      "height": "450px",
       "panels": [
         {
+          "aliasColors": {
+            "capacity": "#BF1B00",
+            "uncommitted": "#EAB839",
+            "used": "#0A437C"
+          },
           "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 2,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -39,12 +43,12 @@
           "id": 1,
           "legend": {
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
-            "show": false,
+            "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -54,59 +58,79 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "scopedVars": {
-            "cluster": {
-              "text": "cluster",
-              "value": ""
-            }
-          },
           "seriesOverrides": [
             {
-              "alias": "AvgNormalizedDatastoreLatency",
-              "color": "#E24D42"
+              "alias": "capacity",
+              "stack": false,
+              "fill": 0
             },
             {
-              "alias": "MaxNormalizedDatastoreLatency",
-              "color": "#EAB839",
-              "fill": 0
+              "alias": "uncommitted",
+              "fill": 1
+            },
+            {
+              "alias": "capacity",
+              "zindex": 3
             }
           ],
-          "span": 6,
-          "stack": false,
+          "span": 12,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'AvgNormalizedDatastoreLatency')",
-              "textEditor": true
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)",
+              "textEditor": false,
+              "hide": true
             },
             {
               "hide": false,
-              "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'MaxNormalizedDatastoreLatency')",
-              "textEditor": true
+              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), #A), 'used')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.uncommitted), 'uncommitted')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), 'capacity')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Normalized Datastore Latency",
+          "title": "$cluster shared datastore usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "µs",
+            "bytes",
             "short"
           ]
-        },
+        }
+      ],
+      "title": "Row"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
         {
-          "bars": true,
+          "aliasColors": {
+            "capacity": "#BF1B00",
+            "uncommitted": "#EAB839",
+            "used": "#0A437C"
+          },
+          "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 2,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -120,7 +144,6 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 2,
-          "leftYAxisLabel": "",
           "legend": {
             "avg": false,
             "current": false,
@@ -130,61 +153,79 @@
             "total": false,
             "values": false
           },
-          "lines": false,
+          "lines": true,
           "linewidth": 2,
           "links": [],
+          "minSpan": 3,
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
+          "repeat": "datastore",
           "scopedVars": {
-            "cluster": {
-              "text": "cluster",
-              "value": ""
+            "datastore": {
+              "text": "datastore",
+              "value": "",
+              "selected": false
             }
           },
           "seriesOverrides": [
             {
-              "alias": "/.*/",
-              "color": "#1F78C1"
+              "alias": "capacity",
+              "stack": false,
+              "fill": 0
+            },
+            {
+              "alias": "uncommitted",
+              "fill": 1
+            },
+            {
+              "alias": "capacity",
+              "zindex": 3
             }
           ],
-          "span": 6,
-          "stack": false,
+          "span": 3,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 'IOPS')",
-              "textEditor": true
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)",
+              "textEditor": false,
+              "hide": true
+            },
+            {
+              "hide": false,
+              "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), #A), 'used')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.uncommitted), 'uncommitted')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), 'capacity')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Aggregated Datastore IOPS",
+          "title": "$datastore datastore usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "none",
+            "bytes",
             "short"
           ]
         }
       ],
-      "repeat": "cluster",
-      "scopedVars": {
-        "cluster": {
-          "text": "cluster",
-          "value": ""
-        }
-      },
-      "showTitle": true,
-      "title": "$cluster"
+      "title": "New row"
     }
   ],
   "nav": [
@@ -229,23 +270,16 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
+        "includeAll": false,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
@@ -253,47 +287,32 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
-        "allValue": "*",
+        "allFormat": "glob",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
+        "includeAll": false,
         "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
@@ -301,22 +320,16 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datastore",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
@@ -326,8 +339,7 @@
   "annotations": {
     "list": []
   },
-  "refresh": false,
   "schemaVersion": 6,
-  "version": 9,
+  "version": 1,
   "links": []
 }

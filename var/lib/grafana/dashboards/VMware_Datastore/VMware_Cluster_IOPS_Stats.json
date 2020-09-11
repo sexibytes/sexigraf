@@ -1,11 +1,12 @@
 {
   "id": null,
-  "title": "VMware Cluster IORM Stats",
+  "title": "VMware Cluster IOPS Stats",
   "uid": "a6f2dacc",
-  "originalTitle": "VMware Cluster IORM Stats",
+  "originalTitle": "VMware Cluster IOPS Stats",
   "tags": [
     "IORM",
-    "HDD"
+    "HDD",
+    "SIOC"
   ],
   "style": "light",
   "timezone": "browser",
@@ -221,23 +222,16 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
@@ -245,48 +239,16 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
-        "refresh_on_load": true,
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "text": "cluster",
-          "value": "",
-          "isNone": true
-        },
-        "datasource": null,
-        "includeAll": false,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "cluster",
-        "options": [
-          {
-            "text": "cluster",
-            "value": "",
-            "isNone": true,
-            "selected": true
-          }
-        ],
-        "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
@@ -294,23 +256,33 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
+        "includeAll": false,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": 1,
+        "refresh_on_load": true,
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+        },
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datastore",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       }

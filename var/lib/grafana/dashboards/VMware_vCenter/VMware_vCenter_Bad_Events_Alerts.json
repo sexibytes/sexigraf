@@ -46,7 +46,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "decimals": 0,
       "description": "",
       "editable": true,

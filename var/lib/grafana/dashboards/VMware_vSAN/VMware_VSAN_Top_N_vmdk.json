@@ -353,59 +353,42 @@
 			  }
 			],
 			"query": "vsan.*",
-			"refresh": true,
-			"refresh_on_load": false,
+			"refresh": 1,
+			"refresh_on_load": true,
 			"type": "query"
 		  },
 		  {
 			"allFormat": "wildcard",
 			"allValue": "*",
 			"current": {
-			  "text": "All",
-			  "value": "*"
 			},
-			"datasource": null,
+			"datasource": "local",
 			"includeAll": true,
 			"multi": true,
 			"multiFormat": "glob",
 			"name": "datacentre",
 			"options": [
-			  {
-				"text": "All",
-				"value": "*",
-				"selected": true
-			  }
 			],
 			"query": "vsan.$vcenter.*",
-			"refresh": true,
-			"refresh_on_load": false,
+			"refresh": 1,
+			"refresh_on_load": true,
 			"regex": "",
 			"type": "query"
 		  },
 		  {
-			"allFormat": "wildcard",
-			"allValue": "*",
+			"allFormat": "glob",
 			"current": {
-			  "text": "None",
-			  "value": "",
-			  "isNone": true
 			},
-			"datasource": null,
+			"datasource": "local",
 			"includeAll": false,
 			"multi": false,
 			"multiFormat": "glob",
 			"name": "cluster",
 			"options": [
-			  {
-				"text": "None",
-				"value": "",
-				"isNone": true,
-				"selected": true
-			  }
 			],
 			"query": "vsan.$vcenter.$datacentre.*",
-			"refresh": true,
-			"refresh_on_load": false,
+			"refresh": 1,
+			"refresh_on_load": true,
 			"regex": "",
 			"type": "query"
 		  },
@@ -413,24 +396,17 @@
 			"allFormat": "wildcard",
 			"allValue": "*",
 			"current": {
-			  "text": "All",
-			  "value": "*"
 			},
-			"datasource": null,
+			"datasource": "local",
 			"includeAll": true,
 			"multi": true,
 			"multiFormat": "glob",
 			"name": "vmdk",
 			"options": [
-			  {
-				"text": "All",
-				"value": "*",
-				"selected": true
-			  }
 			],
 			"query": "vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.*",
-			"refresh": true,
-			"refresh_on_load": false,
+			"refresh": 1,
+			"refresh_on_load": true,
 			"regex": "",
 			"type": "query"
 		  },
@@ -464,7 +440,7 @@
 			  }
 			],
 			"query": "Current, Average, Max",
-			"refresh_on_load": false,
+			"refresh_on_load": true,
 			"type": "custom"
 		  },
 		  {
@@ -502,7 +478,7 @@
 			  }
 			],
 			"query": "5,10,15,20",
-			"refresh_on_load": false,
+			"refresh_on_load": true,
 			"type": "custom"
 		  }
 		]

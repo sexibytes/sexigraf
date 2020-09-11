@@ -42,6 +42,7 @@
           "legend": {
             "avg": false,
             "current": false,
+            "hideEmpty": true,
             "max": false,
             "min": false,
             "show": true,
@@ -106,6 +107,7 @@
           "legend": {
             "avg": false,
             "current": false,
+            "hideEmpty": true,
             "max": false,
             "min": false,
             "show": true,
@@ -170,6 +172,7 @@
           "legend": {
             "avg": false,
             "current": false,
+            "hideEmpty": true,
             "max": false,
             "min": false,
             "show": true,
@@ -255,24 +258,17 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
+        "includeAll": false,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -280,33 +276,27 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
           "text": "All",
           "value": "{}"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
@@ -319,32 +309,25 @@
           }
         ],
         "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "type": "query"
       },
       {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "vm",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.$datacentre.$cluster.vm.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
@@ -383,7 +366,7 @@
           }
         ],
         "query": "5,10,15,20",
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "custom"
       }
     ]

@@ -146,50 +146,36 @@
     "list": [
       {
         "allFormat": "wildcard",
-		"allValue": "*",
+		    "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vsan.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
-		"allValue": "*",
+		    "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vsan.$vcenter.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
@@ -197,37 +183,26 @@
       {
         "allFormat": "glob",
         "current": {
-          "text": "None",
-          "value": "",
-          "isNone": true
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": false,
         "multi": false,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
-          {
-            "text": "None",
-            "value": "",
-            "isNone": true,
-            "selected": true
-          }
         ],
         "query": "vsan.$vcenter.$datacentre.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
-		"allValue": "*",
+		    "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "hideLabel": false,
         "includeAll": true,
         "label": "esx",
@@ -235,14 +210,9 @@
         "multiFormat": "glob",
         "name": "hostname",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query",
@@ -250,25 +220,18 @@
       },
       {
         "allFormat": "wildcard",
-		"allValue": "*",
+		    "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "device",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       }

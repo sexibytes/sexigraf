@@ -681,26 +681,17 @@
       {
         "allFormat": "glob",
         "current": {
-          "text": "None",
-          "value": "",
-          "isNone": true
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": false,
         "multi": false,
         "multiFormat": "glob",
         "name": "hostname",
         "options": [
-          {
-            "text": "None",
-            "value": "",
-            "isNone": true,
-            "selected": true
-          }
         ],
         "query": "SSC.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query"
       }

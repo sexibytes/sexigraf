@@ -1,24 +1,4 @@
 {
-  "annotations": {
-    "enable": false,
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      },
-      {
-        "datasource": "local",
-        "enable": true,
-        "iconColor": "rgba(255, 96, 96, 1)",
-        "name": "events"
-      }
-    ]
-  },
   "description": "Obfuscurity's \"extended remix\" of the Graphite Carbon Metrics dashboard",
   "editable": true,
   "gnetId": 311,

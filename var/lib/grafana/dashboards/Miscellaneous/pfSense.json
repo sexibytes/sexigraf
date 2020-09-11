@@ -948,7 +948,7 @@
         "options": [],
         "query": "pfsense.*",
         "refresh": 1,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,

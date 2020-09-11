@@ -841,26 +841,17 @@
       {
         "allFormat": "glob",
         "current": {
-          "text": "None",
-          "value": "",
-          "isNone": true
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": false,
         "multi": false,
         "multiFormat": "glob",
         "name": "hostname",
         "options": [
-          {
-            "text": "None",
-            "value": "",
-            "isNone": true,
-            "selected": true
-          }
         ],
         "query": "servers.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "^(?!localhost$).*",
         "type": "query"
       },
@@ -868,24 +859,17 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "partition",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "servers.$hostname.df-mnt-*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "df-mnt-(.*)",
         "type": "query"
       },
@@ -893,24 +877,17 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
+        "datasource": "local",
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
         "name": "interface",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "servers.$hostname.interface-*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "interface-(.*)",
         "type": "query"
       }

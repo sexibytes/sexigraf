@@ -5,7 +5,8 @@
   "originalTitle": "VMware FlambX",
   "tags": [
     "pipotronic",
-    "reporting"
+    "reporting",
+    "management"
   ],
   "style": "light",
   "timezone": "browser",
@@ -1255,98 +1256,72 @@
   "templating": {
     "list": [
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
+        "includeAll": true,
         "current": {
           "text": "All",
           "value": "{}"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
         ],
         "query": "vmw.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "type": "query"
       },
       {
-        "allFormat": "glob",
-        "current": {
-          "text": "All",
-          "value": "{}"
-        },
-        "datasource": null,
+        "allFormat": "wildcard",
         "includeAll": true,
+        "current": {
+        },
+        "datasource": "local",
         "multi": true,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
         ],
         "query": "vmw.$vcenter.*",
-        "refresh": true,
-        "refresh_on_load": true,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "text": "All",
-          "value": "{}"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "cluster",
-        "options": [
-          {
-            "text": "All",
-            "value": "{}",
-            "selected": true
-          }
-        ],
-        "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": true,
+        "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
         "type": "query"
       },
       {
         "allFormat": "wildcard",
+        "includeAll": true,
+        "current": {
+        },
+        "datasource": "local",
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "cluster",
+        "options": [
+        ],
+        "query": "vmw.$vcenter.$datacentre.*",
+        "refresh": 1,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allFormat": "wildcard",
+        "includeAll": true,
         "allValue": "*",
         "current": {
-          "text": "All",
-          "value": "*"
         },
-        "datasource": null,
-        "includeAll": true,
+        "datasource": "local",
         "multi": true,
         "multiFormat": "glob",
         "name": "esx",
         "options": [
-          {
-            "text": "All",
-            "value": "*",
-            "selected": true
-          }
         ],
         "query": "esx.*.*.*",
-        "refresh": true,
-        "refresh_on_load": false,
+        "refresh": 1,
+        "refresh_on_load": true,
         "regex": "",
         "type": "query",
         "hideLabel": false

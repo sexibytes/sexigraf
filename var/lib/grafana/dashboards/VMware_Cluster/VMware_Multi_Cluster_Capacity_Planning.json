@@ -19,7 +19,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "",
+          "datasource": null,
           "decimals": null,
           "editable": true,
           "error": false,
@@ -139,7 +139,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "",
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -257,9 +257,9 @@
     "list": [
       {
         "allFormat": "wildcard",
-        "allValue": "",
+        "allValue": "*",
         "current": {},
-        "datasource": "",
+        "datasource": "local",
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -282,7 +282,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": "",
+        "datasource": "local",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -305,7 +305,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": "",
+        "datasource": "local",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -382,7 +382,7 @@
         ],
         "query": "0.5,0.6,0.75,0.8,0.9,1,1.15,1.25",
         "refresh": 0,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "type": "custom"
       }
     ]

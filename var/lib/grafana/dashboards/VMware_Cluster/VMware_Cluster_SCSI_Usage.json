@@ -8,7 +8,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": "local",
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -26,7 +26,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "local",
+      "datasource": null,
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -261,7 +261,7 @@
         "options": [],
         "query": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.hba.*",
         "refresh": 1,
-        "refresh_on_load": false,
+        "refresh_on_load": true,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
