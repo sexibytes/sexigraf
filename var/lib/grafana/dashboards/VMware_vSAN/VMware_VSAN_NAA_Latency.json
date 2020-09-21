@@ -206,8 +206,8 @@
         "current": {
         },
         "datasource": "local",
-        "includeAll": true,
-        "multi": false,
+        "includeAll": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [

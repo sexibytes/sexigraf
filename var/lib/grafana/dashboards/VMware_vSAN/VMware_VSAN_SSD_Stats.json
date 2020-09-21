@@ -633,7 +633,7 @@
         },
         "datasource": "local",
         "includeAll": false,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
@@ -678,9 +678,7 @@
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
-        "tags": [],
-        "type": "query",
-        "useTags": true
+        "type": "query"
       }
     ]
   },
