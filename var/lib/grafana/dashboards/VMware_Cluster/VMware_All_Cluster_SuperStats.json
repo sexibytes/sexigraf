@@ -1036,7 +1036,6 @@
     },
     {
       "aliasColors": {
-        "vmotion.count": "#052B51"
       },
       "bars": false,
       "dashLength": 10,

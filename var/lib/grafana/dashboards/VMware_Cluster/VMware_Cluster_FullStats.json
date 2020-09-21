@@ -1029,7 +1029,9 @@
         },
         {
           "aliasColors": {
+            "svmotion": "dark-orange",
             "vmotion.count": "#052B51"
+
           },
           "bars": true,
           "dashLength": 10,
@@ -1061,12 +1063,18 @@
           "seriesOverrides": [],
           "spaceLength": 10,
           "span": 6,
-          "stack": false,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "alias(derivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion.count')",
+              "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion')",
+              "textEditor": false
+            },
+            {
+              "refCount": 0,
+              "refId": "B",
+              "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
               "textEditor": false
             }
           ],
