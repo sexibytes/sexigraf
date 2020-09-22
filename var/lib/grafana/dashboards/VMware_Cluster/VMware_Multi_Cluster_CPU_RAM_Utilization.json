@@ -279,7 +279,7 @@
         "current": {
         },
         "datasource": "local",
-        "includeAll": true,
+        "includeAll": false,
         "multi": true,
         "multiFormat": "glob",
         "name": "vcenter",
