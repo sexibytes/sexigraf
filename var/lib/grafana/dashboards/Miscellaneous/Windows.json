@@ -18,14 +18,14 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -97,14 +97,14 @@
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -184,7 +184,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -250,14 +250,14 @@
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -319,7 +319,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -381,7 +381,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -443,7 +443,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -512,14 +512,14 @@
     },
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -581,7 +581,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {

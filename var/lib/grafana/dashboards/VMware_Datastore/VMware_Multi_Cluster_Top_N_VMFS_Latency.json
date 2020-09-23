@@ -15,7 +15,7 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "200px",
       "panels": [
         {
@@ -23,7 +23,7 @@
           "bars": false,
           "datasource": null,
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {

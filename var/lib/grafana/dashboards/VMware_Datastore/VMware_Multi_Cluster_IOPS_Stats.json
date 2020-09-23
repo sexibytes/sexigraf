@@ -16,13 +16,13 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "200px",
       "panels": [
         {
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {
@@ -105,7 +105,7 @@
         {
           "bars": true,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 1,
           "grid": {

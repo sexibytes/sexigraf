@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 1,
   "hideControls": false,
@@ -22,7 +22,7 @@
           "datasource": null,
           "decimals": 0,
           "description": "This dashboard requires \"view and stop sessions\" privilege on the vCenters",
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {},

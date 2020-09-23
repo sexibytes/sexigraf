@@ -16,7 +16,7 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "200px",
       "panels": [
         {
@@ -25,7 +25,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -124,7 +124,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "hertz",
           "id": 2,
@@ -182,7 +182,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 0,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "none",
           "id": 12,
@@ -229,7 +229,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -343,7 +343,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "bytes",
           "id": 5,
@@ -401,7 +401,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "mbytes",
           "id": 9,
@@ -453,7 +453,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -556,7 +556,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "bytes",
           "id": 13,
@@ -614,7 +614,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "bytes",
           "id": 8,
@@ -666,7 +666,7 @@
           "aliasColors": {},
           "bars": true,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -741,7 +741,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "µs",
           "id": 15,
@@ -791,7 +791,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 0,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "none",
           "id": 16,
@@ -835,7 +835,7 @@
           "aliasColors": {},
           "bars": true,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -910,7 +910,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 0,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "none",
           "id": 11,
@@ -960,7 +960,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 0,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "none",
           "id": 3,
@@ -1004,7 +1004,7 @@
           "aliasColors": {},
           "bars": true,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {
@@ -1106,7 +1106,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 0,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "Bps",
           "id": 19,
@@ -1164,7 +1164,7 @@
             "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
-          "editable": true,
+          "editable": false,
           "error": false,
           "format": "Bps",
           "id": 18,

@@ -15,14 +15,14 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "200px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {
@@ -126,7 +126,7 @@
           },
           "bars": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 2,
           "grid": {

@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 1,
   "hideControls": false,
@@ -21,7 +21,7 @@
           "datasource": null,
           "decimals": 0,
           "description": "",
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {},
@@ -103,7 +103,7 @@
           "datasource": null,
           "decimals": 0,
           "description": "",
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {},

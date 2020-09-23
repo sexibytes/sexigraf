@@ -10,20 +10,20 @@
 	  ],
 	  "style": "light",
 	  "timezone": "browser",
-	  "editable": true,
+	  "editable": false,
 	  "hideControls": false,
 	  "sharedCrosshair": true,
 	  "rows": [
 		{
 		  "collapse": false,
-		  "editable": true,
+		  "editable": false,
 		  "height": "250px",
 		  "panels": [
 			{
 			  "aliasColors": {},
 			  "bars": false,
 			  "datasource": null,
-			  "editable": true,
+			  "editable": false,
 			  "error": false,
 			  "fill": 0,
 			  "grid": {
@@ -88,7 +88,7 @@
 			  "aliasColors": {},
 			  "bars": false,
 			  "datasource": null,
-			  "editable": true,
+			  "editable": false,
 			  "error": false,
 			  "fill": 0,
 			  "grid": {
@@ -155,14 +155,14 @@
 		},
 		{
 		  "collapse": false,
-		  "editable": true,
+		  "editable": false,
 		  "height": "250px",
 		  "panels": [
 			{
 			  "aliasColors": {},
 			  "bars": false,
 			  "datasource": null,
-			  "editable": true,
+			  "editable": false,
 			  "error": false,
 			  "fill": 0,
 			  "grid": {
@@ -228,7 +228,7 @@
 			  "aliasColors": {},
 			  "bars": false,
 			  "datasource": null,
-			  "editable": true,
+			  "editable": false,
 			  "error": false,
 			  "fill": 0,
 			  "grid": {

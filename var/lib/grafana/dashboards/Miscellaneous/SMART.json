@@ -5,7 +5,7 @@
       }
     ]
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 1,
   "id": 74,
@@ -18,7 +18,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "local",
-      "editable": true,
+      "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {

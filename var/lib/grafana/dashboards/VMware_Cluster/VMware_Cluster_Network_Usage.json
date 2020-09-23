@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 1,
   "hideControls": false,
@@ -20,7 +20,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
-          "editable": true,
+          "editable": false,
           "error": false,
           "fill": 0,
           "grid": {},

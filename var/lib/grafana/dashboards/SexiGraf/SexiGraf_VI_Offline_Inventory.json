@@ -15,7 +15,7 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
+      "editable": false,
       "height": "1100px",
       "panels": [
         {
