@@ -157,10 +157,10 @@
         },
         {
           "$$hashKey": "object:743",
-          "format": "short",
+          "format": "none",
           "logBase": 1,
           "max": null,
-          "min": "0",
+          "min": 0,
           "show": true
         }
       ],
