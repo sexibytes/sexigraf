@@ -636,7 +636,7 @@
         },
         "datasource": "local",
         "includeAll": false,
-        "multi": true,
+        "multi": false,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [
