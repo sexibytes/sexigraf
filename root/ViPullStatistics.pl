@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.913";
+$Util::script_version = "0.9.914";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
@@ -433,7 +433,9 @@ if ($apiType eq "VirtualCenter") {
 			["datastore", "totalReadLatency", "average"],
 			["datastore", "numberWriteAveraged", "average"],
 			["datastore", "numberReadAveraged", "average"],
-			["cpu", "latency", "average"]
+			["cpu", "latency", "average"],
+			["cpu", "totalCapacity", "average"],
+			["mem", "totalCapacity", "average"]
 		);
 
 		eval {
@@ -452,7 +454,9 @@ if ($apiType eq "VirtualCenter") {
 			["disk", "maxTotalLatency", "latest"],
 			["disk", "usage", "average"],
 			# ["disk", "commandsAveraged", "average"],
-			["net", "usage", "average"]
+			["net", "usage", "average"],
+			["cpu", "totalCapacity", "average"],
+			["mem", "totalCapacity", "average"]
 		);
 
 		eval {
@@ -683,6 +687,16 @@ if ($apiType eq "VirtualCenter") {
 				push (@cluster_hosts_power_usage,$cluster_host_view_power);
 				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"fatstats"}{"power"} = $cluster_host_view_power;
 
+			}
+
+			my $cluster_host_view_cpu_totalCapacity = $hostmultistats{$perfCntr{"cpu.totalCapacity.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
+			if (defined($cluster_host_view_cpu_totalCapacity) && defined($cluster_host_view->{'summary.quickStats.overallCpuUsage'})) {
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"fatstats"}{"overallCpuUtilization"} = ($cluster_host_view->{'summary.quickStats.overallCpuUsage'} * 100 / $cluster_host_view_cpu_totalCapacity);
+			}
+
+			my $cluster_host_view_mem_totalCapacity = $hostmultistats{$perfCntr{"mem.totalCapacity.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
+			if (defined($cluster_host_view_mem_totalCapacity) && defined($cluster_host_view->{'summary.quickStats.overallMemoryUsage'})) {
+				$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"esx"}{$host_name}{"fatstats"}{"overallmemUtilization"} = ($cluster_host_view->{'summary.quickStats.overallMemoryUsage'} * 100 / $cluster_host_view_mem_totalCapacity);
 			}
 
 			my $cluster_host_view_cpu_latency = $hostmultistats{$perfCntr{"cpu.latency.average"}->key}{$cluster_host_view->{'mo_ref'}->value}{""};
