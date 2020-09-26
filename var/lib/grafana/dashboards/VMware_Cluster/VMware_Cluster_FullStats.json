@@ -1030,7 +1030,7 @@
         {
           "aliasColors": {
             "svmotion": "dark-orange",
-            "vmotion.count": "#052B51"
+            "vmotion": "#052B51"
 
           },
           "bars": true,
