@@ -1,15 +1,22 @@
 {
+
+  "annotations": {
+    "list": [
+      {
+      }
+    ]
+  },
   "description": "",
-  "editable": false,
+  "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1589922977281,
+  "iteration": 1601232545588,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "local",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -26,12 +33,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -60,9 +68,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -120,12 +129,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -154,9 +164,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -213,7 +224,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "local",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -230,12 +241,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -264,9 +276,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -351,12 +364,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -385,9 +399,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -448,7 +463,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "local",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -465,12 +480,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -499,9 +515,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -567,12 +584,13 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -601,20 +619,23 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
         {
+          "$$hashKey": "object:3101",
           "alias": "io_time",
           "bars": false,
-          "fill": 2,
+          "fill": 3,
           "lines": true,
           "stack": false,
-          "yaxis": 2
+          "yaxis": 2,
+          "zindex": -3
         }
       ],
       "spaceLength": 10,
@@ -657,6 +678,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:3116",
           "format": "iops",
           "logBase": 1,
           "max": null,
@@ -664,6 +686,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:3117",
           "format": "percent",
           "logBase": 1,
           "max": null,
@@ -678,7 +701,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "local",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -695,12 +718,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -730,9 +754,10 @@
       "maxPerRow": 3,
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -798,7 +823,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "local",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -815,12 +840,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -850,9 +876,10 @@
       "maxPerRow": 3,
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.2.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -923,9 +950,464 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "datasource": "local",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 59
+      },
+      "id": 57,
+      "panels": [],
+      "title": "Packet Filter",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 60
+      },
+      "hiddenSeries": false,
+      "id": 59,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "pfInfo",
+          "url": "https://docs.netgate.com/pfsense/en/latest/monitoring/status/pfinfo.html"
+        }
+      ],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByNode(pfsense.$hostname.pf.entries, 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.inserts), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.removals), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "D",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.searches), 3)"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "State Table",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1440",
+          "format": "short",
+          "label": null,
+          "logBase": 10,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1441",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 60
+      },
+      "hiddenSeries": false,
+      "id": 60,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "pfInfo",
+          "url": "https://docs.netgate.com/pfsense/en/latest/monitoring/status/pfinfo.html"
+        }
+      ],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:2850",
+          "alias": "match",
+          "bars": false,
+          "lines": true,
+          "stack": false
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.match), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.bad-offset), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "D",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.fragment), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "E",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.short), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "F",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.normalize), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.memory), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "G",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.bad-timestamp), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "H",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.congestion), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "I",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.ip-option), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "J",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.proto-cksum), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "K",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.state-mismatch), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "L",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.state-insert), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "M",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.state-limit), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "N",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.src-limit), 3)"
+        },
+        {
+          "refCount": 0,
+          "refId": "O",
+          "target": "aliasByNode(nonNegativeDerivative(pfsense.$hostname.pf.synproxy), 3)"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Counters",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1440",
+          "format": "short",
+          "label": null,
+          "logBase": 10,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1441",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": "local",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "id": 40,
+      "panels": [],
+      "title": "Ping Monitor",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 69
+      },
+      "hiddenSeries": false,
+      "id": 42,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": "ping",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:528",
+          "alias": "avg",
+          "color": "#FF780A",
+          "linewidth": 2,
+          "zindex": 3
+        },
+        {
+          "$$hashKey": "object:535",
+          "alias": "max",
+          "color": "#FF780A",
+          "fillBelowTo": "min",
+          "lines": false
+        },
+        {
+          "$$hashKey": "object:547",
+          "alias": "min",
+          "color": "#FF780A",
+          "lines": false
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(pfsense.$hostname.ping.$ping.minimum_response_ms, 'min')"
+        },
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(pfsense.$hostname.ping.$ping.average_response_ms, 'avg')"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(pfsense.$hostname.ping.$ping.maximum_response_ms, 'max')"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$ping",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:300",
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:301",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "style": "light",
   "tags": [
     "m0n0wall",
@@ -937,7 +1419,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": null,
+        "datasource": "local",
         "definition": "pfsense.*",
         "hide": 0,
         "includeAll": false,
@@ -961,7 +1443,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": null,
+        "datasource": "local",
         "definition": "pfsense.$hostname.net.*",
         "hide": 0,
         "includeAll": true,
@@ -970,6 +1452,28 @@
         "name": "interface",
         "options": [],
         "query": "pfsense.$hostname.net.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "local",
+        "definition": "pfsense.$hostname.ping.*",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "ping",
+        "options": [],
+        "query": "pfsense.$hostname.ping.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
