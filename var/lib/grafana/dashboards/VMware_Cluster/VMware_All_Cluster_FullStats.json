@@ -869,7 +869,7 @@
         },
         {
           "aliasColors": {
-            "vmotion.count": "#052B51"
+            "vmotion": "#052B51"
           },
           "bars": false,
           "dashLength": 10,
@@ -964,7 +964,7 @@
         },
         {
           "aliasColors": {
-            "vmotion.count": "#052B51"
+            "vmotion": "#052B51"
           },
           "bars": false,
           "dashLength": 10,
@@ -1041,7 +1041,7 @@
         },
         {
           "aliasColors": {
-            "vmotion.count": "#052B51"
+            "vmotion": "#052B51"
           },
           "bars": true,
           "dashLength": 10,
@@ -1078,7 +1078,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(derivative(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions)), 'vmotion.count')",
+              "target": "alias(derivative(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions)), 'vmotion')",
               "textEditor": false
             }
           ],
