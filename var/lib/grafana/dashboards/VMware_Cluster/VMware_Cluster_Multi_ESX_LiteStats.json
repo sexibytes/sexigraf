@@ -1,13 +1,15 @@
 {
   "annotations": {
     "list": [
+      {
+      }
     ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1601222975199,
+  "iteration": 1601289157205,
   "links": [],
   "panels": [
     {
@@ -19,10 +21,9 @@
         "x": 0,
         "y": 0
       },
-      "id": 17,
+      "id": 22,
       "panels": [],
-      "repeat": null,
-      "title": "",
+      "title": "CPU",
       "type": "row"
     },
     {
@@ -46,7 +47,7 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 10,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 1
@@ -149,10 +150,127 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 10,
+        "h": 8,
         "w": 12,
         "x": 12,
         "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refId": "A",
+          "target": "aliasByNode(scale(vmw.$vcenter.$datacentre.$cluster.esx.$esx.quickstats.overallCpuUsage, 1000000), 5)",
+          "textEditor": false
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "CPU Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2460",
+          "format": "hertz",
+          "label": "cpu",
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2461",
+          "format": "bytes",
+          "label": "mem",
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": "local",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 24,
+      "panels": [],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "aliasColors": {
+        "cpu.usage": "#BF1B00",
+        "mem.usage": "#1F78C1"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "local",
+      "editable": false,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 10
       },
       "hiddenSeries": false,
       "id": 18,
@@ -232,8 +350,11 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": true,
+      "aliasColors": {
+        "cpu.usage": "#BF1B00",
+        "mem.usage": "#1F78C1"
+      },
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "local",
@@ -249,13 +370,13 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 11
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 10
       },
       "hiddenSeries": false,
-      "id": 16,
+      "id": 20,
       "legend": {
         "avg": false,
         "current": false,
@@ -265,7 +386,121 @@
         "total": false,
         "values": false
       },
-      "lines": false,
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refId": "A",
+          "target": "aliasByNode(scale(vmw.$vcenter.$datacentre.$cluster.esx.$esx.quickstats.overallMemoryUsage, 1048576), 5)",
+          "textEditor": false
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "RAM Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2460",
+          "format": "bytes",
+          "label": "cpu",
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2461",
+          "format": "bytes",
+          "label": "mem",
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": "local",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 26,
+      "panels": [],
+      "title": "",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "local",
+      "editable": false,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "hiddenSeries": false,
+      "id": 16,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
       "linewidth": 2,
       "links": [],
       "nullPointMode": "connected",
@@ -296,19 +531,17 @@
       "timeShift": null,
       "title": "Uptime",
       "tooltip": {
-        "shared": false,
+        "shared": true,
         "sort": 2,
         "value_type": "cumulative"
       },
       "type": "graph",
       "xaxis": {
         "buckets": null,
-        "mode": "series",
+        "mode": "time",
         "name": null,
         "show": true,
-        "values": [
-          "current"
-        ]
+        "values": []
       },
       "yaxes": [
         {
