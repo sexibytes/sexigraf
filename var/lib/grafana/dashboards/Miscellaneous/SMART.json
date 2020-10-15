@@ -109,7 +109,10 @@
   ],
   "schemaVersion": 26,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "FreeNAS",
+    "HDD"
+  ],
   "templating": {
     "list": [
       {
