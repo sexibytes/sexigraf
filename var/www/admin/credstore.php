@@ -8,15 +8,15 @@ require("helper.php");
                 <div class="panel panel-default">
                         <div class="panel-heading"><h3 class="panel-title">Credential Store Notes</h3></div>
                         <div class="panel-body"><ul>
-                                <li>The credential store is used to store credential that will be used for vCenter query, it use vSphere SDK Credential Store Library</li>
-                                <li><font style="color:red;"><i class="glyphicon glyphicon-alert"></i></font> Removing a vCenter from the credential store will <b><font style="color:red;">NOT delete any collected metrics</font></b>.</li>
+                                <li>The credential store is used to store credential that will be used for vCenter/ESX query, it use vSphere SDK Credential Store Library</li>
+                                <li><font style="color:red;"><i class="glyphicon glyphicon-alert"></i></font> Removing a vCenter/ESX from the credential store will <b><font style="color:red;">NOT delete any collected metrics</font></b>.</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
                 <h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf Credential Store</h2>
                 <table class="table table-hover">
                 <thead><tr>
-                  <th class="col-sm-4">vCenter Name</th>
+                  <th class="col-sm-4">vCenter/ESX address</th>
                   <th class="col-sm-3">Username</th>
                   <th class="col-sm-2">Password</th>
                   <th class="col-sm-1">VI</th>
@@ -92,10 +92,10 @@ require("helper.php");
                                         $errorMessage = "All mandatory values have not been provided.";
                                 } elseif (!filter_var($_POST["input-vcenter"], FILTER_VALIDATE_IP) and (gethostbyname($_POST["input-vcenter"]) == $_POST["input-vcenter"])) {
                                         $errorHappened = true;
-                                        $errorMessage = "vCenter IP or FQDN is not correct.";
+                                        $errorMessage = "vCenter/ESX IP or FQDN is not correct.";
                                 } elseif (shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list --server " . $_POST["input-vcenter"] . " | grep " . $_POST["input-vcenter"] . " | wc -l") > 0) {
                                         $errorHappened = true;
-                                        $errorMessage = "vCenter IP or FQDN is already in credential store, duplicate entry is not supported.";
+                                        $errorMessage = "vCenter/ESX IP or FQDN is already in credential store, duplicate entry is not supported.";
                                 } elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
                                         $errorHappened = true;
                                         $errorMessage = "Bad username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
