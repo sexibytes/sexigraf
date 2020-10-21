@@ -94,7 +94,7 @@ function php_file_tree_dir($directory, $first_call = true) {
     return $php_file_tree;
 }
 
-function php_file_tree_dir_v2(string $dir, int $maxDepth, $first_call = true): string {
+function php_file_tree_dir_v2($dir, $maxDepth, $first_call = true) {
     $scanAll = scandir($dir);
     sort($scanAll);
     $php_file_tree = "<ul";
@@ -105,11 +105,11 @@ function php_file_tree_dir_v2(string $dir, int $maxDepth, $first_call = true): s
         $fPath = str_replace(DIRECTORY_SEPARATOR, '/', realpath($dir . '/' . $fName));
         if (is_dir($fPath)) {
             $displayedDirectory = str_replace($dir."/", "", $fPath);
-            $php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$fPath\"> " . htmlspecialchars($displayedDirectory);
-            $php_file_tree .= "</li>";
+            $php_file_tree .= "<li class=\"pft-directory\"><input type=\"checkbox\" name=\"pathChecked[]\" value=\"$fPath\"> <a href=\"#\"><strong>" . htmlspecialchars($displayedDirectory) . "</strong></a>";
             if ($maxDepth !== 0) {
                 $php_file_tree .= php_file_tree_dir_v2($fPath, $maxDepth - 1, false);
             }
+            $php_file_tree .= "</li>";
         }
     }
     $php_file_tree .= "</ul>";
