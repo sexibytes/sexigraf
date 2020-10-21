@@ -94,7 +94,7 @@ function php_file_tree_dir($directory, $first_call = true) {
     return $php_file_tree;
 }
 
-function php_file_tree_dir_v2($dir, $maxDepth, $first_call = true) {
+function php_file_tree_dir_v2(string $dir, int $maxDepth, $first_call = true): string {
     $scanAll = scandir($dir);
     sort($scanAll);
     $php_file_tree = "<ul";
