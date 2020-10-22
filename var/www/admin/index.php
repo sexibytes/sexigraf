@@ -18,7 +18,7 @@ require("header.php");
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">In this section, you'll be able to manage your VMware Credential Store. This store is used to set up your vCenter information to allow SexiGraf query what's needed.</span>
+                                                <span class="pull-left">In this section, you'll be able to manage your VMware Credential Store. This store is used to set up your vCenter/ESX information to allow SexiGraf query what's needed.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
