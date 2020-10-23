@@ -528,13 +528,13 @@
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(pfsense.$hostname.disk.ufsid-57fbabd3938f945a.*.*.*.used, 7)"
+          "target": "aliasByNode(pfsense.$hostname.disk.ufsid-*.*.*.*.used, 7)"
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(pfsense.$hostname.disk.ufsid-57fbabd3938f945a.*.*.*.free, 7)"
+          "target": "aliasByNode(pfsense.$hostname.disk.ufsid-*.*.*.*.free, 7)"
         }
       ],
       "thresholds": [],
@@ -1069,7 +1069,7 @@
           "$$hashKey": "object:1441",
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 10,
           "max": null,
           "min": null,
           "show": true
@@ -1241,7 +1241,7 @@
           "$$hashKey": "object:1440",
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 10,
           "max": null,
           "min": null,
           "show": true
@@ -1250,7 +1250,7 @@
           "$$hashKey": "object:1441",
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 10,
           "max": null,
           "min": null,
           "show": false
