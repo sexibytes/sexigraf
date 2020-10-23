@@ -1060,7 +1060,7 @@
           "$$hashKey": "object:1440",
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 10,
           "max": null,
           "min": null,
           "show": true
