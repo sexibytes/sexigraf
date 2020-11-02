@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.914";
+$Util::script_version = "0.9.915";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
@@ -1337,6 +1337,17 @@ if ($apiType eq "VirtualCenter") {
 						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesRead"} = $HbabytesRead;
 						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
 					}
+			}
+
+			my $StandaloneResourceVMHost_host_sensors = $StandaloneResourceVMHost->{'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'};
+			# https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.host.NumericSensorInfo.html
+			
+			foreach my $StandaloneResourceVMHost_host_sensor (@$StandaloneResourceVMHost_host_sensors) {
+				if ($StandaloneResourceVMHost_host_sensor->name && $StandaloneResourceVMHost_host_sensor->sensorType && $StandaloneResourceVMHost_host_sensor->currentReading && $StandaloneResourceVMHost_host_sensor->unitModifier) {
+					my $StandaloneResourceVMHost_host_sensor_computed_reading = $StandaloneResourceVMHost_host_sensor->currentReading * (10**$StandaloneResourceVMHost_host_sensor->unitModifier);
+					my $StandaloneResourceVMHost_host_sensor_name = nameCleaner($StandaloneResourceVMHost_host_sensor->name);
+					$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"sensor"}{$StandaloneResourceVMHost_host_sensor->sensorType}{$StandaloneResourceVMHost_host_sensor_name} = $StandaloneResourceVMHost_host_sensor_computed_reading;
+				}
 			}
 
 				my @StandaloneResourceVMHostVmsMoref = ();
