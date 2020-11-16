@@ -1,26 +1,152 @@
-# Change Log
+# Changelog
 
-## [Unreleased](https://github.com/sexibytes/sexigraf/tree/HEAD)
+## [0.99g](https://github.com/sexibytes/sexigraf/tree/0.99g) (2020-11-16)
 
-[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99d...HEAD)
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99f...0.99g)
 
 **Implemented enhancements:**
 
+- redesign vmware-multi-cluster-usage dashboard [\#222](https://github.com/sexibytes/sexigraf/issues/222)
+- disable grafana 'includeAll' on $vcenter variable for big dashboard [\#216](https://github.com/sexibytes/sexigraf/issues/216)
+- replace IORM by IOPS to clarify datastore performance dashboards [\#207](https://github.com/sexibytes/sexigraf/issues/207)
+- limit All and Top N dashboards to first vcenter on load to avoid IO storm [\#206](https://github.com/sexibytes/sexigraf/issues/206)
+- Remove access for Web admin dashboard for non admin roles [\#204](https://github.com/sexibytes/sexigraf/issues/204)
+- enhance vmotions count [\#203](https://github.com/sexibytes/sexigraf/issues/203)
+- add pfsense support [\#202](https://github.com/sexibytes/sexigraf/issues/202)
+- group graphite calls [\#199](https://github.com/sexibytes/sexigraf/issues/199)
+- add consumed Overhead Memory to quickstats dashboards [\#196](https://github.com/sexibytes/sexigraf/issues/196)
+- exportSexiGrafBundle.sh sizing issue [\#186](https://github.com/sexibytes/sexigraf/issues/186)
+- add vdmk per datastore metric [\#185](https://github.com/sexibytes/sexigraf/issues/185)
+- Kindly Add Virtual Disk matrics [\#180](https://github.com/sexibytes/sexigraf/issues/180)
+- switch unit from short to none in Right Y [\#161](https://github.com/sexibytes/sexigraf/issues/161)
+- add datastore \# in shared datastores utilization graphs on clusters dashboards [\#158](https://github.com/sexibytes/sexigraf/issues/158)
+- add 1 decimal instead of auto for % in dashboards [\#153](https://github.com/sexibytes/sexigraf/issues/153)
+- Cluster of ESXi hosts not showing up [\#149](https://github.com/sexibytes/sexigraf/issues/149)
+- regenerate ssh keys at first start up [\#139](https://github.com/sexibytes/sexigraf/issues/139)
+- Add web admin tile for dashboard management [\#109](https://github.com/sexibytes/sexigraf/issues/109)
+- \[Request\] Containerizing [\#106](https://github.com/sexibytes/sexigraf/issues/106)
+- Add an admin tool to generate support bundle for troubleshooting [\#54](https://github.com/sexibytes/sexigraf/issues/54)
+- Offline Inventory : Resource Pool name & vm folder path [\#42](https://github.com/sexibytes/sexigraf/issues/42)
+- add refresh button in House Cleaner page [\#35](https://github.com/sexibytes/sexigraf/issues/35)
+- support for unmanaged ESX [\#18](https://github.com/sexibytes/sexigraf/issues/18)
+
+**Fixed bugs:**
+
+- fix esx hardware sensor for standalone hosts [\#230](https://github.com/sexibytes/sexigraf/issues/230)
+- fix apache empty scoreboard [\#226](https://github.com/sexibytes/sexigraf/issues/226)
+- Avoid "Unsaved changes" when user select another variable than default \(i.e. cluster selection\) and move to another dashboard [\#223](https://github.com/sexibytes/sexigraf/issues/223)
+- stack vmotion/svmotion metrics in vmotion dashboard [\#220](https://github.com/sexibytes/sexigraf/issues/220)
+- update offline vminventory vm links [\#198](https://github.com/sexibytes/sexigraf/issues/198)
+- Time sync for appliance [\#173](https://github.com/sexibytes/sexigraf/issues/173)
+- DIE Can't call method "committed" on an undefined value at /root/getInventory.pl line 117. [\#137](https://github.com/sexibytes/sexigraf/issues/137)
+
+**Closed issues:**
+
+- HTTPS-SSL Configuration [\#219](https://github.com/sexibytes/sexigraf/issues/219)
+- Debian 8 - EOL [\#218](https://github.com/sexibytes/sexigraf/issues/218)
+- Disk expand  [\#214](https://github.com/sexibytes/sexigraf/issues/214)
+- "No Data Points" Error [\#210](https://github.com/sexibytes/sexigraf/issues/210)
+- add early SMART support dashboard for FreeNAS [\#209](https://github.com/sexibytes/sexigraf/issues/209)
+- add ipmi data from telegraf agent [\#208](https://github.com/sexibytes/sexigraf/issues/208)
+- add alerting dashboard template for vcenter bad events [\#205](https://github.com/sexibytes/sexigraf/issues/205)
+- Add Netdata dashboard [\#200](https://github.com/sexibytes/sexigraf/issues/200)
+- add All ESX VM stats dashboard [\#197](https://github.com/sexibytes/sexigraf/issues/197)
+- Missing esxi hosts [\#195](https://github.com/sexibytes/sexigraf/issues/195)
+- new dashboard "VMware All ESX VM Stats [\#194](https://github.com/sexibytes/sexigraf/issues/194)
+- All graphs except Home & PullExec are showing empty datapoint [\#193](https://github.com/sexibytes/sexigraf/issues/193)
+- Add wait-idle metric for VMs [\#192](https://github.com/sexibytes/sexigraf/issues/192)
+- No datapoints in VMware vCenter Bad Events [\#189](https://github.com/sexibytes/sexigraf/issues/189)
+- Collect strategic events to mimic SexiLog [\#178](https://github.com/sexibytes/sexigraf/issues/178)
+- /var/log/carbon/listener.log.1 filling up [\#177](https://github.com/sexibytes/sexigraf/issues/177)
+- add "purge old data" button with days parameter [\#164](https://github.com/sexibytes/sexigraf/issues/164)
+- add support for datastore clusters [\#159](https://github.com/sexibytes/sexigraf/issues/159)
+- Rename VSAN in vSAN in dashboards/tags [\#156](https://github.com/sexibytes/sexigraf/issues/156)
+- Add SMART dashboard for NAS monitoring [\#148](https://github.com/sexibytes/sexigraf/issues/148)
+- How to get disk health status? [\#105](https://github.com/sexibytes/sexigraf/issues/105)
+
+**Merged pull requests:**
+
+- Dev6 [\#232](https://github.com/sexibytes/sexigraf/pull/232) ([vmdude](https://github.com/vmdude))
+- Dev [\#187](https://github.com/sexibytes/sexigraf/pull/187) ([vmdude](https://github.com/vmdude))
+- Update addVsanCrontab.sh [\#128](https://github.com/sexibytes/sexigraf/pull/128) ([acederlund](https://github.com/acederlund))
+- Update addViCrontab.sh [\#127](https://github.com/sexibytes/sexigraf/pull/127) ([acederlund](https://github.com/acederlund))
+
+## [0.99f](https://github.com/sexibytes/sexigraf/tree/0.99f) (2019-05-12)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99e...0.99f)
+
+**Implemented enhancements:**
+
+- speed up pulling process using hastables [\#168](https://github.com/sexibytes/sexigraf/issues/168)
+- compute esx and datastore sum stats per cluster [\#167](https://github.com/sexibytes/sexigraf/issues/167)
+- add iops for non iorm stats enabled datastore [\#157](https://github.com/sexibytes/sexigraf/issues/157)
+
+**Fixed bugs:**
+
+- bug in filetype and snashot measures  [\#169](https://github.com/sexibytes/sexigraf/issues/169)
+- vCSA 6.7 Update 1 - DIE Can't call method "apiType" on an undefined value at /root/VsanPullStatistics.pl line 136. [\#165](https://github.com/sexibytes/sexigraf/issues/165)
+
+**Closed issues:**
+
+- Update VI pull stats frequence [\#184](https://github.com/sexibytes/sexigraf/issues/184)
+- files.sexigraf.fr is down [\#183](https://github.com/sexibytes/sexigraf/issues/183)
+- Issues with VSAN Capacity and API version 6.7.1 [\#181](https://github.com/sexibytes/sexigraf/issues/181)
+- Alerts not working [\#175](https://github.com/sexibytes/sexigraf/issues/175)
+- Offline Inventory: Add vm cpu usage, vm memory usage [\#172](https://github.com/sexibytes/sexigraf/issues/172)
+- DIE Illegal division by zero at /root/ViPullStatistics.pl line 146. [\#171](https://github.com/sexibytes/sexigraf/issues/171)
+- add cpu latency metric [\#166](https://github.com/sexibytes/sexigraf/issues/166)
+- add vcenter events counter [\#163](https://github.com/sexibytes/sexigraf/issues/163)
+- VsanPullStatistics.pl line 408 - DIE Illegal division by zero at /root/VsanPullStatistics.pl line 408 [\#160](https://github.com/sexibytes/sexigraf/issues/160)
+
+## [0.99e](https://github.com/sexibytes/sexigraf/tree/0.99e) (2018-08-08)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99d...0.99e)
+
+**Implemented enhancements:**
+
+- Rename standalone ESX dashboards to avoid misunderstanding [\#150](https://github.com/sexibytes/sexigraf/issues/150)
+- Please make HTTPS/SSL as a default for the 0.99e version  [\#146](https://github.com/sexibytes/sexigraf/issues/146)
+- Add host \# per cluster in every cluster related dashboard [\#145](https://github.com/sexibytes/sexigraf/issues/145)
+- Change logrotate frequency to hourly [\#144](https://github.com/sexibytes/sexigraf/issues/144)
+- Add Sync reasons in vSAN Resync dashboard [\#142](https://github.com/sexibytes/sexigraf/issues/142)
+- add network packets dropped [\#141](https://github.com/sexibytes/sexigraf/issues/141)
+- Change join separator in the offline inventory [\#136](https://github.com/sexibytes/sexigraf/issues/136)
+- add disk.commandsAveraged.average for vms [\#135](https://github.com/sexibytes/sexigraf/issues/135)
+- add net.usage.average for vms [\#134](https://github.com/sexibytes/sexigraf/issues/134)
+- add disk.usage.average metric for vms [\#133](https://github.com/sexibytes/sexigraf/issues/133)
+- transform mem distributed fairness metric to negative Y [\#124](https://github.com/sexibytes/sexigraf/issues/124)
 - Display appliance version in SexiMenu [\#122](https://github.com/sexibytes/sexigraf/issues/122)
+- remove cluster link for "N/A" cluster in offline inventory [\#119](https://github.com/sexibytes/sexigraf/issues/119)
+- add mem.allocated to VMware Multi Cluster QuickStats dashboard [\#118](https://github.com/sexibytes/sexigraf/issues/118)
+- Pull Exec Time does not show .vm metrics beyond 2d [\#115](https://github.com/sexibytes/sexigraf/issues/115)
+- Add a backup/export feature [\#67](https://github.com/sexibytes/sexigraf/issues/67)
 - Dashboard init failed Template variables could not be initialized: undefined [\#62](https://github.com/sexibytes/sexigraf/issues/62)
 
 **Fixed bugs:**
 
+- Wrong allocated memory value in cluster dashboards [\#152](https://github.com/sexibytes/sexigraf/issues/152)
+- ViPullStatistics.pl - Illegal division by zero [\#132](https://github.com/sexibytes/sexigraf/issues/132)
+- set decimals to auto in power usage gaph in All Cluster FullStats [\#123](https://github.com/sexibytes/sexigraf/issues/123)
 - House Cleaner not expanding subfolders [\#120](https://github.com/sexibytes/sexigraf/issues/120)
-- Dashboard init failed Template variables could not be initialized: undefined [\#62](https://github.com/sexibytes/sexigraf/issues/62)
 - dashboard metrics definition  [\#26](https://github.com/sexibytes/sexigraf/issues/26)
 
 **Closed issues:**
 
+- add vmhba traffic counters [\#138](https://github.com/sexibytes/sexigraf/issues/138)
+- Missing ESX Hosts [\#131](https://github.com/sexibytes/sexigraf/issues/131)
+- fresh install: All vmware dashbords shows no data  [\#130](https://github.com/sexibytes/sexigraf/issues/130)
+- Dashboard not working on a mix environment [\#129](https://github.com/sexibytes/sexigraf/issues/129)
+- Slow fetch from vcsa [\#126](https://github.com/sexibytes/sexigraf/issues/126)
+- create dashboard for vcenter sessionCount metric [\#121](https://github.com/sexibytes/sexigraf/issues/121)
 - lower Y-Max from 180 to 150 on cpu/ram usage graph [\#117](https://github.com/sexibytes/sexigraf/issues/117)
 - Time data request Error on graph [\#37](https://github.com/sexibytes/sexigraf/issues/37)
 
+**Merged pull requests:**
+
+- Update to 0.99e [\#155](https://github.com/sexibytes/sexigraf/pull/155) ([vmdude](https://github.com/vmdude))
+
 ## [0.99d](https://github.com/sexibytes/sexigraf/tree/0.99d) (2017-07-13)
+
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99c...0.99d)
 
 **Implemented enhancements:**
@@ -41,7 +167,6 @@
 **Fixed bugs:**
 
 - /var/spool/exim4 filling up [\#107](https://github.com/sexibytes/sexigraf/issues/107)
-- Error on testing vCenter status while connection to VC6.5 [\#102](https://github.com/sexibytes/sexigraf/issues/102)
 - Typo in $graphite-\>send\(\) [\#82](https://github.com/sexibytes/sexigraf/issues/82)
 - WARN Use of uninitialized value in multiplication \(\*\) at /root/ViPullStatistics.pl line 247 [\#78](https://github.com/sexibytes/sexigraf/issues/78)
 - Syntax Error when using SexiGraf code on CentOS [\#77](https://github.com/sexibytes/sexigraf/issues/77)
@@ -75,6 +200,7 @@
 - Import last DEV environment before master merge [\#111](https://github.com/sexibytes/sexigraf/pull/111) ([vmdude](https://github.com/vmdude))
 
 ## [0.99c](https://github.com/sexibytes/sexigraf/tree/0.99c) (2016-05-18)
+
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99b1...0.99c)
 
 **Implemented enhancements:**
@@ -105,6 +231,7 @@
 - Merging 0.99c [\#75](https://github.com/sexibytes/sexigraf/pull/75) ([rschitz](https://github.com/rschitz))
 
 ## [0.99b1](https://github.com/sexibytes/sexigraf/tree/0.99b1) (2016-03-10)
+
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99a...0.99b1)
 
 **Implemented enhancements:**
@@ -120,7 +247,6 @@
 **Fixed bugs:**
 
 - Issue fetching VSAN stats after upgrade to 0.99b [\#53](https://github.com/sexibytes/sexigraf/issues/53)
-- Handle VirtualSAN Witness ESXi [\#47](https://github.com/sexibytes/sexigraf/issues/47)
 - localhost hostname makes the script die [\#41](https://github.com/sexibytes/sexigraf/issues/41)
 
 **Closed issues:**
@@ -134,6 +260,9 @@
 - Upgrade to 0.99b "Xen" [\#51](https://github.com/sexibytes/sexigraf/pull/51) ([vmdude](https://github.com/vmdude))
 
 ## [0.99a](https://github.com/sexibytes/sexigraf/tree/0.99a) (2015-11-20)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/c8bd72d32dfb0f61e95ef12d2a05257345b1ab0d...0.99a)
+
 **Implemented enhancements:**
 
 - list old "orphaned" files in Stats Remover [\#28](https://github.com/sexibytes/sexigraf/issues/28)
@@ -171,4 +300,4 @@
 
 
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
