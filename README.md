@@ -22,7 +22,7 @@ Starting from version 9.10, FreeNAS allows users to set a “Remote Graphite Ser
 
 Leveraging the built-in Graphite listener of SexiGraf, we introduced Windows support in version 0.99c with basic cpu-ram-hdd metrics : http://www.sexigraf.fr/windows-sexipanel/
 
-## pfSense SexiPanels
+## pfSense
 
 Because we love and use pfSense very much since the m0n0wall fork, we decided to make a great dashboard with system metrics, interface statistics but most importantly the pfinfo data which let you monitor the packet filtering service of the firewall.
 
