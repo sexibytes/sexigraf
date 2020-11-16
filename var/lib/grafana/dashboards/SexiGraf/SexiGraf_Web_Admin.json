@@ -1,0 +1,81 @@
+{
+  "title": "SexiGraf Web Admin",
+  "uid": "a2c5845e",
+  "originalTitle": "SexiGraf Web Admin",
+  "tags": [
+    "admin",
+    "VI",
+    "vSAN"
+  ],
+  "style": "light",
+  "timezone": "browser",
+  "editable": false,
+  "hideControls": true,
+  "sharedCrosshair": false,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": false,
+      "height": "1100px",
+      "panels": [
+        {
+          "content": "<iframe style=\"border: none\" src=\"/sexiadmin/\" onload=\"this.width=window.innerWidth-120;this.height=window.innerHeight-120;\"></iframe>",
+          "id": 1,
+          "mode": "html",
+          "span": 12,
+          "style": {},
+          "title": "",
+          "transparent": true,
+          "type": "text"
+        }
+      ],
+      "title": "Web Admin"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": false,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "schemaVersion": 6,
+  "version": 2,
+  "links": []
+}

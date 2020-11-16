@@ -438,7 +438,7 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['provisioningSupported', 'boolean', undef, 1],
    ['multiHostSupported', 'boolean', undef, 1],
-   ['userShellAccessSupported', 'boolean', undef, 0],
+   ['userShellAccessSupported', 'boolean', undef, 1],
    ['supportedEVCMode', 'EVCMode', 1, 0],
    ['networkBackupAndRestoreSupported', 'boolean', undef, 0],
    ['ftDrsWithoutEvcSupported', 'boolean', undef, 0],
@@ -493,55 +493,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['dvPortgroup', 'ManagedObjectReference', undef, 1],
-   ['service', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'dvPortgroup', 'service');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfClusterComputeResourceDVSSettingDVPortgroupToServiceMapping;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package ClusterComputeResourceDVSSetting;
 our @ISA = qw(DynamicData);
 
@@ -577,6 +528,55 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDVSSetting', 'ClusterComputeResourceDVSSetting');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dvPortgroup', 'ManagedObjectReference', undef, 1],
+   ['service', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'dvPortgroup', 'service');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterComputeResourceDVSSettingDVPortgroupToServiceMapping;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDVSSettingDVPortgroupToServiceMapping', 'ClusterComputeResourceDVSSettingDVPortgroupToServiceMapping');
 
 
 sub get_property_list {
@@ -669,56 +669,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['dvPortgroupSpec', 'DVPortgroupConfigSpec', undef, 0],
-   ['dvPortgroup', 'ManagedObjectReference', undef, 0],
-   ['service', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'dvPortgroupSpec', 'dvPortgroup', 'service');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package ClusterComputeResourceDvsProfile;
 our @ISA = qw(DynamicData);
 
@@ -755,6 +705,56 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDvsProfile', 'ClusterComputeResourceDvsProfile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dvPortgroupSpec', 'DVPortgroupConfigSpec', undef, 0],
+   ['dvPortgroup', 'ManagedObjectReference', undef, 0],
+   ['service', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'dvPortgroupSpec', 'dvPortgroup', 'service');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping', 'ClusterComputeResourceDvsProfileDVPortgroupSpecToServiceMapping');
 
 
 sub get_property_list {
@@ -877,10 +877,11 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['host', 'ManagedObjectReference', undef, 1],
    ['hostVmkNics', 'ClusterComputeResourceHostVmkNicInfo', 1, 0],
+   ['allowedInNonMaintenanceMode', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ClusterComputeResourceHostConfigurationInput', 'host', 'hostVmkNics');
+VIMRuntime::make_get_set('ClusterComputeResourceHostConfigurationInput', 'host', 'hostVmkNics', 'allowedInNonMaintenanceMode');
 
 
 sub get_property_list {
@@ -1501,13 +1502,14 @@ our @property_list = (
    ['freeSpace', undef, undef, 1],
    ['maxFileSize', undef, undef, 1],
    ['maxVirtualDiskCapacity', undef, undef, 0],
-   ['maxMemoryFileSize', undef, undef, 0],
+   ['maxMemoryFileSize', undef, undef, 1],
    ['timestamp', undef, undef, 0],
    ['containerId', undef, undef, 0],
+   ['aliasOf', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('DatastoreInfo', 'name', 'url', 'freeSpace', 'maxFileSize', 'maxVirtualDiskCapacity', 'maxMemoryFileSize', 'timestamp', 'containerId');
+VIMRuntime::make_get_set('DatastoreInfo', 'name', 'url', 'freeSpace', 'maxFileSize', 'maxVirtualDiskCapacity', 'maxMemoryFileSize', 'timestamp', 'containerId', 'aliasOf');
 
 
 sub get_property_list {
@@ -1530,8 +1532,8 @@ our @property_list = (
    ['directoryHierarchySupported', 'boolean', undef, 1],
    ['rawDiskMappingsSupported', 'boolean', undef, 1],
    ['perFileThinProvisioningSupported', 'boolean', undef, 1],
-   ['storageIORMSupported', 'boolean', undef, 0],
-   ['nativeSnapshotSupported', 'boolean', undef, 0],
+   ['storageIORMSupported', 'boolean', undef, 1],
+   ['nativeSnapshotSupported', 'boolean', undef, 1],
    ['topLevelDirectoryCreateSupported', 'boolean', undef, 0],
    ['seSparseSupported', 'boolean', undef, 0],
    ['vmfsSparseSupported', 'boolean', undef, 0],
@@ -2241,7 +2243,7 @@ our @property_list = (
    ['contact', 'DVSContactInfo', undef, 1],
    ['switchIpAddress', undef, undef, 0],
    ['createTime', undef, undef, 1],
-   ['networkResourceManagementEnabled', 'boolean', undef, 0],
+   ['networkResourceManagementEnabled', 'boolean', undef, 1],
    ['defaultProxySwitchMaxNumPorts', undef, undef, 0],
    ['healthCheckConfig', 'DVSHealthCheckConfig', 1, 0],
    ['infrastructureTrafficResourceConfig', 'DvsHostInfrastructureTrafficResource', 1, 0],
@@ -2253,32 +2255,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('DVSConfigInfo', 'uuid', 'name', 'numStandalonePorts', 'numPorts', 'maxPorts', 'uplinkPortPolicy', 'uplinkPortgroup', 'defaultPortConfig', 'host', 'productInfo', 'targetInfo', 'extensionKey', 'vendorSpecificConfig', 'policy', 'description', 'configVersion', 'contact', 'switchIpAddress', 'createTime', 'networkResourceManagementEnabled', 'defaultProxySwitchMaxNumPorts', 'healthCheckConfig', 'infrastructureTrafficResourceConfig', 'netResourcePoolTrafficResourceConfig', 'networkResourceControlVersion', 'vmVnicNetworkResourcePool', 'pnicCapacityRatioForReservation');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DvsHostInfrastructureTrafficResourceAllocation;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['limit', undef, undef, 0],
-   ['shares', 'SharesInfo', undef, 0],
-   ['reservation', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('DvsHostInfrastructureTrafficResourceAllocation', 'limit', 'shares', 'reservation');
 
 
 sub get_property_list {
@@ -2329,6 +2305,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDvsHostInfrastructureTrafficResource', 'DvsHostInfrastructureTrafficResource');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package DvsHostInfrastructureTrafficResourceAllocation;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['limit', undef, undef, 0],
+   ['shares', 'SharesInfo', undef, 0],
+   ['reservation', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('DvsHostInfrastructureTrafficResourceAllocation', 'limit', 'shares', 'reservation');
 
 
 sub get_property_list {
@@ -2455,7 +2457,7 @@ our @property_list = (
    ['featureMask', 'HostFeatureMask', 1, 0],
    ['featureRequirement', 'VirtualMachineFeatureRequirement', 1, 0],
    ['vendor', undef, undef, 1],
-   ['track', undef, 1, 0],
+   ['track', undef, 1, 1],
    ['vendorTier', undef, undef, 1],
 );
 
@@ -2658,6 +2660,73 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ExtendedElementDescription', 'messageCatalogKeyPrefix', 'messageArg');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package Extension;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['description', 'Description', undef, 1],
+   ['key', undef, undef, 1],
+   ['company', undef, undef, 0],
+   ['type', undef, undef, 0],
+   ['version', undef, undef, 1],
+   ['subjectName', undef, undef, 0],
+   ['server', 'ExtensionServerInfo', 1, 0],
+   ['client', 'ExtensionClientInfo', 1, 0],
+   ['taskList', 'ExtensionTaskTypeInfo', 1, 0],
+   ['eventList', 'ExtensionEventTypeInfo', 1, 0],
+   ['faultList', 'ExtensionFaultTypeInfo', 1, 0],
+   ['privilegeList', 'ExtensionPrivilegeInfo', 1, 0],
+   ['resourceList', 'ExtensionResourceInfo', 1, 0],
+   ['lastHeartbeatTime', undef, undef, 1],
+   ['healthInfo', 'ExtensionHealthInfo', undef, 0],
+   ['ovfConsumerInfo', 'ExtensionOvfConsumerInfo', undef, 0],
+   ['extendedProductInfo', 'ExtExtendedProductInfo', undef, 0],
+   ['managedEntityInfo', 'ExtManagedEntityInfo', 1, 0],
+   ['shownInSolutionManager', 'boolean', undef, 0],
+   ['solutionManagerInfo', 'ExtSolutionManagerInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('Extension', 'description', 'key', 'company', 'type', 'version', 'subjectName', 'server', 'client', 'taskList', 'eventList', 'faultList', 'privilegeList', 'resourceList', 'lastHeartbeatTime', 'healthInfo', 'ovfConsumerInfo', 'extendedProductInfo', 'managedEntityInfo', 'shownInSolutionManager', 'solutionManagerInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfExtension;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['Extension', 'Extension', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfExtension', 'Extension');
 
 
 sub get_property_list {
@@ -3071,73 +3140,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package Extension;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['description', 'Description', undef, 1],
-   ['key', undef, undef, 1],
-   ['company', undef, undef, 0],
-   ['type', undef, undef, 0],
-   ['version', undef, undef, 1],
-   ['subjectName', undef, undef, 0],
-   ['server', 'ExtensionServerInfo', 1, 0],
-   ['client', 'ExtensionClientInfo', 1, 0],
-   ['taskList', 'ExtensionTaskTypeInfo', 1, 0],
-   ['eventList', 'ExtensionEventTypeInfo', 1, 0],
-   ['faultList', 'ExtensionFaultTypeInfo', 1, 0],
-   ['privilegeList', 'ExtensionPrivilegeInfo', 1, 0],
-   ['resourceList', 'ExtensionResourceInfo', 1, 0],
-   ['lastHeartbeatTime', undef, undef, 1],
-   ['healthInfo', 'ExtensionHealthInfo', undef, 0],
-   ['ovfConsumerInfo', 'ExtensionOvfConsumerInfo', undef, 0],
-   ['extendedProductInfo', 'ExtExtendedProductInfo', undef, 0],
-   ['managedEntityInfo', 'ExtManagedEntityInfo', 1, 0],
-   ['shownInSolutionManager', 'boolean', undef, 0],
-   ['solutionManagerInfo', 'ExtSolutionManagerInfo', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('Extension', 'description', 'key', 'company', 'type', 'version', 'subjectName', 'server', 'client', 'taskList', 'eventList', 'faultList', 'privilegeList', 'resourceList', 'lastHeartbeatTime', 'healthInfo', 'ovfConsumerInfo', 'extendedProductInfo', 'managedEntityInfo', 'shownInSolutionManager', 'solutionManagerInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfExtension;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['Extension', 'Extension', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfExtension', 'Extension');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package ExtensionManagerIpAllocationUsage;
 our @ISA = qw(DynamicData);
 
@@ -3436,19 +3438,18 @@ sub get_property_list {
 
 
 ##################################################################################
-package ReplicationVmProgressInfo;
+package HbrManagerReplicationVmInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['progress', undef, undef, 1],
-   ['bytesTransferred', undef, undef, 1],
-   ['bytesToTransfer', undef, undef, 1],
-   ['checksumTotalBytes', undef, undef, 0],
-   ['checksumComparedBytes', undef, undef, 0],
+   ['state', undef, undef, 1],
+   ['progressInfo', 'ReplicationVmProgressInfo', undef, 0],
+   ['imageId', undef, undef, 0],
+   ['lastError', 'LocalizedMethodFault', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ReplicationVmProgressInfo', 'progress', 'bytesTransferred', 'bytesToTransfer', 'checksumTotalBytes', 'checksumComparedBytes');
+VIMRuntime::make_get_set('HbrManagerReplicationVmInfo', 'state', 'progressInfo', 'imageId', 'lastError');
 
 
 sub get_property_list {
@@ -3464,18 +3465,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package HbrManagerReplicationVmInfo;
+package ReplicationVmProgressInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['state', undef, undef, 1],
-   ['progressInfo', 'ReplicationVmProgressInfo', undef, 0],
-   ['imageId', undef, undef, 0],
-   ['lastError', 'LocalizedMethodFault', undef, 0],
+   ['progress', undef, undef, 1],
+   ['bytesTransferred', undef, undef, 1],
+   ['bytesToTransfer', undef, undef, 1],
+   ['checksumTotalBytes', undef, undef, 0],
+   ['checksumComparedBytes', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HbrManagerReplicationVmInfo', 'state', 'progressInfo', 'imageId', 'lastError');
+VIMRuntime::make_get_set('ReplicationVmProgressInfo', 'progress', 'bytesTransferred', 'bytesToTransfer', 'checksumTotalBytes', 'checksumComparedBytes');
 
 
 sub get_property_list {
@@ -4313,6 +4315,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package IoFilterQueryIssueResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['opType', undef, undef, 1],
+   ['hostIssue', 'IoFilterHostIssue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('IoFilterQueryIssueResult', 'opType', 'hostIssue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package IoFilterHostIssue;
 our @ISA = qw(DynamicData);
 
@@ -4347,31 +4374,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfIoFilterHostIssue', 'IoFilterHostIssue');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package IoFilterQueryIssueResult;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['opType', undef, undef, 1],
-   ['hostIssue', 'IoFilterHostIssue', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('IoFilterQueryIssueResult', 'opType', 'hostIssue');
 
 
 sub get_property_list {
@@ -5228,7 +5230,7 @@ our @property_list = (
    ['network', 'ManagedObjectReference', undef, 0],
    ['name', undef, undef, 1],
    ['accessible', 'boolean', undef, 1],
-   ['ipPoolName', undef, undef, 0],
+   ['ipPoolName', undef, undef, 1],
    ['ipPoolId', undef, undef, 0],
 );
 
@@ -6643,12 +6645,12 @@ package PerfInterval;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 0],
+   ['key', undef, undef, 1],
    ['samplingPeriod', undef, undef, 1],
    ['name', undef, undef, 1],
    ['length', undef, undef, 1],
    ['level', undef, undef, 0],
-   ['enabled', 'boolean', undef, 0],
+   ['enabled', 'boolean', undef, 1],
 );
 
 
@@ -7034,6 +7036,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package ResourcePoolSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['config', 'ResourceConfigSpec', undef, 1],
+   ['runtime', 'ResourcePoolRuntimeInfo', undef, 1],
+   ['quickStats', 'ResourcePoolQuickStats', undef, 0],
+   ['configuredMemoryMB', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ResourcePoolSummary', 'name', 'config', 'runtime', 'quickStats', 'configuredMemoryMB');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ResourcePoolQuickStats;
 our @ISA = qw(DynamicData);
 
@@ -7057,34 +7087,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ResourcePoolQuickStats', 'overallCpuUsage', 'overallCpuDemand', 'guestMemoryUsage', 'hostMemoryUsage', 'distributedCpuEntitlement', 'distributedMemoryEntitlement', 'staticCpuEntitlement', 'staticMemoryEntitlement', 'privateMemory', 'sharedMemory', 'swappedMemory', 'balloonedMemory', 'overheadMemory', 'consumedOverheadMemory', 'compressedMemory');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ResourcePoolSummary;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['name', undef, undef, 1],
-   ['config', 'ResourceConfigSpec', undef, 1],
-   ['runtime', 'ResourcePoolRuntimeInfo', undef, 1],
-   ['quickStats', 'ResourcePoolQuickStats', undef, 0],
-   ['configuredMemoryMB', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('ResourcePoolSummary', 'name', 'config', 'runtime', 'quickStats', 'configuredMemoryMB');
 
 
 sub get_property_list {
@@ -7339,6 +7341,57 @@ sub get_property_list {
 
 
 ##################################################################################
+package ServiceLocator;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['instanceUuid', undef, undef, 1],
+   ['url', undef, undef, 1],
+   ['credential', 'ServiceLocatorCredential', undef, 1],
+   ['sslThumbprint', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ServiceLocator', 'instanceUuid', 'url', 'credential', 'sslThumbprint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfServiceLocator;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ServiceLocator', 'ServiceLocator', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfServiceLocator', 'ServiceLocator');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ServiceLocatorCredential;
 our @ISA = qw(DynamicData);
 
@@ -7396,57 +7449,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ServiceLocatorSAMLCredential', 'token');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ServiceLocator;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['instanceUuid', undef, undef, 1],
-   ['url', undef, undef, 1],
-   ['credential', 'ServiceLocatorCredential', undef, 1],
-   ['sslThumbprint', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('ServiceLocator', 'instanceUuid', 'url', 'credential', 'sslThumbprint');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfServiceLocator;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ServiceLocator', 'ServiceLocator', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfServiceLocator', 'ServiceLocator');
 
 
 sub get_property_list {
@@ -7816,11 +7818,11 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['enabled', 'boolean', undef, 1],
-   ['congestionThresholdMode', undef, undef, 0],
+   ['congestionThresholdMode', undef, undef, 1],
    ['congestionThreshold', undef, undef, 1],
    ['percentOfPeakThroughput', undef, undef, 0],
-   ['statsCollectionEnabled', 'boolean', undef, 0],
-   ['reservationEnabled', 'boolean', undef, 0],
+   ['statsCollectionEnabled', 'boolean', undef, 1],
+   ['reservationEnabled', 'boolean', undef, 1],
    ['statsAggregationDisabled', 'boolean', undef, 0],
    ['reservableIopsThreshold', undef, undef, 0],
 );
@@ -7879,8 +7881,8 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['enabledOption', 'BoolOption', undef, 1],
    ['congestionThresholdOption', 'IntOption', undef, 1],
-   ['statsCollectionEnabledOption', 'BoolOption', undef, 0],
-   ['reservationEnabledOption', 'BoolOption', undef, 0],
+   ['statsCollectionEnabledOption', 'BoolOption', undef, 1],
+   ['reservationEnabledOption', 'BoolOption', undef, 1],
 );
 
 
@@ -8130,6 +8132,40 @@ sub get_property_list {
 
 
 ##################################################################################
+package TaskFilterSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entity', 'TaskFilterSpecByEntity', undef, 0],
+   ['time', 'TaskFilterSpecByTime', undef, 0],
+   ['userName', 'TaskFilterSpecByUsername', undef, 0],
+   ['activationId', undef, 1, 0],
+   ['state', 'TaskInfoState', 1, 0],
+   ['alarm', 'ManagedObjectReference', undef, 0],
+   ['scheduledTask', 'ManagedObjectReference', undef, 0],
+   ['eventChainId', undef, 1, 0],
+   ['tag', undef, 1, 0],
+   ['parentTaskKey', undef, 1, 0],
+   ['rootTaskKey', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('TaskFilterSpec', 'entity', 'time', 'userName', 'activationId', 'state', 'alarm', 'scheduledTask', 'eventChainId', 'tag', 'parentTaskKey', 'rootTaskKey');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package TaskFilterSpecByEntity;
 our @ISA = qw(DynamicData);
 
@@ -8206,64 +8242,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package TaskFilterSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['entity', 'TaskFilterSpecByEntity', undef, 0],
-   ['time', 'TaskFilterSpecByTime', undef, 0],
-   ['userName', 'TaskFilterSpecByUsername', undef, 0],
-   ['activationId', undef, 1, 0],
-   ['state', 'TaskInfoState', 1, 0],
-   ['alarm', 'ManagedObjectReference', undef, 0],
-   ['scheduledTask', 'ManagedObjectReference', undef, 0],
-   ['eventChainId', undef, 1, 0],
-   ['tag', undef, 1, 0],
-   ['parentTaskKey', undef, 1, 0],
-   ['rootTaskKey', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('TaskFilterSpec', 'entity', 'time', 'userName', 'activationId', 'state', 'alarm', 'scheduledTask', 'eventChainId', 'tag', 'parentTaskKey', 'rootTaskKey');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfTaskInfoState;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['TaskInfoState', 'TaskInfoState', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfTaskInfoState', 'TaskInfoState');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package TaskInfo;
 our @ISA = qw(DynamicData);
 
@@ -8319,6 +8297,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfTaskInfo', 'TaskInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfTaskInfoState;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['TaskInfoState', 'TaskInfoState', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfTaskInfoState', 'TaskInfoState');
 
 
 sub get_property_list {
@@ -8504,6 +8506,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package UpdateVirtualMachineFilesResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['failedVmFile', 'UpdateVirtualMachineFilesResultFailedVmFileInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('UpdateVirtualMachineFilesResult', 'failedVmFile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package UpdateVirtualMachineFilesResultFailedVmFileInfo;
 our @ISA = qw(DynamicData);
 
@@ -8538,30 +8564,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfUpdateVirtualMachineFilesResultFailedVmFileInfo', 'UpdateVirtualMachineFilesResultFailedVmFileInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package UpdateVirtualMachineFilesResult;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['failedVmFile', 'UpdateVirtualMachineFilesResultFailedVmFileInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('UpdateVirtualMachineFilesResult', 'failedVmFile');
 
 
 sub get_property_list {
@@ -8638,10 +8640,10 @@ our @property_list = (
    ['lastActiveTime', undef, undef, 1],
    ['locale', undef, undef, 1],
    ['messageLocale', undef, undef, 1],
-   ['extensionSession', 'boolean', undef, 0],
-   ['ipAddress', undef, undef, 0],
-   ['userAgent', undef, undef, 0],
-   ['callCount', undef, undef, 0],
+   ['extensionSession', 'boolean', undef, 1],
+   ['ipAddress', undef, undef, 1],
+   ['userAgent', undef, undef, 1],
+   ['callCount', undef, undef, 1],
 );
 
 
@@ -8670,6 +8672,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfUserSession', 'UserSession');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VVolVmConfigFileUpdateResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['succeededVmConfigFile', 'KeyValue', 1, 0],
+   ['failedVmConfigFile', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VVolVmConfigFileUpdateResult', 'succeededVmConfigFile', 'failedVmConfigFile');
 
 
 sub get_property_list {
@@ -8719,31 +8746,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VVolVmConfigFileUpdateResult;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['succeededVmConfigFile', 'KeyValue', 1, 0],
-   ['failedVmConfigFile', 'VVolVmConfigFileUpdateResultFailedVmConfigFileInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VVolVmConfigFileUpdateResult', 'succeededVmConfigFile', 'failedVmConfigFile');
 
 
 sub get_property_list {
@@ -8836,6 +8838,33 @@ sub get_property_list {
 
 
 ##################################################################################
+package VimVasaProvider;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uid', undef, undef, 0],
+   ['url', undef, undef, 1],
+   ['name', undef, undef, 0],
+   ['selfSignedCertificate', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VimVasaProvider', 'uid', 'url', 'name', 'selfSignedCertificate');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVasaProviderStatePerArray;
 our @ISA = qw(DynamicData);
 
@@ -8871,33 +8900,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVimVasaProviderStatePerArray', 'VimVasaProviderStatePerArray');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VimVasaProvider;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['uid', undef, undef, 0],
-   ['url', undef, undef, 1],
-   ['name', undef, undef, 0],
-   ['selfSignedCertificate', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VimVasaProvider', 'uid', 'url', 'name', 'selfSignedCertificate');
 
 
 sub get_property_list {
@@ -9294,6 +9296,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package DiskChangeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['startOffset', undef, undef, 1],
+   ['length', undef, undef, 1],
+   ['changedArea', 'DiskChangeExtent', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('DiskChangeInfo', 'startOffset', 'length', 'changedArea');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DiskChangeExtent;
 our @ISA = qw(DynamicData);
 
@@ -9328,32 +9356,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDiskChangeExtent', 'DiskChangeExtent');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DiskChangeInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['startOffset', undef, undef, 1],
-   ['length', undef, undef, 1],
-   ['changedArea', 'DiskChangeExtent', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('DiskChangeInfo', 'startOffset', 'length', 'changedArea');
 
 
 sub get_property_list {
@@ -10101,6 +10103,35 @@ sub get_property_list {
 
 
 ##################################################################################
+package AlarmTriggeringAction;
+our @ISA = qw(AlarmAction);
+
+our @property_list = (
+   ['action', 'Action', undef, 1],
+   ['transitionSpecs', 'AlarmTriggeringActionTransitionSpec', 1, 0],
+   ['green2yellow', 'boolean', undef, 1],
+   ['yellow2red', 'boolean', undef, 1],
+   ['red2yellow', 'boolean', undef, 1],
+   ['yellow2green', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('AlarmTriggeringAction', 'action', 'transitionSpecs', 'green2yellow', 'yellow2red', 'red2yellow', 'yellow2green');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package AlarmTriggeringActionTransitionSpec;
 our @ISA = qw(DynamicData);
 
@@ -10151,35 +10182,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package AlarmTriggeringAction;
-our @ISA = qw(AlarmAction);
-
-our @property_list = (
-   ['action', 'Action', undef, 1],
-   ['transitionSpecs', 'AlarmTriggeringActionTransitionSpec', 1, 0],
-   ['green2yellow', 'boolean', undef, 1],
-   ['yellow2red', 'boolean', undef, 1],
-   ['red2yellow', 'boolean', undef, 1],
-   ['yellow2green', 'boolean', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('AlarmTriggeringAction', 'action', 'transitionSpecs', 'green2yellow', 'yellow2red', 'red2yellow', 'yellow2green');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package GroupAlarmAction;
 our @ISA = qw(AlarmAction);
 
@@ -10213,9 +10215,9 @@ our @property_list = (
    ['metricOperator', 'ElementDescription', 1, 1],
    ['hostSystemConnectionState', 'ElementDescription', 1, 1],
    ['virtualMachinePowerState', 'ElementDescription', 1, 1],
-   ['datastoreConnectionState', 'ElementDescription', 1, 0],
-   ['hostSystemPowerState', 'ElementDescription', 1, 0],
-   ['virtualMachineGuestHeartbeatStatus', 'ElementDescription', 1, 0],
+   ['datastoreConnectionState', 'ElementDescription', 1, 1],
+   ['hostSystemPowerState', 'ElementDescription', 1, 1],
+   ['virtualMachineGuestHeartbeatStatus', 'ElementDescription', 1, 1],
    ['entityStatus', 'ElementDescription', 1, 1],
    ['action', 'TypeDescription', 1, 1],
 );
@@ -10360,6 +10362,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package EventAlarmExpression;
+our @ISA = qw(AlarmExpression);
+
+our @property_list = (
+   ['comparisons', 'EventAlarmExpressionComparison', 1, 0],
+   ['eventType', undef, undef, 1],
+   ['eventTypeId', undef, undef, 0],
+   ['objectType', undef, undef, 0],
+   ['status', 'ManagedEntityStatus', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('EventAlarmExpression', 'comparisons', 'eventType', 'eventTypeId', 'objectType', 'status');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package EventAlarmExpressionComparison;
 our @ISA = qw(DynamicData);
 
@@ -10395,34 +10425,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfEventAlarmExpressionComparison', 'EventAlarmExpressionComparison');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package EventAlarmExpression;
-our @ISA = qw(AlarmExpression);
-
-our @property_list = (
-   ['comparisons', 'EventAlarmExpressionComparison', 1, 0],
-   ['eventType', undef, undef, 1],
-   ['eventTypeId', undef, undef, 0],
-   ['objectType', undef, undef, 0],
-   ['status', 'ManagedEntityStatus', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('EventAlarmExpression', 'comparisons', 'eventType', 'eventTypeId', 'objectType', 'status');
 
 
 sub get_property_list {
@@ -11531,6 +11533,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package ClusterDasAdvancedRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dasHostInfo', 'ClusterDasHostInfo', undef, 0],
+   ['vmcpSupported', 'ClusterDasAdvancedRuntimeInfoVmcpCapabilityInfo', undef, 0],
+   ['heartbeatDatastoreInfo', 'DasHeartbeatDatastoreInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterDasAdvancedRuntimeInfo', 'dasHostInfo', 'vmcpSupported', 'heartbeatDatastoreInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ClusterDasAdvancedRuntimeInfoVmcpCapabilityInfo;
 our @ISA = qw(DynamicData);
 
@@ -11590,32 +11618,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDasHeartbeatDatastoreInfo', 'DasHeartbeatDatastoreInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ClusterDasAdvancedRuntimeInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['dasHostInfo', 'ClusterDasHostInfo', undef, 0],
-   ['vmcpSupported', 'ClusterDasAdvancedRuntimeInfoVmcpCapabilityInfo', undef, 0],
-   ['heartbeatDatastoreInfo', 'DasHeartbeatDatastoreInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ClusterDasAdvancedRuntimeInfo', 'dasHostInfo', 'vmcpSupported', 'heartbeatDatastoreInfo');
 
 
 sub get_property_list {
@@ -11699,6 +11701,38 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ClusterDasDataSummary', 'hostListVersion', 'clusterConfigVersion', 'compatListVersion');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterDasFailoverLevelAdvancedRuntimeInfo;
+our @ISA = qw(ClusterDasAdvancedRuntimeInfo);
+
+our @property_list = (
+   ['slotInfo', 'ClusterDasFailoverLevelAdvancedRuntimeInfoSlotInfo', undef, 1],
+   ['totalSlots', undef, undef, 1],
+   ['usedSlots', undef, undef, 1],
+   ['unreservedSlots', undef, undef, 1],
+   ['totalVms', undef, undef, 1],
+   ['totalHosts', undef, undef, 1],
+   ['totalGoodHosts', undef, undef, 1],
+   ['hostSlots', 'ClusterDasFailoverLevelAdvancedRuntimeInfoHostSlots', 1, 0],
+   ['vmsRequiringMultipleSlots', 'ClusterDasFailoverLevelAdvancedRuntimeInfoVmSlots', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterDasFailoverLevelAdvancedRuntimeInfo', 'slotInfo', 'totalSlots', 'usedSlots', 'unreservedSlots', 'totalVms', 'totalHosts', 'totalGoodHosts', 'hostSlots', 'vmsRequiringMultipleSlots');
 
 
 sub get_property_list {
@@ -11823,38 +11857,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterDasFailoverLevelAdvancedRuntimeInfoVmSlots', 'ClusterDasFailoverLevelAdvancedRuntimeInfoVmSlots');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ClusterDasFailoverLevelAdvancedRuntimeInfo;
-our @ISA = qw(ClusterDasAdvancedRuntimeInfo);
-
-our @property_list = (
-   ['slotInfo', 'ClusterDasFailoverLevelAdvancedRuntimeInfoSlotInfo', undef, 1],
-   ['totalSlots', undef, undef, 1],
-   ['usedSlots', undef, undef, 1],
-   ['unreservedSlots', undef, undef, 1],
-   ['totalVms', undef, undef, 1],
-   ['totalHosts', undef, undef, 1],
-   ['totalGoodHosts', undef, undef, 1],
-   ['hostSlots', 'ClusterDasFailoverLevelAdvancedRuntimeInfoHostSlots', 1, 0],
-   ['vmsRequiringMultipleSlots', 'ClusterDasFailoverLevelAdvancedRuntimeInfoVmSlots', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ClusterDasFailoverLevelAdvancedRuntimeInfo', 'slotInfo', 'totalSlots', 'usedSlots', 'unreservedSlots', 'totalVms', 'totalHosts', 'totalGoodHosts', 'hostSlots', 'vmsRequiringMultipleSlots');
 
 
 sub get_property_list {
@@ -12047,6 +12049,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package ClusterDrsFaults;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['reason', undef, undef, 1],
+   ['faultsByVm', 'ClusterDrsFaultsFaultsByVm', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('ClusterDrsFaults', 'reason', 'faultsByVm');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterDrsFaults;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterDrsFaults', 'ClusterDrsFaults', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterDrsFaults', 'ClusterDrsFaults');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ClusterDrsFaultsFaultsByVm;
 our @ISA = qw(DynamicData);
 
@@ -12105,55 +12156,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ClusterDrsFaultsFaultsByVirtualDisk', 'disk');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ClusterDrsFaults;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['reason', undef, undef, 1],
-   ['faultsByVm', 'ClusterDrsFaultsFaultsByVm', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('ClusterDrsFaults', 'reason', 'faultsByVm');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfClusterDrsFaults;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ClusterDrsFaults', 'ClusterDrsFaults', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfClusterDrsFaults', 'ClusterDrsFaults');
 
 
 sub get_property_list {
@@ -12383,6 +12385,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package ClusterFailoverHostAdmissionControlInfo;
+our @ISA = qw(ClusterDasAdmissionControlInfo);
+
+our @property_list = (
+   ['hostStatus', 'ClusterFailoverHostAdmissionControlInfoHostStatus', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterFailoverHostAdmissionControlInfo', 'hostStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ClusterFailoverHostAdmissionControlInfoHostStatus;
 our @ISA = qw(DynamicData);
 
@@ -12417,30 +12443,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfClusterFailoverHostAdmissionControlInfoHostStatus', 'ClusterFailoverHostAdmissionControlInfoHostStatus');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ClusterFailoverHostAdmissionControlInfo;
-our @ISA = qw(ClusterDasAdmissionControlInfo);
-
-our @property_list = (
-   ['hostStatus', 'ClusterFailoverHostAdmissionControlInfoHostStatus', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ClusterFailoverHostAdmissionControlInfo', 'hostStatus');
 
 
 sub get_property_list {
@@ -13473,6 +13475,65 @@ sub get_property_list {
 
 
 ##################################################################################
+package DistributedVirtualPort;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['config', 'DVPortConfigInfo', undef, 1],
+   ['dvsUuid', undef, undef, 1],
+   ['portgroupKey', undef, undef, 0],
+   ['proxyHost', 'ManagedObjectReference', undef, 0],
+   ['connectee', 'DistributedVirtualSwitchPortConnectee', undef, 0],
+   ['conflict', 'boolean', undef, 1],
+   ['conflictPortKey', undef, undef, 0],
+   ['state', 'DVPortState', undef, 0],
+   ['connectionCookie', undef, undef, 0],
+   ['lastStatusChange', undef, undef, 1],
+   ['hostLocalPort', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('DistributedVirtualPort', 'key', 'config', 'dvsUuid', 'portgroupKey', 'proxyHost', 'connectee', 'conflict', 'conflictPortKey', 'state', 'connectionCookie', 'lastStatusChange', 'hostLocalPort');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDistributedVirtualPort;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DistributedVirtualPort', 'DistributedVirtualPort', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDistributedVirtualPort', 'DistributedVirtualPort');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DVPortConfigSpec;
 our @ISA = qw(DynamicData);
 
@@ -13881,65 +13942,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('DVPortState', 'runtimeInfo', 'stats', 'vendorSpecificState');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DistributedVirtualPort;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['config', 'DVPortConfigInfo', undef, 1],
-   ['dvsUuid', undef, undef, 1],
-   ['portgroupKey', undef, undef, 0],
-   ['proxyHost', 'ManagedObjectReference', undef, 0],
-   ['connectee', 'DistributedVirtualSwitchPortConnectee', undef, 0],
-   ['conflict', 'boolean', undef, 1],
-   ['conflictPortKey', undef, undef, 0],
-   ['state', 'DVPortState', undef, 0],
-   ['connectionCookie', undef, undef, 0],
-   ['lastStatusChange', undef, undef, 1],
-   ['hostLocalPort', 'boolean', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('DistributedVirtualPort', 'key', 'config', 'dvsUuid', 'portgroupKey', 'proxyHost', 'connectee', 'conflict', 'conflictPortKey', 'state', 'connectionCookie', 'lastStatusChange', 'hostLocalPort');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfDistributedVirtualPort;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['DistributedVirtualPort', 'DistributedVirtualPort', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfDistributedVirtualPort', 'DistributedVirtualPort');
 
 
 sub get_property_list {
@@ -14507,6 +14509,29 @@ sub get_property_list {
 
 
 ##################################################################################
+package EntityBackup;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('EntityBackup');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package EntityBackupConfig;
 our @ISA = qw(DynamicData);
 
@@ -14560,14 +14585,44 @@ sub get_property_list {
 
 
 ##################################################################################
-package EntityBackup;
+package DistributedVirtualSwitchHostMember;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
+   ['runtimeState', 'DistributedVirtualSwitchHostMemberRuntimeState', undef, 0],
+   ['config', 'DistributedVirtualSwitchHostMemberConfigInfo', undef, 1],
+   ['productInfo', 'DistributedVirtualSwitchProductSpec', undef, 0],
+   ['uplinkPortKey', undef, 1, 0],
+   ['status', undef, undef, 1],
+   ['statusDetail', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('EntityBackup');
+VIMRuntime::make_get_set('DistributedVirtualSwitchHostMember', 'runtimeState', 'config', 'productInfo', 'uplinkPortKey', 'status', 'statusDetail');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDistributedVirtualSwitchHostMember;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DistributedVirtualSwitchHostMember', 'DistributedVirtualSwitchHostMember', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDistributedVirtualSwitchHostMember', 'DistributedVirtualSwitchHostMember');
 
 
 sub get_property_list {
@@ -14907,59 +14962,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package DistributedVirtualSwitchHostMember;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['runtimeState', 'DistributedVirtualSwitchHostMemberRuntimeState', undef, 0],
-   ['config', 'DistributedVirtualSwitchHostMemberConfigInfo', undef, 1],
-   ['productInfo', 'DistributedVirtualSwitchProductSpec', undef, 0],
-   ['uplinkPortKey', undef, 1, 0],
-   ['status', undef, undef, 1],
-   ['statusDetail', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('DistributedVirtualSwitchHostMember', 'runtimeState', 'config', 'productInfo', 'uplinkPortKey', 'status', 'statusDetail');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfDistributedVirtualSwitchHostMember;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['DistributedVirtualSwitchHostMember', 'DistributedVirtualSwitchHostMember', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfDistributedVirtualSwitchHostMember', 'DistributedVirtualSwitchHostMember');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package DistributedVirtualSwitchHostProductSpec;
 our @ISA = qw(DynamicData);
 
@@ -15058,6 +15060,58 @@ sub get_property_list {
 
 
 ##################################################################################
+package DVSNetworkResourcePool;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['name', undef, undef, 0],
+   ['description', undef, undef, 0],
+   ['configVersion', undef, undef, 1],
+   ['allocationInfo', 'DVSNetworkResourcePoolAllocationInfo', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('DVSNetworkResourcePool', 'key', 'name', 'description', 'configVersion', 'allocationInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDVSNetworkResourcePool;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DVSNetworkResourcePool', 'DVSNetworkResourcePool', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDVSNetworkResourcePool', 'DVSNetworkResourcePool');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DVSNetworkResourcePoolAllocationInfo;
 our @ISA = qw(DynamicData);
 
@@ -15121,58 +15175,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDVSNetworkResourcePoolConfigSpec', 'DVSNetworkResourcePoolConfigSpec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DVSNetworkResourcePool;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['name', undef, undef, 0],
-   ['description', undef, undef, 0],
-   ['configVersion', undef, undef, 1],
-   ['allocationInfo', 'DVSNetworkResourcePoolAllocationInfo', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('DVSNetworkResourcePool', 'key', 'name', 'description', 'configVersion', 'allocationInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfDVSNetworkResourcePool;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['DVSNetworkResourcePool', 'DVSNetworkResourcePool', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfDVSNetworkResourcePool', 'DVSNetworkResourcePool');
 
 
 sub get_property_list {
@@ -15353,6 +15355,59 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDistributedVirtualSwitchProductSpec', 'DistributedVirtualSwitchProductSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package DvsTrafficRule;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 0],
+   ['description', undef, undef, 0],
+   ['sequence', undef, undef, 0],
+   ['qualifier', 'DvsNetworkRuleQualifier', 1, 0],
+   ['action', 'DvsNetworkRuleAction', undef, 0],
+   ['direction', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('DvsTrafficRule', 'key', 'description', 'sequence', 'qualifier', 'action', 'direction');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDvsTrafficRule;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DvsTrafficRule', 'DvsTrafficRule', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDvsTrafficRule', 'DvsTrafficRule');
 
 
 sub get_property_list {
@@ -15803,59 +15858,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package DvsTrafficRule;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 0],
-   ['description', undef, undef, 0],
-   ['sequence', undef, undef, 0],
-   ['qualifier', 'DvsNetworkRuleQualifier', 1, 0],
-   ['action', 'DvsNetworkRuleAction', undef, 0],
-   ['direction', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('DvsTrafficRule', 'key', 'description', 'sequence', 'qualifier', 'action', 'direction');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfDvsTrafficRule;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['DvsTrafficRule', 'DvsTrafficRule', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfDvsTrafficRule', 'DvsTrafficRule');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package DvsTrafficRuleset;
 our @ISA = qw(DynamicData);
 
@@ -15868,6 +15870,58 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('DvsTrafficRuleset', 'key', 'enabled', 'precedence', 'rules');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package DVSVmVnicNetworkResourcePool;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['name', undef, undef, 0],
+   ['description', undef, undef, 0],
+   ['configVersion', undef, undef, 1],
+   ['allocationInfo', 'DvsVmVnicResourceAllocation', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('DVSVmVnicNetworkResourcePool', 'key', 'name', 'description', 'configVersion', 'allocationInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfDVSVmVnicNetworkResourcePool;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['DVSVmVnicNetworkResourcePool', 'DVSVmVnicNetworkResourcePool', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfDVSVmVnicNetworkResourcePool', 'DVSVmVnicNetworkResourcePool');
 
 
 sub get_property_list {
@@ -16049,58 +16103,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDvsVmVnicNetworkResourcePoolRuntimeInfo', 'DvsVmVnicNetworkResourcePoolRuntimeInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DVSVmVnicNetworkResourcePool;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['name', undef, undef, 0],
-   ['description', undef, undef, 0],
-   ['configVersion', undef, undef, 1],
-   ['allocationInfo', 'DvsVmVnicResourceAllocation', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('DVSVmVnicNetworkResourcePool', 'key', 'name', 'description', 'configVersion', 'allocationInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfDVSVmVnicNetworkResourcePool;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['DVSVmVnicNetworkResourcePool', 'DVSVmVnicNetworkResourcePool', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfDVSVmVnicNetworkResourcePool', 'DVSVmVnicNetworkResourcePool');
 
 
 sub get_property_list {
@@ -16734,10 +16736,11 @@ our @property_list = (
    ['uplinkTeamingOverrideAllowed', 'boolean', undef, 1],
    ['securityPolicyOverrideAllowed', 'boolean', undef, 1],
    ['ipfixOverrideAllowed', 'boolean', undef, 0],
+   ['macManagementOverrideAllowed', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VMwareDVSPortgroupPolicy', 'vlanOverrideAllowed', 'uplinkTeamingOverrideAllowed', 'securityPolicyOverrideAllowed', 'ipfixOverrideAllowed');
+VIMRuntime::make_get_set('VMwareDVSPortgroupPolicy', 'vlanOverrideAllowed', 'uplinkTeamingOverrideAllowed', 'securityPolicyOverrideAllowed', 'ipfixOverrideAllowed', 'macManagementOverrideAllowed');
 
 
 sub get_property_list {
@@ -18152,6 +18155,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package ExtendedEvent;
+our @ISA = qw(GeneralEvent);
+
+our @property_list = (
+   ['eventTypeId', undef, undef, 1],
+   ['managedObject', 'ManagedObjectReference', undef, 1],
+   ['data', 'ExtendedEventPair', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ExtendedEvent', 'eventTypeId', 'managedObject', 'data');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ExtendedEventPair;
 our @ISA = qw(DynamicData);
 
@@ -18186,32 +18215,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfExtendedEventPair', 'ExtendedEventPair');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ExtendedEvent;
-our @ISA = qw(GeneralEvent);
-
-our @property_list = (
-   ['eventTypeId', undef, undef, 1],
-   ['managedObject', 'ManagedObjectReference', undef, 1],
-   ['data', 'ExtendedEventPair', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ExtendedEvent', 'eventTypeId', 'managedObject', 'data');
 
 
 sub get_property_list {
@@ -20581,6 +20584,124 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostComplianceCheckedEvent', 'profile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpecificationUpdateEvent;
+our @ISA = qw(HostEvent);
+
+our @property_list = (
+   ['hostSpec', 'HostSpecification', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpecificationUpdateEvent', 'hostSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSubSpecificationUpdateEvent;
+our @ISA = qw(HostEvent);
+
+our @property_list = (
+   ['hostSubSpec', 'HostSubSpecification', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSubSpecificationUpdateEvent', 'hostSubSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSubSpecificationDeleteEvent;
+our @ISA = qw(HostEvent);
+
+our @property_list = (
+   ['subSpecName', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSubSpecificationDeleteEvent', 'subSpecName');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpecificationChangedEvent;
+our @ISA = qw(HostEvent);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('HostSpecificationChangedEvent');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpecificationRequireEvent;
+our @ISA = qw(HostEvent);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('HostSpecificationRequireEvent');
 
 
 sub get_property_list {
@@ -23118,7 +23239,7 @@ package NotEnoughResourcesToStartVmEvent;
 our @ISA = qw(VmEvent);
 
 our @property_list = (
-   ['reason', undef, undef, 0],
+   ['reason', undef, undef, 1],
 );
 
 
@@ -29024,6 +29145,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package EventDescription;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['category', 'ElementDescription', 1, 1],
+   ['eventInfo', 'EventDescriptionEventDetail', 1, 1],
+   ['enumeratedTypes', 'EnumDescription', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('EventDescription', 'category', 'eventInfo', 'enumeratedTypes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package EventArgDesc;
 our @ISA = qw(DynamicData);
 
@@ -29130,32 +29277,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package EventDescription;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['category', 'ElementDescription', 1, 1],
-   ['eventInfo', 'EventDescriptionEventDetail', 1, 1],
-   ['enumeratedTypes', 'EnumDescription', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('EventDescription', 'category', 'eventInfo', 'enumeratedTypes');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package EventEx;
 our @ISA = qw(Event);
 
@@ -29172,6 +29293,41 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('EventEx', 'eventTypeId', 'severity', 'message', 'arguments', 'objectId', 'objectType', 'objectName', 'fault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package EventFilterSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entity', 'EventFilterSpecByEntity', undef, 0],
+   ['time', 'EventFilterSpecByTime', undef, 0],
+   ['userName', 'EventFilterSpecByUsername', undef, 0],
+   ['eventChainId', undef, undef, 0],
+   ['alarm', 'ManagedObjectReference', undef, 0],
+   ['scheduledTask', 'ManagedObjectReference', undef, 0],
+   ['disableFullMessage', 'boolean', undef, 0],
+   ['category', undef, 1, 0],
+   ['type', undef, 1, 0],
+   ['tag', undef, 1, 0],
+   ['eventTypeId', undef, 1, 0],
+   ['maxCount', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('EventFilterSpec', 'entity', 'time', 'userName', 'eventChainId', 'alarm', 'scheduledTask', 'disableFullMessage', 'category', 'type', 'tag', 'eventTypeId', 'maxCount');
 
 
 sub get_property_list {
@@ -29247,41 +29403,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('EventFilterSpecByUsername', 'systemUser', 'userList');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package EventFilterSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['entity', 'EventFilterSpecByEntity', undef, 0],
-   ['time', 'EventFilterSpecByTime', undef, 0],
-   ['userName', 'EventFilterSpecByUsername', undef, 0],
-   ['eventChainId', undef, undef, 0],
-   ['alarm', 'ManagedObjectReference', undef, 0],
-   ['scheduledTask', 'ManagedObjectReference', undef, 0],
-   ['disableFullMessage', 'boolean', undef, 0],
-   ['category', undef, 1, 0],
-   ['type', undef, 1, 0],
-   ['tag', undef, 1, 0],
-   ['eventTypeId', undef, 1, 0],
-   ['maxCount', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('EventFilterSpec', 'entity', 'time', 'userName', 'eventChainId', 'alarm', 'scheduledTask', 'disableFullMessage', 'category', 'type', 'tag', 'eventTypeId', 'maxCount');
 
 
 sub get_property_list {
@@ -29400,6 +29521,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package ExtSolutionManagerInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['tab', 'ExtSolutionManagerInfoTabInfo', 1, 0],
+   ['smallIconUrl', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ExtSolutionManagerInfo', 'tab', 'smallIconUrl');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ExtSolutionManagerInfoTabInfo;
 our @ISA = qw(DynamicData);
 
@@ -29434,31 +29580,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfExtSolutionManagerInfoTabInfo', 'ExtSolutionManagerInfoTabInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ExtSolutionManagerInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['tab', 'ExtSolutionManagerInfoTabInfo', 1, 0],
-   ['smallIconUrl', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('ExtSolutionManagerInfo', 'tab', 'smallIconUrl');
 
 
 sub get_property_list {
@@ -29715,6 +29836,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package AnswerFileUpdateFailed;
+our @ISA = qw(VimFault);
+
+our @property_list = (
+   ['failure', 'AnswerFileUpdateFailure', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('AnswerFileUpdateFailed', 'failure');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package AnswerFileUpdateFailure;
 our @ISA = qw(DynamicData);
 
@@ -29749,30 +29894,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfAnswerFileUpdateFailure', 'AnswerFileUpdateFailure');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package AnswerFileUpdateFailed;
-our @ISA = qw(VimFault);
-
-our @property_list = (
-   ['failure', 'AnswerFileUpdateFailure', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('AnswerFileUpdateFailed', 'failure');
 
 
 sub get_property_list {
@@ -30787,6 +30908,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package ConflictingConfiguration;
+our @ISA = qw(DvsFault);
+
+our @property_list = (
+   ['configInConflict', 'ConflictingConfigurationConfig', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('ConflictingConfiguration', 'configInConflict');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ConflictingConfigurationConfig;
 our @ISA = qw(DynamicData);
 
@@ -30821,30 +30966,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfConflictingConfigurationConfig', 'ConflictingConfigurationConfig');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ConflictingConfiguration;
-our @ISA = qw(DvsFault);
-
-our @property_list = (
-   ['configInConflict', 'ConflictingConfigurationConfig', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('ConflictingConfiguration', 'configInConflict');
 
 
 sub get_property_list {
@@ -30989,11 +31110,11 @@ our @ISA = qw(CpuIncompatible);
 
 our @property_list = (
    ['sse3', 'boolean', undef, 1],
-   ['pclmulqdq', 'boolean', undef, 0],
+   ['pclmulqdq', 'boolean', undef, 1],
    ['ssse3', 'boolean', undef, 1],
    ['sse41', 'boolean', undef, 1],
    ['sse42', 'boolean', undef, 1],
-   ['aes', 'boolean', undef, 0],
+   ['aes', 'boolean', undef, 1],
    ['other', 'boolean', undef, 1],
    ['otherOnly', 'boolean', undef, 1],
 );
@@ -31162,6 +31283,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package DatacenterMismatch;
+our @ISA = qw(MigrationFault);
+
+our @property_list = (
+   ['invalidArgument', 'DatacenterMismatchArgument', 1, 1],
+   ['expectedDatacenter', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('DatacenterMismatch', 'invalidArgument', 'expectedDatacenter');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DatacenterMismatchArgument;
 our @ISA = qw(DynamicData);
 
@@ -31196,31 +31342,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDatacenterMismatchArgument', 'DatacenterMismatchArgument');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DatacenterMismatch;
-our @ISA = qw(MigrationFault);
-
-our @property_list = (
-   ['invalidArgument', 'DatacenterMismatchArgument', 1, 1],
-   ['expectedDatacenter', 'ManagedObjectReference', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('DatacenterMismatch', 'invalidArgument', 'expectedDatacenter');
 
 
 sub get_property_list {
@@ -31993,6 +32114,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package DvsApplyOperationFault;
+our @ISA = qw(DvsFault);
+
+our @property_list = (
+   ['objectFault', 'DvsApplyOperationFaultFaultOnObject', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('DvsApplyOperationFault', 'objectFault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DvsApplyOperationFaultFaultOnObject;
 our @ISA = qw(DynamicData);
 
@@ -32028,30 +32173,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDvsApplyOperationFaultFaultOnObject', 'DvsApplyOperationFaultFaultOnObject');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DvsApplyOperationFault;
-our @ISA = qw(DvsFault);
-
-our @property_list = (
-   ['objectFault', 'DvsApplyOperationFaultFaultOnObject', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('DvsApplyOperationFault', 'objectFault');
 
 
 sub get_property_list {
@@ -32115,6 +32236,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package DvsOperationBulkFault;
+our @ISA = qw(DvsFault);
+
+our @property_list = (
+   ['hostFault', 'DvsOperationBulkFaultFaultOnHost', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('DvsOperationBulkFault', 'hostFault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package DvsOperationBulkFaultFaultOnHost;
 our @ISA = qw(DynamicData);
 
@@ -32149,30 +32294,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfDvsOperationBulkFaultFaultOnHost', 'DvsOperationBulkFaultFaultOnHost');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DvsOperationBulkFault;
-our @ISA = qw(DvsFault);
-
-our @property_list = (
-   ['hostFault', 'DvsOperationBulkFaultFaultOnHost', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('DvsOperationBulkFault', 'hostFault');
 
 
 sub get_property_list {
@@ -34349,6 +34470,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package ImportOperationBulkFault;
+our @ISA = qw(DvsFault);
+
+our @property_list = (
+   ['importFaults', 'ImportOperationBulkFaultFaultOnImport', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('ImportOperationBulkFault', 'importFaults');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ImportOperationBulkFaultFaultOnImport;
 our @ISA = qw(DynamicData);
 
@@ -34384,30 +34529,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfImportOperationBulkFaultFaultOnImport', 'ImportOperationBulkFaultFaultOnImport');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ImportOperationBulkFault;
-our @ISA = qw(DvsFault);
-
-our @property_list = (
-   ['importFaults', 'ImportOperationBulkFaultFaultOnImport', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('ImportOperationBulkFault', 'importFaults');
 
 
 sub get_property_list {
@@ -36011,7 +36132,7 @@ package InvalidOperationOnSecondaryVm;
 our @ISA = qw(VmFaultToleranceIssue);
 
 our @property_list = (
-   ['instanceUuid', undef, undef, 0],
+   ['instanceUuid', undef, undef, 1],
 );
 
 
@@ -37590,6 +37711,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package MultipleCertificatesVerifyFault;
+our @ISA = qw(HostConnectFault);
+
+our @property_list = (
+   ['thumbprintData', 'MultipleCertificatesVerifyFaultThumbprintData', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('MultipleCertificatesVerifyFault', 'thumbprintData');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package MultipleCertificatesVerifyFaultThumbprintData;
 our @ISA = qw(DynamicData);
 
@@ -37624,30 +37769,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfMultipleCertificatesVerifyFaultThumbprintData', 'MultipleCertificatesVerifyFaultThumbprintData');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package MultipleCertificatesVerifyFault;
-our @ISA = qw(HostConnectFault);
-
-our @property_list = (
-   ['thumbprintData', 'MultipleCertificatesVerifyFaultThumbprintData', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('MultipleCertificatesVerifyFault', 'thumbprintData');
 
 
 sub get_property_list {
@@ -41552,6 +41673,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package ProfileUpdateFailed;
+our @ISA = qw(VimFault);
+
+our @property_list = (
+   ['failure', 'ProfileUpdateFailedUpdateFailure', 1, 1],
+   ['warnings', 'ProfileUpdateFailedUpdateFailure', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ProfileUpdateFailed', 'failure', 'warnings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ProfileUpdateFailedUpdateFailure;
 our @ISA = qw(DynamicData);
 
@@ -41586,31 +41732,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfProfileUpdateFailedUpdateFailure', 'ProfileUpdateFailedUpdateFailure');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ProfileUpdateFailed;
-our @ISA = qw(VimFault);
-
-our @property_list = (
-   ['failure', 'ProfileUpdateFailedUpdateFailure', 1, 1],
-   ['warnings', 'ProfileUpdateFailedUpdateFailure', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ProfileUpdateFailed', 'failure', 'warnings');
 
 
 sub get_property_list {
@@ -42158,10 +42279,10 @@ package ReplicationVmFault;
 our @ISA = qw(ReplicationFault);
 
 our @property_list = (
-   ['reason', undef, undef, 0],
+   ['reason', undef, undef, 1],
    ['state', undef, undef, 0],
    ['instanceId', undef, undef, 0],
-   ['vm', 'ManagedObjectReference', undef, 0],
+   ['vm', 'ManagedObjectReference', undef, 1],
 );
 
 
@@ -42334,7 +42455,7 @@ our @ISA = qw(VmConfigFault);
 
 our @property_list = (
    ['host', 'ManagedObjectReference', undef, 0],
-   ['rule', 'ClusterRuleInfo', undef, 0],
+   ['rule', 'ClusterRuleInfo', undef, 1],
 );
 
 
@@ -42478,7 +42599,7 @@ package SecondaryVmAlreadyRegistered;
 our @ISA = qw(VmFaultToleranceIssue);
 
 our @property_list = (
-   ['instanceUuid', undef, undef, 0],
+   ['instanceUuid', undef, undef, 1],
 );
 
 
@@ -42502,7 +42623,7 @@ package SecondaryVmNotRegistered;
 our @ISA = qw(VmFaultToleranceIssue);
 
 our @property_list = (
-   ['instanceUuid', undef, undef, 0],
+   ['instanceUuid', undef, undef, 1],
 );
 
 
@@ -44870,8 +44991,8 @@ package VirtualHardwareVersionNotSupported;
 our @ISA = qw(VirtualHardwareCompatibilityIssue);
 
 our @property_list = (
-   ['hostName', undef, undef, 0],
-   ['host', 'ManagedObjectReference', undef, 0],
+   ['hostName', undef, undef, 1],
+   ['host', 'ManagedObjectReference', undef, 1],
 );
 
 
@@ -45983,36 +46104,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostActiveDirectorySpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['domainName', undef, undef, 0],
-   ['userName', undef, undef, 0],
-   ['password', undef, undef, 0],
-   ['camServer', undef, undef, 0],
-   ['thumbprint', undef, undef, 0],
-   ['smartCardAuthenticationEnabled', 'boolean', undef, 0],
-   ['smartCardTrustAnchors', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostActiveDirectorySpec', 'domainName', 'userName', 'password', 'camServer', 'thumbprint', 'smartCardAuthenticationEnabled', 'smartCardTrustAnchors');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostActiveDirectory;
 our @ISA = qw(DynamicData);
 
@@ -46047,6 +46138,36 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostActiveDirectory', 'HostActiveDirectory');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostActiveDirectorySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['domainName', undef, undef, 0],
+   ['userName', undef, undef, 0],
+   ['password', undef, undef, 0],
+   ['camServer', undef, undef, 0],
+   ['thumbprint', undef, undef, 0],
+   ['smartCardAuthenticationEnabled', 'boolean', undef, 0],
+   ['smartCardTrustAnchors', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostActiveDirectorySpec', 'domainName', 'userName', 'password', 'camServer', 'thumbprint', 'smartCardAuthenticationEnabled', 'smartCardTrustAnchors');
 
 
 sub get_property_list {
@@ -46394,11 +46515,11 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['recursiveResourcePoolsSupported', 'boolean', undef, 1],
-   ['cpuMemoryResourceConfigurationSupported', 'boolean', undef, 0],
+   ['cpuMemoryResourceConfigurationSupported', 'boolean', undef, 1],
    ['rebootSupported', 'boolean', undef, 1],
    ['shutdownSupported', 'boolean', undef, 1],
    ['vmotionSupported', 'boolean', undef, 1],
-   ['standbySupported', 'boolean', undef, 0],
+   ['standbySupported', 'boolean', undef, 1],
    ['ipmiSupported', 'boolean', undef, 0],
    ['maxSupportedVMs', undef, undef, 0],
    ['maxRunningVMs', undef, undef, 0],
@@ -46413,65 +46534,65 @@ our @property_list = (
    ['highGuestMemSupported', 'boolean', undef, 1],
    ['maintenanceModeSupported', 'boolean', undef, 1],
    ['suspendedRelocateSupported', 'boolean', undef, 1],
-   ['restrictedSnapshotRelocateSupported', 'boolean', undef, 0],
-   ['perVmSwapFiles', 'boolean', undef, 0],
-   ['localSwapDatastoreSupported', 'boolean', undef, 0],
-   ['unsharedSwapVMotionSupported', 'boolean', undef, 0],
-   ['backgroundSnapshotsSupported', 'boolean', undef, 0],
-   ['preAssignedPCIUnitNumbersSupported', 'boolean', undef, 0],
-   ['screenshotSupported', 'boolean', undef, 0],
-   ['scaledScreenshotSupported', 'boolean', undef, 0],
-   ['storageVMotionSupported', 'boolean', undef, 0],
-   ['vmotionWithStorageVMotionSupported', 'boolean', undef, 0],
+   ['restrictedSnapshotRelocateSupported', 'boolean', undef, 1],
+   ['perVmSwapFiles', 'boolean', undef, 1],
+   ['localSwapDatastoreSupported', 'boolean', undef, 1],
+   ['unsharedSwapVMotionSupported', 'boolean', undef, 1],
+   ['backgroundSnapshotsSupported', 'boolean', undef, 1],
+   ['preAssignedPCIUnitNumbersSupported', 'boolean', undef, 1],
+   ['screenshotSupported', 'boolean', undef, 1],
+   ['scaledScreenshotSupported', 'boolean', undef, 1],
+   ['storageVMotionSupported', 'boolean', undef, 1],
+   ['vmotionWithStorageVMotionSupported', 'boolean', undef, 1],
    ['vmotionAcrossNetworkSupported', 'boolean', undef, 0],
    ['maxNumDisksSVMotion', undef, undef, 0],
-   ['hbrNicSelectionSupported', 'boolean', undef, 0],
-   ['vrNfcNicSelectionSupported', 'boolean', undef, 0],
-   ['recordReplaySupported', 'boolean', undef, 0],
-   ['ftSupported', 'boolean', undef, 0],
+   ['hbrNicSelectionSupported', 'boolean', undef, 1],
+   ['vrNfcNicSelectionSupported', 'boolean', undef, 1],
+   ['recordReplaySupported', 'boolean', undef, 1],
+   ['ftSupported', 'boolean', undef, 1],
    ['replayUnsupportedReason', undef, undef, 0],
    ['replayCompatibilityIssues', undef, 1, 0],
-   ['smpFtSupported', 'boolean', undef, 0],
+   ['smpFtSupported', 'boolean', undef, 1],
    ['ftCompatibilityIssues', undef, 1, 0],
    ['smpFtCompatibilityIssues', undef, 1, 0],
    ['maxVcpusPerFtVm', undef, undef, 0],
    ['loginBySSLThumbprintSupported', 'boolean', undef, 0],
-   ['cloneFromSnapshotSupported', 'boolean', undef, 0],
-   ['deltaDiskBackingsSupported', 'boolean', undef, 0],
-   ['perVMNetworkTrafficShapingSupported', 'boolean', undef, 0],
-   ['tpmSupported', 'boolean', undef, 0],
+   ['cloneFromSnapshotSupported', 'boolean', undef, 1],
+   ['deltaDiskBackingsSupported', 'boolean', undef, 1],
+   ['perVMNetworkTrafficShapingSupported', 'boolean', undef, 1],
+   ['tpmSupported', 'boolean', undef, 1],
    ['tpmVersion', undef, undef, 0],
    ['txtEnabled', 'boolean', undef, 0],
    ['supportedCpuFeature', 'HostCpuIdInfo', 1, 0],
-   ['virtualExecUsageSupported', 'boolean', undef, 0],
-   ['storageIORMSupported', 'boolean', undef, 0],
-   ['vmDirectPathGen2Supported', 'boolean', undef, 0],
+   ['virtualExecUsageSupported', 'boolean', undef, 1],
+   ['storageIORMSupported', 'boolean', undef, 1],
+   ['vmDirectPathGen2Supported', 'boolean', undef, 1],
    ['vmDirectPathGen2UnsupportedReason', undef, 1, 0],
    ['vmDirectPathGen2UnsupportedReasonExtended', undef, undef, 0],
    ['supportedVmfsMajorVersion', undef, 1, 0],
-   ['vStorageCapable', 'boolean', undef, 0],
-   ['snapshotRelayoutSupported', 'boolean', undef, 0],
+   ['vStorageCapable', 'boolean', undef, 1],
+   ['snapshotRelayoutSupported', 'boolean', undef, 1],
    ['firewallIpRulesSupported', 'boolean', undef, 0],
    ['servicePackageInfoSupported', 'boolean', undef, 0],
    ['maxHostRunningVms', undef, undef, 0],
    ['maxHostSupportedVcpus', undef, undef, 0],
-   ['vmfsDatastoreMountCapable', 'boolean', undef, 0],
-   ['eightPlusHostVmfsSharedAccessSupported', 'boolean', undef, 0],
-   ['nestedHVSupported', 'boolean', undef, 0],
-   ['vPMCSupported', 'boolean', undef, 0],
-   ['interVMCommunicationThroughVMCISupported', 'boolean', undef, 0],
+   ['vmfsDatastoreMountCapable', 'boolean', undef, 1],
+   ['eightPlusHostVmfsSharedAccessSupported', 'boolean', undef, 1],
+   ['nestedHVSupported', 'boolean', undef, 1],
+   ['vPMCSupported', 'boolean', undef, 1],
+   ['interVMCommunicationThroughVMCISupported', 'boolean', undef, 1],
    ['scheduledHardwareUpgradeSupported', 'boolean', undef, 0],
-   ['featureCapabilitiesSupported', 'boolean', undef, 0],
-   ['latencySensitivitySupported', 'boolean', undef, 0],
+   ['featureCapabilitiesSupported', 'boolean', undef, 1],
+   ['latencySensitivitySupported', 'boolean', undef, 1],
    ['storagePolicySupported', 'boolean', undef, 0],
-   ['accel3dSupported', 'boolean', undef, 0],
+   ['accel3dSupported', 'boolean', undef, 1],
    ['reliableMemoryAware', 'boolean', undef, 0],
    ['multipleNetworkStackInstanceSupported', 'boolean', undef, 0],
    ['messageBusProxySupported', 'boolean', undef, 0],
    ['vsanSupported', 'boolean', undef, 0],
    ['vFlashSupported', 'boolean', undef, 0],
    ['hostAccessManagerSupported', 'boolean', undef, 0],
-   ['provisioningNicSelectionSupported', 'boolean', undef, 0],
+   ['provisioningNicSelectionSupported', 'boolean', undef, 1],
    ['nfs41Supported', 'boolean', undef, 0],
    ['nfs41Krb5iSupported', 'boolean', undef, 0],
    ['turnDiskLocatorLedSupported', 'boolean', undef, 0],
@@ -46754,6 +46875,39 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostConnectInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['serverIp', undef, undef, 0],
+   ['inDasCluster', 'boolean', undef, 0],
+   ['host', 'HostListSummary', undef, 1],
+   ['vm', 'VirtualMachineSummary', 1, 0],
+   ['vimAccountNameRequired', 'boolean', undef, 0],
+   ['clusterSupported', 'boolean', undef, 0],
+   ['network', 'HostConnectInfoNetworkInfo', 1, 0],
+   ['datastore', 'HostDatastoreConnectInfo', 1, 0],
+   ['license', 'HostLicenseConnectInfo', undef, 0],
+   ['capability', 'HostCapability', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostConnectInfo', 'serverIp', 'inDasCluster', 'host', 'vm', 'vimAccountNameRequired', 'clusterSupported', 'network', 'datastore', 'license', 'capability');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostConnectInfoNetworkInfo;
 our @ISA = qw(DynamicData);
 
@@ -46947,39 +47101,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostConnectInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['serverIp', undef, undef, 0],
-   ['inDasCluster', 'boolean', undef, 0],
-   ['host', 'HostListSummary', undef, 1],
-   ['vm', 'VirtualMachineSummary', 1, 0],
-   ['vimAccountNameRequired', 'boolean', undef, 0],
-   ['clusterSupported', 'boolean', undef, 0],
-   ['network', 'HostConnectInfoNetworkInfo', 1, 0],
-   ['datastore', 'HostDatastoreConnectInfo', 1, 0],
-   ['license', 'HostLicenseConnectInfo', undef, 0],
-   ['capability', 'HostCapability', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostConnectInfo', 'serverIp', 'inDasCluster', 'host', 'vm', 'vimAccountNameRequired', 'clusterSupported', 'network', 'datastore', 'license', 'capability');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostConnectSpec;
 our @ISA = qw(DynamicData);
 
@@ -47118,33 +47239,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package FileQueryFlags;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['fileType', 'boolean', undef, 1],
-   ['fileSize', 'boolean', undef, 1],
-   ['modification', 'boolean', undef, 1],
-   ['fileOwner', 'boolean', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('FileQueryFlags', 'fileType', 'fileSize', 'modification', 'fileOwner');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package FileInfo;
 our @ISA = qw(DynamicData);
 
@@ -47197,6 +47291,33 @@ sub get_property_list {
 
 
 ##################################################################################
+package FileQueryFlags;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['fileType', 'boolean', undef, 1],
+   ['fileSize', 'boolean', undef, 1],
+   ['modification', 'boolean', undef, 1],
+   ['fileOwner', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('FileQueryFlags', 'fileType', 'fileSize', 'modification', 'fileOwner');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package FileQuery;
 our @ISA = qw(DynamicData);
 
@@ -47229,6 +47350,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfFileQuery', 'FileQuery');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VmConfigFileQuery;
+our @ISA = qw(FileQuery);
+
+our @property_list = (
+   ['filter', 'VmConfigFileQueryFilter', undef, 0],
+   ['details', 'VmConfigFileQueryFlags', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VmConfigFileQuery', 'filter', 'details');
 
 
 sub get_property_list {
@@ -47294,16 +47440,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VmConfigFileQuery;
-our @ISA = qw(FileQuery);
+package TemplateConfigFileQuery;
+our @ISA = qw(VmConfigFileQuery);
 
 our @property_list = (
-   ['filter', 'VmConfigFileQueryFilter', undef, 0],
-   ['details', 'VmConfigFileQueryFlags', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileQuery', 'filter', 'details');
+VIMRuntime::make_get_set('TemplateConfigFileQuery');
 
 
 sub get_property_list {
@@ -47319,14 +47463,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package TemplateConfigFileQuery;
-our @ISA = qw(VmConfigFileQuery);
+package VmDiskFileQuery;
+our @ISA = qw(FileQuery);
 
 our @property_list = (
+   ['filter', 'VmDiskFileQueryFilter', undef, 0],
+   ['details', 'VmDiskFileQueryFlags', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('TemplateConfigFileQuery');
+VIMRuntime::make_get_set('VmDiskFileQuery', 'filter', 'details');
 
 
 sub get_property_list {
@@ -47385,31 +47531,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VmDiskFileQueryFlags', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin', 'encryption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VmDiskFileQuery;
-our @ISA = qw(FileQuery);
-
-our @property_list = (
-   ['filter', 'VmDiskFileQueryFilter', undef, 0],
-   ['details', 'VmDiskFileQueryFlags', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VmDiskFileQuery', 'filter', 'details');
 
 
 sub get_property_list {
@@ -47563,15 +47684,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package VmConfigFileEncryptionInfo;
-our @ISA = qw(DynamicData);
+package VmConfigFileInfo;
+our @ISA = qw(FileInfo);
 
 our @property_list = (
-   ['keyId', 'CryptoKeyId', undef, 0],
+   ['configVersion', undef, undef, 0],
+   ['encryption', 'VmConfigFileEncryptionInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileEncryptionInfo', 'keyId');
+VIMRuntime::make_get_set('VmConfigFileInfo', 'configVersion', 'encryption');
 
 
 sub get_property_list {
@@ -47587,16 +47709,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VmConfigFileInfo;
-our @ISA = qw(FileInfo);
+package VmConfigFileEncryptionInfo;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['configVersion', undef, undef, 0],
-   ['encryption', 'VmConfigFileEncryptionInfo', undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VmConfigFileInfo', 'configVersion', 'encryption');
+VIMRuntime::make_get_set('VmConfigFileEncryptionInfo', 'keyId');
 
 
 sub get_property_list {
@@ -47635,30 +47756,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VmDiskFileEncryptionInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['keyId', 'CryptoKeyId', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VmDiskFileEncryptionInfo', 'keyId');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VmDiskFileInfo;
 our @ISA = qw(FileInfo);
 
@@ -47674,6 +47771,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VmDiskFileInfo', 'diskType', 'capacityKb', 'hardwareVersion', 'controllerType', 'diskExtents', 'thin', 'encryption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VmDiskFileEncryptionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyId', 'CryptoKeyId', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VmDiskFileEncryptionInfo', 'keyId');
 
 
 sub get_property_list {
@@ -47912,7 +48033,7 @@ our @property_list = (
    ['nfsMountCreationRequired', 'boolean', undef, 1],
    ['nfsMountCreationSupported', 'boolean', undef, 1],
    ['localDatastoreSupported', 'boolean', undef, 1],
-   ['vmfsExtentExpansionSupported', 'boolean', undef, 0],
+   ['vmfsExtentExpansionSupported', 'boolean', undef, 1],
 );
 
 
@@ -48010,8 +48131,8 @@ package VmfsDatastoreInfo;
 our @ISA = qw(DatastoreInfo);
 
 our @property_list = (
-   ['maxPhysicalRDMFileSize', undef, undef, 0],
-   ['maxVirtualRDMFileSize', undef, undef, 0],
+   ['maxPhysicalRDMFileSize', undef, undef, 1],
+   ['maxVirtualRDMFileSize', undef, undef, 1],
    ['vmfs', 'HostVmfsVolume', undef, 0],
 );
 
@@ -48180,6 +48301,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package VmfsDatastoreOption;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['info', 'VmfsDatastoreBaseOption', undef, 1],
+   ['spec', 'VmfsDatastoreSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VmfsDatastoreOption', 'info', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVmfsDatastoreOption;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VmfsDatastoreOption', 'VmfsDatastoreOption', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVmfsDatastoreOption', 'VmfsDatastoreOption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VmfsDatastoreBaseOption;
 our @ISA = qw(DynamicData);
 
@@ -48261,55 +48431,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VmfsDatastoreMultipleExtentOption', 'vmfsExtent');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VmfsDatastoreOption;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['info', 'VmfsDatastoreBaseOption', undef, 1],
-   ['spec', 'VmfsDatastoreSpec', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VmfsDatastoreOption', 'info', 'spec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVmfsDatastoreOption;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VmfsDatastoreOption', 'VmfsDatastoreOption', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVmfsDatastoreOption', 'VmfsDatastoreOption');
 
 
 sub get_property_list {
@@ -48523,6 +48644,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostDhcpService;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['spec', 'HostDhcpServiceSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostDhcpService', 'key', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostDhcpService;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostDhcpService', 'HostDhcpService', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostDhcpService', 'HostDhcpService');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostDhcpServiceSpec;
 our @ISA = qw(DynamicData);
 
@@ -48604,16 +48774,18 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostDhcpService;
+package HostDiagnosticPartition;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 1],
-   ['spec', 'HostDhcpServiceSpec', undef, 1],
+   ['storageType', undef, undef, 1],
+   ['diagnosticType', undef, undef, 1],
+   ['slots', undef, undef, 1],
+   ['id', 'HostScsiDiskPartition', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostDhcpService', 'key', 'spec');
+VIMRuntime::make_get_set('HostDiagnosticPartition', 'storageType', 'diagnosticType', 'slots', 'id');
 
 
 sub get_property_list {
@@ -48629,15 +48801,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfHostDhcpService;
+package ArrayOfHostDiagnosticPartition;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['HostDhcpService', 'HostDhcpService', 1, 0],
+   ['HostDiagnosticPartition', 'HostDiagnosticPartition', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfHostDhcpService', 'HostDhcpService');
+VIMRuntime::make_get_set('ArrayOfHostDiagnosticPartition', 'HostDiagnosticPartition');
 
 
 sub get_property_list {
@@ -48757,57 +48929,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostDiagnosticPartition;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['storageType', undef, undef, 1],
-   ['diagnosticType', undef, undef, 1],
-   ['slots', undef, undef, 1],
-   ['id', 'HostScsiDiskPartition', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostDiagnosticPartition', 'storageType', 'diagnosticType', 'slots', 'id');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostDiagnosticPartition;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostDiagnosticPartition', 'HostDiagnosticPartition', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostDiagnosticPartition', 'HostDiagnosticPartition');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostDirectoryStoreInfo;
 our @ISA = qw(HostAuthenticationStoreInfo);
 
@@ -48881,6 +49002,29 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostDiskDimensions;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('HostDiskDimensions');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostDiskDimensionsChs;
 our @ISA = qw(DynamicData);
 
@@ -48932,14 +49076,41 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostDiskDimensions;
+package HostDiskPartitionInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
+   ['deviceName', undef, undef, 1],
+   ['spec', 'HostDiskPartitionSpec', undef, 1],
+   ['layout', 'HostDiskPartitionLayout', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostDiskDimensions');
+VIMRuntime::make_get_set('HostDiskPartitionInfo', 'deviceName', 'spec', 'layout');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostDiskPartitionInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostDiskPartitionInfo', 'HostDiskPartitionInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostDiskPartitionInfo', 'HostDiskPartitionInfo');
 
 
 sub get_property_list {
@@ -49113,56 +49284,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostDiskPartitionInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['deviceName', undef, undef, 1],
-   ['spec', 'HostDiskPartitionSpec', undef, 1],
-   ['layout', 'HostDiskPartitionLayout', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostDiskPartitionInfo', 'deviceName', 'spec', 'layout');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostDiskPartitionInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostDiskPartitionInfo', 'HostDiskPartitionInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostDiskPartitionInfo', 'HostDiskPartitionInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostDnsConfig;
 our @ISA = qw(DynamicData);
 
@@ -49293,6 +49414,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package FcoeConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['priorityClass', undef, undef, 1],
+   ['sourceMac', undef, undef, 1],
+   ['vlanRange', 'FcoeConfigVlanRange', 1, 1],
+   ['capabilities', 'FcoeConfigFcoeCapabilities', undef, 1],
+   ['fcoeActive', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('FcoeConfig', 'priorityClass', 'sourceMac', 'vlanRange', 'capabilities', 'fcoeActive');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package FcoeConfigVlanRange;
 our @ISA = qw(DynamicData);
 
@@ -49380,34 +49529,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('FcoeConfigFcoeSpecification', 'underlyingPnic', 'priorityClass', 'sourceMac', 'vlanRange');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package FcoeConfig;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['priorityClass', undef, undef, 1],
-   ['sourceMac', undef, undef, 1],
-   ['vlanRange', 'FcoeConfigVlanRange', 1, 1],
-   ['capabilities', 'FcoeConfigFcoeCapabilities', undef, 1],
-   ['fcoeActive', 'boolean', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('FcoeConfig', 'priorityClass', 'sourceMac', 'vlanRange', 'capabilities', 'fcoeActive');
 
 
 sub get_property_list {
@@ -49572,20 +49693,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package ModeInfo;
+package HostFileAccess;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['browse', undef, undef, 0],
-   ['read', undef, undef, 1],
-   ['modify', undef, undef, 1],
-   ['use', undef, undef, 1],
-   ['admin', undef, undef, 0],
-   ['full', undef, undef, 1],
+   ['who', undef, undef, 1],
+   ['what', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('ModeInfo', 'browse', 'read', 'modify', 'use', 'admin', 'full');
+VIMRuntime::make_get_set('HostFileAccess', 'who', 'what');
 
 
 sub get_property_list {
@@ -49601,16 +49718,20 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostFileAccess;
+package ModeInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['who', undef, undef, 1],
-   ['what', undef, undef, 1],
+   ['browse', undef, undef, 0],
+   ['read', undef, undef, 1],
+   ['modify', undef, undef, 1],
+   ['use', undef, undef, 1],
+   ['admin', undef, undef, 0],
+   ['full', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostFileAccess', 'who', 'what');
+VIMRuntime::make_get_set('ModeInfo', 'browse', 'read', 'modify', 'use', 'admin', 'full');
 
 
 sub get_property_list {
@@ -49727,125 +49848,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostNasVolumeUserInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['user', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostNasVolumeUserInfo', 'user');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostNasVolumeSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['remoteHost', undef, undef, 1],
-   ['remotePath', undef, undef, 1],
-   ['localPath', undef, undef, 1],
-   ['accessMode', undef, undef, 1],
-   ['type', undef, undef, 0],
-   ['userName', undef, undef, 0],
-   ['password', undef, undef, 0],
-   ['remoteHostNames', undef, 1, 0],
-   ['securityType', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostNasVolumeSpec', 'remoteHost', 'remotePath', 'localPath', 'accessMode', 'type', 'userName', 'password', 'remoteHostNames', 'securityType');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostNasVolumeConfig;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['changeOperation', undef, undef, 0],
-   ['spec', 'HostNasVolumeSpec', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostNasVolumeConfig', 'changeOperation', 'spec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostNasVolumeConfig;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostNasVolumeConfig', 'HostNasVolumeConfig', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostNasVolumeConfig', 'HostNasVolumeConfig');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostNasVolume;
+package HostLocalFileSystemVolume;
 our @ISA = qw(HostFileSystemVolume);
 
 our @property_list = (
-   ['remoteHost', undef, undef, 1],
-   ['remotePath', undef, undef, 1],
-   ['userName', undef, undef, 0],
-   ['remoteHostNames', undef, 1, 0],
-   ['securityType', undef, undef, 0],
-   ['protocolEndpoint', 'boolean', undef, 0],
+   ['device', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostNasVolume', 'remoteHost', 'remotePath', 'userName', 'remoteHostNames', 'securityType', 'protocolEndpoint');
+VIMRuntime::make_get_set('HostLocalFileSystemVolume', 'device');
 
 
 sub get_property_list {
@@ -49886,15 +49897,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostLocalFileSystemVolume;
+package HostVfatVolume;
 our @ISA = qw(HostFileSystemVolume);
 
 our @property_list = (
-   ['device', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostLocalFileSystemVolume', 'device');
+VIMRuntime::make_get_set('HostVfatVolume');
 
 
 sub get_property_list {
@@ -49910,14 +49920,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostVfatVolume;
-our @ISA = qw(HostFileSystemVolume);
+package HostFirewallConfig;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
+   ['rule', 'HostFirewallConfigRuleSetConfig', 1, 0],
+   ['defaultBlockingPolicy', 'HostFirewallDefaultPolicy', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostVfatVolume');
+VIMRuntime::make_get_set('HostFirewallConfig', 'rule', 'defaultBlockingPolicy');
 
 
 sub get_property_list {
@@ -49983,16 +49995,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostFirewallConfig;
+package HostFirewallInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['rule', 'HostFirewallConfigRuleSetConfig', 1, 0],
-   ['defaultBlockingPolicy', 'HostFirewallDefaultPolicy', undef, 1],
+   ['defaultPolicy', 'HostFirewallDefaultPolicy', undef, 1],
+   ['ruleset', 'HostFirewallRuleset', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostFirewallConfig', 'rule', 'defaultBlockingPolicy');
+VIMRuntime::make_get_set('HostFirewallInfo', 'defaultPolicy', 'ruleset');
 
 
 sub get_property_list {
@@ -50018,31 +50030,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostFirewallDefaultPolicy', 'incomingBlocked', 'outgoingBlocked');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostFirewallInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['defaultPolicy', 'HostFirewallDefaultPolicy', undef, 1],
-   ['ruleset', 'HostFirewallRuleset', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostFirewallInfo', 'defaultPolicy', 'ruleset');
 
 
 sub get_property_list {
@@ -50134,6 +50121,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostGraphicsConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostDefaultGraphicsType', undef, undef, 1],
+   ['sharedPassthruAssignmentPolicy', undef, undef, 1],
+   ['deviceType', 'HostGraphicsConfigDeviceType', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostGraphicsConfig', 'hostDefaultGraphicsType', 'sharedPassthruAssignmentPolicy', 'deviceType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostGraphicsConfigDeviceType;
 our @ISA = qw(DynamicData);
 
@@ -50168,32 +50181,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostGraphicsConfigDeviceType', 'HostGraphicsConfigDeviceType');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostGraphicsConfig;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['hostDefaultGraphicsType', undef, undef, 1],
-   ['sharedPassthruAssignmentPolicy', undef, undef, 1],
-   ['deviceType', 'HostGraphicsConfigDeviceType', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostGraphicsConfig', 'hostDefaultGraphicsType', 'sharedPassthruAssignmentPolicy', 'deviceType');
 
 
 sub get_property_list {
@@ -50272,7 +50259,7 @@ our @property_list = (
    ['cpuPkg', 'HostCpuPackage', 1, 1],
    ['memorySize', undef, undef, 1],
    ['numaInfo', 'HostNumaInfo', undef, 0],
-   ['smcPresent', 'boolean', undef, 0],
+   ['smcPresent', 'boolean', undef, 1],
    ['pciDevice', 'HostPciDevice', 1, 0],
    ['cpuFeature', 'HostCpuIdInfo', 1, 0],
    ['biosInfo', 'HostBIOSInfo', undef, 0],
@@ -50563,6 +50550,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostHardwareStatusInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['memoryStatusInfo', 'HostHardwareElementInfo', 1, 0],
+   ['cpuStatusInfo', 'HostHardwareElementInfo', 1, 0],
+   ['storageStatusInfo', 'HostStorageElementInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostHardwareStatusInfo', 'memoryStatusInfo', 'cpuStatusInfo', 'storageStatusInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostHardwareElementInfo;
 our @ISA = qw(DynamicData);
 
@@ -50597,55 +50610,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostHardwareElementInfo', 'HostHardwareElementInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostStorageOperationalInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['property', undef, undef, 1],
-   ['value', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostStorageOperationalInfo', 'property', 'value');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostStorageOperationalInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostStorageOperationalInfo', 'HostStorageOperationalInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostStorageOperationalInfo', 'HostStorageOperationalInfo');
 
 
 sub get_property_list {
@@ -50709,17 +50673,40 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostHardwareStatusInfo;
+package HostStorageOperationalInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['memoryStatusInfo', 'HostHardwareElementInfo', 1, 0],
-   ['cpuStatusInfo', 'HostHardwareElementInfo', 1, 0],
-   ['storageStatusInfo', 'HostStorageElementInfo', 1, 0],
+   ['property', undef, undef, 1],
+   ['value', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostHardwareStatusInfo', 'memoryStatusInfo', 'cpuStatusInfo', 'storageStatusInfo');
+VIMRuntime::make_get_set('HostStorageOperationalInfo', 'property', 'value');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostStorageOperationalInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostStorageOperationalInfo', 'HostStorageOperationalInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostStorageOperationalInfo', 'HostStorageOperationalInfo');
 
 
 sub get_property_list {
@@ -50946,6 +50933,48 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostFibreChannelHba', 'portWorldWideName', 'nodeWorldWideName', 'portType', 'speed');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostInternetScsiHba;
+our @ISA = qw(HostHostBusAdapter);
+
+our @property_list = (
+   ['isSoftwareBased', 'boolean', undef, 1],
+   ['canBeDisabled', 'boolean', undef, 0],
+   ['networkBindingSupport', 'HostInternetScsiHbaNetworkBindingSupportType', undef, 0],
+   ['discoveryCapabilities', 'HostInternetScsiHbaDiscoveryCapabilities', undef, 1],
+   ['discoveryProperties', 'HostInternetScsiHbaDiscoveryProperties', undef, 1],
+   ['authenticationCapabilities', 'HostInternetScsiHbaAuthenticationCapabilities', undef, 1],
+   ['authenticationProperties', 'HostInternetScsiHbaAuthenticationProperties', undef, 1],
+   ['digestCapabilities', 'HostInternetScsiHbaDigestCapabilities', undef, 0],
+   ['digestProperties', 'HostInternetScsiHbaDigestProperties', undef, 0],
+   ['ipCapabilities', 'HostInternetScsiHbaIPCapabilities', undef, 1],
+   ['ipProperties', 'HostInternetScsiHbaIPProperties', undef, 1],
+   ['supportedAdvancedOptions', 'OptionDef', 1, 0],
+   ['advancedOptions', 'HostInternetScsiHbaParamValue', 1, 0],
+   ['iScsiName', undef, undef, 1],
+   ['iScsiAlias', undef, undef, 0],
+   ['configuredSendTarget', 'HostInternetScsiHbaSendTarget', 1, 0],
+   ['configuredStaticTarget', 'HostInternetScsiHbaStaticTarget', 1, 0],
+   ['maxSpeedMb', undef, undef, 0],
+   ['currentSpeedMb', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostInternetScsiHba', 'isSoftwareBased', 'canBeDisabled', 'networkBindingSupport', 'discoveryCapabilities', 'discoveryProperties', 'authenticationCapabilities', 'authenticationProperties', 'digestCapabilities', 'digestProperties', 'ipCapabilities', 'ipProperties', 'supportedAdvancedOptions', 'advancedOptions', 'iScsiName', 'iScsiAlias', 'configuredSendTarget', 'configuredStaticTarget', 'maxSpeedMb', 'currentSpeedMb');
 
 
 sub get_property_list {
@@ -51479,33 +51508,18 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostInternetScsiHba;
-our @ISA = qw(HostHostBusAdapter);
+package HostFibreChannelOverEthernetHba;
+our @ISA = qw(HostFibreChannelHba);
 
 our @property_list = (
-   ['isSoftwareBased', 'boolean', undef, 1],
-   ['canBeDisabled', 'boolean', undef, 0],
-   ['networkBindingSupport', 'HostInternetScsiHbaNetworkBindingSupportType', undef, 0],
-   ['discoveryCapabilities', 'HostInternetScsiHbaDiscoveryCapabilities', undef, 1],
-   ['discoveryProperties', 'HostInternetScsiHbaDiscoveryProperties', undef, 1],
-   ['authenticationCapabilities', 'HostInternetScsiHbaAuthenticationCapabilities', undef, 1],
-   ['authenticationProperties', 'HostInternetScsiHbaAuthenticationProperties', undef, 1],
-   ['digestCapabilities', 'HostInternetScsiHbaDigestCapabilities', undef, 0],
-   ['digestProperties', 'HostInternetScsiHbaDigestProperties', undef, 0],
-   ['ipCapabilities', 'HostInternetScsiHbaIPCapabilities', undef, 1],
-   ['ipProperties', 'HostInternetScsiHbaIPProperties', undef, 1],
-   ['supportedAdvancedOptions', 'OptionDef', 1, 0],
-   ['advancedOptions', 'HostInternetScsiHbaParamValue', 1, 0],
-   ['iScsiName', undef, undef, 1],
-   ['iScsiAlias', undef, undef, 0],
-   ['configuredSendTarget', 'HostInternetScsiHbaSendTarget', 1, 0],
-   ['configuredStaticTarget', 'HostInternetScsiHbaStaticTarget', 1, 0],
-   ['maxSpeedMb', undef, undef, 0],
-   ['currentSpeedMb', undef, undef, 0],
+   ['underlyingNic', undef, undef, 1],
+   ['linkInfo', 'HostFibreChannelOverEthernetHbaLinkInfo', undef, 1],
+   ['isSoftwareFcoe', 'boolean', undef, 1],
+   ['markedForRemoval', 'boolean', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostInternetScsiHba', 'isSoftwareBased', 'canBeDisabled', 'networkBindingSupport', 'discoveryCapabilities', 'discoveryProperties', 'authenticationCapabilities', 'authenticationProperties', 'digestCapabilities', 'digestProperties', 'ipCapabilities', 'ipProperties', 'supportedAdvancedOptions', 'advancedOptions', 'iScsiName', 'iScsiAlias', 'configuredSendTarget', 'configuredStaticTarget', 'maxSpeedMb', 'currentSpeedMb');
+VIMRuntime::make_get_set('HostFibreChannelOverEthernetHba', 'underlyingNic', 'linkInfo', 'isSoftwareFcoe', 'markedForRemoval');
 
 
 sub get_property_list {
@@ -51547,18 +51561,50 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostFibreChannelOverEthernetHba;
-our @ISA = qw(HostFibreChannelHba);
+package HostProxySwitch;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['underlyingNic', undef, undef, 1],
-   ['linkInfo', 'HostFibreChannelOverEthernetHbaLinkInfo', undef, 1],
-   ['isSoftwareFcoe', 'boolean', undef, 1],
-   ['markedForRemoval', 'boolean', undef, 1],
+   ['dvsUuid', undef, undef, 1],
+   ['dvsName', undef, undef, 1],
+   ['key', undef, undef, 1],
+   ['numPorts', undef, undef, 1],
+   ['configNumPorts', undef, undef, 0],
+   ['numPortsAvailable', undef, undef, 1],
+   ['uplinkPort', 'KeyValue', 1, 0],
+   ['mtu', undef, undef, 0],
+   ['pnic', undef, 1, 0],
+   ['spec', 'HostProxySwitchSpec', undef, 1],
+   ['hostLag', 'HostProxySwitchHostLagConfig', 1, 0],
+   ['networkReservationSupported', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostFibreChannelOverEthernetHba', 'underlyingNic', 'linkInfo', 'isSoftwareFcoe', 'markedForRemoval');
+VIMRuntime::make_get_set('HostProxySwitch', 'dvsUuid', 'dvsName', 'key', 'numPorts', 'configNumPorts', 'numPortsAvailable', 'uplinkPort', 'mtu', 'pnic', 'spec', 'hostLag', 'networkReservationSupported');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostProxySwitch;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostProxySwitch', 'HostProxySwitch', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostProxySwitch', 'HostProxySwitch');
 
 
 sub get_property_list {
@@ -51698,65 +51744,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostProxySwitch;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['dvsUuid', undef, undef, 1],
-   ['dvsName', undef, undef, 1],
-   ['key', undef, undef, 1],
-   ['numPorts', undef, undef, 1],
-   ['configNumPorts', undef, undef, 0],
-   ['numPortsAvailable', undef, undef, 1],
-   ['uplinkPort', 'KeyValue', 1, 0],
-   ['mtu', undef, undef, 0],
-   ['pnic', undef, 1, 0],
-   ['spec', 'HostProxySwitchSpec', undef, 1],
-   ['hostLag', 'HostProxySwitchHostLagConfig', 1, 0],
-   ['networkReservationSupported', 'boolean', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostProxySwitch', 'dvsUuid', 'dvsName', 'key', 'numPorts', 'configNumPorts', 'numPortsAvailable', 'uplinkPort', 'mtu', 'pnic', 'spec', 'hostLag', 'networkReservationSupported');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostProxySwitch;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostProxySwitch', 'HostProxySwitch', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostProxySwitch', 'HostProxySwitch');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostImageProfileSummary;
 our @ISA = qw(DynamicData);
 
@@ -51767,6 +51754,33 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostImageProfileSummary', 'name', 'vendor');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostIpConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dhcp', 'boolean', undef, 1],
+   ['ipAddress', undef, undef, 0],
+   ['subnetMask', undef, undef, 0],
+   ['ipV6Config', 'HostIpConfigIpV6AddressConfiguration', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostIpConfig', 'dhcp', 'ipAddress', 'subnetMask', 'ipV6Config');
 
 
 sub get_property_list {
@@ -51846,33 +51860,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostIpConfigIpV6AddressConfiguration', 'ipV6Address', 'autoConfigurationEnabled', 'dhcpV6Enabled');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostIpConfig;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['dhcp', 'boolean', undef, 1],
-   ['ipAddress', undef, undef, 0],
-   ['subnetMask', undef, undef, 0],
-   ['ipV6Config', 'HostIpConfigIpV6AddressConfiguration', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostIpConfig', 'dhcp', 'ipAddress', 'subnetMask', 'ipV6Config');
 
 
 sub get_property_list {
@@ -52279,31 +52266,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package KernelModuleSectionInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['address', undef, undef, 1],
-   ['length', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('KernelModuleSectionInfo', 'address', 'length');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package KernelModuleInfo;
 our @ISA = qw(DynamicData);
 
@@ -52349,6 +52311,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfKernelModuleInfo', 'KernelModuleInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package KernelModuleSectionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['address', undef, undef, 1],
+   ['length', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('KernelModuleSectionInfo', 'address', 'length');
 
 
 sub get_property_list {
@@ -53024,6 +53011,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostMultipathInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['lun', 'HostMultipathInfoLogicalUnit', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostMultipathInfo', 'lun');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostMultipathInfoLogicalUnitPolicy;
 our @ISA = qw(DynamicData);
 
@@ -53204,15 +53215,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostMultipathInfo;
+package HostMultipathStateInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['lun', 'HostMultipathInfoLogicalUnit', 1, 0],
+   ['path', 'HostMultipathStateInfoPath', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostMultipathInfo', 'lun');
+VIMRuntime::make_get_set('HostMultipathStateInfo', 'path');
 
 
 sub get_property_list {
@@ -53277,15 +53288,174 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostMultipathStateInfo;
-our @ISA = qw(DynamicData);
+package HostNasVolume;
+our @ISA = qw(HostFileSystemVolume);
 
 our @property_list = (
-   ['path', 'HostMultipathStateInfoPath', 1, 0],
+   ['remoteHost', undef, undef, 1],
+   ['remotePath', undef, undef, 1],
+   ['userName', undef, undef, 0],
+   ['remoteHostNames', undef, 1, 0],
+   ['securityType', undef, undef, 0],
+   ['protocolEndpoint', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostMultipathStateInfo', 'path');
+VIMRuntime::make_get_set('HostNasVolume', 'remoteHost', 'remotePath', 'userName', 'remoteHostNames', 'securityType', 'protocolEndpoint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNasVolumeUserInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['user', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostNasVolumeUserInfo', 'user');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNasVolumeSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['remoteHost', undef, undef, 1],
+   ['remotePath', undef, undef, 1],
+   ['localPath', undef, undef, 1],
+   ['accessMode', undef, undef, 1],
+   ['type', undef, undef, 0],
+   ['userName', undef, undef, 0],
+   ['password', undef, undef, 0],
+   ['remoteHostNames', undef, 1, 0],
+   ['securityType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostNasVolumeSpec', 'remoteHost', 'remotePath', 'localPath', 'accessMode', 'type', 'userName', 'password', 'remoteHostNames', 'securityType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNasVolumeConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['changeOperation', undef, undef, 0],
+   ['spec', 'HostNasVolumeSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostNasVolumeConfig', 'changeOperation', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostNasVolumeConfig;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostNasVolumeConfig', 'HostNasVolumeConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostNasVolumeConfig', 'HostNasVolumeConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNatService;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['spec', 'HostNatServiceSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostNatService', 'key', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostNatService;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostNatService', 'HostNatService', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostNatService', 'HostNatService');
 
 
 sub get_property_list {
@@ -53465,55 +53635,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostNatService;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['spec', 'HostNatServiceSpec', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostNatService', 'key', 'spec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostNatService;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostNatService', 'HostNatService', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostNatService', 'HostNatService');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostNetCapabilities;
 our @ISA = qw(DynamicData);
 
@@ -53525,12 +53646,12 @@ our @property_list = (
    ['usesServiceConsoleNic', 'boolean', undef, 1],
    ['supportsNetworkHints', 'boolean', undef, 1],
    ['maxPortGroupsPerVswitch', undef, undef, 0],
-   ['vswitchConfigSupported', 'boolean', undef, 0],
-   ['vnicConfigSupported', 'boolean', undef, 0],
-   ['ipRouteConfigSupported', 'boolean', undef, 0],
-   ['dnsConfigSupported', 'boolean', undef, 0],
-   ['dhcpOnVnicSupported', 'boolean', undef, 0],
-   ['ipV6Supported', 'boolean', undef, 0],
+   ['vswitchConfigSupported', 'boolean', undef, 1],
+   ['vnicConfigSupported', 'boolean', undef, 1],
+   ['ipRouteConfigSupported', 'boolean', undef, 1],
+   ['dnsConfigSupported', 'boolean', undef, 1],
+   ['dhcpOnVnicSupported', 'boolean', undef, 1],
+   ['ipV6Supported', 'boolean', undef, 1],
 );
 
 
@@ -53631,6 +53752,43 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostNetworkConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vswitch', 'HostVirtualSwitchConfig', 1, 0],
+   ['proxySwitch', 'HostProxySwitchConfig', 1, 0],
+   ['portgroup', 'HostPortGroupConfig', 1, 0],
+   ['pnic', 'PhysicalNicConfig', 1, 0],
+   ['vnic', 'HostVirtualNicConfig', 1, 0],
+   ['consoleVnic', 'HostVirtualNicConfig', 1, 0],
+   ['dnsConfig', 'HostDnsConfig', undef, 0],
+   ['ipRouteConfig', 'HostIpRouteConfig', undef, 0],
+   ['consoleIpRouteConfig', 'HostIpRouteConfig', undef, 0],
+   ['routeTableConfig', 'HostIpRouteTableConfig', undef, 0],
+   ['dhcp', 'HostDhcpServiceConfig', 1, 0],
+   ['nat', 'HostNatServiceConfig', 1, 0],
+   ['ipV6Enabled', 'boolean', undef, 0],
+   ['netStackSpec', 'HostNetworkConfigNetStackSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostNetworkConfig', 'vswitch', 'proxySwitch', 'portgroup', 'pnic', 'vnic', 'consoleVnic', 'dnsConfig', 'ipRouteConfig', 'consoleIpRouteConfig', 'routeTableConfig', 'dhcp', 'nat', 'ipV6Enabled', 'netStackSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostNetworkConfigResult;
 our @ISA = qw(DynamicData);
 
@@ -53705,43 +53863,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostNetworkConfig;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['vswitch', 'HostVirtualSwitchConfig', 1, 0],
-   ['proxySwitch', 'HostProxySwitchConfig', 1, 0],
-   ['portgroup', 'HostPortGroupConfig', 1, 0],
-   ['pnic', 'PhysicalNicConfig', 1, 0],
-   ['vnic', 'HostVirtualNicConfig', 1, 0],
-   ['consoleVnic', 'HostVirtualNicConfig', 1, 0],
-   ['dnsConfig', 'HostDnsConfig', undef, 0],
-   ['ipRouteConfig', 'HostIpRouteConfig', undef, 0],
-   ['consoleIpRouteConfig', 'HostIpRouteConfig', undef, 0],
-   ['routeTableConfig', 'HostIpRouteTableConfig', undef, 0],
-   ['dhcp', 'HostDhcpServiceConfig', 1, 0],
-   ['nat', 'HostNatServiceConfig', 1, 0],
-   ['ipV6Enabled', 'boolean', undef, 0],
-   ['netStackSpec', 'HostNetworkConfigNetStackSpec', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostNetworkConfig', 'vswitch', 'proxySwitch', 'portgroup', 'pnic', 'vnic', 'consoleVnic', 'dnsConfig', 'ipRouteConfig', 'consoleIpRouteConfig', 'routeTableConfig', 'dhcp', 'nat', 'ipV6Enabled', 'netStackSpec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostNetworkInfo;
 our @ISA = qw(DynamicData);
 
@@ -53767,6 +53888,33 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostNetworkInfo', 'vswitch', 'proxySwitch', 'portgroup', 'pnic', 'vnic', 'consoleVnic', 'dnsConfig', 'ipRouteConfig', 'consoleIpRouteConfig', 'routeTableInfo', 'dhcp', 'nat', 'ipV6Enabled', 'atBootIpV6Enabled', 'netStackInstance', 'opaqueSwitch', 'opaqueNetwork');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNetworkPolicy;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['security', 'HostNetworkSecurityPolicy', undef, 0],
+   ['nicTeaming', 'HostNicTeamingPolicy', undef, 0],
+   ['offloadPolicy', 'HostNetOffloadCapabilities', undef, 0],
+   ['shapingPolicy', 'HostNetworkTrafficShapingPolicy', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostNetworkPolicy', 'security', 'nicTeaming', 'offloadPolicy', 'shapingPolicy');
 
 
 sub get_property_list {
@@ -53919,33 +54067,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostNetworkPolicy;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['security', 'HostNetworkSecurityPolicy', undef, 0],
-   ['nicTeaming', 'HostNicTeamingPolicy', undef, 0],
-   ['offloadPolicy', 'HostNetOffloadCapabilities', undef, 0],
-   ['shapingPolicy', 'HostNetworkTrafficShapingPolicy', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostNetworkPolicy', 'security', 'nicTeaming', 'offloadPolicy', 'shapingPolicy');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostNtpConfig;
 our @ISA = qw(DynamicData);
 
@@ -53981,7 +54102,7 @@ our @property_list = (
    ['unitModifier', undef, undef, 1],
    ['baseUnits', undef, undef, 1],
    ['rateUnits', undef, undef, 0],
-   ['sensorType', undef, undef, 0],
+   ['sensorType', undef, undef, 1],
    ['id', undef, undef, 0],
    ['timeStamp', undef, undef, 0],
 );
@@ -54359,6 +54480,60 @@ sub get_property_list {
 
 
 ##################################################################################
+package NvdimmNamespaceDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uuid', undef, undef, 1],
+   ['friendlyName', undef, undef, 1],
+   ['size', undef, undef, 1],
+   ['type', undef, undef, 1],
+   ['namespaceHealthStatus', undef, undef, 1],
+   ['interleavesetID', undef, undef, 1],
+   ['state', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('NvdimmNamespaceDetails', 'uuid', 'friendlyName', 'size', 'type', 'namespaceHealthStatus', 'interleavesetID', 'state');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfNvdimmNamespaceDetails;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['NvdimmNamespaceDetails', 'NvdimmNamespaceDetails', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfNvdimmNamespaceDetails', 'NvdimmNamespaceDetails');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package NvdimmNamespaceCreateSpec;
 our @ISA = qw(DynamicData);
 
@@ -54372,6 +54547,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('NvdimmNamespaceCreateSpec', 'friendlyName', 'blockSize', 'blockCount', 'type', 'locationID');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NvdimmPMemNamespaceCreateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['friendlyName', undef, undef, 0],
+   ['size', undef, undef, 1],
+   ['interleavesetID', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('NvdimmPMemNamespaceCreateSpec', 'friendlyName', 'size', 'interleavesetID');
 
 
 sub get_property_list {
@@ -54422,10 +54623,11 @@ our @property_list = (
    ['iSetInfo', 'NvdimmInterleaveSetInfo', 1, 0],
    ['namespace', 'NvdimmGuid', 1, 0],
    ['nsInfo', 'NvdimmNamespaceInfo', 1, 0],
+   ['nsDetails', 'NvdimmNamespaceDetails', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('NvdimmSystemInfo', 'summary', 'dimms', 'dimmInfo', 'interleaveSet', 'iSetInfo', 'namespace', 'nsInfo');
+VIMRuntime::make_get_set('NvdimmSystemInfo', 'summary', 'dimms', 'dimmInfo', 'interleaveSet', 'iSetInfo', 'namespace', 'nsInfo', 'nsDetails');
 
 
 sub get_property_list {
@@ -54479,55 +54681,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostOpaqueNetworkInfo', 'HostOpaqueNetworkInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostOpaqueSwitchPhysicalNicZone;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['pnicDevice', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostOpaqueSwitchPhysicalNicZone', 'key', 'pnicDevice');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostOpaqueSwitchPhysicalNicZone;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostOpaqueSwitchPhysicalNicZone', 'HostOpaqueSwitchPhysicalNicZone', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostOpaqueSwitchPhysicalNicZone', 'HostOpaqueSwitchPhysicalNicZone');
 
 
 sub get_property_list {
@@ -54598,6 +54751,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostOpaqueSwitchPhysicalNicZone;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['pnicDevice', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostOpaqueSwitchPhysicalNicZone', 'key', 'pnicDevice');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostOpaqueSwitchPhysicalNicZone;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostOpaqueSwitchPhysicalNicZone', 'HostOpaqueSwitchPhysicalNicZone', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostOpaqueSwitchPhysicalNicZone', 'HostOpaqueSwitchPhysicalNicZone');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostPMemVolume;
 our @ISA = qw(HostFileSystemVolume);
 
@@ -54634,55 +54836,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostPatchManagerResult', 'version', 'status', 'xmlResult');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostPatchManagerStatusPrerequisitePatch;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['id', undef, undef, 1],
-   ['installState', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostPatchManagerStatusPrerequisitePatch', 'id', 'installState');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostPatchManagerStatusPrerequisitePatch;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostPatchManagerStatusPrerequisitePatch', 'HostPatchManagerStatusPrerequisitePatch', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostPatchManagerStatusPrerequisitePatch', 'HostPatchManagerStatusPrerequisitePatch');
 
 
 sub get_property_list {
@@ -54741,6 +54894,55 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostPatchManagerStatus', 'HostPatchManagerStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostPatchManagerStatusPrerequisitePatch;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+   ['installState', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostPatchManagerStatusPrerequisitePatch', 'id', 'installState');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostPatchManagerStatusPrerequisitePatch;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostPatchManagerStatusPrerequisitePatch', 'HostPatchManagerStatusPrerequisitePatch', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostPatchManagerStatusPrerequisitePatch', 'HostPatchManagerStatusPrerequisitePatch');
 
 
 sub get_property_list {
@@ -55042,6 +55244,69 @@ sub get_property_list {
 
 
 ##################################################################################
+package PhysicalNic;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 0],
+   ['device', undef, undef, 1],
+   ['pci', undef, undef, 1],
+   ['driver', undef, undef, 0],
+   ['linkSpeed', 'PhysicalNicLinkInfo', undef, 0],
+   ['validLinkSpecification', 'PhysicalNicLinkInfo', 1, 0],
+   ['spec', 'PhysicalNicSpec', undef, 1],
+   ['wakeOnLanSupported', 'boolean', undef, 1],
+   ['mac', undef, undef, 1],
+   ['fcoeConfiguration', 'FcoeConfig', undef, 0],
+   ['vmDirectPathGen2Supported', 'boolean', undef, 0],
+   ['vmDirectPathGen2SupportedMode', undef, undef, 0],
+   ['resourcePoolSchedulerAllowed', 'boolean', undef, 0],
+   ['resourcePoolSchedulerDisallowedReason', undef, 1, 0],
+   ['autoNegotiateSupported', 'boolean', undef, 0],
+   ['enhancedNetworkingStackSupported', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('PhysicalNic', 'key', 'device', 'pci', 'driver', 'linkSpeed', 'validLinkSpecification', 'spec', 'wakeOnLanSupported', 'mac', 'fcoeConfiguration', 'vmDirectPathGen2Supported', 'vmDirectPathGen2SupportedMode', 'resourcePoolSchedulerAllowed', 'resourcePoolSchedulerDisallowedReason', 'autoNegotiateSupported', 'enhancedNetworkingStackSupported');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfPhysicalNic;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['PhysicalNic', 'PhysicalNic', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfPhysicalNic', 'PhysicalNic');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package PhysicalNicSpec;
 our @ISA = qw(DynamicData);
 
@@ -55151,6 +55416,58 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfPhysicalNicLinkInfo', 'PhysicalNicLinkInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package PhysicalNicHintInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['device', undef, undef, 1],
+   ['subnet', 'PhysicalNicIpHint', 1, 0],
+   ['network', 'PhysicalNicNameHint', 1, 0],
+   ['connectedSwitchPort', 'PhysicalNicCdpInfo', undef, 0],
+   ['lldpInfo', 'LinkLayerDiscoveryProtocolInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('PhysicalNicHintInfo', 'device', 'subnet', 'network', 'connectedSwitchPort', 'lldpInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfPhysicalNicHintInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['PhysicalNicHintInfo', 'PhysicalNicHintInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfPhysicalNicHintInfo', 'PhysicalNicHintInfo');
 
 
 sub get_property_list {
@@ -55286,58 +55603,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package PhysicalNicHintInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['device', undef, undef, 1],
-   ['subnet', 'PhysicalNicIpHint', 1, 0],
-   ['network', 'PhysicalNicNameHint', 1, 0],
-   ['connectedSwitchPort', 'PhysicalNicCdpInfo', undef, 0],
-   ['lldpInfo', 'LinkLayerDiscoveryProtocolInfo', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('PhysicalNicHintInfo', 'device', 'subnet', 'network', 'connectedSwitchPort', 'lldpInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfPhysicalNicHintInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['PhysicalNicHintInfo', 'PhysicalNicHintInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfPhysicalNicHintInfo', 'PhysicalNicHintInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package PhysicalNicCdpDeviceCapability;
 our @ISA = qw(DynamicData);
 
@@ -55437,54 +55702,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package PhysicalNic;
+package HostPlugStoreTopology;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 0],
-   ['device', undef, undef, 1],
-   ['pci', undef, undef, 1],
-   ['driver', undef, undef, 0],
-   ['linkSpeed', 'PhysicalNicLinkInfo', undef, 0],
-   ['validLinkSpecification', 'PhysicalNicLinkInfo', 1, 0],
-   ['spec', 'PhysicalNicSpec', undef, 1],
-   ['wakeOnLanSupported', 'boolean', undef, 0],
-   ['mac', undef, undef, 0],
-   ['fcoeConfiguration', 'FcoeConfig', undef, 0],
-   ['vmDirectPathGen2Supported', 'boolean', undef, 0],
-   ['vmDirectPathGen2SupportedMode', undef, undef, 0],
-   ['resourcePoolSchedulerAllowed', 'boolean', undef, 0],
-   ['resourcePoolSchedulerDisallowedReason', undef, 1, 0],
-   ['autoNegotiateSupported', 'boolean', undef, 0],
-   ['enhancedNetworkingStackSupported', 'boolean', undef, 0],
+   ['adapter', 'HostPlugStoreTopologyAdapter', 1, 0],
+   ['path', 'HostPlugStoreTopologyPath', 1, 0],
+   ['target', 'HostPlugStoreTopologyTarget', 1, 0],
+   ['device', 'HostPlugStoreTopologyDevice', 1, 0],
+   ['plugin', 'HostPlugStoreTopologyPlugin', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('PhysicalNic', 'key', 'device', 'pci', 'driver', 'linkSpeed', 'validLinkSpecification', 'spec', 'wakeOnLanSupported', 'mac', 'fcoeConfiguration', 'vmDirectPathGen2Supported', 'vmDirectPathGen2SupportedMode', 'resourcePoolSchedulerAllowed', 'resourcePoolSchedulerDisallowedReason', 'autoNegotiateSupported', 'enhancedNetworkingStackSupported');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfPhysicalNic;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['PhysicalNic', 'PhysicalNic', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfPhysicalNic', 'PhysicalNic');
+VIMRuntime::make_get_set('HostPlugStoreTopology', 'adapter', 'path', 'target', 'device', 'plugin');
 
 
 sub get_property_list {
@@ -55755,19 +55985,43 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostPlugStoreTopology;
+package HostPortGroup;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['adapter', 'HostPlugStoreTopologyAdapter', 1, 0],
-   ['path', 'HostPlugStoreTopologyPath', 1, 0],
-   ['target', 'HostPlugStoreTopologyTarget', 1, 0],
-   ['device', 'HostPlugStoreTopologyDevice', 1, 0],
-   ['plugin', 'HostPlugStoreTopologyPlugin', 1, 0],
+   ['key', undef, undef, 0],
+   ['port', 'HostPortGroupPort', 1, 0],
+   ['vswitch', undef, undef, 0],
+   ['computedPolicy', 'HostNetworkPolicy', undef, 1],
+   ['spec', 'HostPortGroupSpec', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostPlugStoreTopology', 'adapter', 'path', 'target', 'device', 'plugin');
+VIMRuntime::make_get_set('HostPortGroup', 'key', 'port', 'vswitch', 'computedPolicy', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostPortGroup;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostPortGroup', 'HostPortGroup', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostPortGroup', 'HostPortGroup');
 
 
 sub get_property_list {
@@ -55894,58 +56148,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostPortGroupPort', 'HostPortGroupPort');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostPortGroup;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 0],
-   ['port', 'HostPortGroupPort', 1, 0],
-   ['vswitch', undef, undef, 0],
-   ['computedPolicy', 'HostNetworkPolicy', undef, 1],
-   ['spec', 'HostPortGroupSpec', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostPortGroup', 'key', 'port', 'vswitch', 'computedPolicy', 'spec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostPortGroup;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostPortGroup', 'HostPortGroup', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostPortGroup', 'HostPortGroup');
 
 
 sub get_property_list {
@@ -56144,6 +56346,60 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostFirewallRuleset;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['label', undef, undef, 1],
+   ['required', 'boolean', undef, 1],
+   ['rule', 'HostFirewallRule', 1, 1],
+   ['service', undef, undef, 0],
+   ['enabled', 'boolean', undef, 1],
+   ['allowedHosts', 'HostFirewallRulesetIpList', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostFirewallRuleset', 'key', 'label', 'required', 'rule', 'service', 'enabled', 'allowedHosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostFirewallRuleset;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostFirewallRuleset', 'HostFirewallRuleset', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostFirewallRuleset', 'HostFirewallRuleset');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostFirewallRulesetIpNetwork;
 our @ISA = qw(DynamicData);
 
@@ -56295,45 +56551,29 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostFirewallRuleset;
+package HostRuntimeInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 1],
-   ['label', undef, undef, 1],
-   ['required', 'boolean', undef, 1],
-   ['rule', 'HostFirewallRule', 1, 1],
-   ['service', undef, undef, 0],
-   ['enabled', 'boolean', undef, 1],
-   ['allowedHosts', 'HostFirewallRulesetIpList', undef, 0],
+   ['connectionState', 'HostSystemConnectionState', undef, 1],
+   ['powerState', 'HostSystemPowerState', undef, 1],
+   ['standbyMode', undef, undef, 0],
+   ['inMaintenanceMode', 'boolean', undef, 1],
+   ['inQuarantineMode', 'boolean', undef, 0],
+   ['bootTime', undef, undef, 0],
+   ['healthSystemRuntime', 'HealthSystemRuntime', undef, 0],
+   ['dasHostState', 'ClusterDasFdmHostState', undef, 0],
+   ['tpmPcrValues', 'HostTpmDigestInfo', 1, 0],
+   ['vsanRuntimeInfo', 'VsanHostRuntimeInfo', undef, 0],
+   ['networkRuntimeInfo', 'HostRuntimeInfoNetworkRuntimeInfo', undef, 0],
+   ['vFlashResourceRuntimeInfo', 'HostVFlashManagerVFlashResourceRunTimeInfo', undef, 0],
+   ['hostMaxVirtualDiskCapacity', undef, undef, 0],
+   ['cryptoState', undef, undef, 0],
+   ['cryptoKeyId', 'CryptoKeyId', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostFirewallRuleset', 'key', 'label', 'required', 'rule', 'service', 'enabled', 'allowedHosts');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostFirewallRuleset;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostFirewallRuleset', 'HostFirewallRuleset', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostFirewallRuleset', 'HostFirewallRuleset');
+VIMRuntime::make_get_set('HostRuntimeInfo', 'connectionState', 'powerState', 'standbyMode', 'inMaintenanceMode', 'inQuarantineMode', 'bootTime', 'healthSystemRuntime', 'dasHostState', 'tpmPcrValues', 'vsanRuntimeInfo', 'networkRuntimeInfo', 'vFlashResourceRuntimeInfo', 'hostMaxVirtualDiskCapacity', 'cryptoState', 'cryptoKeyId');
 
 
 sub get_property_list {
@@ -56551,29 +56791,46 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostRuntimeInfo;
-our @ISA = qw(DynamicData);
+package HostScsiDisk;
+our @ISA = qw(ScsiLun);
 
 our @property_list = (
-   ['connectionState', 'HostSystemConnectionState', undef, 1],
-   ['powerState', 'HostSystemPowerState', undef, 0],
-   ['standbyMode', undef, undef, 0],
-   ['inMaintenanceMode', 'boolean', undef, 1],
-   ['inQuarantineMode', 'boolean', undef, 0],
-   ['bootTime', undef, undef, 0],
-   ['healthSystemRuntime', 'HealthSystemRuntime', undef, 0],
-   ['dasHostState', 'ClusterDasFdmHostState', undef, 0],
-   ['tpmPcrValues', 'HostTpmDigestInfo', 1, 0],
-   ['vsanRuntimeInfo', 'VsanHostRuntimeInfo', undef, 0],
-   ['networkRuntimeInfo', 'HostRuntimeInfoNetworkRuntimeInfo', undef, 0],
-   ['vFlashResourceRuntimeInfo', 'HostVFlashManagerVFlashResourceRunTimeInfo', undef, 0],
-   ['hostMaxVirtualDiskCapacity', undef, undef, 0],
-   ['cryptoState', undef, undef, 0],
-   ['cryptoKeyId', 'CryptoKeyId', undef, 0],
+   ['capacity', 'HostDiskDimensionsLba', undef, 1],
+   ['devicePath', undef, undef, 1],
+   ['ssd', 'boolean', undef, 0],
+   ['localDisk', 'boolean', undef, 0],
+   ['physicalLocation', undef, 1, 0],
+   ['emulatedDIXDIFEnabled', 'boolean', undef, 0],
+   ['vsanDiskInfo', 'VsanHostVsanDiskInfo', undef, 0],
+   ['scsiDiskType', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostRuntimeInfo', 'connectionState', 'powerState', 'standbyMode', 'inMaintenanceMode', 'inQuarantineMode', 'bootTime', 'healthSystemRuntime', 'dasHostState', 'tpmPcrValues', 'vsanRuntimeInfo', 'networkRuntimeInfo', 'vFlashResourceRuntimeInfo', 'hostMaxVirtualDiskCapacity', 'cryptoState', 'cryptoKeyId');
+VIMRuntime::make_get_set('HostScsiDisk', 'capacity', 'devicePath', 'ssd', 'localDisk', 'physicalLocation', 'emulatedDIXDIFEnabled', 'vsanDiskInfo', 'scsiDiskType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostScsiDisk;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostScsiDisk', 'HostScsiDisk', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostScsiDisk', 'HostScsiDisk');
 
 
 sub get_property_list {
@@ -56638,22 +56895,33 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostScsiDisk;
-our @ISA = qw(ScsiLun);
+package ScsiLun;
+our @ISA = qw(HostDevice);
 
 our @property_list = (
-   ['capacity', 'HostDiskDimensionsLba', undef, 1],
-   ['devicePath', undef, undef, 1],
-   ['ssd', 'boolean', undef, 0],
-   ['localDisk', 'boolean', undef, 0],
-   ['physicalLocation', undef, 1, 0],
-   ['emulatedDIXDIFEnabled', 'boolean', undef, 0],
-   ['vsanDiskInfo', 'VsanHostVsanDiskInfo', undef, 0],
-   ['scsiDiskType', undef, undef, 0],
+   ['key', undef, undef, 0],
+   ['uuid', undef, undef, 1],
+   ['descriptor', 'ScsiLunDescriptor', 1, 0],
+   ['canonicalName', undef, undef, 0],
+   ['displayName', undef, undef, 0],
+   ['lunType', undef, undef, 1],
+   ['vendor', undef, undef, 0],
+   ['model', undef, undef, 0],
+   ['revision', undef, undef, 0],
+   ['scsiLevel', undef, undef, 0],
+   ['serialNumber', undef, undef, 0],
+   ['durableName', 'ScsiLunDurableName', undef, 0],
+   ['alternateName', 'ScsiLunDurableName', 1, 0],
+   ['standardInquiry', undef, 1, 0],
+   ['queueDepth', undef, undef, 0],
+   ['operationalState', undef, 1, 1],
+   ['capabilities', 'ScsiLunCapabilities', undef, 0],
+   ['vStorageSupport', undef, undef, 0],
+   ['protocolEndpoint', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostScsiDisk', 'capacity', 'devicePath', 'ssd', 'localDisk', 'physicalLocation', 'emulatedDIXDIFEnabled', 'vsanDiskInfo', 'scsiDiskType');
+VIMRuntime::make_get_set('ScsiLun', 'key', 'uuid', 'descriptor', 'canonicalName', 'displayName', 'lunType', 'vendor', 'model', 'revision', 'scsiLevel', 'serialNumber', 'durableName', 'alternateName', 'standardInquiry', 'queueDepth', 'operationalState', 'capabilities', 'vStorageSupport', 'protocolEndpoint');
 
 
 sub get_property_list {
@@ -56669,15 +56937,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfHostScsiDisk;
+package ArrayOfScsiLun;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['HostScsiDisk', 'HostScsiDisk', 1, 0],
+   ['ScsiLun', 'ScsiLun', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfHostScsiDisk', 'HostScsiDisk');
+VIMRuntime::make_get_set('ArrayOfScsiLun', 'ScsiLun');
 
 
 sub get_property_list {
@@ -56816,57 +57084,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ScsiLun;
-our @ISA = qw(HostDevice);
+package HostScsiTopology;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 0],
-   ['uuid', undef, undef, 1],
-   ['descriptor', 'ScsiLunDescriptor', 1, 0],
-   ['canonicalName', undef, undef, 0],
-   ['displayName', undef, undef, 0],
-   ['lunType', undef, undef, 1],
-   ['vendor', undef, undef, 0],
-   ['model', undef, undef, 0],
-   ['revision', undef, undef, 0],
-   ['scsiLevel', undef, undef, 0],
-   ['serialNumber', undef, undef, 0],
-   ['durableName', 'ScsiLunDurableName', undef, 0],
-   ['alternateName', 'ScsiLunDurableName', 1, 0],
-   ['standardInquiry', undef, 1, 0],
-   ['queueDepth', undef, undef, 0],
-   ['operationalState', undef, 1, 1],
-   ['capabilities', 'ScsiLunCapabilities', undef, 0],
-   ['vStorageSupport', undef, undef, 0],
-   ['protocolEndpoint', 'boolean', undef, 0],
+   ['adapter', 'HostScsiTopologyInterface', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ScsiLun', 'key', 'uuid', 'descriptor', 'canonicalName', 'displayName', 'lunType', 'vendor', 'model', 'revision', 'scsiLevel', 'serialNumber', 'durableName', 'alternateName', 'standardInquiry', 'queueDepth', 'operationalState', 'capabilities', 'vStorageSupport', 'protocolEndpoint');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfScsiLun;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ScsiLun', 'ScsiLun', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfScsiLun', 'ScsiLun');
+VIMRuntime::make_get_set('HostScsiTopology', 'adapter');
 
 
 sub get_property_list {
@@ -57033,30 +57259,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostScsiTopology;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['adapter', 'HostScsiTopologyInterface', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostScsiTopology', 'adapter');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostSecuritySpec;
 our @ISA = qw(DynamicData);
 
@@ -57068,31 +57270,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostSecuritySpec', 'adminPassword', 'removePermission', 'addPermission');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostServiceSourcePackage;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['sourcePackageName', undef, undef, 1],
-   ['description', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostServiceSourcePackage', 'sourcePackageName', 'description');
 
 
 sub get_property_list {
@@ -57148,6 +57325,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostService', 'HostService');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostServiceSourcePackage;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['sourcePackageName', undef, undef, 1],
+   ['description', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostServiceSourcePackage', 'sourcePackageName', 'description');
 
 
 sub get_property_list {
@@ -57288,6 +57490,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostSnmpConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['port', undef, undef, 0],
+   ['readOnlyCommunities', undef, 1, 0],
+   ['trapTargets', 'HostSnmpDestination', 1, 0],
+   ['option', 'KeyValue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostSnmpConfigSpec', 'enabled', 'port', 'readOnlyCommunities', 'trapTargets', 'option');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSnmpDestination;
 our @ISA = qw(DynamicData);
 
@@ -57338,19 +57568,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostSnmpConfigSpec;
+package HostSnmpSystemAgentLimits;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['enabled', 'boolean', undef, 0],
-   ['port', undef, undef, 0],
-   ['readOnlyCommunities', undef, 1, 0],
-   ['trapTargets', 'HostSnmpDestination', 1, 0],
-   ['option', 'KeyValue', 1, 0],
+   ['maxReadOnlyCommunities', undef, undef, 1],
+   ['maxTrapDestinations', undef, undef, 1],
+   ['maxCommunityLength', undef, undef, 1],
+   ['maxBufferSize', undef, undef, 1],
+   ['capability', 'HostSnmpAgentCapability', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('HostSnmpConfigSpec', 'enabled', 'port', 'readOnlyCommunities', 'trapTargets', 'option');
+VIMRuntime::make_get_set('HostSnmpSystemAgentLimits', 'maxReadOnlyCommunities', 'maxTrapDestinations', 'maxCommunityLength', 'maxBufferSize', 'capability');
 
 
 sub get_property_list {
@@ -57366,19 +57596,56 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostSnmpSystemAgentLimits;
+package SoftwarePackage;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['maxReadOnlyCommunities', undef, undef, 1],
-   ['maxTrapDestinations', undef, undef, 1],
-   ['maxCommunityLength', undef, undef, 1],
-   ['maxBufferSize', undef, undef, 1],
-   ['capability', 'HostSnmpAgentCapability', undef, 0],
+   ['name', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['type', undef, undef, 1],
+   ['vendor', undef, undef, 1],
+   ['acceptanceLevel', undef, undef, 1],
+   ['summary', undef, undef, 1],
+   ['description', undef, undef, 1],
+   ['referenceURL', undef, 1, 0],
+   ['creationDate', undef, undef, 0],
+   ['depends', 'Relation', 1, 0],
+   ['conflicts', 'Relation', 1, 0],
+   ['replaces', 'Relation', 1, 0],
+   ['provides', undef, 1, 0],
+   ['maintenanceModeRequired', 'boolean', undef, 0],
+   ['hardwarePlatformsRequired', undef, 1, 0],
+   ['capability', 'SoftwarePackageCapability', undef, 1],
+   ['tag', undef, 1, 0],
+   ['payload', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostSnmpSystemAgentLimits', 'maxReadOnlyCommunities', 'maxTrapDestinations', 'maxCommunityLength', 'maxBufferSize', 'capability');
+VIMRuntime::make_get_set('SoftwarePackage', 'name', 'version', 'type', 'vendor', 'acceptanceLevel', 'summary', 'description', 'referenceURL', 'creationDate', 'depends', 'conflicts', 'replaces', 'provides', 'maintenanceModeRequired', 'hardwarePlatformsRequired', 'capability', 'tag', 'payload');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfSoftwarePackage;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['SoftwarePackage', 'SoftwarePackage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfSoftwarePackage', 'SoftwarePackage');
 
 
 sub get_property_list {
@@ -57456,71 +57723,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfRelation', 'Relation');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package SoftwarePackage;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['name', undef, undef, 1],
-   ['version', undef, undef, 1],
-   ['type', undef, undef, 1],
-   ['vendor', undef, undef, 1],
-   ['acceptanceLevel', undef, undef, 1],
-   ['summary', undef, undef, 1],
-   ['description', undef, undef, 1],
-   ['referenceURL', undef, 1, 0],
-   ['creationDate', undef, undef, 0],
-   ['depends', 'Relation', 1, 0],
-   ['conflicts', 'Relation', 1, 0],
-   ['replaces', 'Relation', 1, 0],
-   ['provides', undef, 1, 0],
-   ['maintenanceModeRequired', 'boolean', undef, 0],
-   ['hardwarePlatformsRequired', undef, 1, 0],
-   ['capability', 'SoftwarePackageCapability', undef, 1],
-   ['tag', undef, 1, 0],
-   ['payload', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('SoftwarePackage', 'name', 'version', 'type', 'vendor', 'acceptanceLevel', 'summary', 'description', 'referenceURL', 'creationDate', 'depends', 'conflicts', 'replaces', 'provides', 'maintenanceModeRequired', 'hardwarePlatformsRequired', 'capability', 'tag', 'payload');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfSoftwarePackage;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['SoftwarePackage', 'SoftwarePackage', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfSoftwarePackage', 'SoftwarePackage');
 
 
 sub get_property_list {
@@ -57669,7 +57871,7 @@ our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['principal', undef, undef, 1],
-   ['ownerTag', undef, undef, 0],
+   ['ownerTag', undef, undef, 1],
    ['sslThumbprints', undef, 1, 0],
 );
 
@@ -57938,6 +58140,42 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostListSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['hardware', 'HostHardwareSummary', undef, 0],
+   ['runtime', 'HostRuntimeInfo', undef, 0],
+   ['config', 'HostConfigSummary', undef, 1],
+   ['quickStats', 'HostListSummaryQuickStats', undef, 1],
+   ['overallStatus', 'ManagedEntityStatus', undef, 1],
+   ['rebootRequired', 'boolean', undef, 1],
+   ['customValue', 'CustomFieldValue', 1, 0],
+   ['managementServerIp', undef, undef, 0],
+   ['maxEVCModeKey', undef, undef, 0],
+   ['currentEVCModeKey', undef, undef, 0],
+   ['gateway', 'HostListSummaryGatewaySummary', undef, 0],
+   ['tpmAttestation', 'HostTpmAttestationInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostListSummary', 'host', 'hardware', 'runtime', 'config', 'quickStats', 'overallStatus', 'rebootRequired', 'customValue', 'managementServerIp', 'maxEVCModeKey', 'currentEVCModeKey', 'gateway', 'tpmAttestation');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostHardwareSummary;
 our @ISA = qw(DynamicData);
 
@@ -58011,7 +58249,7 @@ our @property_list = (
    ['sslThumbprint', undef, undef, 0],
    ['product', 'AboutInfo', undef, 0],
    ['vmotionEnabled', 'boolean', undef, 1],
-   ['faultToleranceEnabled', 'boolean', undef, 0],
+   ['faultToleranceEnabled', 'boolean', undef, 1],
    ['featureVersion', 'HostFeatureVersionInfo', 1, 0],
    ['agentVmDatastore', 'ManagedObjectReference', undef, 0],
    ['agentVmNetwork', 'ManagedObjectReference', undef, 0],
@@ -58044,42 +58282,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostListSummaryGatewaySummary', 'gatewayType', 'gatewayId');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostListSummary;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['host', 'ManagedObjectReference', undef, 0],
-   ['hardware', 'HostHardwareSummary', undef, 0],
-   ['runtime', 'HostRuntimeInfo', undef, 0],
-   ['config', 'HostConfigSummary', undef, 1],
-   ['quickStats', 'HostListSummaryQuickStats', undef, 1],
-   ['overallStatus', 'ManagedEntityStatus', undef, 1],
-   ['rebootRequired', 'boolean', undef, 1],
-   ['customValue', 'CustomFieldValue', 1, 0],
-   ['managementServerIp', undef, undef, 0],
-   ['maxEVCModeKey', undef, undef, 0],
-   ['currentEVCModeKey', undef, undef, 0],
-   ['gateway', 'HostListSummaryGatewaySummary', undef, 0],
-   ['tpmAttestation', 'HostTpmAttestationInfo', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostListSummary', 'host', 'hardware', 'runtime', 'config', 'quickStats', 'overallStatus', 'rebootRequired', 'customValue', 'managementServerIp', 'maxEVCModeKey', 'currentEVCModeKey', 'gateway', 'tpmAttestation');
 
 
 sub get_property_list {
@@ -58270,6 +58472,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostSystemSwapConfiguration;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['option', 'HostSystemSwapConfigurationSystemSwapOption', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostSystemSwapConfiguration', 'option');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostSystemSwapConfigurationSystemSwapOption;
 our @ISA = qw(DynamicData);
 
@@ -58396,30 +58622,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostSystemSwapConfigurationDatastoreOption', 'datastore');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostSystemSwapConfiguration;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['option', 'HostSystemSwapConfigurationSystemSwapOption', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('HostSystemSwapConfiguration', 'option');
 
 
 sub get_property_list {
@@ -59082,32 +59284,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostUnresolvedVmfsVolumeResolveStatus;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['resolvable', 'boolean', undef, 1],
-   ['incompleteExtents', 'boolean', undef, 0],
-   ['multipleCopies', 'boolean', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostUnresolvedVmfsVolumeResolveStatus', 'resolvable', 'incompleteExtents', 'multipleCopies');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostUnresolvedVmfsVolume;
 our @ISA = qw(DynamicData);
 
@@ -59145,6 +59321,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostUnresolvedVmfsVolume', 'HostUnresolvedVmfsVolume');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostUnresolvedVmfsVolumeResolveStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['resolvable', 'boolean', undef, 1],
+   ['incompleteExtents', 'boolean', undef, 0],
+   ['multipleCopies', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostUnresolvedVmfsVolumeResolveStatus', 'resolvable', 'incompleteExtents', 'multipleCopies');
 
 
 sub get_property_list {
@@ -59262,6 +59464,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostVFlashManagerVFlashCacheConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vFlashModuleConfigOption', 'HostVFlashManagerVFlashCacheConfigInfoVFlashModuleConfigOption', 1, 0],
+   ['defaultVFlashModule', undef, undef, 0],
+   ['swapCacheReservationInGB', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostVFlashManagerVFlashCacheConfigInfo', 'vFlashModuleConfigOption', 'defaultVFlashModule', 'swapCacheReservationInGB');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostVFlashManagerVFlashCacheConfigInfoVFlashModuleConfigOption;
 our @ISA = qw(DynamicData);
 
@@ -59302,32 +59530,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostVFlashManagerVFlashCacheConfigInfoVFlashModuleConfigOption', 'HostVFlashManagerVFlashCacheConfigInfoVFlashModuleConfigOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostVFlashManagerVFlashCacheConfigInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['vFlashModuleConfigOption', 'HostVFlashManagerVFlashCacheConfigInfoVFlashModuleConfigOption', 1, 0],
-   ['defaultVFlashModule', undef, undef, 0],
-   ['swapCacheReservationInGB', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostVFlashManagerVFlashCacheConfigInfo', 'vFlashModuleConfigOption', 'defaultVFlashModule', 'swapCacheReservationInGB');
 
 
 sub get_property_list {
@@ -59469,6 +59671,33 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostVffsVolume;
+our @ISA = qw(HostFileSystemVolume);
+
+our @property_list = (
+   ['majorVersion', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['uuid', undef, undef, 1],
+   ['extent', 'HostScsiDiskPartition', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('HostVffsVolume', 'majorVersion', 'version', 'uuid', 'extent');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostVffsSpec;
 our @ISA = qw(DynamicData);
 
@@ -59496,18 +59725,43 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostVffsVolume;
-our @ISA = qw(HostFileSystemVolume);
+package HostVirtualNic;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['majorVersion', undef, undef, 1],
-   ['version', undef, undef, 1],
-   ['uuid', undef, undef, 1],
-   ['extent', 'HostScsiDiskPartition', 1, 1],
+   ['device', undef, undef, 1],
+   ['key', undef, undef, 1],
+   ['portgroup', undef, undef, 1],
+   ['spec', 'HostVirtualNicSpec', undef, 1],
+   ['port', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVffsVolume', 'majorVersion', 'version', 'uuid', 'extent');
+VIMRuntime::make_get_set('HostVirtualNic', 'device', 'key', 'portgroup', 'spec', 'port');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostVirtualNic;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostVirtualNic', 'HostVirtualNic', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostVirtualNic', 'HostVirtualNic');
 
 
 sub get_property_list {
@@ -59642,58 +59896,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostVirtualNicIpRouteSpec', 'ipRouteConfig');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostVirtualNic;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['device', undef, undef, 1],
-   ['key', undef, undef, 1],
-   ['portgroup', undef, undef, 1],
-   ['spec', 'HostVirtualNicSpec', undef, 1],
-   ['port', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostVirtualNic', 'device', 'key', 'portgroup', 'spec', 'port');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostVirtualNic;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostVirtualNic', 'HostVirtualNic', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostVirtualNic', 'HostVirtualNic');
 
 
 sub get_property_list {
@@ -59844,6 +60046,61 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('HostVirtualNicManagerInfo', 'netConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostVirtualSwitch;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['key', undef, undef, 1],
+   ['numPorts', undef, undef, 1],
+   ['numPortsAvailable', undef, undef, 1],
+   ['mtu', undef, undef, 0],
+   ['portgroup', undef, 1, 0],
+   ['pnic', undef, 1, 0],
+   ['spec', 'HostVirtualSwitchSpec', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostVirtualSwitch', 'name', 'key', 'numPorts', 'numPortsAvailable', 'mtu', 'portgroup', 'pnic', 'spec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostVirtualSwitch;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostVirtualSwitch', 'HostVirtualSwitch', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostVirtualSwitch', 'HostVirtualSwitch');
 
 
 sub get_property_list {
@@ -60057,61 +60314,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostVirtualSwitch;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['name', undef, undef, 1],
-   ['key', undef, undef, 1],
-   ['numPorts', undef, undef, 1],
-   ['numPortsAvailable', undef, undef, 1],
-   ['mtu', undef, undef, 0],
-   ['portgroup', undef, 1, 0],
-   ['pnic', undef, 1, 0],
-   ['spec', 'HostVirtualSwitchSpec', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostVirtualSwitch', 'name', 'key', 'numPorts', 'numPortsAvailable', 'mtu', 'portgroup', 'pnic', 'spec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfHostVirtualSwitch;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['HostVirtualSwitch', 'HostVirtualSwitch', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfHostVirtualSwitch', 'HostVirtualSwitch');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostVmciAccessManagerAccessSpec;
 our @ISA = qw(DynamicData);
 
@@ -60196,6 +60398,44 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostVmfsRescanResult', 'HostVmfsRescanResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostVmfsVolume;
+our @ISA = qw(HostFileSystemVolume);
+
+our @property_list = (
+   ['blockSizeMb', undef, undef, 1],
+   ['blockSize', undef, undef, 0],
+   ['unmapGranularity', undef, undef, 0],
+   ['unmapPriority', undef, undef, 0],
+   ['unmapBandwidthSpec', 'VmfsUnmapBandwidthSpec', undef, 0],
+   ['maxBlocks', undef, undef, 1],
+   ['majorVersion', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['uuid', undef, undef, 1],
+   ['extent', 'HostScsiDiskPartition', 1, 1],
+   ['vmfsUpgradable', 'boolean', undef, 1],
+   ['forceMountedInfo', 'HostForceMountedInfo', undef, 0],
+   ['ssd', 'boolean', undef, 0],
+   ['local', 'boolean', undef, 0],
+   ['scsiDiskType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostVmfsVolume', 'blockSizeMb', 'blockSize', 'unmapGranularity', 'unmapPriority', 'unmapBandwidthSpec', 'maxBlocks', 'majorVersion', 'version', 'uuid', 'extent', 'vmfsUpgradable', 'forceMountedInfo', 'ssd', 'local', 'scsiDiskType');
 
 
 sub get_property_list {
@@ -60307,44 +60547,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVmfsConfigOption', 'VmfsConfigOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostVmfsVolume;
-our @ISA = qw(HostFileSystemVolume);
-
-our @property_list = (
-   ['blockSizeMb', undef, undef, 1],
-   ['blockSize', undef, undef, 0],
-   ['unmapGranularity', undef, undef, 0],
-   ['unmapPriority', undef, undef, 0],
-   ['unmapBandwidthSpec', 'VmfsUnmapBandwidthSpec', undef, 0],
-   ['maxBlocks', undef, undef, 1],
-   ['majorVersion', undef, undef, 1],
-   ['version', undef, undef, 1],
-   ['uuid', undef, undef, 1],
-   ['extent', 'HostScsiDiskPartition', 1, 1],
-   ['vmfsUpgradable', 'boolean', undef, 1],
-   ['forceMountedInfo', 'HostForceMountedInfo', undef, 0],
-   ['ssd', 'boolean', undef, 0],
-   ['local', 'boolean', undef, 0],
-   ['scsiDiskType', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('HostVmfsVolume', 'blockSizeMb', 'blockSize', 'unmapGranularity', 'unmapPriority', 'unmapBandwidthSpec', 'maxBlocks', 'majorVersion', 'version', 'uuid', 'extent', 'vmfsUpgradable', 'forceMountedInfo', 'ssd', 'local', 'scsiDiskType');
 
 
 sub get_property_list {
@@ -60739,6 +60941,33 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostVvolVolume;
+our @ISA = qw(HostFileSystemVolume);
+
+our @property_list = (
+   ['scId', undef, undef, 1],
+   ['hostPE', 'VVolHostPE', 1, 0],
+   ['vasaProviderInfo', 'VimVasaProviderInfo', 1, 0],
+   ['storageArray', 'VASAStorageArray', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostVvolVolume', 'scId', 'hostPE', 'vasaProviderInfo', 'storageArray');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostVvolVolumeSpecification;
 our @ISA = qw(DynamicData);
 
@@ -60816,18 +61045,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostVvolVolume;
-our @ISA = qw(HostFileSystemVolume);
+package NetDhcpConfigInfo;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['scId', undef, undef, 1],
-   ['hostPE', 'VVolHostPE', 1, 0],
-   ['vasaProviderInfo', 'VimVasaProviderInfo', 1, 0],
-   ['storageArray', 'VASAStorageArray', 1, 0],
+   ['ipv6', 'NetDhcpConfigInfoDhcpOptions', undef, 0],
+   ['ipv4', 'NetDhcpConfigInfoDhcpOptions', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostVvolVolume', 'scId', 'hostPE', 'vasaProviderInfo', 'storageArray');
+VIMRuntime::make_get_set('NetDhcpConfigInfo', 'ipv6', 'ipv4');
 
 
 sub get_property_list {
@@ -60868,16 +61095,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetDhcpConfigInfo;
+package NetDhcpConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['ipv6', 'NetDhcpConfigInfoDhcpOptions', undef, 0],
-   ['ipv4', 'NetDhcpConfigInfoDhcpOptions', undef, 0],
+   ['ipv6', 'NetDhcpConfigSpecDhcpOptionsSpec', undef, 0],
+   ['ipv4', 'NetDhcpConfigSpecDhcpOptionsSpec', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('NetDhcpConfigInfo', 'ipv6', 'ipv4');
+VIMRuntime::make_get_set('NetDhcpConfigSpec', 'ipv6', 'ipv4');
 
 
 sub get_property_list {
@@ -60904,31 +61131,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('NetDhcpConfigSpecDhcpOptionsSpec', 'enable', 'config', 'operation');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package NetDhcpConfigSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['ipv6', 'NetDhcpConfigSpecDhcpOptionsSpec', undef, 0],
-   ['ipv4', 'NetDhcpConfigSpecDhcpOptionsSpec', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('NetDhcpConfigSpec', 'ipv6', 'ipv4');
 
 
 sub get_property_list {
@@ -61000,6 +61202,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package NetIpConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ipAddress', 'NetIpConfigInfoIpAddress', 1, 0],
+   ['dhcp', 'NetDhcpConfigInfo', undef, 0],
+   ['autoConfigurationEnabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('NetIpConfigInfo', 'ipAddress', 'dhcp', 'autoConfigurationEnabled');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package NetIpConfigInfoIpAddress;
 our @ISA = qw(DynamicData);
 
@@ -61052,17 +61280,17 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetIpConfigInfo;
+package NetIpConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['ipAddress', 'NetIpConfigInfoIpAddress', 1, 0],
-   ['dhcp', 'NetDhcpConfigInfo', undef, 0],
+   ['ipAddress', 'NetIpConfigSpecIpAddressSpec', 1, 0],
+   ['dhcp', 'NetDhcpConfigSpec', undef, 0],
    ['autoConfigurationEnabled', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('NetIpConfigInfo', 'ipAddress', 'dhcp', 'autoConfigurationEnabled');
+VIMRuntime::make_get_set('NetIpConfigSpec', 'ipAddress', 'dhcp', 'autoConfigurationEnabled');
 
 
 sub get_property_list {
@@ -61128,17 +61356,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetIpConfigSpec;
+package NetIpRouteConfigInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['ipAddress', 'NetIpConfigSpecIpAddressSpec', 1, 0],
-   ['dhcp', 'NetDhcpConfigSpec', undef, 0],
-   ['autoConfigurationEnabled', 'boolean', undef, 0],
+   ['ipRoute', 'NetIpRouteConfigInfoIpRoute', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('NetIpConfigSpec', 'ipAddress', 'dhcp', 'autoConfigurationEnabled');
+VIMRuntime::make_get_set('NetIpRouteConfigInfo', 'ipRoute');
 
 
 sub get_property_list {
@@ -61229,15 +61455,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetIpRouteConfigInfo;
+package NetIpRouteConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['ipRoute', 'NetIpRouteConfigInfoIpRoute', 1, 0],
+   ['ipRoute', 'NetIpRouteConfigSpecIpRouteSpec', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('NetIpRouteConfigInfo', 'ipRoute');
+VIMRuntime::make_get_set('NetIpRouteConfigSpec', 'ipRoute');
 
 
 sub get_property_list {
@@ -61329,15 +61555,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetIpRouteConfigSpec;
+package NetIpStackInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['ipRoute', 'NetIpRouteConfigSpecIpRouteSpec', 1, 0],
+   ['neighbor', 'NetIpStackInfoNetToMedia', 1, 0],
+   ['defaultRouter', 'NetIpStackInfoDefaultRouter', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('NetIpRouteConfigSpec', 'ipRoute');
+VIMRuntime::make_get_set('NetIpStackInfo', 'neighbor', 'defaultRouter');
 
 
 sub get_property_list {
@@ -61440,31 +61667,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfNetIpStackInfoDefaultRouter', 'NetIpStackInfoDefaultRouter');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package NetIpStackInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['neighbor', 'NetIpStackInfoNetToMedia', 1, 0],
-   ['defaultRouter', 'NetIpStackInfoDefaultRouter', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('NetIpStackInfo', 'neighbor', 'defaultRouter');
 
 
 sub get_property_list {
@@ -62034,18 +62236,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package ComplianceFailureComplianceFailureValues;
+package ComplianceResult;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['comparisonIdentifier', undef, undef, 1],
-   ['profileInstance', undef, undef, 0],
-   ['hostValue', 'anyType', undef, 0],
-   ['profileValue', 'anyType', undef, 0],
+   ['profile', 'ManagedObjectReference', undef, 0],
+   ['complianceStatus', undef, undef, 1],
+   ['entity', 'ManagedObjectReference', undef, 0],
+   ['checkTime', undef, undef, 0],
+   ['failure', 'ComplianceFailure', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ComplianceFailureComplianceFailureValues', 'comparisonIdentifier', 'profileInstance', 'hostValue', 'profileValue');
+VIMRuntime::make_get_set('ComplianceResult', 'profile', 'complianceStatus', 'entity', 'checkTime', 'failure');
 
 
 sub get_property_list {
@@ -62061,15 +62264,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfComplianceFailureComplianceFailureValues;
+package ArrayOfComplianceResult;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['ComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues', 1, 0],
+   ['ComplianceResult', 'ComplianceResult', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues');
+VIMRuntime::make_get_set('ArrayOfComplianceResult', 'ComplianceResult');
 
 
 sub get_property_list {
@@ -62136,19 +62339,18 @@ sub get_property_list {
 
 
 ##################################################################################
-package ComplianceResult;
+package ComplianceFailureComplianceFailureValues;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['profile', 'ManagedObjectReference', undef, 0],
-   ['complianceStatus', undef, undef, 1],
-   ['entity', 'ManagedObjectReference', undef, 0],
-   ['checkTime', undef, undef, 0],
-   ['failure', 'ComplianceFailure', 1, 0],
+   ['comparisonIdentifier', undef, undef, 1],
+   ['profileInstance', undef, undef, 0],
+   ['hostValue', 'anyType', undef, 0],
+   ['profileValue', 'anyType', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ComplianceResult', 'profile', 'complianceStatus', 'entity', 'checkTime', 'failure');
+VIMRuntime::make_get_set('ComplianceFailureComplianceFailureValues', 'comparisonIdentifier', 'profileInstance', 'hostValue', 'profileValue');
 
 
 sub get_property_list {
@@ -62164,15 +62366,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfComplianceResult;
+package ArrayOfComplianceFailureComplianceFailureValues;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['ComplianceResult', 'ComplianceResult', 1, 0],
+   ['ComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfComplianceResult', 'ComplianceResult');
+VIMRuntime::make_get_set('ArrayOfComplianceFailureComplianceFailureValues', 'ComplianceFailureComplianceFailureValues');
 
 
 sub get_property_list {
@@ -62386,58 +62588,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package ProfileParameterMetadataParameterRelationMetadata;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['relationTypes', undef, 1, 0],
-   ['values', 'anyType', 1, 0],
-   ['path', 'ProfilePropertyPath', undef, 0],
-   ['minCount', undef, undef, 1],
-   ['maxCount', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('ProfileParameterMetadataParameterRelationMetadata', 'relationTypes', 'values', 'path', 'minCount', 'maxCount');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfProfileParameterMetadataParameterRelationMetadata;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ProfileParameterMetadataParameterRelationMetadata', 'ProfileParameterMetadataParameterRelationMetadata', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfProfileParameterMetadataParameterRelationMetadata', 'ProfileParameterMetadataParameterRelationMetadata');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package ProfileParameterMetadata;
 our @ISA = qw(DynamicData);
 
@@ -62478,6 +62628,58 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfProfileParameterMetadata', 'ProfileParameterMetadata');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ProfileParameterMetadataParameterRelationMetadata;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['relationTypes', undef, 1, 0],
+   ['values', 'anyType', 1, 0],
+   ['path', 'ProfilePropertyPath', undef, 0],
+   ['minCount', undef, undef, 1],
+   ['maxCount', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('ProfileParameterMetadataParameterRelationMetadata', 'relationTypes', 'values', 'path', 'minCount', 'maxCount');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfProfileParameterMetadataParameterRelationMetadata;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ProfileParameterMetadataParameterRelationMetadata', 'ProfileParameterMetadataParameterRelationMetadata', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfProfileParameterMetadataParameterRelationMetadata', 'ProfileParameterMetadataParameterRelationMetadata');
 
 
 sub get_property_list {
@@ -62837,6 +63039,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package ProfileDescription;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['section', 'ProfileDescriptionSection', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('ProfileDescription', 'section');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ProfileDescriptionSection;
 our @ISA = qw(DynamicData);
 
@@ -62886,15 +63112,45 @@ sub get_property_list {
 
 
 ##################################################################################
-package ProfileDescription;
+package ProfileMetadata;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['section', 'ProfileDescriptionSection', 1, 1],
+   ['key', undef, undef, 1],
+   ['profileTypeName', undef, undef, 0],
+   ['description', 'ExtendedDescription', undef, 0],
+   ['sortSpec', 'ProfileMetadataProfileSortSpec', 1, 0],
+   ['profileCategory', undef, undef, 0],
+   ['profileComponent', undef, undef, 0],
+   ['operationMessages', 'ProfileMetadataProfileOperationMessage', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ProfileDescription', 'section');
+VIMRuntime::make_get_set('ProfileMetadata', 'key', 'profileTypeName', 'description', 'sortSpec', 'profileCategory', 'profileComponent', 'operationMessages');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfProfileMetadata;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ProfileMetadata', 'ProfileMetadata', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfProfileMetadata', 'ProfileMetadata');
 
 
 sub get_property_list {
@@ -62993,60 +63249,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfProfileMetadataProfileOperationMessage', 'ProfileMetadataProfileOperationMessage');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ProfileMetadata;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['profileTypeName', undef, undef, 0],
-   ['description', 'ExtendedDescription', undef, 0],
-   ['sortSpec', 'ProfileMetadataProfileSortSpec', 1, 0],
-   ['profileCategory', undef, undef, 0],
-   ['profileComponent', undef, undef, 0],
-   ['operationMessages', 'ProfileMetadataProfileOperationMessage', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ProfileMetadata', 'key', 'profileTypeName', 'description', 'sortSpec', 'profileCategory', 'profileComponent', 'operationMessages');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfProfileMetadata;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['ProfileMetadata', 'ProfileMetadata', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfProfileMetadata', 'ProfileMetadata');
 
 
 sub get_property_list {
@@ -63332,55 +63534,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package AnswerFileStatusError;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['userInputPath', 'ProfilePropertyPath', undef, 1],
-   ['errMsg', 'LocalizableMessage', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('AnswerFileStatusError', 'userInputPath', 'errMsg');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfAnswerFileStatusError;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['AnswerFileStatusError', 'AnswerFileStatusError', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfAnswerFileStatusError', 'AnswerFileStatusError');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package AnswerFileStatusResult;
 our @ISA = qw(DynamicData);
 
@@ -63432,6 +63585,83 @@ sub get_property_list {
 
 
 ##################################################################################
+package AnswerFileStatusError;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['userInputPath', 'ProfilePropertyPath', undef, 1],
+   ['errMsg', 'LocalizableMessage', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('AnswerFileStatusError', 'userInputPath', 'errMsg');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfAnswerFileStatusError;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['AnswerFileStatusError', 'AnswerFileStatusError', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfAnswerFileStatusError', 'AnswerFileStatusError');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ProfileExecuteResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['status', undef, undef, 1],
+   ['configSpec', 'HostConfigSpec', undef, 0],
+   ['inapplicablePath', undef, 1, 0],
+   ['requireInput', 'ProfileDeferredPolicyOptionParameter', 1, 0],
+   ['error', 'ProfileExecuteError', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ProfileExecuteResult', 'status', 'configSpec', 'inapplicablePath', 'requireInput', 'error');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ProfileExecuteError;
 our @ISA = qw(DynamicData);
 
@@ -63466,34 +63696,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfProfileExecuteError', 'ProfileExecuteError');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ProfileExecuteResult;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['status', undef, undef, 1],
-   ['configSpec', 'HostConfigSpec', undef, 0],
-   ['inapplicablePath', undef, 1, 0],
-   ['requireInput', 'ProfileDeferredPolicyOptionParameter', 1, 0],
-   ['error', 'ProfileExecuteError', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ProfileExecuteResult', 'status', 'configSpec', 'inapplicablePath', 'requireInput', 'error');
 
 
 sub get_property_list {
@@ -63853,6 +64055,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package FirewallProfile;
+our @ISA = qw(ApplyProfile);
+
+our @property_list = (
+   ['ruleset', 'FirewallProfileRulesetProfile', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('FirewallProfile', 'ruleset');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package FirewallProfileRulesetProfile;
 our @ISA = qw(ApplyProfile);
 
@@ -63886,30 +64112,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfFirewallProfileRulesetProfile', 'FirewallProfileRulesetProfile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package FirewallProfile;
-our @ISA = qw(ApplyProfile);
-
-our @property_list = (
-   ['ruleset', 'FirewallProfileRulesetProfile', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('FirewallProfile', 'ruleset');
 
 
 sub get_property_list {
@@ -63997,29 +64199,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package NetworkProfileDnsConfigProfile;
-our @ISA = qw(ApplyProfile);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('NetworkProfileDnsConfigProfile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package NetworkProfile;
 our @ISA = qw(ApplyProfile);
 
@@ -64041,6 +64220,29 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('NetworkProfile', 'vswitch', 'vmPortGroup', 'hostPortGroup', 'serviceConsolePortGroup', 'dnsConfig', 'ipRouteConfig', 'consoleIpRouteConfig', 'pnic', 'dvswitch', 'dvsServiceConsoleNic', 'dvsHostNic', 'nsxHostNic', 'netStackInstance');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NetworkProfileDnsConfigProfile;
+our @ISA = qw(ApplyProfile);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('NetworkProfileDnsConfigProfile');
 
 
 sub get_property_list {
@@ -64394,52 +64596,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package LinkProfile;
-our @ISA = qw(ApplyProfile);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('LinkProfile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package NumPortsProfile;
-our @ISA = qw(ApplyProfile);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('NumPortsProfile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualSwitchProfile;
 our @ISA = qw(ApplyProfile);
 
@@ -64477,6 +64633,52 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualSwitchProfile', 'VirtualSwitchProfile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package LinkProfile;
+our @ISA = qw(ApplyProfile);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('LinkProfile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NumPortsProfile;
+our @ISA = qw(ApplyProfile);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('NumPortsProfile');
 
 
 sub get_property_list {
@@ -64542,6 +64744,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package PortGroupProfile;
+our @ISA = qw(ApplyProfile);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['name', undef, undef, 1],
+   ['vlan', 'VlanProfile', undef, 1],
+   ['vswitch', 'VirtualSwitchSelectionProfile', undef, 1],
+   ['networkPolicy', 'NetworkPolicyProfile', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('PortGroupProfile', 'key', 'name', 'vlan', 'vswitch', 'networkPolicy');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VlanProfile;
 our @ISA = qw(ApplyProfile);
 
@@ -64573,34 +64803,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualSwitchSelectionProfile');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package PortGroupProfile;
-our @ISA = qw(ApplyProfile);
-
-our @property_list = (
-   ['key', undef, undef, 1],
-   ['name', undef, undef, 1],
-   ['vlan', 'VlanProfile', undef, 1],
-   ['vswitch', 'VirtualSwitchSelectionProfile', undef, 1],
-   ['networkPolicy', 'NetworkPolicyProfile', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('PortGroupProfile', 'key', 'name', 'vlan', 'vswitch', 'networkPolicy');
 
 
 sub get_property_list {
@@ -65489,6 +65691,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostProfileManagerCompositionValidationResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['results', 'HostProfileManagerCompositionValidationResultResultElement', 1, 0],
+   ['errors', 'LocalizableMessage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('HostProfileManagerCompositionValidationResult', 'results', 'errors');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostProfileManagerCompositionValidationResultResultElement;
 our @ISA = qw(DynamicData);
 
@@ -65546,16 +65773,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostProfileManagerCompositionValidationResult;
+package HostProfileManagerCompositionResult;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['results', 'HostProfileManagerCompositionValidationResultResultElement', 1, 0],
    ['errors', 'LocalizableMessage', 1, 0],
+   ['results', 'HostProfileManagerCompositionResultResultElement', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('HostProfileManagerCompositionValidationResult', 'results', 'errors');
+VIMRuntime::make_get_set('HostProfileManagerCompositionResult', 'errors', 'results');
 
 
 sub get_property_list {
@@ -65621,16 +65848,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostProfileManagerCompositionResult;
+package ScheduledTaskDescription;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['errors', 'LocalizableMessage', 1, 0],
-   ['results', 'HostProfileManagerCompositionResultResultElement', 1, 0],
+   ['action', 'TypeDescription', 1, 1],
+   ['schedulerInfo', 'ScheduledTaskDetail', 1, 1],
+   ['state', 'ElementDescription', 1, 1],
+   ['dayOfWeek', 'ElementDescription', 1, 1],
+   ['weekOfMonth', 'ElementDescription', 1, 1],
 );
 
 
-VIMRuntime::make_get_set('HostProfileManagerCompositionResult', 'errors', 'results');
+VIMRuntime::make_get_set('ScheduledTaskDescription', 'action', 'schedulerInfo', 'state', 'dayOfWeek', 'weekOfMonth');
 
 
 sub get_property_list {
@@ -65694,34 +65924,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package ScheduledTaskDescription;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['action', 'TypeDescription', 1, 1],
-   ['schedulerInfo', 'ScheduledTaskDetail', 1, 1],
-   ['state', 'ElementDescription', 1, 1],
-   ['dayOfWeek', 'ElementDescription', 1, 1],
-   ['weekOfMonth', 'ElementDescription', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('ScheduledTaskDescription', 'action', 'schedulerInfo', 'state', 'dayOfWeek', 'weekOfMonth');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package ScheduledTaskInfo;
 our @ISA = qw(ScheduledTaskSpec);
 
@@ -65737,11 +65939,40 @@ our @property_list = (
    ['result', 'anyType', undef, 0],
    ['progress', undef, undef, 0],
    ['activeTask', 'ManagedObjectReference', undef, 0],
-   ['taskObject', 'ManagedObjectReference', undef, 0],
+   ['taskObject', 'ManagedObjectReference', undef, 1],
 );
 
 
 VIMRuntime::make_get_set('ScheduledTaskInfo', 'scheduledTask', 'entity', 'lastModifiedTime', 'lastModifiedUser', 'nextRunTime', 'prevRunTime', 'state', 'error', 'result', 'progress', 'activeTask', 'taskObject');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ScheduledTaskSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['description', undef, undef, 1],
+   ['enabled', 'boolean', undef, 1],
+   ['scheduler', 'TaskScheduler', undef, 1],
+   ['action', 'Action', undef, 1],
+   ['notification', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ScheduledTaskSpec', 'name', 'description', 'enabled', 'scheduler', 'action', 'notification');
 
 
 sub get_property_list {
@@ -65989,35 +66220,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('MonthlyByWeekdayTaskScheduler', 'offset', 'weekday');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ScheduledTaskSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['name', undef, undef, 1],
-   ['description', undef, undef, 1],
-   ['enabled', 'boolean', undef, 1],
-   ['scheduler', 'TaskScheduler', undef, 1],
-   ['action', 'Action', undef, 1],
-   ['notification', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('ScheduledTaskSpec', 'name', 'description', 'enabled', 'scheduler', 'action', 'notification');
 
 
 sub get_property_list {
@@ -66544,6 +66746,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package StorageDrsPodSelectionSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['initialVmConfig', 'VmPodConfigForPlacement', 1, 0],
+   ['storagePod', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('StorageDrsPodSelectionSpec', 'initialVmConfig', 'storagePod');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VmPodConfigForPlacement;
 our @ISA = qw(DynamicData);
 
@@ -66631,31 +66858,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfPodDiskLocator', 'PodDiskLocator');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package StorageDrsPodSelectionSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['initialVmConfig', 'VmPodConfigForPlacement', 1, 0],
-   ['storagePod', 'ManagedObjectReference', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('StorageDrsPodSelectionSpec', 'initialVmConfig', 'storagePod');
 
 
 sub get_property_list {
@@ -66924,6 +67126,37 @@ sub get_property_list {
 
 
 ##################################################################################
+package VAppCloneSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['location', 'ManagedObjectReference', undef, 1],
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['resourceSpec', 'ResourceConfigSpec', undef, 0],
+   ['vmFolder', 'ManagedObjectReference', undef, 0],
+   ['networkMapping', 'VAppCloneSpecNetworkMappingPair', 1, 0],
+   ['property', 'KeyValue', 1, 0],
+   ['resourceMapping', 'VAppCloneSpecResourceMap', 1, 0],
+   ['provisioning', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VAppCloneSpec', 'location', 'host', 'resourceSpec', 'vmFolder', 'networkMapping', 'property', 'resourceMapping', 'provisioning');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VAppCloneSpecNetworkMappingPair;
 our @ISA = qw(DynamicData);
 
@@ -67024,37 +67257,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VAppCloneSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['location', 'ManagedObjectReference', undef, 1],
-   ['host', 'ManagedObjectReference', undef, 0],
-   ['resourceSpec', 'ResourceConfigSpec', undef, 0],
-   ['vmFolder', 'ManagedObjectReference', undef, 0],
-   ['networkMapping', 'VAppCloneSpecNetworkMappingPair', 1, 0],
-   ['property', 'KeyValue', 1, 0],
-   ['resourceMapping', 'VAppCloneSpecResourceMap', 1, 0],
-   ['provisioning', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VAppCloneSpec', 'location', 'host', 'resourceSpec', 'vmFolder', 'networkMapping', 'property', 'resourceMapping', 'provisioning');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VAppEntityConfigInfo;
 our @ISA = qw(DynamicData);
 
@@ -67138,6 +67340,66 @@ sub get_property_list {
 
 
 ##################################################################################
+package IpPool;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 0],
+   ['name', undef, undef, 0],
+   ['ipv4Config', 'IpPoolIpPoolConfigInfo', undef, 0],
+   ['ipv6Config', 'IpPoolIpPoolConfigInfo', undef, 0],
+   ['dnsDomain', undef, undef, 0],
+   ['dnsSearchPath', undef, undef, 0],
+   ['hostPrefix', undef, undef, 0],
+   ['httpProxy', undef, undef, 0],
+   ['networkAssociation', 'IpPoolAssociation', 1, 0],
+   ['availableIpv4Addresses', undef, undef, 0],
+   ['availableIpv6Addresses', undef, undef, 0],
+   ['allocatedIpv4Addresses', undef, undef, 0],
+   ['allocatedIpv6Addresses', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('IpPool', 'id', 'name', 'ipv4Config', 'ipv6Config', 'dnsDomain', 'dnsSearchPath', 'hostPrefix', 'httpProxy', 'networkAssociation', 'availableIpv4Addresses', 'availableIpv6Addresses', 'allocatedIpv4Addresses', 'allocatedIpv6Addresses');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfIpPool;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['IpPool', 'IpPool', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfIpPool', 'IpPool');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package IpPoolIpPoolConfigInfo;
 our @ISA = qw(DynamicData);
 
@@ -67202,66 +67464,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfIpPoolAssociation', 'IpPoolAssociation');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package IpPool;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['id', undef, undef, 0],
-   ['name', undef, undef, 0],
-   ['ipv4Config', 'IpPoolIpPoolConfigInfo', undef, 0],
-   ['ipv6Config', 'IpPoolIpPoolConfigInfo', undef, 0],
-   ['dnsDomain', undef, undef, 0],
-   ['dnsSearchPath', undef, undef, 0],
-   ['hostPrefix', undef, undef, 0],
-   ['httpProxy', undef, undef, 0],
-   ['networkAssociation', 'IpPoolAssociation', 1, 0],
-   ['availableIpv4Addresses', undef, undef, 0],
-   ['availableIpv6Addresses', undef, undef, 0],
-   ['allocatedIpv4Addresses', undef, undef, 0],
-   ['allocatedIpv6Addresses', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('IpPool', 'id', 'name', 'ipv4Config', 'ipv6Config', 'dnsDomain', 'dnsSearchPath', 'hostPrefix', 'httpProxy', 'networkAssociation', 'availableIpv4Addresses', 'availableIpv6Addresses', 'allocatedIpv4Addresses', 'allocatedIpv6Addresses');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfIpPool;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['IpPool', 'IpPool', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfIpPool', 'IpPool');
 
 
 sub get_property_list {
@@ -68167,6 +68369,36 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineBootOptions;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['bootDelay', undef, undef, 0],
+   ['enterBIOSSetup', 'boolean', undef, 0],
+   ['efiSecureBootEnabled', 'boolean', undef, 0],
+   ['bootRetryEnabled', 'boolean', undef, 0],
+   ['bootRetryDelay', undef, undef, 0],
+   ['bootOrder', 'VirtualMachineBootOptionsBootableDevice', 1, 0],
+   ['networkBootProtocol', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineBootOptions', 'bootDelay', 'enterBIOSSetup', 'efiSecureBootEnabled', 'bootRetryEnabled', 'bootRetryDelay', 'bootOrder', 'networkBootProtocol');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineBootOptionsBootableDevice;
 our @ISA = qw(DynamicData);
 
@@ -68308,36 +68540,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineBootOptions;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['bootDelay', undef, undef, 0],
-   ['enterBIOSSetup', 'boolean', undef, 0],
-   ['efiSecureBootEnabled', 'boolean', undef, 0],
-   ['bootRetryEnabled', 'boolean', undef, 0],
-   ['bootRetryDelay', undef, undef, 0],
-   ['bootOrder', 'VirtualMachineBootOptionsBootableDevice', 1, 0],
-   ['networkBootProtocol', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineBootOptions', 'bootDelay', 'enterBIOSSetup', 'efiSecureBootEnabled', 'bootRetryEnabled', 'bootRetryDelay', 'bootOrder', 'networkBootProtocol');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualMachineCapability;
 our @ISA = qw(DynamicData);
 
@@ -68349,36 +68551,36 @@ our @property_list = (
    ['memorySnapshotsSupported', 'boolean', undef, 1],
    ['revertToSnapshotSupported', 'boolean', undef, 1],
    ['quiescedSnapshotsSupported', 'boolean', undef, 1],
-   ['disableSnapshotsSupported', 'boolean', undef, 0],
-   ['lockSnapshotsSupported', 'boolean', undef, 0],
+   ['disableSnapshotsSupported', 'boolean', undef, 1],
+   ['lockSnapshotsSupported', 'boolean', undef, 1],
    ['consolePreferencesSupported', 'boolean', undef, 1],
    ['cpuFeatureMaskSupported', 'boolean', undef, 1],
    ['s1AcpiManagementSupported', 'boolean', undef, 1],
    ['settingScreenResolutionSupported', 'boolean', undef, 1],
    ['toolsAutoUpdateSupported', 'boolean', undef, 1],
-   ['vmNpivWwnSupported', 'boolean', undef, 0],
-   ['npivWwnOnNonRdmVmSupported', 'boolean', undef, 0],
-   ['vmNpivWwnDisableSupported', 'boolean', undef, 0],
-   ['vmNpivWwnUpdateSupported', 'boolean', undef, 0],
-   ['swapPlacementSupported', 'boolean', undef, 0],
-   ['toolsSyncTimeSupported', 'boolean', undef, 0],
-   ['virtualMmuUsageSupported', 'boolean', undef, 0],
-   ['diskSharesSupported', 'boolean', undef, 0],
-   ['bootOptionsSupported', 'boolean', undef, 0],
-   ['bootRetryOptionsSupported', 'boolean', undef, 0],
-   ['settingVideoRamSizeSupported', 'boolean', undef, 0],
-   ['settingDisplayTopologySupported', 'boolean', undef, 0],
-   ['recordReplaySupported', 'boolean', undef, 0],
-   ['changeTrackingSupported', 'boolean', undef, 0],
-   ['multipleCoresPerSocketSupported', 'boolean', undef, 0],
-   ['hostBasedReplicationSupported', 'boolean', undef, 0],
-   ['guestAutoLockSupported', 'boolean', undef, 0],
-   ['memoryReservationLockSupported', 'boolean', undef, 0],
-   ['featureRequirementSupported', 'boolean', undef, 0],
-   ['poweredOnMonitorTypeChangeSupported', 'boolean', undef, 0],
-   ['seSparseDiskSupported', 'boolean', undef, 0],
-   ['nestedHVSupported', 'boolean', undef, 0],
-   ['vPMCSupported', 'boolean', undef, 0],
+   ['vmNpivWwnSupported', 'boolean', undef, 1],
+   ['npivWwnOnNonRdmVmSupported', 'boolean', undef, 1],
+   ['vmNpivWwnDisableSupported', 'boolean', undef, 1],
+   ['vmNpivWwnUpdateSupported', 'boolean', undef, 1],
+   ['swapPlacementSupported', 'boolean', undef, 1],
+   ['toolsSyncTimeSupported', 'boolean', undef, 1],
+   ['virtualMmuUsageSupported', 'boolean', undef, 1],
+   ['diskSharesSupported', 'boolean', undef, 1],
+   ['bootOptionsSupported', 'boolean', undef, 1],
+   ['bootRetryOptionsSupported', 'boolean', undef, 1],
+   ['settingVideoRamSizeSupported', 'boolean', undef, 1],
+   ['settingDisplayTopologySupported', 'boolean', undef, 1],
+   ['recordReplaySupported', 'boolean', undef, 1],
+   ['changeTrackingSupported', 'boolean', undef, 1],
+   ['multipleCoresPerSocketSupported', 'boolean', undef, 1],
+   ['hostBasedReplicationSupported', 'boolean', undef, 1],
+   ['guestAutoLockSupported', 'boolean', undef, 1],
+   ['memoryReservationLockSupported', 'boolean', undef, 1],
+   ['featureRequirementSupported', 'boolean', undef, 1],
+   ['poweredOnMonitorTypeChangeSupported', 'boolean', undef, 1],
+   ['seSparseDiskSupported', 'boolean', undef, 1],
+   ['nestedHVSupported', 'boolean', undef, 1],
+   ['vPMCSupported', 'boolean', undef, 1],
    ['secureBootSupported', 'boolean', undef, 0],
    ['perVmEvcSupported', 'boolean', undef, 0],
    ['virtualMmuUsageIgnored', 'boolean', undef, 0],
@@ -68481,6 +68683,94 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['changeVersion', undef, undef, 1],
+   ['modified', undef, undef, 1],
+   ['name', undef, undef, 1],
+   ['guestFullName', undef, undef, 1],
+   ['version', undef, undef, 1],
+   ['uuid', undef, undef, 1],
+   ['createDate', undef, undef, 0],
+   ['instanceUuid', undef, undef, 0],
+   ['npivNodeWorldWideName', undef, 1, 0],
+   ['npivPortWorldWideName', undef, 1, 0],
+   ['npivWorldWideNameType', undef, undef, 0],
+   ['npivDesiredNodeWwns', undef, undef, 0],
+   ['npivDesiredPortWwns', undef, undef, 0],
+   ['npivTemporaryDisabled', 'boolean', undef, 0],
+   ['npivOnNonRdmDisks', 'boolean', undef, 0],
+   ['locationId', undef, undef, 0],
+   ['template', 'boolean', undef, 1],
+   ['guestId', undef, undef, 1],
+   ['alternateGuestName', undef, undef, 1],
+   ['annotation', undef, undef, 0],
+   ['files', 'VirtualMachineFileInfo', undef, 1],
+   ['tools', 'ToolsConfigInfo', undef, 0],
+   ['flags', 'VirtualMachineFlagInfo', undef, 1],
+   ['consolePreferences', 'VirtualMachineConsolePreferences', undef, 0],
+   ['defaultPowerOps', 'VirtualMachineDefaultPowerOpInfo', undef, 1],
+   ['hardware', 'VirtualHardware', undef, 1],
+   ['cpuAllocation', 'ResourceAllocationInfo', undef, 0],
+   ['memoryAllocation', 'ResourceAllocationInfo', undef, 0],
+   ['latencySensitivity', 'LatencySensitivity', undef, 0],
+   ['memoryHotAddEnabled', 'boolean', undef, 0],
+   ['cpuHotAddEnabled', 'boolean', undef, 0],
+   ['cpuHotRemoveEnabled', 'boolean', undef, 0],
+   ['hotPlugMemoryLimit', undef, undef, 0],
+   ['hotPlugMemoryIncrementSize', undef, undef, 0],
+   ['cpuAffinity', 'VirtualMachineAffinityInfo', undef, 0],
+   ['memoryAffinity', 'VirtualMachineAffinityInfo', undef, 0],
+   ['networkShaper', 'VirtualMachineNetworkShaperInfo', undef, 0],
+   ['extraConfig', 'OptionValue', 1, 0],
+   ['cpuFeatureMask', 'HostCpuIdInfo', 1, 0],
+   ['datastoreUrl', 'VirtualMachineConfigInfoDatastoreUrlPair', 1, 0],
+   ['swapPlacement', undef, undef, 0],
+   ['bootOptions', 'VirtualMachineBootOptions', undef, 0],
+   ['ftInfo', 'FaultToleranceConfigInfo', undef, 0],
+   ['repConfig', 'ReplicationConfigSpec', undef, 0],
+   ['vAppConfig', 'VmConfigInfo', undef, 0],
+   ['vAssertsEnabled', 'boolean', undef, 0],
+   ['changeTrackingEnabled', 'boolean', undef, 0],
+   ['firmware', undef, undef, 0],
+   ['maxMksConnections', undef, undef, 0],
+   ['guestAutoLockEnabled', 'boolean', undef, 0],
+   ['managedBy', 'ManagedByInfo', undef, 0],
+   ['memoryReservationLockedToMax', 'boolean', undef, 0],
+   ['initialOverhead', 'VirtualMachineConfigInfoOverheadInfo', undef, 0],
+   ['nestedHVEnabled', 'boolean', undef, 0],
+   ['vPMCEnabled', 'boolean', undef, 0],
+   ['scheduledHardwareUpgradeInfo', 'ScheduledHardwareUpgradeInfo', undef, 0],
+   ['forkConfigInfo', 'VirtualMachineForkConfigInfo', undef, 0],
+   ['vFlashCacheReservation', undef, undef, 0],
+   ['vmxConfigChecksum', undef, undef, 0],
+   ['messageBusTunnelEnabled', 'boolean', undef, 0],
+   ['vmStorageObjectId', undef, undef, 0],
+   ['swapStorageObjectId', undef, undef, 0],
+   ['keyId', 'CryptoKeyId', undef, 0],
+   ['guestIntegrityInfo', 'VirtualMachineGuestIntegrityInfo', undef, 0],
+   ['migrateEncryption', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineConfigInfo', 'changeVersion', 'modified', 'name', 'guestFullName', 'version', 'uuid', 'createDate', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'locationId', 'template', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'defaultPowerOps', 'hardware', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'hotPlugMemoryLimit', 'hotPlugMemoryIncrementSize', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'extraConfig', 'cpuFeatureMask', 'datastoreUrl', 'swapPlacement', 'bootOptions', 'ftInfo', 'repConfig', 'vAppConfig', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'initialOverhead', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'forkConfigInfo', 'vFlashCacheReservation', 'vmxConfigChecksum', 'messageBusTunnelEnabled', 'vmStorageObjectId', 'swapStorageObjectId', 'keyId', 'guestIntegrityInfo', 'migrateEncryption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineConfigInfoDatastoreUrlPair;
 our @ISA = qw(DynamicData);
 
@@ -68555,94 +68845,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineConfigInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['changeVersion', undef, undef, 1],
-   ['modified', undef, undef, 1],
-   ['name', undef, undef, 1],
-   ['guestFullName', undef, undef, 1],
-   ['version', undef, undef, 1],
-   ['uuid', undef, undef, 1],
-   ['createDate', undef, undef, 0],
-   ['instanceUuid', undef, undef, 0],
-   ['npivNodeWorldWideName', undef, 1, 0],
-   ['npivPortWorldWideName', undef, 1, 0],
-   ['npivWorldWideNameType', undef, undef, 0],
-   ['npivDesiredNodeWwns', undef, undef, 0],
-   ['npivDesiredPortWwns', undef, undef, 0],
-   ['npivTemporaryDisabled', 'boolean', undef, 0],
-   ['npivOnNonRdmDisks', 'boolean', undef, 0],
-   ['locationId', undef, undef, 0],
-   ['template', 'boolean', undef, 1],
-   ['guestId', undef, undef, 1],
-   ['alternateGuestName', undef, undef, 0],
-   ['annotation', undef, undef, 0],
-   ['files', 'VirtualMachineFileInfo', undef, 1],
-   ['tools', 'ToolsConfigInfo', undef, 0],
-   ['flags', 'VirtualMachineFlagInfo', undef, 1],
-   ['consolePreferences', 'VirtualMachineConsolePreferences', undef, 0],
-   ['defaultPowerOps', 'VirtualMachineDefaultPowerOpInfo', undef, 1],
-   ['hardware', 'VirtualHardware', undef, 1],
-   ['cpuAllocation', 'ResourceAllocationInfo', undef, 0],
-   ['memoryAllocation', 'ResourceAllocationInfo', undef, 0],
-   ['latencySensitivity', 'LatencySensitivity', undef, 0],
-   ['memoryHotAddEnabled', 'boolean', undef, 0],
-   ['cpuHotAddEnabled', 'boolean', undef, 0],
-   ['cpuHotRemoveEnabled', 'boolean', undef, 0],
-   ['hotPlugMemoryLimit', undef, undef, 0],
-   ['hotPlugMemoryIncrementSize', undef, undef, 0],
-   ['cpuAffinity', 'VirtualMachineAffinityInfo', undef, 0],
-   ['memoryAffinity', 'VirtualMachineAffinityInfo', undef, 0],
-   ['networkShaper', 'VirtualMachineNetworkShaperInfo', undef, 0],
-   ['extraConfig', 'OptionValue', 1, 0],
-   ['cpuFeatureMask', 'HostCpuIdInfo', 1, 0],
-   ['datastoreUrl', 'VirtualMachineConfigInfoDatastoreUrlPair', 1, 0],
-   ['swapPlacement', undef, undef, 0],
-   ['bootOptions', 'VirtualMachineBootOptions', undef, 0],
-   ['ftInfo', 'FaultToleranceConfigInfo', undef, 0],
-   ['repConfig', 'ReplicationConfigSpec', undef, 0],
-   ['vAppConfig', 'VmConfigInfo', undef, 0],
-   ['vAssertsEnabled', 'boolean', undef, 0],
-   ['changeTrackingEnabled', 'boolean', undef, 0],
-   ['firmware', undef, undef, 0],
-   ['maxMksConnections', undef, undef, 0],
-   ['guestAutoLockEnabled', 'boolean', undef, 0],
-   ['managedBy', 'ManagedByInfo', undef, 0],
-   ['memoryReservationLockedToMax', 'boolean', undef, 0],
-   ['initialOverhead', 'VirtualMachineConfigInfoOverheadInfo', undef, 0],
-   ['nestedHVEnabled', 'boolean', undef, 0],
-   ['vPMCEnabled', 'boolean', undef, 0],
-   ['scheduledHardwareUpgradeInfo', 'ScheduledHardwareUpgradeInfo', undef, 0],
-   ['forkConfigInfo', 'VirtualMachineForkConfigInfo', undef, 0],
-   ['vFlashCacheReservation', undef, undef, 0],
-   ['vmxConfigChecksum', undef, undef, 0],
-   ['messageBusTunnelEnabled', 'boolean', undef, 0],
-   ['vmStorageObjectId', undef, undef, 0],
-   ['swapStorageObjectId', undef, undef, 0],
-   ['keyId', 'CryptoKeyId', undef, 0],
-   ['guestIntegrityInfo', 'VirtualMachineGuestIntegrityInfo', undef, 0],
-   ['migrateEncryption', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineConfigInfo', 'changeVersion', 'modified', 'name', 'guestFullName', 'version', 'uuid', 'createDate', 'instanceUuid', 'npivNodeWorldWideName', 'npivPortWorldWideName', 'npivWorldWideNameType', 'npivDesiredNodeWwns', 'npivDesiredPortWwns', 'npivTemporaryDisabled', 'npivOnNonRdmDisks', 'locationId', 'template', 'guestId', 'alternateGuestName', 'annotation', 'files', 'tools', 'flags', 'consolePreferences', 'defaultPowerOps', 'hardware', 'cpuAllocation', 'memoryAllocation', 'latencySensitivity', 'memoryHotAddEnabled', 'cpuHotAddEnabled', 'cpuHotRemoveEnabled', 'hotPlugMemoryLimit', 'hotPlugMemoryIncrementSize', 'cpuAffinity', 'memoryAffinity', 'networkShaper', 'extraConfig', 'cpuFeatureMask', 'datastoreUrl', 'swapPlacement', 'bootOptions', 'ftInfo', 'repConfig', 'vAppConfig', 'vAssertsEnabled', 'changeTrackingEnabled', 'firmware', 'maxMksConnections', 'guestAutoLockEnabled', 'managedBy', 'memoryReservationLockedToMax', 'initialOverhead', 'nestedHVEnabled', 'vPMCEnabled', 'scheduledHardwareUpgradeInfo', 'forkConfigInfo', 'vFlashCacheReservation', 'vmxConfigChecksum', 'messageBusTunnelEnabled', 'vmStorageObjectId', 'swapStorageObjectId', 'keyId', 'guestIntegrityInfo', 'migrateEncryption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualMachineConfigOption;
 our @ISA = qw(DynamicData);
 
@@ -68655,7 +68857,7 @@ our @property_list = (
    ['capabilities', 'VirtualMachineCapability', undef, 1],
    ['datastore', 'DatastoreOption', undef, 1],
    ['defaultDevice', 'VirtualDevice', 1, 0],
-   ['supportedMonitorType', undef, 1, 0],
+   ['supportedMonitorType', undef, 1, 1],
    ['supportedOvfEnvironmentTransport', undef, 1, 0],
    ['supportedOvfInstallTransport', undef, 1, 0],
    ['propertyRelations', 'VirtualMachinePropertyRelation', 1, 0],
@@ -68685,10 +68887,10 @@ our @property_list = (
    ['key', undef, undef, 1],
    ['description', undef, undef, 0],
    ['host', 'ManagedObjectReference', 1, 0],
-   ['createSupported', 'boolean', undef, 0],
-   ['defaultConfigOption', 'boolean', undef, 0],
-   ['runSupported', 'boolean', undef, 0],
-   ['upgradeSupported', 'boolean', undef, 0],
+   ['createSupported', 'boolean', undef, 1],
+   ['defaultConfigOption', 'boolean', undef, 1],
+   ['runSupported', 'boolean', undef, 1],
+   ['upgradeSupported', 'boolean', undef, 1],
 );
 
 
@@ -68717,54 +68919,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineConfigOptionDescriptor', 'VirtualMachineConfigOptionDescriptor');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineCpuIdInfoSpec;
-our @ISA = qw(ArrayUpdateSpec);
-
-our @property_list = (
-   ['info', 'HostCpuIdInfo', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineCpuIdInfoSpec', 'info');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVirtualMachineCpuIdInfoSpec;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VirtualMachineCpuIdInfoSpec', 'VirtualMachineCpuIdInfoSpec', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVirtualMachineCpuIdInfoSpec', 'VirtualMachineCpuIdInfoSpec');
 
 
 sub get_property_list {
@@ -68863,6 +69017,54 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineCpuIdInfoSpec;
+our @ISA = qw(ArrayUpdateSpec);
+
+our @property_list = (
+   ['info', 'HostCpuIdInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineCpuIdInfoSpec', 'info');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVirtualMachineCpuIdInfoSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VirtualMachineCpuIdInfoSpec', 'VirtualMachineCpuIdInfoSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVirtualMachineCpuIdInfoSpec', 'VirtualMachineCpuIdInfoSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package ConfigTarget;
 our @ISA = qw(DynamicData);
 
@@ -68870,7 +69072,7 @@ our @property_list = (
    ['numCpus', undef, undef, 1],
    ['numCpuCores', undef, undef, 1],
    ['numNumaNodes', undef, undef, 1],
-   ['smcPresent', 'boolean', undef, 0],
+   ['smcPresent', 'boolean', undef, 1],
    ['datastore', 'VirtualMachineDatastoreInfo', 1, 0],
    ['network', 'VirtualMachineNetworkInfo', 1, 0],
    ['opaqueNetwork', 'OpaqueNetworkTargetInfo', 1, 0],
@@ -68994,6 +69196,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package DatastoreOption;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['unsupportedVolumes', 'VirtualMachineDatastoreVolumeOption', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('DatastoreOption', 'unsupportedVolumes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineDatastoreVolumeOption;
 our @ISA = qw(DynamicData);
 
@@ -69028,30 +69254,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineDatastoreVolumeOption', 'VirtualMachineDatastoreVolumeOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package DatastoreOption;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['unsupportedVolumes', 'VirtualMachineDatastoreVolumeOption', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('DatastoreOption', 'unsupportedVolumes');
 
 
 sub get_property_list {
@@ -69147,6 +69349,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineDeviceRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['runtimeState', 'VirtualMachineDeviceRuntimeInfoDeviceRuntimeState', undef, 1],
+   ['key', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineDeviceRuntimeInfo', 'runtimeState', 'key');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVirtualMachineDeviceRuntimeInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VirtualMachineDeviceRuntimeInfo', 'VirtualMachineDeviceRuntimeInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVirtualMachineDeviceRuntimeInfo', 'VirtualMachineDeviceRuntimeInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineDeviceRuntimeInfoDeviceRuntimeState;
 our @ISA = qw(DynamicData);
 
@@ -69185,55 +69436,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineDeviceRuntimeInfoVirtualEthernetCardRuntimeState', 'vmDirectPathGen2Active', 'vmDirectPathGen2InactiveReasonVm', 'vmDirectPathGen2InactiveReasonOther', 'vmDirectPathGen2InactiveReasonExtended', 'reservationStatus', 'attachmentStatus', 'featureRequirement');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineDeviceRuntimeInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['runtimeState', 'VirtualMachineDeviceRuntimeInfoDeviceRuntimeState', undef, 1],
-   ['key', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineDeviceRuntimeInfo', 'runtimeState', 'key');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVirtualMachineDeviceRuntimeInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VirtualMachineDeviceRuntimeInfo', 'VirtualMachineDeviceRuntimeInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVirtualMachineDeviceRuntimeInfo', 'VirtualMachineDeviceRuntimeInfo');
 
 
 sub get_property_list {
@@ -69447,6 +69649,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package FaultToleranceVMConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vmConfig', 'ManagedObjectReference', undef, 0],
+   ['disks', 'FaultToleranceDiskSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('FaultToleranceVMConfigSpec', 'vmConfig', 'disks');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package FaultToleranceDiskSpec;
 our @ISA = qw(DynamicData);
 
@@ -69481,31 +69708,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfFaultToleranceDiskSpec', 'FaultToleranceDiskSpec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package FaultToleranceVMConfigSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['vmConfig', 'ManagedObjectReference', undef, 0],
-   ['disks', 'FaultToleranceDiskSpec', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('FaultToleranceVMConfigSpec', 'vmConfig', 'disks');
 
 
 sub get_property_list {
@@ -69584,6 +69786,34 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineFileInfo', 'vmPathName', 'snapshotDirectory', 'suspendDirectory', 'logDirectory', 'ftMetadataDirectory');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineFileLayout;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['configFile', undef, 1, 0],
+   ['logFile', undef, 1, 0],
+   ['disk', 'VirtualMachineFileLayoutDiskLayout', 1, 0],
+   ['snapshot', 'VirtualMachineFileLayoutSnapshotLayout', 1, 0],
+   ['swapFile', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineFileLayout', 'configFile', 'logFile', 'disk', 'snapshot', 'swapFile');
 
 
 sub get_property_list {
@@ -69697,19 +69927,18 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineFileLayout;
+package VirtualMachineFileLayoutEx;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['configFile', undef, 1, 0],
-   ['logFile', undef, 1, 0],
-   ['disk', 'VirtualMachineFileLayoutDiskLayout', 1, 0],
-   ['snapshot', 'VirtualMachineFileLayoutSnapshotLayout', 1, 0],
-   ['swapFile', undef, undef, 0],
+   ['file', 'VirtualMachineFileLayoutExFileInfo', 1, 0],
+   ['disk', 'VirtualMachineFileLayoutExDiskLayout', 1, 0],
+   ['snapshot', 'VirtualMachineFileLayoutExSnapshotLayout', 1, 0],
+   ['timestamp', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineFileLayout', 'configFile', 'logFile', 'disk', 'snapshot', 'swapFile');
+VIMRuntime::make_get_set('VirtualMachineFileLayoutEx', 'file', 'disk', 'snapshot', 'timestamp');
 
 
 sub get_property_list {
@@ -69882,7 +70111,7 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['key', 'ManagedObjectReference', undef, 1],
    ['dataKey', undef, undef, 1],
-   ['memoryKey', undef, undef, 0],
+   ['memoryKey', undef, undef, 1],
    ['disk', 'VirtualMachineFileLayoutExDiskLayout', 1, 0],
 );
 
@@ -69912,33 +70141,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineFileLayoutExSnapshotLayout', 'VirtualMachineFileLayoutExSnapshotLayout');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineFileLayoutEx;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['file', 'VirtualMachineFileLayoutExFileInfo', 1, 0],
-   ['disk', 'VirtualMachineFileLayoutExDiskLayout', 1, 0],
-   ['snapshot', 'VirtualMachineFileLayoutExSnapshotLayout', 1, 0],
-   ['timestamp', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineFileLayoutEx', 'file', 'disk', 'snapshot', 'timestamp');
 
 
 sub get_property_list {
@@ -70053,6 +70255,52 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineForkConfigInfo', 'parentEnabled', 'childForkGroupId', 'parentForkGroupId', 'childType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package GuestInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['toolsStatus', 'VirtualMachineToolsStatus', undef, 0],
+   ['toolsVersionStatus', undef, undef, 0],
+   ['toolsVersionStatus2', undef, undef, 0],
+   ['toolsRunningStatus', undef, undef, 0],
+   ['toolsVersion', undef, undef, 0],
+   ['toolsInstallType', undef, undef, 0],
+   ['guestId', undef, undef, 0],
+   ['guestFamily', undef, undef, 0],
+   ['guestFullName', undef, undef, 0],
+   ['hostName', undef, undef, 0],
+   ['ipAddress', undef, undef, 0],
+   ['net', 'GuestNicInfo', 1, 0],
+   ['ipStack', 'GuestStackInfo', 1, 0],
+   ['disk', 'GuestDiskInfo', 1, 0],
+   ['screen', 'GuestScreenInfo', undef, 0],
+   ['guestState', undef, undef, 1],
+   ['appHeartbeatStatus', undef, undef, 0],
+   ['guestKernelCrashed', 'boolean', undef, 0],
+   ['appState', undef, undef, 0],
+   ['guestOperationsReady', 'boolean', undef, 0],
+   ['interactiveGuestOperationsReady', 'boolean', undef, 0],
+   ['guestStateChangeSupported', 'boolean', undef, 0],
+   ['generationInfo', 'GuestInfoNamespaceGenerationInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('GuestInfo', 'toolsStatus', 'toolsVersionStatus', 'toolsVersionStatus2', 'toolsRunningStatus', 'toolsVersion', 'toolsInstallType', 'guestId', 'guestFamily', 'guestFullName', 'hostName', 'ipAddress', 'net', 'ipStack', 'disk', 'screen', 'guestState', 'appHeartbeatStatus', 'guestKernelCrashed', 'appState', 'guestOperationsReady', 'interactiveGuestOperationsReady', 'guestStateChangeSupported', 'generationInfo');
 
 
 sub get_property_list {
@@ -70298,52 +70546,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package GuestInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['toolsStatus', 'VirtualMachineToolsStatus', undef, 0],
-   ['toolsVersionStatus', undef, undef, 0],
-   ['toolsVersionStatus2', undef, undef, 0],
-   ['toolsRunningStatus', undef, undef, 0],
-   ['toolsVersion', undef, undef, 0],
-   ['toolsInstallType', undef, undef, 0],
-   ['guestId', undef, undef, 0],
-   ['guestFamily', undef, undef, 0],
-   ['guestFullName', undef, undef, 0],
-   ['hostName', undef, undef, 0],
-   ['ipAddress', undef, undef, 0],
-   ['net', 'GuestNicInfo', 1, 0],
-   ['ipStack', 'GuestStackInfo', 1, 0],
-   ['disk', 'GuestDiskInfo', 1, 0],
-   ['screen', 'GuestScreenInfo', undef, 0],
-   ['guestState', undef, undef, 1],
-   ['appHeartbeatStatus', undef, undef, 0],
-   ['guestKernelCrashed', 'boolean', undef, 0],
-   ['appState', undef, undef, 0],
-   ['guestOperationsReady', 'boolean', undef, 0],
-   ['interactiveGuestOperationsReady', 'boolean', undef, 0],
-   ['guestStateChangeSupported', 'boolean', undef, 0],
-   ['generationInfo', 'GuestInfoNamespaceGenerationInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('GuestInfo', 'toolsStatus', 'toolsVersionStatus', 'toolsVersionStatus2', 'toolsRunningStatus', 'toolsVersion', 'toolsInstallType', 'guestId', 'guestFamily', 'guestFullName', 'hostName', 'ipAddress', 'net', 'ipStack', 'disk', 'screen', 'guestState', 'appHeartbeatStatus', 'guestKernelCrashed', 'appState', 'guestOperationsReady', 'interactiveGuestOperationsReady', 'guestStateChangeSupported', 'generationInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualMachineGuestIntegrityInfo;
 our @ISA = qw(DynamicData);
 
@@ -70376,8 +70578,8 @@ our @property_list = (
    ['family', undef, undef, 1],
    ['fullName', undef, undef, 1],
    ['supportedMaxCPUs', undef, undef, 1],
-   ['numSupportedPhysicalSockets', undef, undef, 0],
-   ['numSupportedCoresPerSocket', undef, undef, 0],
+   ['numSupportedPhysicalSockets', undef, undef, 1],
+   ['numSupportedCoresPerSocket', undef, undef, 1],
    ['supportedMinMemMB', undef, undef, 1],
    ['supportedMaxMemMB', undef, undef, 1],
    ['recommendedMemMB', undef, undef, 1],
@@ -70387,34 +70589,34 @@ our @property_list = (
    ['recommendedDiskController', undef, undef, 1],
    ['supportedNumDisks', undef, undef, 1],
    ['recommendedDiskSizeMB', undef, undef, 1],
-   ['recommendedCdromController', undef, undef, 0],
+   ['recommendedCdromController', undef, undef, 1],
    ['supportedEthernetCard', undef, 1, 1],
    ['recommendedEthernetCard', undef, undef, 0],
    ['supportsSlaveDisk', 'boolean', undef, 0],
    ['cpuFeatureMask', 'HostCpuIdInfo', 1, 0],
-   ['smcRequired', 'boolean', undef, 0],
+   ['smcRequired', 'boolean', undef, 1],
    ['supportsWakeOnLan', 'boolean', undef, 1],
-   ['supportsVMI', 'boolean', undef, 0],
-   ['supportsMemoryHotAdd', 'boolean', undef, 0],
-   ['supportsCpuHotAdd', 'boolean', undef, 0],
-   ['supportsCpuHotRemove', 'boolean', undef, 0],
-   ['supportedFirmware', undef, 1, 0],
-   ['recommendedFirmware', undef, undef, 0],
+   ['supportsVMI', 'boolean', undef, 1],
+   ['supportsMemoryHotAdd', 'boolean', undef, 1],
+   ['supportsCpuHotAdd', 'boolean', undef, 1],
+   ['supportsCpuHotRemove', 'boolean', undef, 1],
+   ['supportedFirmware', undef, 1, 1],
+   ['recommendedFirmware', undef, undef, 1],
    ['supportedUSBControllerList', undef, 1, 0],
    ['recommendedUSBController', undef, undef, 0],
-   ['supports3D', 'boolean', undef, 0],
-   ['recommended3D', 'boolean', undef, 0],
-   ['smcRecommended', 'boolean', undef, 0],
-   ['ich7mRecommended', 'boolean', undef, 0],
-   ['usbRecommended', 'boolean', undef, 0],
-   ['supportLevel', undef, undef, 0],
-   ['supportedForCreate', 'boolean', undef, 0],
-   ['vRAMSizeInKB', 'IntOption', undef, 0],
-   ['numSupportedFloppyDevices', undef, undef, 0],
+   ['supports3D', 'boolean', undef, 1],
+   ['recommended3D', 'boolean', undef, 1],
+   ['smcRecommended', 'boolean', undef, 1],
+   ['ich7mRecommended', 'boolean', undef, 1],
+   ['usbRecommended', 'boolean', undef, 1],
+   ['supportLevel', undef, undef, 1],
+   ['supportedForCreate', 'boolean', undef, 1],
+   ['vRAMSizeInKB', 'IntOption', undef, 1],
+   ['numSupportedFloppyDevices', undef, undef, 1],
    ['wakeOnLanEthernetCard', undef, 1, 0],
-   ['supportsPvscsiControllerForBoot', 'boolean', undef, 0],
-   ['diskUuidEnabled', 'boolean', undef, 0],
-   ['supportsHotPlugPCI', 'boolean', undef, 0],
+   ['supportsPvscsiControllerForBoot', 'boolean', undef, 1],
+   ['diskUuidEnabled', 'boolean', undef, 1],
+   ['supportsHotPlugPCI', 'boolean', undef, 1],
    ['supportsSecureBoot', 'boolean', undef, 0],
    ['defaultSecureBoot', 'boolean', undef, 0],
    ['persistentMemorySupported', 'boolean', undef, 0],
@@ -70499,6 +70701,54 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineIdeDiskDeviceInfo;
+our @ISA = qw(VirtualMachineDiskDeviceInfo);
+
+our @property_list = (
+   ['partitionTable', 'VirtualMachineIdeDiskDevicePartitionInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineIdeDiskDeviceInfo', 'partitionTable');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVirtualMachineIdeDiskDeviceInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VirtualMachineIdeDiskDeviceInfo', 'VirtualMachineIdeDiskDeviceInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVirtualMachineIdeDiskDeviceInfo', 'VirtualMachineIdeDiskDeviceInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineIdeDiskDevicePartitionInfo;
 our @ISA = qw(DynamicData);
 
@@ -70533,54 +70783,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineIdeDiskDevicePartitionInfo', 'VirtualMachineIdeDiskDevicePartitionInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineIdeDiskDeviceInfo;
-our @ISA = qw(VirtualMachineDiskDeviceInfo);
-
-our @property_list = (
-   ['partitionTable', 'VirtualMachineIdeDiskDevicePartitionInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineIdeDiskDeviceInfo', 'partitionTable');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVirtualMachineIdeDiskDeviceInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VirtualMachineIdeDiskDeviceInfo', 'VirtualMachineIdeDiskDeviceInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVirtualMachineIdeDiskDeviceInfo', 'VirtualMachineIdeDiskDeviceInfo');
 
 
 sub get_property_list {
@@ -71137,6 +71339,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineProfileDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['diskProfileDetails', 'VirtualMachineProfileDetailsDiskProfileDetails', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineProfileDetails', 'profile', 'diskProfileDetails');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineProfileDetailsDiskProfileDetails;
 our @ISA = qw(DynamicData);
 
@@ -71171,31 +71398,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineProfileDetailsDiskProfileDetails', 'VirtualMachineProfileDetailsDiskProfileDetails');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineProfileDetails;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['profile', 'VirtualMachineProfileSpec', 1, 0],
-   ['diskProfileDetails', 'VirtualMachineProfileDetailsDiskProfileDetails', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineProfileDetails', 'profile', 'diskProfileDetails');
 
 
 sub get_property_list {
@@ -71359,6 +71561,39 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineRelocateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['service', 'ServiceLocator', undef, 0],
+   ['folder', 'ManagedObjectReference', undef, 0],
+   ['datastore', 'ManagedObjectReference', undef, 0],
+   ['diskMoveType', undef, undef, 0],
+   ['pool', 'ManagedObjectReference', undef, 0],
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['disk', 'VirtualMachineRelocateSpecDiskLocator', 1, 0],
+   ['transform', 'VirtualMachineRelocateTransformation', undef, 0],
+   ['deviceChange', 'VirtualDeviceConfigSpec', 1, 0],
+   ['profile', 'VirtualMachineProfileSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineRelocateSpec', 'service', 'folder', 'datastore', 'diskMoveType', 'pool', 'host', 'disk', 'transform', 'deviceChange', 'profile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineRelocateSpecDiskLocator;
 our @ISA = qw(DynamicData);
 
@@ -71411,24 +71646,28 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineRelocateSpec;
+package ReplicationConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['service', 'ServiceLocator', undef, 0],
-   ['folder', 'ManagedObjectReference', undef, 0],
-   ['datastore', 'ManagedObjectReference', undef, 0],
-   ['diskMoveType', undef, undef, 0],
-   ['pool', 'ManagedObjectReference', undef, 0],
-   ['host', 'ManagedObjectReference', undef, 0],
-   ['disk', 'VirtualMachineRelocateSpecDiskLocator', 1, 0],
-   ['transform', 'VirtualMachineRelocateTransformation', undef, 0],
-   ['deviceChange', 'VirtualDeviceConfigSpec', 1, 0],
-   ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['generation', undef, undef, 1],
+   ['vmReplicationId', undef, undef, 1],
+   ['destination', undef, undef, 1],
+   ['port', undef, undef, 1],
+   ['rpo', undef, undef, 1],
+   ['quiesceGuestEnabled', 'boolean', undef, 1],
+   ['paused', 'boolean', undef, 1],
+   ['oppUpdatesEnabled', 'boolean', undef, 1],
+   ['netCompressionEnabled', 'boolean', undef, 0],
+   ['netEncryptionEnabled', 'boolean', undef, 0],
+   ['encryptionDestination', undef, undef, 0],
+   ['encryptionPort', undef, undef, 0],
+   ['remoteCertificateThumbprint', undef, undef, 0],
+   ['disk', 'ReplicationInfoDiskSettings', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineRelocateSpec', 'service', 'folder', 'datastore', 'diskMoveType', 'pool', 'host', 'disk', 'transform', 'deviceChange', 'profile');
+VIMRuntime::make_get_set('ReplicationConfigSpec', 'generation', 'vmReplicationId', 'destination', 'port', 'rpo', 'quiesceGuestEnabled', 'paused', 'oppUpdatesEnabled', 'netCompressionEnabled', 'netEncryptionEnabled', 'encryptionDestination', 'encryptionPort', 'remoteCertificateThumbprint', 'disk');
 
 
 sub get_property_list {
@@ -71493,28 +71732,44 @@ sub get_property_list {
 
 
 ##################################################################################
-package ReplicationConfigSpec;
+package VirtualMachineRuntimeInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['generation', undef, undef, 1],
-   ['vmReplicationId', undef, undef, 1],
-   ['destination', undef, undef, 1],
-   ['port', undef, undef, 1],
-   ['rpo', undef, undef, 1],
-   ['quiesceGuestEnabled', 'boolean', undef, 1],
-   ['paused', 'boolean', undef, 1],
-   ['oppUpdatesEnabled', 'boolean', undef, 1],
-   ['netCompressionEnabled', 'boolean', undef, 0],
-   ['netEncryptionEnabled', 'boolean', undef, 0],
-   ['encryptionDestination', undef, undef, 0],
-   ['encryptionPort', undef, undef, 0],
-   ['remoteCertificateThumbprint', undef, undef, 0],
-   ['disk', 'ReplicationInfoDiskSettings', 1, 0],
+   ['device', 'VirtualMachineDeviceRuntimeInfo', 1, 0],
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['connectionState', 'VirtualMachineConnectionState', undef, 1],
+   ['powerState', 'VirtualMachinePowerState', undef, 1],
+   ['faultToleranceState', 'VirtualMachineFaultToleranceState', undef, 1],
+   ['dasVmProtection', 'VirtualMachineRuntimeInfoDasProtectionState', undef, 0],
+   ['toolsInstallerMounted', 'boolean', undef, 1],
+   ['suspendTime', undef, undef, 0],
+   ['bootTime', undef, undef, 0],
+   ['suspendInterval', undef, undef, 0],
+   ['question', 'VirtualMachineQuestionInfo', undef, 0],
+   ['memoryOverhead', undef, undef, 0],
+   ['maxCpuUsage', undef, undef, 0],
+   ['maxMemoryUsage', undef, undef, 0],
+   ['numMksConnections', undef, undef, 1],
+   ['recordReplayState', 'VirtualMachineRecordReplayState', undef, 1],
+   ['cleanPowerOff', 'boolean', undef, 0],
+   ['needSecondaryReason', undef, undef, 0],
+   ['onlineStandby', 'boolean', undef, 1],
+   ['minRequiredEVCModeKey', undef, undef, 0],
+   ['consolidationNeeded', 'boolean', undef, 1],
+   ['offlineFeatureRequirement', 'VirtualMachineFeatureRequirement', 1, 0],
+   ['featureRequirement', 'VirtualMachineFeatureRequirement', 1, 0],
+   ['featureMask', 'HostFeatureMask', 1, 0],
+   ['vFlashCacheAllocation', undef, undef, 0],
+   ['paused', 'boolean', undef, 0],
+   ['snapshotInBackground', 'boolean', undef, 0],
+   ['quiescedForkParent', 'boolean', undef, 0],
+   ['instantCloneFrozen', 'boolean', undef, 0],
+   ['cryptoState', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ReplicationConfigSpec', 'generation', 'vmReplicationId', 'destination', 'port', 'rpo', 'quiesceGuestEnabled', 'paused', 'oppUpdatesEnabled', 'netCompressionEnabled', 'netEncryptionEnabled', 'encryptionDestination', 'encryptionPort', 'remoteCertificateThumbprint', 'disk');
+VIMRuntime::make_get_set('VirtualMachineRuntimeInfo', 'device', 'host', 'connectionState', 'powerState', 'faultToleranceState', 'dasVmProtection', 'toolsInstallerMounted', 'suspendTime', 'bootTime', 'suspendInterval', 'question', 'memoryOverhead', 'maxCpuUsage', 'maxMemoryUsage', 'numMksConnections', 'recordReplayState', 'cleanPowerOff', 'needSecondaryReason', 'onlineStandby', 'minRequiredEVCModeKey', 'consolidationNeeded', 'offlineFeatureRequirement', 'featureRequirement', 'featureMask', 'vFlashCacheAllocation', 'paused', 'snapshotInBackground', 'quiescedForkParent', 'instantCloneFrozen', 'cryptoState');
 
 
 sub get_property_list {
@@ -71539,59 +71794,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineRuntimeInfoDasProtectionState', 'dasProtected');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineRuntimeInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['device', 'VirtualMachineDeviceRuntimeInfo', 1, 0],
-   ['host', 'ManagedObjectReference', undef, 0],
-   ['connectionState', 'VirtualMachineConnectionState', undef, 1],
-   ['powerState', 'VirtualMachinePowerState', undef, 1],
-   ['faultToleranceState', 'VirtualMachineFaultToleranceState', undef, 0],
-   ['dasVmProtection', 'VirtualMachineRuntimeInfoDasProtectionState', undef, 0],
-   ['toolsInstallerMounted', 'boolean', undef, 1],
-   ['suspendTime', undef, undef, 0],
-   ['bootTime', undef, undef, 0],
-   ['suspendInterval', undef, undef, 0],
-   ['question', 'VirtualMachineQuestionInfo', undef, 0],
-   ['memoryOverhead', undef, undef, 0],
-   ['maxCpuUsage', undef, undef, 0],
-   ['maxMemoryUsage', undef, undef, 0],
-   ['numMksConnections', undef, undef, 1],
-   ['recordReplayState', 'VirtualMachineRecordReplayState', undef, 0],
-   ['cleanPowerOff', 'boolean', undef, 0],
-   ['needSecondaryReason', undef, undef, 0],
-   ['onlineStandby', 'boolean', undef, 0],
-   ['minRequiredEVCModeKey', undef, undef, 0],
-   ['consolidationNeeded', 'boolean', undef, 0],
-   ['offlineFeatureRequirement', 'VirtualMachineFeatureRequirement', 1, 0],
-   ['featureRequirement', 'VirtualMachineFeatureRequirement', 1, 0],
-   ['featureMask', 'HostFeatureMask', 1, 0],
-   ['vFlashCacheAllocation', undef, undef, 0],
-   ['paused', 'boolean', undef, 0],
-   ['snapshotInBackground', 'boolean', undef, 0],
-   ['quiescedForkParent', 'boolean', undef, 0],
-   ['instantCloneFrozen', 'boolean', undef, 0],
-   ['cryptoState', undef, undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineRuntimeInfo', 'device', 'host', 'connectionState', 'powerState', 'faultToleranceState', 'dasVmProtection', 'toolsInstallerMounted', 'suspendTime', 'bootTime', 'suspendInterval', 'question', 'memoryOverhead', 'maxCpuUsage', 'maxMemoryUsage', 'numMksConnections', 'recordReplayState', 'cleanPowerOff', 'needSecondaryReason', 'onlineStandby', 'minRequiredEVCModeKey', 'consolidationNeeded', 'offlineFeatureRequirement', 'featureRequirement', 'featureMask', 'vFlashCacheAllocation', 'paused', 'snapshotInBackground', 'quiescedForkParent', 'instantCloneFrozen', 'cryptoState');
 
 
 sub get_property_list {
@@ -71814,7 +72016,7 @@ our @property_list = (
    ['vm', 'ManagedObjectReference', undef, 1],
    ['name', undef, undef, 1],
    ['description', undef, undef, 1],
-   ['id', undef, undef, 0],
+   ['id', undef, undef, 1],
    ['createTime', undef, undef, 1],
    ['state', 'VirtualMachinePowerState', undef, 1],
    ['quiesced', 'boolean', undef, 1],
@@ -72010,6 +72212,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualMachineStorageInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['perDatastoreUsage', 'VirtualMachineUsageOnDatastore', 1, 0],
+   ['timestamp', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineStorageInfo', 'perDatastoreUsage', 'timestamp');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualMachineUsageOnDatastore;
 our @ISA = qw(DynamicData);
 
@@ -72061,16 +72288,46 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineStorageInfo;
+package VirtualMachineSummary;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['perDatastoreUsage', 'VirtualMachineUsageOnDatastore', 1, 0],
-   ['timestamp', undef, undef, 1],
+   ['vm', 'ManagedObjectReference', undef, 0],
+   ['runtime', 'VirtualMachineRuntimeInfo', undef, 1],
+   ['guest', 'VirtualMachineGuestSummary', undef, 0],
+   ['config', 'VirtualMachineConfigSummary', undef, 1],
+   ['storage', 'VirtualMachineStorageSummary', undef, 0],
+   ['quickStats', 'VirtualMachineQuickStats', undef, 1],
+   ['overallStatus', 'ManagedEntityStatus', undef, 1],
+   ['customValue', 'CustomFieldValue', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineStorageInfo', 'perDatastoreUsage', 'timestamp');
+VIMRuntime::make_get_set('VirtualMachineSummary', 'vm', 'runtime', 'guest', 'config', 'storage', 'quickStats', 'overallStatus', 'customValue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVirtualMachineSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VirtualMachineSummary', 'VirtualMachineSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVirtualMachineSummary', 'VirtualMachineSummary');
 
 
 sub get_property_list {
@@ -72230,61 +72487,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineSummary;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['vm', 'ManagedObjectReference', undef, 0],
-   ['runtime', 'VirtualMachineRuntimeInfo', undef, 1],
-   ['guest', 'VirtualMachineGuestSummary', undef, 0],
-   ['config', 'VirtualMachineConfigSummary', undef, 1],
-   ['storage', 'VirtualMachineStorageSummary', undef, 0],
-   ['quickStats', 'VirtualMachineQuickStats', undef, 1],
-   ['overallStatus', 'ManagedEntityStatus', undef, 1],
-   ['customValue', 'CustomFieldValue', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineSummary', 'vm', 'runtime', 'guest', 'config', 'storage', 'quickStats', 'overallStatus', 'customValue');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVirtualMachineSummary;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VirtualMachineSummary', 'VirtualMachineSummary', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVirtualMachineSummary', 'VirtualMachineSummary');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualMachineTargetInfo;
 our @ISA = qw(DynamicData);
 
@@ -72295,31 +72497,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineTargetInfo', 'name', 'configurationTag');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ToolsConfigInfoToolsLastInstallInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['counter', undef, undef, 1],
-   ['fault', 'LocalizedMethodFault', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('ToolsConfigInfoToolsLastInstallInfo', 'counter', 'fault');
 
 
 sub get_property_list {
@@ -72355,6 +72532,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ToolsConfigInfo', 'toolsVersion', 'toolsInstallType', 'afterPowerOn', 'afterResume', 'beforeGuestStandby', 'beforeGuestShutdown', 'beforeGuestReboot', 'toolsUpgradePolicy', 'pendingCustomization', 'customizationKeyId', 'syncTimeWithHost', 'lastInstallInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ToolsConfigInfoToolsLastInstallInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['counter', undef, undef, 1],
+   ['fault', 'LocalizedMethodFault', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ToolsConfigInfoToolsLastInstallInfo', 'counter', 'fault');
 
 
 sub get_property_list {
@@ -72409,6 +72611,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualMachineUsbInfo', 'VirtualMachineUsbInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package UsbScanCodeSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['keyEvents', 'UsbScanCodeSpecKeyEvent', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('UsbScanCodeSpec', 'keyEvents');
 
 
 sub get_property_list {
@@ -72489,30 +72715,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfUsbScanCodeSpecKeyEvent', 'UsbScanCodeSpecKeyEvent');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package UsbScanCodeSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['keyEvents', 'UsbScanCodeSpecKeyEvent', 1, 1],
-);
-
-
-VIMRuntime::make_get_set('UsbScanCodeSpec', 'keyEvents');
 
 
 sub get_property_list {
@@ -72613,19 +72815,19 @@ our @property_list = (
    ['virtualDeviceOption', 'VirtualDeviceOption', 1, 1],
    ['deviceListReadonly', 'boolean', undef, 1],
    ['numCPU', undef, 1, 1],
-   ['numCoresPerSocket', 'IntOption', undef, 0],
+   ['numCoresPerSocket', 'IntOption', undef, 1],
    ['numCpuReadonly', 'boolean', undef, 1],
    ['memoryMB', 'LongOption', undef, 1],
    ['numPCIControllers', 'IntOption', undef, 1],
    ['numIDEControllers', 'IntOption', undef, 1],
    ['numUSBControllers', 'IntOption', undef, 1],
-   ['numUSBXHCIControllers', 'IntOption', undef, 0],
+   ['numUSBXHCIControllers', 'IntOption', undef, 1],
    ['numSIOControllers', 'IntOption', undef, 1],
    ['numPS2Controllers', 'IntOption', undef, 1],
    ['licensingLimit', undef, 1, 0],
    ['numSupportedWwnPorts', 'IntOption', undef, 0],
    ['numSupportedWwnNodes', 'IntOption', undef, 0],
-   ['resourceConfigOption', 'ResourceConfigOption', undef, 0],
+   ['resourceConfigOption', 'ResourceConfigOption', undef, 1],
    ['numNVDIMMControllers', 'IntOption', undef, 0],
    ['numTPMDevices', 'IntOption', undef, 0],
 );
@@ -72750,31 +72952,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package CustomizationIPSettingsIpV6AddressSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['ip', 'CustomizationIpV6Generator', 1, 1],
-   ['gateway', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('CustomizationIPSettingsIpV6AddressSpec', 'ip', 'gateway');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package CustomizationIPSettings;
 our @ISA = qw(DynamicData);
 
@@ -72792,6 +72969,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('CustomizationIPSettings', 'ip', 'subnetMask', 'gateway', 'ipV6Spec', 'dnsServerList', 'dnsDomain', 'primaryWINS', 'secondaryWINS', 'netBIOS');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CustomizationIPSettingsIpV6AddressSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ip', 'CustomizationIpV6Generator', 1, 1],
+   ['gateway', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CustomizationIPSettingsIpV6AddressSpec', 'ip', 'gateway');
 
 
 sub get_property_list {
@@ -73684,6 +73886,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostDiskMappingInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['physicalPartition', 'HostDiskMappingPartitionInfo', undef, 0],
+   ['name', undef, undef, 1],
+   ['exclusive', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('HostDiskMappingInfo', 'physicalPartition', 'name', 'exclusive');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostDiskMappingPartitionInfo;
 our @ISA = qw(DynamicData);
 
@@ -73710,17 +73938,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package HostDiskMappingInfo;
+package HostDiskMappingOption;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['physicalPartition', 'HostDiskMappingPartitionInfo', undef, 0],
+   ['physicalPartition', 'HostDiskMappingPartitionOption', 1, 0],
    ['name', undef, undef, 1],
-   ['exclusive', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('HostDiskMappingInfo', 'physicalPartition', 'name', 'exclusive');
+VIMRuntime::make_get_set('HostDiskMappingOption', 'physicalPartition', 'name');
 
 
 sub get_property_list {
@@ -73771,31 +73998,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfHostDiskMappingPartitionOption', 'HostDiskMappingPartitionOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package HostDiskMappingOption;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['physicalPartition', 'HostDiskMappingPartitionOption', 1, 0],
-   ['name', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('HostDiskMappingOption', 'physicalPartition', 'name');
 
 
 sub get_property_list {
@@ -73949,6 +74151,29 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualCdrom;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualCdrom');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualCdromIsoBackingInfo;
 our @ISA = qw(VirtualDeviceFileBackingInfo);
 
@@ -74066,14 +74291,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualCdrom;
-our @ISA = qw(VirtualDevice);
+package VirtualCdromOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualCdrom');
+VIMRuntime::make_get_set('VirtualCdromOption');
 
 
 sub get_property_list {
@@ -74206,29 +74431,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualCdromOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualCdromOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualController;
 our @ISA = qw(VirtualDevice);
 
@@ -74264,6 +74466,60 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualControllerOption', 'devices', 'supportedDevice');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualDevice;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['key', undef, undef, 1],
+   ['deviceInfo', 'Description', undef, 0],
+   ['backing', 'VirtualDeviceBackingInfo', undef, 0],
+   ['connectable', 'VirtualDeviceConnectInfo', undef, 0],
+   ['slotInfo', 'VirtualDeviceBusSlotInfo', undef, 0],
+   ['controllerKey', undef, undef, 0],
+   ['unitNumber', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualDevice', 'key', 'deviceInfo', 'backing', 'connectable', 'slotInfo', 'controllerKey', 'unitNumber');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVirtualDevice;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VirtualDevice', 'VirtualDevice', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVirtualDevice', 'VirtualDevice');
 
 
 sub get_property_list {
@@ -74503,21 +74759,25 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualDevice;
+package VirtualDeviceOption;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['key', undef, undef, 1],
-   ['deviceInfo', 'Description', undef, 0],
-   ['backing', 'VirtualDeviceBackingInfo', undef, 0],
-   ['connectable', 'VirtualDeviceConnectInfo', undef, 0],
-   ['slotInfo', 'VirtualDeviceBusSlotInfo', undef, 0],
-   ['controllerKey', undef, undef, 0],
-   ['unitNumber', undef, undef, 0],
+   ['type', undef, undef, 1],
+   ['connectOption', 'VirtualDeviceConnectOption', undef, 0],
+   ['busSlotOption', 'VirtualDeviceBusSlotOption', undef, 0],
+   ['controllerType', undef, undef, 0],
+   ['autoAssignController', 'BoolOption', undef, 0],
+   ['backingOption', 'VirtualDeviceBackingOption', 1, 0],
+   ['defaultBackingOptionIndex', undef, undef, 0],
+   ['licensingLimit', undef, 1, 0],
+   ['deprecated', 'boolean', undef, 1],
+   ['plugAndPlay', 'boolean', undef, 1],
+   ['hotRemoveSupported', 'boolean', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('VirtualDevice', 'key', 'deviceInfo', 'backing', 'connectable', 'slotInfo', 'controllerKey', 'unitNumber');
+VIMRuntime::make_get_set('VirtualDeviceOption', 'type', 'connectOption', 'busSlotOption', 'controllerType', 'autoAssignController', 'backingOption', 'defaultBackingOptionIndex', 'licensingLimit', 'deprecated', 'plugAndPlay', 'hotRemoveSupported');
 
 
 sub get_property_list {
@@ -74533,15 +74793,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVirtualDevice;
+package ArrayOfVirtualDeviceOption;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['VirtualDevice', 'VirtualDevice', 1, 0],
+   ['VirtualDeviceOption', 'VirtualDeviceOption', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfVirtualDevice', 'VirtualDevice');
+VIMRuntime::make_get_set('ArrayOfVirtualDeviceOption', 'VirtualDeviceOption');
 
 
 sub get_property_list {
@@ -74633,7 +74893,7 @@ package VirtualDeviceDeviceBackingOption;
 our @ISA = qw(VirtualDeviceBackingOption);
 
 our @property_list = (
-   ['autoDetectAvailable', 'BoolOption', undef, 0],
+   ['autoDetectAvailable', 'BoolOption', undef, 1],
 );
 
 
@@ -74657,7 +74917,7 @@ package VirtualDeviceRemoteDeviceBackingOption;
 our @ISA = qw(VirtualDeviceBackingOption);
 
 our @property_list = (
-   ['autoDetectAvailable', 'BoolOption', undef, 0],
+   ['autoDetectAvailable', 'BoolOption', undef, 1],
 );
 
 
@@ -74773,25 +75033,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualDeviceOption;
+package VirtualDeviceConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['type', undef, undef, 1],
-   ['connectOption', 'VirtualDeviceConnectOption', undef, 0],
-   ['busSlotOption', 'VirtualDeviceBusSlotOption', undef, 0],
-   ['controllerType', undef, undef, 0],
-   ['autoAssignController', 'BoolOption', undef, 0],
-   ['backingOption', 'VirtualDeviceBackingOption', 1, 0],
-   ['defaultBackingOptionIndex', undef, undef, 0],
-   ['licensingLimit', undef, 1, 0],
-   ['deprecated', 'boolean', undef, 1],
-   ['plugAndPlay', 'boolean', undef, 1],
-   ['hotRemoveSupported', 'boolean', undef, 0],
+   ['operation', 'VirtualDeviceConfigSpecOperation', undef, 0],
+   ['fileOperation', 'VirtualDeviceConfigSpecFileOperation', undef, 0],
+   ['device', 'VirtualDevice', undef, 1],
+   ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['backing', 'VirtualDeviceConfigSpecBackingSpec', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDeviceOption', 'type', 'connectOption', 'busSlotOption', 'controllerType', 'autoAssignController', 'backingOption', 'defaultBackingOptionIndex', 'licensingLimit', 'deprecated', 'plugAndPlay', 'hotRemoveSupported');
+VIMRuntime::make_get_set('VirtualDeviceConfigSpec', 'operation', 'fileOperation', 'device', 'profile', 'backing');
 
 
 sub get_property_list {
@@ -74807,15 +75061,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVirtualDeviceOption;
+package ArrayOfVirtualDeviceConfigSpec;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['VirtualDeviceOption', 'VirtualDeviceOption', 1, 0],
+   ['VirtualDeviceConfigSpec', 'VirtualDeviceConfigSpec', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfVirtualDeviceOption', 'VirtualDeviceOption');
+VIMRuntime::make_get_set('ArrayOfVirtualDeviceConfigSpec', 'VirtualDeviceConfigSpec');
 
 
 sub get_property_list {
@@ -74856,19 +75110,23 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualDeviceConfigSpec;
-our @ISA = qw(DynamicData);
+package VirtualDisk;
+our @ISA = qw(VirtualDevice);
 
 our @property_list = (
-   ['operation', 'VirtualDeviceConfigSpecOperation', undef, 0],
-   ['fileOperation', 'VirtualDeviceConfigSpecFileOperation', undef, 0],
-   ['device', 'VirtualDevice', undef, 1],
-   ['profile', 'VirtualMachineProfileSpec', 1, 0],
-   ['backing', 'VirtualDeviceConfigSpecBackingSpec', undef, 0],
+   ['capacityInKB', undef, undef, 1],
+   ['capacityInBytes', undef, undef, 0],
+   ['shares', 'SharesInfo', undef, 0],
+   ['storageIOAllocation', 'StorageIOAllocationInfo', undef, 0],
+   ['diskObjectId', undef, undef, 0],
+   ['vFlashCacheConfigInfo', 'VirtualDiskVFlashCacheConfigInfo', undef, 0],
+   ['iofilter', undef, 1, 0],
+   ['vDiskId', 'ID', undef, 0],
+   ['nativeUnmanagedLinkedClone', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualDeviceConfigSpec', 'operation', 'fileOperation', 'device', 'profile', 'backing');
+VIMRuntime::make_get_set('VirtualDisk', 'capacityInKB', 'capacityInBytes', 'shares', 'storageIOAllocation', 'diskObjectId', 'vFlashCacheConfigInfo', 'iofilter', 'vDiskId', 'nativeUnmanagedLinkedClone');
 
 
 sub get_property_list {
@@ -74884,15 +75142,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVirtualDeviceConfigSpec;
+package ArrayOfVirtualDisk;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['VirtualDeviceConfigSpec', 'VirtualDeviceConfigSpec', 1, 0],
+   ['VirtualDisk', 'VirtualDisk', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfVirtualDeviceConfigSpec', 'VirtualDeviceConfigSpec');
+VIMRuntime::make_get_set('ArrayOfVirtualDisk', 'VirtualDisk');
 
 
 sub get_property_list {
@@ -75208,62 +75466,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualDisk;
-our @ISA = qw(VirtualDevice);
-
-our @property_list = (
-   ['capacityInKB', undef, undef, 1],
-   ['capacityInBytes', undef, undef, 0],
-   ['shares', 'SharesInfo', undef, 0],
-   ['storageIOAllocation', 'StorageIOAllocationInfo', undef, 0],
-   ['diskObjectId', undef, undef, 0],
-   ['vFlashCacheConfigInfo', 'VirtualDiskVFlashCacheConfigInfo', undef, 0],
-   ['iofilter', undef, 1, 0],
-   ['vDiskId', 'ID', undef, 0],
-   ['nativeUnmanagedLinkedClone', 'boolean', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualDisk', 'capacityInKB', 'capacityInBytes', 'shares', 'storageIOAllocation', 'diskObjectId', 'vFlashCacheConfigInfo', 'iofilter', 'vDiskId', 'nativeUnmanagedLinkedClone');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVirtualDisk;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VirtualDisk', 'VirtualDisk', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVirtualDisk', 'VirtualDisk');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualDiskId;
 our @ISA = qw(DynamicData);
 
@@ -75298,6 +75500,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVirtualDiskId', 'VirtualDiskId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualDiskOption;
+our @ISA = qw(VirtualDeviceOption);
+
+our @property_list = (
+   ['capacityInKB', 'LongOption', undef, 1],
+   ['ioAllocationOption', 'StorageIOAllocationOption', undef, 1],
+   ['vFlashCacheConfigOption', 'VirtualDiskOptionVFlashCacheConfigOption', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualDiskOption', 'capacityInKB', 'ioAllocationOption', 'vFlashCacheConfigOption');
 
 
 sub get_property_list {
@@ -75348,8 +75576,8 @@ our @property_list = (
    ['split', 'BoolOption', undef, 1],
    ['writeThrough', 'BoolOption', undef, 1],
    ['growable', 'boolean', undef, 1],
-   ['hotGrowable', 'boolean', undef, 0],
-   ['uuid', 'boolean', undef, 0],
+   ['hotGrowable', 'boolean', undef, 1],
+   ['uuid', 'boolean', undef, 1],
 );
 
 
@@ -75453,12 +75681,12 @@ our @property_list = (
    ['split', 'BoolOption', undef, 1],
    ['writeThrough', 'BoolOption', undef, 1],
    ['growable', 'boolean', undef, 1],
-   ['hotGrowable', 'boolean', undef, 0],
-   ['uuid', 'boolean', undef, 0],
-   ['thinProvisioned', 'BoolOption', undef, 0],
-   ['eagerlyScrub', 'BoolOption', undef, 0],
-   ['deltaDiskFormat', 'ChoiceOption', undef, 0],
-   ['deltaDiskFormatsSupported', 'VirtualDiskDeltaDiskFormatsSupported', 1, 0],
+   ['hotGrowable', 'boolean', undef, 1],
+   ['uuid', 'boolean', undef, 1],
+   ['thinProvisioned', 'BoolOption', undef, 1],
+   ['eagerlyScrub', 'BoolOption', undef, 1],
+   ['deltaDiskFormat', 'ChoiceOption', undef, 1],
+   ['deltaDiskFormatsSupported', 'VirtualDiskDeltaDiskFormatsSupported', 1, 1],
 );
 
 
@@ -75512,7 +75740,7 @@ our @ISA = qw(VirtualDeviceDeviceBackingOption);
 
 our @property_list = (
    ['descriptorFileNameExtensions', 'ChoiceOption', undef, 1],
-   ['uuid', 'boolean', undef, 0],
+   ['uuid', 'boolean', undef, 1],
 );
 
 
@@ -75562,7 +75790,7 @@ our @property_list = (
    ['descriptorFileNameExtensions', 'ChoiceOption', undef, 0],
    ['compatibilityMode', 'ChoiceOption', undef, 1],
    ['diskMode', 'ChoiceOption', undef, 1],
-   ['uuid', 'boolean', undef, 0],
+   ['uuid', 'boolean', undef, 1],
 );
 
 
@@ -75621,32 +75849,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualDiskOptionVFlashCacheConfigOption', 'cacheConsistencyType', 'cacheMode', 'reservationInMB', 'blockSizeInKB');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualDiskOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-   ['capacityInKB', 'LongOption', undef, 1],
-   ['ioAllocationOption', 'StorageIOAllocationOption', undef, 0],
-   ['vFlashCacheConfigOption', 'VirtualDiskOptionVFlashCacheConfigOption', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualDiskOption', 'capacityInKB', 'ioAllocationOption', 'vFlashCacheConfigOption');
 
 
 sub get_property_list {
@@ -75825,6 +76027,35 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualEthernetCard;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+   ['addressType', undef, undef, 0],
+   ['macAddress', undef, undef, 0],
+   ['wakeOnLanEnabled', 'boolean', undef, 0],
+   ['resourceAllocation', 'VirtualEthernetCardResourceAllocation', undef, 0],
+   ['externalId', undef, undef, 0],
+   ['uptCompatibilityEnabled', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualEthernetCard', 'addressType', 'macAddress', 'wakeOnLanEnabled', 'resourceAllocation', 'externalId', 'uptCompatibilityEnabled');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualEthernetCardNetworkBackingInfo;
 our @ISA = qw(VirtualDeviceDeviceBackingInfo);
 
@@ -75948,20 +76179,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualEthernetCard;
-our @ISA = qw(VirtualDevice);
+package VirtualEthernetCardOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
-   ['addressType', undef, undef, 0],
-   ['macAddress', undef, undef, 0],
-   ['wakeOnLanEnabled', 'boolean', undef, 0],
-   ['resourceAllocation', 'VirtualEthernetCardResourceAllocation', undef, 0],
-   ['externalId', undef, undef, 0],
-   ['uptCompatibilityEnabled', 'boolean', undef, 0],
+   ['supportedOUI', 'ChoiceOption', undef, 1],
+   ['macType', 'ChoiceOption', undef, 1],
+   ['wakeOnLanEnabled', 'BoolOption', undef, 1],
+   ['vmDirectPathGen2Supported', 'boolean', undef, 1],
+   ['uptCompatibilityEnabled', 'BoolOption', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualEthernetCard', 'addressType', 'macAddress', 'wakeOnLanEnabled', 'resourceAllocation', 'externalId', 'uptCompatibilityEnabled');
+VIMRuntime::make_get_set('VirtualEthernetCardOption', 'supportedOUI', 'macType', 'wakeOnLanEnabled', 'vmDirectPathGen2Supported', 'uptCompatibilityEnabled');
 
 
 sub get_property_list {
@@ -76069,19 +76299,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualEthernetCardOption;
-our @ISA = qw(VirtualDeviceOption);
+package VirtualFloppy;
+our @ISA = qw(VirtualDevice);
 
 our @property_list = (
-   ['supportedOUI', 'ChoiceOption', undef, 1],
-   ['macType', 'ChoiceOption', undef, 1],
-   ['wakeOnLanEnabled', 'BoolOption', undef, 1],
-   ['vmDirectPathGen2Supported', 'boolean', undef, 0],
-   ['uptCompatibilityEnabled', 'BoolOption', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualEthernetCardOption', 'supportedOUI', 'macType', 'wakeOnLanEnabled', 'vmDirectPathGen2Supported', 'uptCompatibilityEnabled');
+VIMRuntime::make_get_set('VirtualFloppy');
 
 
 sub get_property_list {
@@ -76166,14 +76391,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualFloppy;
-our @ISA = qw(VirtualDevice);
+package VirtualFloppyOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualFloppy');
+VIMRuntime::make_get_set('VirtualFloppyOption');
 
 
 sub get_property_list {
@@ -76243,29 +76468,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualFloppyRemoteDeviceBackingOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualFloppyOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualFloppyOption');
 
 
 sub get_property_list {
@@ -76513,16 +76715,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualNVDIMMBackingInfo;
-our @ISA = qw(VirtualDeviceFileBackingInfo);
+package VirtualNVDIMM;
+our @ISA = qw(VirtualDevice);
 
 our @property_list = (
-   ['parent', 'VirtualNVDIMMBackingInfo', undef, 0],
-   ['changeId', undef, undef, 0],
+   ['capacityInMB', undef, undef, 1],
 );
 
 
-VIMRuntime::make_get_set('VirtualNVDIMMBackingInfo', 'parent', 'changeId');
+VIMRuntime::make_get_set('VirtualNVDIMM', 'capacityInMB');
 
 
 sub get_property_list {
@@ -76538,15 +76739,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualNVDIMM;
-our @ISA = qw(VirtualDevice);
+package VirtualNVDIMMBackingInfo;
+our @ISA = qw(VirtualDeviceFileBackingInfo);
 
 our @property_list = (
-   ['capacityInMB', undef, undef, 1],
+   ['parent', 'VirtualNVDIMMBackingInfo', undef, 0],
+   ['changeId', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualNVDIMM', 'capacityInMB');
+VIMRuntime::make_get_set('VirtualNVDIMMBackingInfo', 'parent', 'changeId');
 
 
 sub get_property_list {
@@ -76714,19 +76916,42 @@ our @property_list = (
    ['numEthernetCards', 'IntOption', undef, 1],
    ['numVideoCards', 'IntOption', undef, 1],
    ['numSoundCards', 'IntOption', undef, 1],
-   ['numVmiRoms', 'IntOption', undef, 0],
-   ['numVmciDevices', 'IntOption', undef, 0],
-   ['numPCIPassthroughDevices', 'IntOption', undef, 0],
-   ['numSasSCSIControllers', 'IntOption', undef, 0],
-   ['numVmxnet3EthernetCards', 'IntOption', undef, 0],
-   ['numParaVirtualSCSIControllers', 'IntOption', undef, 0],
-   ['numSATAControllers', 'IntOption', undef, 0],
+   ['numVmiRoms', 'IntOption', undef, 1],
+   ['numVmciDevices', 'IntOption', undef, 1],
+   ['numPCIPassthroughDevices', 'IntOption', undef, 1],
+   ['numSasSCSIControllers', 'IntOption', undef, 1],
+   ['numVmxnet3EthernetCards', 'IntOption', undef, 1],
+   ['numParaVirtualSCSIControllers', 'IntOption', undef, 1],
+   ['numSATAControllers', 'IntOption', undef, 1],
    ['numNVMEControllers', 'IntOption', undef, 0],
    ['numVmxnet3VrdmaEthernetCards', 'IntOption', undef, 0],
 );
 
 
 VIMRuntime::make_get_set('VirtualPCIControllerOption', 'numSCSIControllers', 'numEthernetCards', 'numVideoCards', 'numSoundCards', 'numVmiRoms', 'numVmciDevices', 'numPCIPassthroughDevices', 'numSasSCSIControllers', 'numVmxnet3EthernetCards', 'numParaVirtualSCSIControllers', 'numSATAControllers', 'numNVMEControllers', 'numVmxnet3VrdmaEthernetCards');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualPCIPassthrough;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualPCIPassthrough');
 
 
 sub get_property_list {
@@ -76816,14 +77041,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualPCIPassthrough;
-our @ISA = qw(VirtualDevice);
+package VirtualPCIPassthroughOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualPCIPassthrough');
+VIMRuntime::make_get_set('VirtualPCIPassthroughOption');
 
 
 sub get_property_list {
@@ -76895,29 +77120,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualPCIPassthroughVmiopBackingOption', 'vgpu', 'maxInstances');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualPCIPassthroughOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualPCIPassthroughOption');
 
 
 sub get_property_list {
@@ -77028,6 +77230,29 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualParallelPort;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualParallelPort');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualParallelPortFileBackingInfo;
 our @ISA = qw(VirtualDeviceFileBackingInfo);
 
@@ -77074,14 +77299,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualParallelPort;
-our @ISA = qw(VirtualDevice);
+package VirtualParallelPortOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualParallelPort');
+VIMRuntime::make_get_set('VirtualParallelPortOption');
 
 
 sub get_property_list {
@@ -77143,14 +77368,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualParallelPortOption;
-our @ISA = qw(VirtualDeviceOption);
+package VirtualPointingDevice;
+our @ISA = qw(VirtualDevice);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualParallelPortOption');
+VIMRuntime::make_get_set('VirtualPointingDevice');
 
 
 sub get_property_list {
@@ -77190,14 +77415,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualPointingDevice;
-our @ISA = qw(VirtualDevice);
+package VirtualPointingDeviceOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualPointingDevice');
+VIMRuntime::make_get_set('VirtualPointingDeviceOption');
 
 
 sub get_property_list {
@@ -77222,29 +77447,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualPointingDeviceBackingOption', 'hostPointingDevice');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualPointingDeviceOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualPointingDeviceOption');
 
 
 sub get_property_list {
@@ -77308,15 +77510,17 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVirtualSCSISharing;
-our @ISA = qw(ComplexType);
+package VirtualSCSIController;
+our @ISA = qw(VirtualController);
 
 our @property_list = (
-   ['VirtualSCSISharing', 'VirtualSCSISharing', 1, 0],
+   ['hotAddRemove', 'boolean', undef, 0],
+   ['sharedBus', 'VirtualSCSISharing', undef, 1],
+   ['scsiCtlrUnitNumber', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfVirtualSCSISharing', 'VirtualSCSISharing');
+VIMRuntime::make_get_set('VirtualSCSIController', 'hotAddRemove', 'sharedBus', 'scsiCtlrUnitNumber');
 
 
 sub get_property_list {
@@ -77332,17 +77536,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSCSIController;
-our @ISA = qw(VirtualController);
+package ArrayOfVirtualSCSISharing;
+our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['hotAddRemove', 'boolean', undef, 0],
-   ['sharedBus', 'VirtualSCSISharing', undef, 1],
-   ['scsiCtlrUnitNumber', undef, undef, 0],
+   ['VirtualSCSISharing', 'VirtualSCSISharing', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualSCSIController', 'hotAddRemove', 'sharedBus', 'scsiCtlrUnitNumber');
+VIMRuntime::make_get_set('ArrayOfVirtualSCSISharing', 'VirtualSCSISharing');
 
 
 sub get_property_list {
@@ -77388,29 +77590,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSCSIPassthroughDeviceBackingInfo;
-our @ISA = qw(VirtualDeviceDeviceBackingInfo);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualSCSIPassthroughDeviceBackingInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualSCSIPassthrough;
 our @ISA = qw(VirtualDevice);
 
@@ -77434,14 +77613,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSCSIPassthroughDeviceBackingOption;
-our @ISA = qw(VirtualDeviceDeviceBackingOption);
+package VirtualSCSIPassthroughDeviceBackingInfo;
+our @ISA = qw(VirtualDeviceDeviceBackingInfo);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualSCSIPassthroughDeviceBackingOption');
+VIMRuntime::make_get_set('VirtualSCSIPassthroughDeviceBackingInfo');
 
 
 sub get_property_list {
@@ -77465,6 +77644,29 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualSCSIPassthroughOption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualSCSIPassthroughDeviceBackingOption;
+our @ISA = qw(VirtualDeviceDeviceBackingOption);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualSCSIPassthroughDeviceBackingOption');
 
 
 sub get_property_list {
@@ -77514,6 +77716,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualSIOControllerOption', 'numFloppyDrives', 'numSerialPorts', 'numParallelPorts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualSerialPort;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+   ['yieldOnPoll', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VirtualSerialPort', 'yieldOnPoll');
 
 
 sub get_property_list {
@@ -77646,15 +77872,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSerialPort;
-our @ISA = qw(VirtualDevice);
+package VirtualSerialPortOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
-   ['yieldOnPoll', 'boolean', undef, 1],
+   ['yieldOnPoll', 'BoolOption', undef, 1],
 );
 
 
-VIMRuntime::make_get_set('VirtualSerialPort', 'yieldOnPoll');
+VIMRuntime::make_get_set('VirtualSerialPortOption', 'yieldOnPoll');
 
 
 sub get_property_list {
@@ -77787,30 +78013,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSerialPortOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-   ['yieldOnPoll', 'BoolOption', undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VirtualSerialPortOption', 'yieldOnPoll');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualSoundBlaster16;
 our @ISA = qw(VirtualSoundCard);
 
@@ -77857,6 +78059,29 @@ sub get_property_list {
 
 
 ##################################################################################
+package VirtualSoundCard;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VirtualSoundCard');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VirtualSoundCardDeviceBackingInfo;
 our @ISA = qw(VirtualDeviceDeviceBackingInfo);
 
@@ -77880,14 +78105,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSoundCard;
-our @ISA = qw(VirtualDevice);
+package VirtualSoundCardOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
 );
 
 
-VIMRuntime::make_get_set('VirtualSoundCard');
+VIMRuntime::make_get_set('VirtualSoundCardOption');
 
 
 sub get_property_list {
@@ -77926,14 +78151,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSoundCardOption;
-our @ISA = qw(VirtualDeviceOption);
+package VirtualSriovEthernetCard;
+our @ISA = qw(VirtualEthernetCard);
 
 our @property_list = (
+   ['allowGuestOSMtuChange', 'boolean', undef, 0],
+   ['sriovBacking', 'VirtualSriovEthernetCardSriovBackingInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualSoundCardOption');
+VIMRuntime::make_get_set('VirtualSriovEthernetCard', 'allowGuestOSMtuChange', 'sriovBacking');
 
 
 sub get_property_list {
@@ -77975,16 +78202,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualSriovEthernetCard;
-our @ISA = qw(VirtualEthernetCard);
+package VirtualSriovEthernetCardOption;
+our @ISA = qw(VirtualEthernetCardOption);
 
 our @property_list = (
-   ['allowGuestOSMtuChange', 'boolean', undef, 0],
-   ['sriovBacking', 'VirtualSriovEthernetCardSriovBackingInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualSriovEthernetCard', 'allowGuestOSMtuChange', 'sriovBacking');
+VIMRuntime::make_get_set('VirtualSriovEthernetCardOption');
 
 
 sub get_property_list {
@@ -78008,29 +78233,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualSriovEthernetCardSriovBackingOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualSriovEthernetCardOption;
-our @ISA = qw(VirtualEthernetCardOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualSriovEthernetCardOption');
 
 
 sub get_property_list {
@@ -78080,6 +78282,34 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualTPMOption', 'supportedFirmware');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualUSB;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+   ['connected', 'boolean', undef, 1],
+   ['vendor', undef, undef, 0],
+   ['product', undef, undef, 0],
+   ['family', undef, 1, 0],
+   ['speed', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualUSB', 'connected', 'vendor', 'product', 'family', 'speed');
 
 
 sub get_property_list {
@@ -78166,19 +78396,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualUSB;
-our @ISA = qw(VirtualDevice);
+package VirtualUSBController;
+our @ISA = qw(VirtualController);
 
 our @property_list = (
-   ['connected', 'boolean', undef, 0],
-   ['vendor', undef, undef, 0],
-   ['product', undef, undef, 0],
-   ['family', undef, 1, 0],
-   ['speed', undef, 1, 0],
+   ['autoConnectDevices', 'boolean', undef, 0],
+   ['ehciEnabled', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualUSB', 'connected', 'vendor', 'product', 'family', 'speed');
+VIMRuntime::make_get_set('VirtualUSBController', 'autoConnectDevices', 'ehciEnabled');
 
 
 sub get_property_list {
@@ -78218,16 +78445,17 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualUSBController;
-our @ISA = qw(VirtualController);
+package VirtualUSBControllerOption;
+our @ISA = qw(VirtualControllerOption);
 
 our @property_list = (
-   ['autoConnectDevices', 'boolean', undef, 0],
-   ['ehciEnabled', 'boolean', undef, 0],
+   ['autoConnectDevices', 'BoolOption', undef, 1],
+   ['ehciSupported', 'BoolOption', undef, 1],
+   ['supportedSpeeds', undef, 1, 1],
 );
 
 
-VIMRuntime::make_get_set('VirtualUSBController', 'autoConnectDevices', 'ehciEnabled');
+VIMRuntime::make_get_set('VirtualUSBControllerOption', 'autoConnectDevices', 'ehciSupported', 'supportedSpeeds');
 
 
 sub get_property_list {
@@ -78243,17 +78471,14 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualUSBControllerOption;
-our @ISA = qw(VirtualControllerOption);
+package VirtualUSBOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
-   ['autoConnectDevices', 'BoolOption', undef, 1],
-   ['ehciSupported', 'BoolOption', undef, 0],
-   ['supportedSpeeds', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualUSBControllerOption', 'autoConnectDevices', 'ehciSupported', 'supportedSpeeds');
+VIMRuntime::make_get_set('VirtualUSBOption');
 
 
 sub get_property_list {
@@ -78338,29 +78563,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualUSBOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-);
-
-
-VIMRuntime::make_get_set('VirtualUSBOption');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VirtualUSBXHCIController;
 our @ISA = qw(VirtualController);
 
@@ -78395,6 +78597,33 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualUSBXHCIControllerOption', 'autoConnectDevices', 'supportedSpeeds');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VirtualMachineVMCIDevice;
+our @ISA = qw(VirtualDevice);
+
+our @property_list = (
+   ['id', undef, undef, 0],
+   ['allowUnrestrictedCommunication', 'boolean', undef, 0],
+   ['filterEnable', 'boolean', undef, 0],
+   ['filterInfo', 'VirtualMachineVMCIDeviceFilterInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VirtualMachineVMCIDevice', 'id', 'allowUnrestrictedCommunication', 'filterEnable', 'filterInfo');
 
 
 sub get_property_list {
@@ -78487,18 +78716,17 @@ sub get_property_list {
 
 
 ##################################################################################
-package VirtualMachineVMCIDevice;
-our @ISA = qw(VirtualDevice);
+package VirtualMachineVMCIDeviceOption;
+our @ISA = qw(VirtualDeviceOption);
 
 our @property_list = (
-   ['id', undef, undef, 0],
-   ['allowUnrestrictedCommunication', 'boolean', undef, 0],
-   ['filterEnable', 'boolean', undef, 0],
-   ['filterInfo', 'VirtualMachineVMCIDeviceFilterInfo', undef, 0],
+   ['allowUnrestrictedCommunication', 'BoolOption', undef, 1],
+   ['filterSpecOption', 'VirtualMachineVMCIDeviceOptionFilterSpecOption', undef, 0],
+   ['filterSupported', 'BoolOption', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VirtualMachineVMCIDevice', 'id', 'allowUnrestrictedCommunication', 'filterEnable', 'filterInfo');
+VIMRuntime::make_get_set('VirtualMachineVMCIDeviceOption', 'allowUnrestrictedCommunication', 'filterSpecOption', 'filterSupported');
 
 
 sub get_property_list {
@@ -78527,32 +78755,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VirtualMachineVMCIDeviceOptionFilterSpecOption', 'action', 'protocol', 'direction', 'lowerDstPortBoundary', 'upperDstPortBoundary');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VirtualMachineVMCIDeviceOption;
-our @ISA = qw(VirtualDeviceOption);
-
-our @property_list = (
-   ['allowUnrestrictedCommunication', 'BoolOption', undef, 1],
-   ['filterSpecOption', 'VirtualMachineVMCIDeviceOptionFilterSpecOption', undef, 0],
-   ['filterSupported', 'BoolOption', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VirtualMachineVMCIDeviceOption', 'allowUnrestrictedCommunication', 'filterSpecOption', 'filterSupported');
 
 
 sub get_property_list {
@@ -79946,6 +80148,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanClusterConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['defaultConfig', 'VsanClusterConfigInfoHostDefaultInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterConfigInfo', 'enabled', 'defaultConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterConfigInfoHostDefaultInfo;
 our @ISA = qw(DynamicData);
 
@@ -79972,16 +80199,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanClusterConfigInfo;
+package VsanHostClusterStatus;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['enabled', 'boolean', undef, 0],
-   ['defaultConfig', 'VsanClusterConfigInfoHostDefaultInfo', undef, 0],
+   ['uuid', undef, undef, 0],
+   ['nodeUuid', undef, undef, 0],
+   ['health', undef, undef, 1],
+   ['nodeState', 'VsanHostClusterStatusState', undef, 1],
+   ['memberUuid', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterConfigInfo', 'enabled', 'defaultConfig');
+VIMRuntime::make_get_set('VsanHostClusterStatus', 'uuid', 'nodeUuid', 'health', 'nodeState', 'memberUuid');
 
 
 sub get_property_list {
@@ -79997,16 +80227,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanHostClusterStatusStateCompletionEstimate;
-our @ISA = qw(DynamicData);
+package ArrayOfVsanHostClusterStatus;
+our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['completeTime', undef, undef, 0],
-   ['percentComplete', undef, undef, 0],
+   ['VsanHostClusterStatus', 'VsanHostClusterStatus', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostClusterStatusStateCompletionEstimate', 'completeTime', 'percentComplete');
+VIMRuntime::make_get_set('ArrayOfVsanHostClusterStatus', 'VsanHostClusterStatus');
 
 
 sub get_property_list {
@@ -80047,19 +80276,69 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanHostClusterStatus;
+package VsanHostClusterStatusStateCompletionEstimate;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['uuid', undef, undef, 0],
-   ['nodeUuid', undef, undef, 0],
-   ['health', undef, undef, 1],
-   ['nodeState', 'VsanHostClusterStatusState', undef, 1],
-   ['memberUuid', undef, 1, 0],
+   ['completeTime', undef, undef, 0],
+   ['percentComplete', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostClusterStatus', 'uuid', 'nodeUuid', 'health', 'nodeState', 'memberUuid');
+VIMRuntime::make_get_set('VsanHostClusterStatusStateCompletionEstimate', 'completeTime', 'percentComplete');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostConfigInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['hostSystem', 'ManagedObjectReference', undef, 0],
+   ['clusterInfo', 'VsanHostConfigInfoClusterInfo', undef, 0],
+   ['storageInfo', 'VsanHostConfigInfoStorageInfo', undef, 0],
+   ['networkInfo', 'VsanHostConfigInfoNetworkInfo', undef, 0],
+   ['faultDomainInfo', 'VsanHostFaultDomainInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostConfigInfo', 'enabled', 'hostSystem', 'clusterInfo', 'storageInfo', 'networkInfo', 'faultDomainInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostConfigInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostConfigInfo', 'VsanHostConfigInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostConfigInfo', 'VsanHostConfigInfo');
 
 
 sub get_property_list {
@@ -80127,6 +80406,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostConfigInfoNetworkInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['port', 'VsanHostConfigInfoNetworkInfoPortConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostConfigInfoNetworkInfo', 'port');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostConfigInfoNetworkInfoPortConfig;
 our @ISA = qw(DynamicData);
 
@@ -80176,30 +80479,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanHostConfigInfoNetworkInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['port', 'VsanHostConfigInfoNetworkInfoPortConfig', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VsanHostConfigInfoNetworkInfo', 'port');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VsanHostFaultDomainInfo;
 our @ISA = qw(DynamicData);
 
@@ -80209,59 +80488,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanHostFaultDomainInfo', 'name');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VsanHostConfigInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['enabled', 'boolean', undef, 0],
-   ['hostSystem', 'ManagedObjectReference', undef, 0],
-   ['clusterInfo', 'VsanHostConfigInfoClusterInfo', undef, 0],
-   ['storageInfo', 'VsanHostConfigInfoStorageInfo', undef, 0],
-   ['networkInfo', 'VsanHostConfigInfoNetworkInfo', undef, 0],
-   ['faultDomainInfo', 'VsanHostFaultDomainInfo', undef, 0],
-);
-
-
-VIMRuntime::make_get_set('VsanHostConfigInfo', 'enabled', 'hostSystem', 'clusterInfo', 'storageInfo', 'networkInfo', 'faultDomainInfo');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVsanHostConfigInfo;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VsanHostConfigInfo', 'VsanHostConfigInfo', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVsanHostConfigInfo', 'VsanHostConfigInfo');
 
 
 sub get_property_list {
@@ -80600,6 +80826,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['membershipList', 'VsanHostMembershipInfo', 1, 0],
+   ['diskIssues', 'VsanHostRuntimeInfoDiskIssue', 1, 0],
+   ['accessGenNo', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostRuntimeInfo', 'membershipList', 'diskIssues', 'accessGenNo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostRuntimeInfoDiskIssue;
 our @ISA = qw(DynamicData);
 
@@ -80649,17 +80901,23 @@ sub get_property_list {
 
 
 ##################################################################################
-package VsanHostRuntimeInfo;
+package BaseConfigInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['membershipList', 'VsanHostMembershipInfo', 1, 0],
-   ['diskIssues', 'VsanHostRuntimeInfoDiskIssue', 1, 0],
-   ['accessGenNo', undef, undef, 0],
+   ['id', 'ID', undef, 1],
+   ['name', undef, undef, 1],
+   ['createTime', undef, undef, 1],
+   ['keepAfterDeleteVm', 'boolean', undef, 0],
+   ['relocationDisabled', 'boolean', undef, 0],
+   ['nativeSnapshotSupported', 'boolean', undef, 0],
+   ['changedBlockTrackingEnabled', 'boolean', undef, 0],
+   ['backing', 'BaseConfigInfoBackingInfo', undef, 1],
+   ['iofilter', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostRuntimeInfo', 'membershipList', 'diskIssues', 'accessGenNo');
+VIMRuntime::make_get_set('BaseConfigInfo', 'id', 'name', 'createTime', 'keepAfterDeleteVm', 'relocationDisabled', 'nativeSnapshotSupported', 'changedBlockTrackingEnabled', 'backing', 'iofilter');
 
 
 sub get_property_list {
@@ -80775,23 +81033,16 @@ sub get_property_list {
 
 
 ##################################################################################
-package BaseConfigInfo;
-our @ISA = qw(DynamicData);
+package VslmCloneSpec;
+our @ISA = qw(VslmMigrateSpec);
 
 our @property_list = (
-   ['id', 'ID', undef, 1],
    ['name', undef, undef, 1],
-   ['createTime', undef, undef, 1],
    ['keepAfterDeleteVm', 'boolean', undef, 0],
-   ['relocationDisabled', 'boolean', undef, 0],
-   ['nativeSnapshotSupported', 'boolean', undef, 0],
-   ['changedBlockTrackingEnabled', 'boolean', undef, 0],
-   ['backing', 'BaseConfigInfoBackingInfo', undef, 1],
-   ['iofilter', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('BaseConfigInfo', 'id', 'name', 'createTime', 'keepAfterDeleteVm', 'relocationDisabled', 'nativeSnapshotSupported', 'changedBlockTrackingEnabled', 'backing', 'iofilter');
+VIMRuntime::make_get_set('VslmCloneSpec', 'name', 'keepAfterDeleteVm');
 
 
 sub get_property_list {
@@ -80807,16 +81058,19 @@ sub get_property_list {
 
 
 ##################################################################################
-package VslmCloneSpec;
-our @ISA = qw(VslmMigrateSpec);
+package VslmCreateSpec;
+our @ISA = qw(DynamicData);
 
 our @property_list = (
    ['name', undef, undef, 1],
    ['keepAfterDeleteVm', 'boolean', undef, 0],
+   ['backingSpec', 'VslmCreateSpecBackingSpec', undef, 1],
+   ['capacityInMB', undef, undef, 1],
+   ['profile', 'VirtualMachineProfileSpec', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VslmCloneSpec', 'name', 'keepAfterDeleteVm');
+VIMRuntime::make_get_set('VslmCreateSpec', 'name', 'keepAfterDeleteVm', 'backingSpec', 'capacityInMB', 'profile');
 
 
 sub get_property_list {
@@ -80891,34 +81145,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VslmCreateSpecRawDiskMappingBackingSpec', 'lunUuid', 'compatibilityMode');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VslmCreateSpec;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['name', undef, undef, 1],
-   ['keepAfterDeleteVm', 'boolean', undef, 0],
-   ['backingSpec', 'VslmCreateSpecBackingSpec', undef, 1],
-   ['capacityInMB', undef, undef, 1],
-   ['profile', 'VirtualMachineProfileSpec', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VslmCreateSpec', 'name', 'keepAfterDeleteVm', 'backingSpec', 'capacityInMB', 'profile');
 
 
 sub get_property_list {
@@ -81180,6 +81406,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package VStorageObject;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['config', 'VStorageObjectConfigInfo', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VStorageObject', 'config');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VStorageObjectConfigInfo;
 our @ISA = qw(BaseConfigInfo);
 
@@ -81206,15 +81456,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package VStorageObject;
+package VStorageObjectSnapshotInfo;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['config', 'VStorageObjectConfigInfo', undef, 1],
+   ['snapshots', 'VStorageObjectSnapshotInfoVStorageObjectSnapshot', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VStorageObject', 'config');
+VIMRuntime::make_get_set('VStorageObjectSnapshotInfo', 'snapshots');
 
 
 sub get_property_list {
@@ -81281,30 +81531,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package VStorageObjectSnapshotInfo;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['snapshots', 'VStorageObjectSnapshotInfoVStorageObjectSnapshot', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('VStorageObjectSnapshotInfo', 'snapshots');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package RetrieveVStorageObjSpec;
 our @ISA = qw(DynamicData);
 
@@ -81339,55 +81565,6 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfRetrieveVStorageObjSpec', 'RetrieveVStorageObjSpec');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package VStorageObjectAssociationsVmDiskAssociations;
-our @ISA = qw(DynamicData);
-
-our @property_list = (
-   ['vmId', undef, undef, 1],
-   ['diskKey', undef, undef, 1],
-);
-
-
-VIMRuntime::make_get_set('VStorageObjectAssociationsVmDiskAssociations', 'vmId', 'diskKey');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfVStorageObjectAssociationsVmDiskAssociations;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VStorageObjectAssociationsVmDiskAssociations', 'VStorageObjectAssociationsVmDiskAssociations', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVStorageObjectAssociationsVmDiskAssociations', 'VStorageObjectAssociationsVmDiskAssociations');
 
 
 sub get_property_list {
@@ -81438,6 +81615,55 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVStorageObjectAssociations', 'VStorageObjectAssociations');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VStorageObjectAssociationsVmDiskAssociations;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vmId', undef, undef, 1],
+   ['diskKey', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VStorageObjectAssociationsVmDiskAssociations', 'vmId', 'diskKey');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVStorageObjectAssociationsVmDiskAssociations;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VStorageObjectAssociationsVmDiskAssociations', 'VStorageObjectAssociationsVmDiskAssociations', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVStorageObjectAssociationsVmDiskAssociations', 'VStorageObjectAssociationsVmDiskAssociations');
 
 
 sub get_property_list {
@@ -83189,6 +83415,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package QueryVsanManagedStorageSpaceUsageSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['datastoreTypes', undef, 1, 1],
+);
+
+
+VIMRuntime::make_get_set('QueryVsanManagedStorageSpaceUsageSpec', 'datastoreTypes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanStorageComplianceResult;
 our @ISA = qw(DynamicData);
 
@@ -83430,10 +83680,11 @@ our @ISA = qw(DynamicData);
 our @property_list = (
    ['vcCluster', 'ManagedObjectReference', undef, 0],
    ['isVirtualApp', 'boolean', undef, 0],
+   ['vcClusters', 'ManagedObjectReference', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VSANStretchedClusterHostVirtualApplianceStatus', 'vcCluster', 'isVirtualApp');
+VIMRuntime::make_get_set('VSANStretchedClusterHostVirtualApplianceStatus', 'vcCluster', 'isVirtualApp', 'vcClusters');
 
 
 sub get_property_list {
@@ -83459,10 +83710,11 @@ our @property_list = (
    ['preferredFdUuid', undef, undef, 0],
    ['unicastAgentAddr', undef, undef, 0],
    ['host', 'ManagedObjectReference', undef, 0],
+   ['metadataMode', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimClusterVSANWitnessHostInfo', 'nodeUuid', 'faultDomainName', 'preferredFdName', 'preferredFdUuid', 'unicastAgentAddr', 'host');
+VIMRuntime::make_get_set('VimClusterVSANWitnessHostInfo', 'nodeUuid', 'faultDomainName', 'preferredFdName', 'preferredFdUuid', 'unicastAgentAddr', 'host', 'metadataMode');
 
 
 sub get_property_list {
@@ -83832,30 +84084,6 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfVsanClusterConfig;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['VsanClusterConfig', 'VsanClusterConfig', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfVsanClusterConfig', 'VsanClusterConfig');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package VsanClusterCreateVmHealthTestResult;
 our @ISA = qw(DynamicData);
 
@@ -83905,6 +84133,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanClusterDitEncryptionHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['overallHealth', undef, undef, 1],
+   ['enabled', 'boolean', undef, 0],
+   ['hostResults', 'VsanDitEncryptionHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterDitEncryptionHealthSummary', 'overallHealth', 'enabled', 'hostResults');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterEncryptionHealthSummary;
 our @ISA = qw(DynamicData);
 
@@ -83919,6 +84173,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanClusterEncryptionHealthSummary', 'overallHealth', 'configHealth', 'kmsHealth', 'vcKmsResult', 'hostResults', 'aesniHealth');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClusterFileServiceHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['overallHealth', undef, undef, 0],
+   ['hostResults', 'VsanFileServiceHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterFileServiceHealthSummary', 'overallHealth', 'hostResults');
 
 
 sub get_property_list {
@@ -84099,10 +84378,11 @@ our @property_list = (
    ['groupHealth', undef, undef, 1],
    ['groupTests', 'VsanClusterHealthTest', 1, 0],
    ['groupDetails', 'VsanClusterHealthResultBase', 1, 0],
+   ['inProgress', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterHealthGroup', 'groupId', 'groupName', 'groupHealth', 'groupTests', 'groupDetails');
+VIMRuntime::make_get_set('VsanClusterHealthGroup', 'groupId', 'groupName', 'groupHealth', 'groupTests', 'groupDetails', 'inProgress');
 
 
 sub get_property_list {
@@ -84127,6 +84407,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanClusterHealthGroup', 'VsanClusterHealthGroup');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClusterHealthQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['task', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterHealthQuerySpec', 'task');
 
 
 sub get_property_list {
@@ -84388,10 +84692,13 @@ our @property_list = (
    ['vsanConfig', 'VsanConfigCheckResult', undef, 0],
    ['burnInTest', 'VsanBurnInTestCheckResult', undef, 0],
    ['perfsvcHealth', 'VsanPerfsvcHealthResult', undef, 0],
+   ['cluster', 'ManagedObjectReference', undef, 0],
+   ['fileServiceHealth', 'VsanClusterFileServiceHealthSummary', undef, 0],
+   ['ditEncryptionHealth', 'VsanClusterDitEncryptionHealthSummary', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterHealthSummary', 'clusterStatus', 'timestamp', 'clusterVersions', 'objectHealth', 'vmHealth', 'networkHealth', 'limitHealth', 'advCfgSync', 'createVmHealth', 'physicalDisksHealth', 'encryptionHealth', 'hclInfo', 'groups', 'overallHealth', 'overallHealthDescription', 'clomdLiveness', 'diskBalance', 'genericCluster', 'networkConfig', 'vsanConfig', 'burnInTest', 'perfsvcHealth');
+VIMRuntime::make_get_set('VsanClusterHealthSummary', 'clusterStatus', 'timestamp', 'clusterVersions', 'objectHealth', 'vmHealth', 'networkHealth', 'limitHealth', 'advCfgSync', 'createVmHealth', 'physicalDisksHealth', 'encryptionHealth', 'hclInfo', 'groups', 'overallHealth', 'overallHealthDescription', 'clomdLiveness', 'diskBalance', 'genericCluster', 'networkConfig', 'vsanConfig', 'burnInTest', 'perfsvcHealth', 'cluster', 'fileServiceHealth', 'ditEncryptionHealth');
 
 
 sub get_property_list {
@@ -84761,6 +85068,31 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanClusterNetworkPerfTaskSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['Cluster', 'ManagedObjectReference', undef, 0],
+   ['DurationSec', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterNetworkPerfTaskSpec', 'Cluster', 'DurationSec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterProactiveTestResult;
 our @ISA = qw(DynamicData);
 
@@ -84956,10 +85288,13 @@ our @property_list = (
    ['componentLimitHealth', undef, undef, 0],
    ['diskFreeSpaceHealth', undef, undef, 0],
    ['rcFreeReservationHealth', undef, undef, 0],
+   ['slackSpaceCapRequired', undef, undef, 0],
+   ['diskSpaceThreshold', 'VsanHealthThreshold', undef, 0],
+   ['capacityReservationInfo', 'VsanCapacityReservationInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanClusterWhatifHostFailuresResult', 'numFailures', 'totalUsedCapacityB', 'totalCapacityB', 'totalRcReservationB', 'totalRcSizeB', 'usedComponents', 'totalComponents', 'componentLimitHealth', 'diskFreeSpaceHealth', 'rcFreeReservationHealth');
+VIMRuntime::make_get_set('VsanClusterWhatifHostFailuresResult', 'numFailures', 'totalUsedCapacityB', 'totalCapacityB', 'totalRcReservationB', 'totalRcSizeB', 'usedComponents', 'totalComponents', 'componentLimitHealth', 'diskFreeSpaceHealth', 'rcFreeReservationHealth', 'slackSpaceCapRequired', 'diskSpaceThreshold', 'capacityReservationInfo');
 
 
 sub get_property_list {
@@ -85031,10 +85366,11 @@ our @ISA = qw(VsanUpgradeSystemPreflightCheckResult);
 our @property_list = (
    ['isSupported', 'boolean', undef, 1],
    ['targetVersion', undef, undef, 0],
+   ['isDataMovementRequired', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanDiskFormatConversionCheckResult', 'isSupported', 'targetVersion');
+VIMRuntime::make_get_set('VsanDiskFormatConversionCheckResult', 'isSupported', 'targetVersion', 'isDataMovementRequired');
 
 
 sub get_property_list {
@@ -85057,10 +85393,11 @@ our @property_list = (
    ['dataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
    ['dataEncryptionConfig', 'VsanDataEncryptionConfig', undef, 0],
    ['skipHostRemediation', 'boolean', undef, 0],
+   ['allowDataMovement', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanDiskFormatConversionSpec', 'dataEfficiencyConfig', 'dataEncryptionConfig', 'skipHostRemediation');
+VIMRuntime::make_get_set('VsanDiskFormatConversionSpec', 'dataEfficiencyConfig', 'dataEncryptionConfig', 'skipHostRemediation', 'allowDataMovement');
 
 
 sub get_property_list {
@@ -85085,6 +85422,58 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VimClusterVsanDiskMappingsConfigSpec', 'hostDiskMappings');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanEntitySpaceUsage;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entityId', undef, undef, 0],
+   ['spaceUsageByObjectType', 'VsanObjectSpaceSummary', 1, 0],
+   ['totalCapacityB', undef, undef, 0],
+   ['freeCapacityB', undef, undef, 0],
+   ['efficientCapacity', 'VimVsanDataEfficiencyCapacityState', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanEntitySpaceUsage', 'entityId', 'spaceUsageByObjectType', 'totalCapacityB', 'freeCapacityB', 'efficientCapacity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanEntitySpaceUsage;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanEntitySpaceUsage', 'VsanEntitySpaceUsage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanEntitySpaceUsage', 'VsanEntitySpaceUsage');
 
 
 sub get_property_list {
@@ -85189,6 +85578,33 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanHealthExtMgmtPreCheckResult', 'overallResult', 'esxVersionCheckPassed', 'drsCheckPassed', 'eamConnectionCheckPassed', 'installStateCheckPassed', 'results', 'vumRegistered');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHistoryItemQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusters', 'ManagedObjectReference', 1, 0],
+   ['cleanAll', 'boolean', undef, 0],
+   ['start', undef, undef, 0],
+   ['end', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHistoryItemQuerySpec', 'clusters', 'cleanAll', 'start', 'end');
 
 
 sub get_property_list {
@@ -85390,6 +85806,85 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanHostHealthSystemVersionResult', 'VsanHostHealthSystemVersionResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIoInsightInstance;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['runName', undef, undef, 1],
+   ['state', undef, undef, 0],
+   ['startTime', undef, undef, 0],
+   ['endTime', undef, undef, 0],
+   ['hostsIoInsightInfo', 'VsanHostIoInsightInfo', 1, 0],
+   ['hostUuids', undef, 1, 0],
+   ['vmUuids', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIoInsightInstance', 'runName', 'state', 'startTime', 'endTime', 'hostsIoInsightInfo', 'hostUuids', 'vmUuids');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanIoInsightInstance;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanIoInsightInstance', 'VsanIoInsightInstance', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanIoInsightInstance', 'VsanIoInsightInstance');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIoInsightInstanceQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['state', undef, undef, 0],
+   ['entityRefId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIoInsightInstanceQuerySpec', 'state', 'entityRefId');
 
 
 sub get_property_list {
@@ -85719,10 +86214,11 @@ our @property_list = (
    ['authSpec', 'VsanIscsiTargetAuthSpec', undef, 0],
    ['port', undef, undef, 0],
    ['networkInterface', undef, undef, 0],
+   ['affinityLocation', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanIscsiTargetCommonInfo', 'authSpec', 'port', 'networkInterface');
+VIMRuntime::make_get_set('VsanIscsiTargetCommonInfo', 'authSpec', 'port', 'networkInterface', 'affinityLocation');
 
 
 sub get_property_list {
@@ -85767,7 +86263,7 @@ package VsanIscsiTargetServiceDefaultConfigSpec;
 our @ISA = qw(DynamicData);
 
 our @property_list = (
-   ['networkInterface', undef, undef, 1],
+   ['networkInterface', undef, undef, 0],
    ['port', undef, undef, 0],
    ['iscsiTargetAuthSpec', 'VsanIscsiTargetAuthSpec', undef, 0],
 );
@@ -85890,6 +86386,34 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanObjectExtraAttributes;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uuid', undef, undef, 1],
+   ['objPath', undef, undef, 1],
+   ['objClass', undef, undef, 1],
+   ['ufn', undef, undef, 1],
+   ['isHbrCfg', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanObjectExtraAttributes', 'uuid', 'objPath', 'objClass', 'ufn', 'isHbrCfg');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanObjectIdentity;
 our @ISA = qw(DynamicData);
 
@@ -85900,10 +86424,13 @@ our @property_list = (
    ['vmNsObjectUuid', undef, undef, 0],
    ['vm', 'ManagedObjectReference', undef, 0],
    ['description', undef, undef, 0],
+   ['spbmProfileUuid', undef, undef, 0],
+   ['metadatas', 'KeyValue', 1, 0],
+   ['typeExtId', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanObjectIdentity', 'uuid', 'type', 'vmInstanceUuid', 'vmNsObjectUuid', 'vm', 'description');
+VIMRuntime::make_get_set('VsanObjectIdentity', 'uuid', 'type', 'vmInstanceUuid', 'vmNsObjectUuid', 'vm', 'description', 'spbmProfileUuid', 'metadatas', 'typeExtId');
 
 
 sub get_property_list {
@@ -86086,10 +86613,12 @@ our @property_list = (
    ['overReservedB', undef, undef, 0],
    ['physicalUsedB', undef, undef, 0],
    ['usedB', undef, undef, 0],
+   ['objTypeExt', undef, undef, 0],
+   ['objTypeExtDesc', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanObjectSpaceSummary', 'objType', 'overheadB', 'temporaryOverheadB', 'primaryCapacityB', 'provisionCapacityB', 'reservedCapacityB', 'overReservedB', 'physicalUsedB', 'usedB');
+VIMRuntime::make_get_set('VsanObjectSpaceSummary', 'objType', 'overheadB', 'temporaryOverheadB', 'primaryCapacityB', 'provisionCapacityB', 'reservedCapacityB', 'overReservedB', 'physicalUsedB', 'usedB', 'objTypeExt', 'objTypeExtDesc');
 
 
 sub get_property_list {
@@ -86370,10 +86899,11 @@ our @property_list = (
    ['threshold', 'VsanPerfThreshold', undef, 0],
    ['name', undef, undef, 0],
    ['description', undef, undef, 0],
+   ['secondGraph', 'VsanPerfGraph', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfGraph', 'id', 'metrics', 'unit', 'threshold', 'name', 'description');
+VIMRuntime::make_get_set('VsanPerfGraph', 'id', 'metrics', 'unit', 'threshold', 'name', 'description', 'secondGraph');
 
 
 sub get_property_list {
@@ -86895,10 +87425,61 @@ our @property_list = (
    ['enabled', 'boolean', undef, 1],
    ['profile', 'VirtualMachineProfileSpec', undef, 0],
    ['diagnosticMode', 'boolean', undef, 0],
+   ['verboseMode', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfsvcConfig', 'enabled', 'profile', 'diagnosticMode');
+VIMRuntime::make_get_set('VsanPerfsvcConfig', 'enabled', 'profile', 'diagnosticMode', 'verboseMode');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanRemoteClusterQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['startTime', undef, undef, 0],
+   ['endTime', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanRemoteClusterQuerySpec', 'startTime', 'endTime');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSpaceQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entityType', undef, undef, 1],
+   ['entityIds', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSpaceQuerySpec', 'entityType', 'entityIds');
 
 
 sub get_property_list {
@@ -86925,10 +87506,11 @@ our @property_list = (
    ['efficientCapacity', 'VimVsanDataEfficiencyCapacityState', undef, 0],
    ['whatifCapacities', 'VsanWhatifCapacity', 1, 0],
    ['uncommittedB', undef, undef, 0],
+   ['capacityHealthThreshold', 'VsanHealthThreshold', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanSpaceUsage', 'totalCapacityB', 'freeCapacityB', 'spaceOverview', 'spaceDetail', 'efficientCapacity', 'whatifCapacities', 'uncommittedB');
+VIMRuntime::make_get_set('VsanSpaceUsage', 'totalCapacityB', 'freeCapacityB', 'spaceOverview', 'spaceDetail', 'efficientCapacity', 'whatifCapacities', 'uncommittedB', 'capacityHealthThreshold');
 
 
 sub get_property_list {
@@ -86953,6 +87535,55 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanSpaceUsageDetailResult', 'spaceUsageByObjectType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSpaceUsageWithDatastoreType;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['spaceUsage', 'VsanSpaceUsage', undef, 0],
+   ['datastoreType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSpaceUsageWithDatastoreType', 'spaceUsage', 'datastoreType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanSpaceUsageWithDatastoreType;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanSpaceUsageWithDatastoreType', 'VsanSpaceUsageWithDatastoreType', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanSpaceUsageWithDatastoreType', 'VsanSpaceUsageWithDatastoreType');
 
 
 sub get_property_list {
@@ -87005,6 +87636,83 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanStorageWorkloadType', 'VsanStorageWorkloadType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanStretchedClusterConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['cluster', 'ManagedObjectReference', undef, 1],
+   ['preferredFdName', undef, undef, 0],
+   ['faultDomainConfig', 'VimClusterVSANStretchedClusterFaultDomainConfig', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanStretchedClusterConfig', 'cluster', 'preferredFdName', 'faultDomainConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanStretchedClusterConfig;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanStretchedClusterConfig', 'VsanStretchedClusterConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanStretchedClusterConfig', 'VsanStretchedClusterConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSyncingObjectFilter;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['resyncType', undef, undef, 0],
+   ['resyncStatus', undef, undef, 0],
+   ['numberOfObjects', undef, undef, 0],
+   ['offset', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSyncingObjectFilter', 'resyncType', 'resyncStatus', 'numberOfObjects', 'offset');
 
 
 sub get_property_list {
@@ -87305,6 +88013,990 @@ sub get_property_list {
 
 
 ##################################################################################
+package CnsBackingObjectDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['capacityInMb', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsBackingObjectDetails', 'capacityInMb');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsBaseCreateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CnsBaseCreateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsBlockBackingDetails;
+our @ISA = qw(CnsBackingObjectDetails);
+
+our @property_list = (
+   ['backingDiskId', undef, undef, 0],
+   ['backingDiskUrlPath', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsBlockBackingDetails', 'backingDiskId', 'backingDiskUrlPath');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsContainerCluster;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterType', undef, undef, 1],
+   ['clusterId', undef, undef, 1],
+   ['vSphereUser', undef, undef, 1],
+   ['clusterFlavor', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsContainerCluster', 'clusterType', 'clusterId', 'vSphereUser', 'clusterFlavor');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsContainerCluster;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsContainerCluster', 'CnsContainerCluster', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsContainerCluster', 'CnsContainerCluster');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsCursor;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['offset', undef, undef, 1],
+   ['limit', undef, undef, 1],
+   ['totalRecords', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsCursor', 'offset', 'limit', 'totalRecords');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsEntityMetadata;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entityName', undef, undef, 1],
+   ['labels', 'KeyValue', 1, 0],
+   ['delete', 'boolean', undef, 0],
+   ['clusterId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsEntityMetadata', 'entityName', 'labels', 'delete', 'clusterId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsEntityMetadata;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsEntityMetadata', 'CnsEntityMetadata', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsEntityMetadata', 'CnsEntityMetadata');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsFileBackingDetails;
+our @ISA = qw(CnsBackingObjectDetails);
+
+our @property_list = (
+   ['backingFileId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsFileBackingDetails', 'backingFileId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsFileCreateSpec;
+our @ISA = qw(CnsBaseCreateSpec);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CnsFileCreateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsKubernetesEntityMetadata;
+our @ISA = qw(CnsEntityMetadata);
+
+our @property_list = (
+   ['entityType', undef, undef, 1],
+   ['namespace', undef, undef, 0],
+   ['referredEntity', 'CnsKubernetesEntityReference', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsKubernetesEntityMetadata', 'entityType', 'namespace', 'referredEntity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsKubernetesEntityReference;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entityType', undef, undef, 1],
+   ['entityName', undef, undef, 1],
+   ['namespace', undef, undef, 0],
+   ['clusterId', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsKubernetesEntityReference', 'entityType', 'entityName', 'namespace', 'clusterId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsKubernetesEntityReference;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsKubernetesEntityReference', 'CnsKubernetesEntityReference', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsKubernetesEntityReference', 'CnsKubernetesEntityReference');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsKubernetesQueryFilter;
+our @ISA = qw(CnsQueryFilter);
+
+our @property_list = (
+   ['namespaces', undef, 1, 0],
+   ['podNames', undef, 1, 0],
+   ['pvcNames', undef, 1, 0],
+   ['pvNames', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsKubernetesQueryFilter', 'namespaces', 'podNames', 'pvcNames', 'pvNames');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsQueryFilter;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeIds', 'CnsVolumeId', 1, 0],
+   ['names', undef, 1, 0],
+   ['containerClusterIds', undef, 1, 0],
+   ['storagePolicyId', undef, undef, 0],
+   ['datastores', 'ManagedObjectReference', 1, 0],
+   ['labels', 'KeyValue', 1, 0],
+   ['complianceStatus', undef, undef, 0],
+   ['datastoreAccessibilityStatus', undef, undef, 0],
+   ['cursor', 'CnsCursor', undef, 0],
+   ['healthStatus', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsQueryFilter', 'volumeIds', 'names', 'containerClusterIds', 'storagePolicyId', 'datastores', 'labels', 'complianceStatus', 'datastoreAccessibilityStatus', 'cursor', 'healthStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsQueryResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumes', 'CnsVolume', 1, 0],
+   ['cursor', 'CnsCursor', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsQueryResult', 'volumes', 'cursor');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsSnapshotId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsSnapshotId', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsSnapshotVolumeSource;
+our @ISA = qw(CnsVolumeSource);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 0],
+   ['snapshotId', 'CnsSnapshotId', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsSnapshotVolumeSource', 'volumeId', 'snapshotId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVSANFileCreateSpec;
+our @ISA = qw(CnsFileCreateSpec);
+
+our @property_list = (
+   ['softQuotaInMb', undef, undef, 0],
+   ['permission', 'VsanFileShareNetPermission', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVSANFileCreateSpec', 'softQuotaInMb', 'permission');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolume;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 1],
+   ['datastoreUrl', undef, undef, 0],
+   ['name', undef, undef, 0],
+   ['volumeType', undef, undef, 0],
+   ['storagePolicyId', undef, undef, 0],
+   ['metadata', 'CnsVolumeMetadata', undef, 0],
+   ['backingObjectDetails', 'CnsBackingObjectDetails', undef, 0],
+   ['complianceStatus', undef, undef, 0],
+   ['datastoreAccessibilityStatus', undef, undef, 0],
+   ['healthStatus', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolume', 'volumeId', 'datastoreUrl', 'name', 'volumeType', 'storagePolicyId', 'metadata', 'backingObjectDetails', 'complianceStatus', 'datastoreAccessibilityStatus', 'healthStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolume;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolume', 'CnsVolume', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolume', 'CnsVolume');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeAttachDetachSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 1],
+   ['vm', 'ManagedObjectReference', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeAttachDetachSpec', 'volumeId', 'vm');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolumeAttachDetachSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolumeAttachDetachSpec', 'CnsVolumeAttachDetachSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolumeAttachDetachSpec', 'CnsVolumeAttachDetachSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeAttachResult;
+our @ISA = qw(CnsVolumeOperationResult);
+
+our @property_list = (
+   ['diskUUID', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeAttachResult', 'diskUUID');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeCreateResult;
+our @ISA = qw(CnsVolumeOperationResult);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeCreateResult', 'name');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeCreateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['volumeType', undef, undef, 1],
+   ['datastores', 'ManagedObjectReference', 1, 0],
+   ['metadata', 'CnsVolumeMetadata', undef, 0],
+   ['backingObjectDetails', 'CnsBackingObjectDetails', undef, 1],
+   ['profile', 'VirtualMachineProfileSpec', 1, 0],
+   ['createSpec', 'CnsBaseCreateSpec', undef, 0],
+   ['volumeSource', 'CnsVolumeSource', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeCreateSpec', 'name', 'volumeType', 'datastores', 'metadata', 'backingObjectDetails', 'profile', 'createSpec', 'volumeSource');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolumeCreateSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolumeCreateSpec', 'CnsVolumeCreateSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolumeCreateSpec', 'CnsVolumeCreateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeId;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['id', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeId', 'id');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolumeId;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolumeId', 'CnsVolumeId', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolumeId', 'CnsVolumeId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeMetadata;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['containerCluster', 'CnsContainerCluster', undef, 1],
+   ['entityMetadata', 'CnsEntityMetadata', 1, 0],
+   ['containerClusterArray', 'CnsContainerCluster', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeMetadata', 'containerCluster', 'entityMetadata', 'containerClusterArray');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeMetadataUpdateSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 1],
+   ['metadata', 'CnsVolumeMetadata', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeMetadataUpdateSpec', 'volumeId', 'metadata');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolumeMetadataUpdateSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolumeMetadataUpdateSpec', 'CnsVolumeMetadataUpdateSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolumeMetadataUpdateSpec', 'CnsVolumeMetadataUpdateSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeOperationBatchResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeResults', 'CnsVolumeOperationResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeOperationBatchResult', 'volumeResults');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeOperationResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 0],
+   ['fault', 'LocalizedMethodFault', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeOperationResult', 'volumeId', 'fault');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfCnsVolumeOperationResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['CnsVolumeOperationResult', 'CnsVolumeOperationResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfCnsVolumeOperationResult', 'CnsVolumeOperationResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeSource;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('CnsVolumeSource');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVsanFileShareBackingDetails;
+our @ISA = qw(CnsFileBackingDetails);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['accessPoints', 'KeyValue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('CnsVsanFileShareBackingDetails', 'name', 'accessPoints');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsAlreadyRegisteredFault;
+our @ISA = qw(CnsFault);
+
+our @property_list = (
+   ['volumeId', 'CnsVolumeId', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsAlreadyRegisteredFault', 'volumeId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsFault;
+our @ISA = qw(VimFault);
+
+our @property_list = (
+   ['reason', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('CnsFault', 'reason');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanNodeNotMaster;
 our @ISA = qw(VimFault);
 
@@ -87330,6 +89022,134 @@ sub get_property_list {
 
 
 ##################################################################################
+package HostSpbmDatastoreInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['datastoreUrl', undef, undef, 1],
+   ['namespace', undef, undef, 1],
+   ['defaultProfileId', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpbmDatastoreInfo', 'datastoreUrl', 'namespace', 'defaultProfileId');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpbmHashInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['policyInfoHash', undef, undef, 1],
+   ['datastoreInfoHash', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpbmHashInfo', 'policyInfoHash', 'datastoreInfoHash');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpbmPolicyBlobInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['policyBlob', undef, undef, 1],
+   ['namespace', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpbmPolicyBlobInfo', 'policyBlob', 'namespace');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfHostSpbmPolicyBlobInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['HostSpbmPolicyBlobInfo', 'HostSpbmPolicyBlobInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfHostSpbmPolicyBlobInfo', 'HostSpbmPolicyBlobInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostSpbmPolicyInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['profileId', undef, undef, 1],
+   ['name', undef, undef, 1],
+   ['description', undef, undef, 0],
+   ['generationId', undef, undef, 1],
+   ['policyBlobInfo', 'HostSpbmPolicyBlobInfo', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('HostSpbmPolicyInfo', 'profileId', 'name', 'description', 'generationId', 'policyBlobInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimHostVSANStretchedClusterHostCapability;
 our @ISA = qw(DynamicData);
 
@@ -87339,6 +89159,109 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VimHostVSANStretchedClusterHostCapability', 'featureVersion');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanBasicDeviceInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['deviceName', undef, undef, 1],
+   ['pciId', undef, undef, 0],
+   ['fwVersion', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanBasicDeviceInfo', 'deviceName', 'pciId', 'fwVersion');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanBasicDeviceInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanBasicDeviceInfo', 'VsanBasicDeviceInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanBasicDeviceInfo', 'VsanBasicDeviceInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClusterMembershipInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterUuid', undef, undef, 0],
+   ['health', undef, undef, 0],
+   ['membershipUuid', undef, undef, 0],
+   ['memberUuid', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanClusterMembershipInfo', 'clusterUuid', 'health', 'membershipUuid', 'memberUuid');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDaemonHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 1],
+   ['alive', 'boolean', undef, 1],
+   ['error', 'LocalizedMethodFault', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDaemonHealth', 'name', 'alive', 'error');
 
 
 sub get_property_list {
@@ -87418,6 +89341,57 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanDiskRebalanceResult', 'status', 'bytesMoving', 'remainingBytesToMove', 'diskUsage', 'maxDiskUsage', 'minDiskUsage', 'avgDiskUsage');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDitEncryptionHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 0],
+   ['health', undef, undef, 0],
+   ['reason', 'LocalizableMessage', undef, 0],
+   ['ditEncryptionInfo', 'VsanInTransitEncryptionInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDitEncryptionHealthSummary', 'hostname', 'health', 'reason', 'ditEncryptionInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanDitEncryptionHealthSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanDitEncryptionHealthSummary', 'VsanDitEncryptionHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanDitEncryptionHealthSummary', 'VsanDitEncryptionHealthSummary');
 
 
 sub get_property_list {
@@ -87537,6 +89511,224 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanFileServerHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['domainName', undef, undef, 0],
+   ['fileServerIp', undef, undef, 0],
+   ['nfsdHealth', undef, undef, 0],
+   ['networkHealth', undef, undef, 0],
+   ['rootfsHealth', undef, undef, 0],
+   ['description', undef, undef, 0],
+   ['smbConnections', undef, undef, 0],
+   ['smbDaemonHealth', undef, undef, 0],
+   ['adTestJoinHealth', undef, undef, 0],
+   ['dnsLookupHealth', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServerHealthSummary', 'domainName', 'fileServerIp', 'nfsdHealth', 'networkHealth', 'rootfsHealth', 'description', 'smbConnections', 'smbDaemonHealth', 'adTestJoinHealth', 'dnsLookupHealth');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServerHealthSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServerHealthSummary', 'VsanFileServerHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServerHealthSummary', 'VsanFileServerHealthSummary');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceBalanceHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['health', undef, undef, 0],
+   ['description', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceBalanceHealth', 'health', 'description');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 0],
+   ['overallHealth', undef, undef, 0],
+   ['enabled', 'boolean', undef, 0],
+   ['vdfsdStatus', 'VsanResourceHealth', undef, 0],
+   ['fsvmStatus', 'VsanResourceHealth', undef, 0],
+   ['rootFsStatus', 'VsanFileServiceRootFsHealth', undef, 0],
+   ['fileServerHealth', 'VsanFileServerHealthSummary', 1, 0],
+   ['fileShareHealth', 'VsanFileServiceShareHealthSummary', 1, 0],
+   ['balanceStatus', 'VsanFileServiceBalanceHealth', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceHealthSummary', 'hostname', 'overallHealth', 'enabled', 'vdfsdStatus', 'fsvmStatus', 'rootFsStatus', 'fileServerHealth', 'fileShareHealth', 'balanceStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceHealthSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceHealthSummary', 'VsanFileServiceHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceHealthSummary', 'VsanFileServiceHealthSummary');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceRootFsHealth;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['created', 'boolean', undef, 0],
+   ['health', undef, undef, 0],
+   ['description', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceRootFsHealth', 'created', 'health', 'description');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceShareHealthSummary;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['overallHealth', undef, undef, 0],
+   ['domainName', undef, undef, 0],
+   ['shareUuid', undef, undef, 0],
+   ['shareName', undef, undef, 0],
+   ['objectHealth', 'VsanObjectOverallHealth', undef, 0],
+   ['description', undef, undef, 0],
+   ['extensible', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceShareHealthSummary', 'overallHealth', 'domainName', 'shareUuid', 'shareName', 'objectHealth', 'description', 'extensible');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceShareHealthSummary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceShareHealthSummary', 'VsanFileServiceShareHealthSummary', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceShareHealthSummary', 'VsanFileServiceShareHealthSummary');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHclCommonDeviceInfo;
 our @ISA = qw(DynamicData);
 
@@ -87618,10 +89810,12 @@ our @property_list = (
    ['diskMode', undef, undef, 0],
    ['diskModeOnHcl', undef, 1, 0],
    ['diskModeSupported', 'boolean', undef, 0],
+   ['toolName', undef, undef, 0],
+   ['toolVersion', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHclControllerInfo', 'deviceName', 'deviceDisplayName', 'driverName', 'driverVersion', 'vendorId', 'deviceId', 'subVendorId', 'subDeviceId', 'extraInfo', 'deviceOnHcl', 'releaseSupported', 'releasesOnHcl', 'driverVersionsOnHcl', 'driverVersionSupported', 'fwVersionSupported', 'fwVersionOnHcl', 'cacheConfigSupported', 'cacheConfigOnHcl', 'raidConfigSupported', 'raidConfigOnHcl', 'fwVersion', 'raidConfig', 'cacheConfig', 'cimProviderInfo', 'usedByVsan', 'disks', 'issues', 'remediableIssues', 'driversOnHcl', 'fwAuxVersion', 'queueDepth', 'queueDepthOnHcl', 'queueDepthSupported', 'diskMode', 'diskModeOnHcl', 'diskModeSupported');
+VIMRuntime::make_get_set('VsanHclControllerInfo', 'deviceName', 'deviceDisplayName', 'driverName', 'driverVersion', 'vendorId', 'deviceId', 'subVendorId', 'subDeviceId', 'extraInfo', 'deviceOnHcl', 'releaseSupported', 'releasesOnHcl', 'driverVersionsOnHcl', 'driverVersionSupported', 'fwVersionSupported', 'fwVersionOnHcl', 'cacheConfigSupported', 'cacheConfigOnHcl', 'raidConfigSupported', 'raidConfigOnHcl', 'fwVersion', 'raidConfig', 'cacheConfig', 'cimProviderInfo', 'usedByVsan', 'disks', 'issues', 'remediableIssues', 'driversOnHcl', 'fwAuxVersion', 'queueDepth', 'queueDepthOnHcl', 'queueDepthSupported', 'diskMode', 'diskModeOnHcl', 'diskModeSupported', 'toolName', 'toolVersion');
 
 
 sub get_property_list {
@@ -87863,6 +90057,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHealthQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['includeAllRemoteClusters', 'boolean', undef, 0],
+   ['remoteClusterUuids', undef, 1, 0],
+   ['latencyOnly', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHealthQuerySpec', 'includeAllRemoteClusters', 'remoteClusterUuids', 'latencyOnly');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostCimProviderInfo;
 our @ISA = qw(DynamicData);
 
@@ -88072,6 +90292,82 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostIoInsightInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['ioinsightWorldId', undef, undef, 0],
+   ['faultMessage', undef, undef, 0],
+   ['ioinsightInfo', 'VsanIoInsightInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostIoInsightInfo', 'host', 'ioinsightWorldId', 'faultMessage', 'ioinsightInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostIoInsightInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostIoInsightInfo', 'VsanHostIoInsightInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostIoInsightInfo', 'VsanHostIoInsightInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostQueryCheckLimitsSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['optionTypes', undef, 1, 0],
+   ['fetchAll', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHostQueryCheckLimitsSpec', 'optionTypes', 'fetchAll');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostReference;
 our @ISA = qw(DynamicData);
 
@@ -88196,6 +90492,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanIoInsightInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['state', undef, undef, 0],
+   ['monitoredVMs', 'ManagedObjectReference', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanIoInsightInfo', 'state', 'monitoredVMs');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIperfClientSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['Reverse', 'boolean', undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanIperfClientSpec', 'Reverse');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanKmsHealth;
 our @ISA = qw(DynamicData);
 
@@ -88265,10 +90610,21 @@ our @property_list = (
    ['reservedRcSizeB', undef, undef, 1],
    ['totalRcSizeB', undef, undef, 1],
    ['rcFreeReservationHealth', undef, undef, 1],
+   ['totalLogicalSpaceB', undef, undef, 0],
+   ['logicalSpaceUsedB', undef, undef, 0],
+   ['dedupMetadataSizeB', undef, undef, 0],
+   ['diskTransientCapacityUsedB', undef, undef, 0],
+   ['dgTransientCapacityUsedB', undef, undef, 0],
+   ['slackSpaceCapRequired', undef, undef, 0],
+   ['resyncPauseThreshold', undef, undef, 0],
+   ['spaceEfficiencyMetadataSizeB', 'VsanSpaceEfficiencyMetadataSize', undef, 0],
+   ['hostRebuildCapacity', undef, undef, 0],
+   ['minSpaceRequiredForVsanOp', undef, undef, 0],
+   ['enforceCapResrvSpace', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanLimitHealthResult', 'hostname', 'issueFound', 'maxComponents', 'freeComponents', 'componentLimitHealth', 'lowestFreeDiskSpacePct', 'usedDiskSpaceB', 'totalDiskSpaceB', 'diskFreeSpaceHealth', 'reservedRcSizeB', 'totalRcSizeB', 'rcFreeReservationHealth');
+VIMRuntime::make_get_set('VsanLimitHealthResult', 'hostname', 'issueFound', 'maxComponents', 'freeComponents', 'componentLimitHealth', 'lowestFreeDiskSpacePct', 'usedDiskSpaceB', 'totalDiskSpaceB', 'diskFreeSpaceHealth', 'reservedRcSizeB', 'totalRcSizeB', 'rcFreeReservationHealth', 'totalLogicalSpaceB', 'logicalSpaceUsedB', 'dedupMetadataSizeB', 'diskTransientCapacityUsedB', 'dgTransientCapacityUsedB', 'slackSpaceCapRequired', 'resyncPauseThreshold', 'spaceEfficiencyMetadataSizeB', 'hostRebuildCapacity', 'minSpaceRequiredForVsanOp', 'enforceCapResrvSpace');
 
 
 sub get_property_list {
@@ -88322,10 +90678,11 @@ our @property_list = (
    ['multicastConfig', undef, undef, 0],
    ['unicastConfig', undef, undef, 0],
    ['inUnicast', 'boolean', undef, 0],
+   ['serverClusters', 'VsanServerClusterInfo', 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanNetworkHealthResult', 'host', 'hostname', 'vsanVmknicPresent', 'ipSubnets', 'issueFound', 'peerHealth', 'vMotionHealth', 'multicastConfig', 'unicastConfig', 'inUnicast');
+VIMRuntime::make_get_set('VsanNetworkHealthResult', 'host', 'hostname', 'vsanVmknicPresent', 'ipSubnets', 'issueFound', 'peerHealth', 'vMotionHealth', 'multicastConfig', 'unicastConfig', 'inUnicast', 'serverClusters');
 
 
 sub get_property_list {
@@ -88483,10 +90840,11 @@ our @property_list = (
    ['numObjects', undef, undef, 1],
    ['health', undef, undef, 1],
    ['objUuids', undef, 1, 0],
+   ['vsanClusterUuid', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanObjectHealth', 'numObjects', 'health', 'objUuids');
+VIMRuntime::make_get_set('VsanObjectHealth', 'numObjects', 'health', 'objUuids', 'vsanClusterUuid');
 
 
 sub get_property_list {
@@ -88533,10 +90891,12 @@ our @property_list = (
    ['objectHealthDetail', 'VsanObjectHealth', 1, 0],
    ['objectsComplianceDetail', 'VsanStorageComplianceResult', 1, 0],
    ['objectVersionCompliance', 'boolean', undef, 0],
+   ['objectFormatChangeRequiredUuids', undef, 1, 0],
+   ['objectsRelayoutBytes', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanObjectOverallHealth', 'objectHealthDetail', 'objectsComplianceDetail', 'objectVersionCompliance');
+VIMRuntime::make_get_set('VsanObjectOverallHealth', 'objectHealthDetail', 'objectsComplianceDetail', 'objectVersionCompliance', 'objectFormatChangeRequiredUuids', 'objectsRelayoutBytes');
 
 
 sub get_property_list {
@@ -88829,6 +91189,56 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanResourceHealth', 'VsanResourceHealth');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanServerClusterInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['cluster', 'ManagedObjectReference', undef, 0],
+   ['peerHealth', 'VsanNetworkPeerHealthResult', 1, 0],
+   ['membership', 'VsanClusterMembershipInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanServerClusterInfo', 'cluster', 'peerHealth', 'membership');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanServerClusterInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanServerClusterInfo', 'VsanServerClusterInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanServerClusterInfo', 'VsanServerClusterInfo');
 
 
 sub get_property_list {
@@ -89210,6 +91620,156 @@ sub get_property_list {
 
 
 ##################################################################################
+package ActiveVsanDirectoryServerConfig;
+our @ISA = qw(VsanDirectoryServerConfig);
+
+our @property_list = (
+   ['activeDirectoryDomainName', undef, undef, 0],
+   ['username', undef, undef, 0],
+   ['password', undef, undef, 0],
+   ['organizationalUnit', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ActiveVsanDirectoryServerConfig', 'activeDirectoryDomainName', 'username', 'password', 'organizationalUnit');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanAdvancedDatastoreConfig;
+our @ISA = qw(VsanDatastoreConfig);
+
+our @property_list = (
+   ['remoteDatastores', 'ManagedObjectReference', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanAdvancedDatastoreConfig', 'remoteDatastores');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanCapacityReservationInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostRebuildThreshold', undef, undef, 0],
+   ['vsanOpSpaceThreshold', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanCapacityReservationInfo', 'hostRebuildThreshold', 'vsanOpSpaceThreshold');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanClientDatastoreConfig;
+our @ISA = qw(VsanDatastoreSpec);
+
+our @property_list = (
+   ['clusters', 'ManagedObjectReference', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanClientDatastoreConfig', 'clusters');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ClusterRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterUuid', undef, undef, 1],
+   ['totalComponentsCount', undef, undef, 1],
+   ['cluster', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('ClusterRuntimeInfo', 'clusterUuid', 'totalComponentsCount', 'cluster');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfClusterRuntimeInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['ClusterRuntimeInfo', 'ClusterRuntimeInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfClusterRuntimeInfo', 'ClusterRuntimeInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanConfigInfoEx;
 our @ISA = qw(VsanClusterConfigInfo);
 
@@ -89222,10 +91782,14 @@ our @property_list = (
    ['datastoreConfig', 'VsanDatastoreConfig', undef, 0],
    ['perfsvcConfig', 'VsanPerfsvcConfig', undef, 0],
    ['unmapConfig', 'VsanUnmapConfig', undef, 0],
+   ['vumConfig', 'VsanVumConfig', undef, 0],
+   ['fileServiceConfig', 'VsanFileServiceConfig', undef, 0],
+   ['metricsConfig', 'VsanMetricsConfig', undef, 0],
+   ['dataInTransitEncryptionConfig', 'VsanDataInTransitEncryptionConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanConfigInfoEx', 'dataEfficiencyConfig', 'resyncIopsLimitConfig', 'iscsiConfig', 'dataEncryptionConfig', 'extendedConfig', 'datastoreConfig', 'perfsvcConfig', 'unmapConfig');
+VIMRuntime::make_get_set('VsanConfigInfoEx', 'dataEfficiencyConfig', 'resyncIopsLimitConfig', 'iscsiConfig', 'dataEncryptionConfig', 'extendedConfig', 'datastoreConfig', 'perfsvcConfig', 'unmapConfig', 'vumConfig', 'fileServiceConfig', 'metricsConfig', 'dataInTransitEncryptionConfig');
 
 
 sub get_property_list {
@@ -89250,10 +91814,11 @@ our @property_list = (
    ['physicalCapacity', undef, undef, 0],
    ['physicalCapacityUsed', undef, undef, 0],
    ['dedupMetadataSize', undef, undef, 0],
+   ['spaceEfficiencyMetadataSize', 'VsanSpaceEfficiencyMetadataSize', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimVsanDataEfficiencyCapacityState', 'logicalCapacity', 'logicalCapacityUsed', 'physicalCapacity', 'physicalCapacityUsed', 'dedupMetadataSize');
+VIMRuntime::make_get_set('VimVsanDataEfficiencyCapacityState', 'logicalCapacity', 'logicalCapacityUsed', 'physicalCapacity', 'physicalCapacityUsed', 'dedupMetadataSize', 'spaceEfficiencyMetadataSize');
 
 
 sub get_property_list {
@@ -89309,6 +91874,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanDataEncryptionConfig', 'encryptionEnabled', 'kmsProviderId', 'kekId', 'hostKeyId', 'dekGenerationId', 'changing', 'eraseDisksBeforeUse');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDataInTransitEncryptionConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['rekeyInterval', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDataInTransitEncryptionConfig', 'enabled', 'rekeyInterval');
 
 
 sub get_property_list {
@@ -89397,6 +91987,1230 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanDirectoryServerConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanDirectoryServerConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDiskDataEvacuationResourceCheckTaskDetails;
+our @ISA = qw(VsanResourceCheckTaskDetails);
+
+our @property_list = (
+   ['diskUuid', undef, undef, 0],
+   ['isCapacityTier', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDiskDataEvacuationResourceCheckTaskDetails', 'diskUuid', 'isCapacityTier');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDiskGroupResourceCheckResult;
+our @ISA = qw(EntityResourceCheckDetails);
+
+our @property_list = (
+   ['cacheTierDisk', 'VsanDiskResourceCheckResult', undef, 0],
+   ['capacityTierDisks', 'VsanDiskResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanDiskGroupResourceCheckResult', 'cacheTierDisk', 'capacityTierDisks');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanDiskGroupResourceCheckResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanDiskGroupResourceCheckResult', 'VsanDiskGroupResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanDiskGroupResourceCheckResult', 'VsanDiskGroupResourceCheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDiskResourceCheckResult;
+our @ISA = qw(EntityResourceCheckDetails);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanDiskResourceCheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanDiskResourceCheckResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanDiskResourceCheckResult', 'VsanDiskResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanDiskResourceCheckResult', 'VsanDiskResourceCheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VSANEntityCompatibilityResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['entity', 'ManagedObjectReference', undef, 1],
+   ['compatible', 'boolean', undef, 1],
+   ['incompatibleReasons', 'LocalizableMessage', 1, 0],
+   ['extendedAttributes', 'KeyAnyValue', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VSANEntityCompatibilityResult', 'entity', 'compatible', 'incompatibleReasons', 'extendedAttributes');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVSANEntityCompatibilityResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VSANEntityCompatibilityResult', 'VSANEntityCompatibilityResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVSANEntityCompatibilityResult', 'VSANEntityCompatibilityResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package EntityResourceCheckDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['uuid', undef, undef, 0],
+   ['isNew', 'boolean', undef, 0],
+   ['capacity', undef, undef, 0],
+   ['postOperationCapacity', undef, undef, 0],
+   ['usedCapacity', undef, undef, 0],
+   ['postOperationUsedCapacity', undef, undef, 0],
+   ['additionalRequiredCapacity', undef, undef, 0],
+   ['maxComponents', undef, undef, 0],
+   ['components', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('EntityResourceCheckDetails', 'name', 'uuid', 'isNew', 'capacity', 'postOperationCapacity', 'usedCapacity', 'postOperationUsedCapacity', 'additionalRequiredCapacity', 'maxComponents', 'components');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFaultDomainResourceCheckResult;
+our @ISA = qw(EntityResourceCheckDetails);
+
+our @property_list = (
+   ['hosts', 'VsanHostResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFaultDomainResourceCheckResult', 'hosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFaultDomainResourceCheckResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFaultDomainResourceCheckResult', 'VsanFaultDomainResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFaultDomainResourceCheckResult', 'VsanFaultDomainResourceCheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 1],
+   ['fileServerMemoryMB', undef, undef, 0],
+   ['fileServerCPUMhz', undef, undef, 0],
+   ['fsvmMemoryMB', undef, undef, 0],
+   ['fsvmCPU', undef, undef, 0],
+   ['network', 'ManagedObjectReference', undef, 0],
+   ['domains', 'VsanFileServiceDomainConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceConfig', 'enabled', 'fileServerMemoryMB', 'fileServerCPUMhz', 'fsvmMemoryMB', 'fsvmCPU', 'network', 'domains');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceDomain;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uuid', undef, undef, 1],
+   ['config', 'VsanFileServiceDomainConfig', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceDomain', 'uuid', 'config');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceDomain;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceDomain', 'VsanFileServiceDomain', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceDomain', 'VsanFileServiceDomain');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceDomainConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['dnsServerAddresses', undef, 1, 0],
+   ['dnsSuffixes', undef, 1, 0],
+   ['fileServerIpConfig', 'VsanFileServiceIpConfig', 1, 0],
+   ['directoryServerConfig', 'VsanDirectoryServerConfig', undef, 0],
+   ['version', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceDomainConfig', 'name', 'dnsServerAddresses', 'dnsSuffixes', 'fileServerIpConfig', 'directoryServerConfig', 'version');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceDomainConfig;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceDomainConfig', 'VsanFileServiceDomainConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceDomainConfig', 'VsanFileServiceDomainConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceDomainQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uuids', undef, 1, 0],
+   ['names', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceDomainQuerySpec', 'uuids', 'names');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceIpConfig;
+our @ISA = qw(HostIpConfig);
+
+our @property_list = (
+   ['fqdn', undef, undef, 0],
+   ['isPrimary', 'boolean', undef, 0],
+   ['gateway', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceIpConfig', 'fqdn', 'isPrimary', 'gateway');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceIpConfig;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceIpConfig', 'VsanFileServiceIpConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceIpConfig', 'VsanFileServiceIpConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShare;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['uuid', undef, undef, 1],
+   ['config', 'VsanFileShareConfig', undef, 0],
+   ['runtime', 'VsanFileShareRuntimeInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShare', 'uuid', 'config', 'runtime');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileShare;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileShare', 'VsanFileShare', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileShare', 'VsanFileShare');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['name', undef, undef, 0],
+   ['domainName', undef, undef, 0],
+   ['quota', undef, undef, 0],
+   ['softQuota', undef, undef, 0],
+   ['labels', 'KeyValue', 1, 0],
+   ['storagePolicy', 'VirtualMachineProfileSpec', undef, 0],
+   ['permission', 'VsanFileShareNetPermission', 1, 0],
+   ['protocols', undef, 1, 0],
+   ['smbOptions', 'VsanFileShareSmbOptions', undef, 0],
+   ['nfsSecType', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareConfig', 'name', 'domainName', 'quota', 'softQuota', 'labels', 'storagePolicy', 'permission', 'protocols', 'smbOptions', 'nfsSecType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareNetPermission;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ips', undef, undef, 1],
+   ['permissions', undef, undef, 0],
+   ['allowRoot', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareNetPermission', 'ips', 'permissions', 'allowRoot');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileShareNetPermission;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileShareNetPermission', 'VsanFileShareNetPermission', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileShareNetPermission', 'VsanFileShareNetPermission');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareQueryProperties;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['includeBasic', 'boolean', undef, 0],
+   ['includeUsedCapacity', 'boolean', undef, 0],
+   ['includeVsanObjectUuids', 'boolean', undef, 0],
+   ['includeAllLabels', 'boolean', undef, 0],
+   ['labelKeys', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareQueryProperties', 'includeBasic', 'includeUsedCapacity', 'includeVsanObjectUuids', 'includeAllLabels', 'labelKeys');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package FileShareQueryResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['fileShares', 'VsanFileShare', 1, 0],
+   ['nextOffset', undef, undef, 0],
+   ['totalShareCount', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('FileShareQueryResult', 'fileShares', 'nextOffset', 'totalShareCount');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareQuerySpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['domainName', undef, undef, 0],
+   ['uuids', undef, 1, 0],
+   ['names', undef, 1, 0],
+   ['offset', undef, undef, 0],
+   ['limit', undef, undef, 0],
+   ['managedBy', undef, 1, 0],
+   ['protocols', undef, 1, 0],
+   ['pageNumber', undef, undef, 0],
+   ['properties', 'VsanFileShareQueryProperties', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareQuerySpec', 'domainName', 'uuids', 'names', 'offset', 'limit', 'managedBy', 'protocols', 'pageNumber', 'properties');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareRuntimeInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['usedCapacity', undef, undef, 0],
+   ['hostname', undef, undef, 0],
+   ['address', undef, undef, 0],
+   ['vsanObjectUuids', undef, 1, 0],
+   ['accessPoints', 'KeyValue', 1, 0],
+   ['managedBy', undef, undef, 0],
+   ['fileServerFQDN', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareRuntimeInfo', 'usedCapacity', 'hostname', 'address', 'vsanObjectUuids', 'accessPoints', 'managedBy', 'fileServerFQDN');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareSmbOptions;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['encryption', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileShareSmbOptions', 'encryption');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostResourceCheckResult;
+our @ISA = qw(EntityResourceCheckDetails);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['diskGroups', 'VsanDiskGroupResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostResourceCheckResult', 'host', 'diskGroups');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostResourceCheckResult;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostResourceCheckResult', 'VsanHostResourceCheckResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostResourceCheckResult', 'VsanHostResourceCheckResult');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMetricProfile;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['authToken', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanMetricProfile', 'authToken');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMetricProfile;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMetricProfile', 'VsanMetricProfile', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMetricProfile', 'VsanMetricProfile');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMetricsConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['profiles', 'VsanMetricProfile', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMetricsConfig', 'profiles');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckItem;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['type', undef, undef, 1],
+   ['description', 'LocalizableMessage', undef, 1],
+   ['status', undef, undef, 1],
+   ['reason', 'LocalizableMessage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckItem', 'type', 'description', 'status', 'reason');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMountPrecheckItem;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMountPrecheckItem', 'VsanMountPrecheckItem', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMountPrecheckItem', 'VsanMountPrecheckItem');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkConnectivity;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['smallPingTestSuccessPct', undef, undef, 1],
+   ['largePingTestSuccessPct', undef, undef, 1],
+   ['status', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkConnectivity', 'host', 'smallPingTestSuccessPct', 'largePingTestSuccessPct', 'status');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMountPrecheckNetworkConnectivity;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMountPrecheckNetworkConnectivity', 'VsanMountPrecheckNetworkConnectivity', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMountPrecheckNetworkConnectivity', 'VsanMountPrecheckNetworkConnectivity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkConnectivityDetail;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['networkConnectivity', 'VsanMountPrecheckNetworkConnectivity', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkConnectivityDetail', 'host', 'networkConnectivity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMountPrecheckNetworkConnectivityDetail;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMountPrecheckNetworkConnectivityDetail', 'VsanMountPrecheckNetworkConnectivityDetail', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMountPrecheckNetworkConnectivityDetail', 'VsanMountPrecheckNetworkConnectivityDetail');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkConnectivityResult;
+our @ISA = qw(VsanMountPrecheckItem);
+
+our @property_list = (
+   ['details', 'VsanMountPrecheckNetworkConnectivityDetail', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkConnectivityResult', 'details');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkLatency;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['networkLatency', undef, undef, 1],
+   ['status', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkLatency', 'host', 'networkLatency', 'status');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMountPrecheckNetworkLatency;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMountPrecheckNetworkLatency', 'VsanMountPrecheckNetworkLatency', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMountPrecheckNetworkLatency', 'VsanMountPrecheckNetworkLatency');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkLatencyDetail;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['host', 'ManagedObjectReference', undef, 1],
+   ['networkLatencies', 'VsanMountPrecheckNetworkLatency', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkLatencyDetail', 'host', 'networkLatencies');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanMountPrecheckNetworkLatencyDetail;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanMountPrecheckNetworkLatencyDetail', 'VsanMountPrecheckNetworkLatencyDetail', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanMountPrecheckNetworkLatencyDetail', 'VsanMountPrecheckNetworkLatencyDetail');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckNetworkLatencyResult;
+our @ISA = qw(VsanMountPrecheckItem);
+
+our @property_list = (
+   ['details', 'VsanMountPrecheckNetworkLatencyDetail', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckNetworkLatencyResult', 'details');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanMountPrecheckResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['result', 'VsanMountPrecheckItem', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanMountPrecheckResult', 'result');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanProactiveRebalanceInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['threshold', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanProactiveRebalanceInfo', 'enabled', 'threshold');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVsanReconfigSpec;
 our @ISA = qw(SDDCBase);
 
@@ -89414,10 +93228,14 @@ our @property_list = (
    ['datastoreConfig', 'VsanDatastoreConfig', undef, 0],
    ['perfsvcConfig', 'VsanPerfsvcConfig', undef, 0],
    ['unmapConfig', 'VsanUnmapConfig', undef, 0],
+   ['vumConfig', 'VsanVumConfig', undef, 0],
+   ['metricsConfig', 'VsanMetricsConfig', undef, 0],
+   ['fileServiceConfig', 'VsanFileServiceConfig', undef, 0],
+   ['dataInTransitEncryptionConfig', 'VsanDataInTransitEncryptionConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimVsanReconfigSpec', 'vsanClusterConfig', 'dataEfficiencyConfig', 'diskMappingSpec', 'faultDomainsSpec', 'modify', 'allowReducedRedundancy', 'resyncIopsLimitConfig', 'iscsiSpec', 'dataEncryptionConfig', 'extendedConfig', 'datastoreConfig', 'perfsvcConfig', 'unmapConfig');
+VIMRuntime::make_get_set('VimVsanReconfigSpec', 'vsanClusterConfig', 'dataEfficiencyConfig', 'diskMappingSpec', 'faultDomainsSpec', 'modify', 'allowReducedRedundancy', 'resyncIopsLimitConfig', 'iscsiSpec', 'dataEncryptionConfig', 'extendedConfig', 'datastoreConfig', 'perfsvcConfig', 'unmapConfig', 'vumConfig', 'metricsConfig', 'fileServiceConfig', 'dataInTransitEncryptionConfig');
 
 
 sub get_property_list {
@@ -89440,10 +93258,124 @@ our @property_list = (
    ['maxTimeToRepair', undef, undef, 1],
    ['minTimeToRepair', undef, undef, 1],
    ['objectCount', undef, undef, 1],
+   ['objectCountWithRepairTimer', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('RepairTimerInfo', 'maxTimeToRepair', 'minTimeToRepair', 'objectCount');
+VIMRuntime::make_get_set('RepairTimerInfo', 'maxTimeToRepair', 'minTimeToRepair', 'objectCount', 'objectCountWithRepairTimer');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanResourceCheckResult;
+our @ISA = qw(EntityResourceCheckDetails);
+
+our @property_list = (
+   ['timestamp', undef, undef, 1],
+   ['status', undef, undef, 1],
+   ['messages', 'LocalizableMessage', 1, 0],
+   ['faultDomains', 'VsanFaultDomainResourceCheckResult', 1, 0],
+   ['dataToMove', undef, undef, 0],
+   ['nonCompliantObjects', undef, 1, 0],
+   ['inaccessibleObjects', undef, 1, 0],
+   ['capacityThreshold', 'VsanHealthThreshold', undef, 0],
+   ['health', 'VsanClusterHealthSummary', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanResourceCheckResult', 'timestamp', 'status', 'messages', 'faultDomains', 'dataToMove', 'nonCompliantObjects', 'inaccessibleObjects', 'capacityThreshold', 'health');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanResourceCheckSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['operation', undef, undef, 1],
+   ['entities', undef, 1, 0],
+   ['maintenanceSpec', 'HostMaintenanceSpec', undef, 0],
+   ['parent', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanResourceCheckSpec', 'operation', 'entities', 'maintenanceSpec', 'parent');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanResourceCheckStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['status', undef, undef, 1],
+   ['result', 'VsanResourceCheckResult', undef, 0],
+   ['task', 'VsanResourceCheckTaskDetails', undef, 0],
+   ['parentTask', 'VsanResourceCheckTaskDetails', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanResourceCheckStatus', 'status', 'result', 'task', 'parentTask');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanResourceCheckTaskDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['task', 'ManagedObjectReference', undef, 1],
+   ['host', 'ManagedObjectReference', undef, 0],
+   ['hostUuid', undef, undef, 0],
+   ['maintenanceSpec', 'HostMaintenanceSpec', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanResourceCheckTaskDetails', 'task', 'host', 'hostUuid', 'maintenanceSpec');
 
 
 sub get_property_list {
@@ -89517,6 +93449,80 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanRuntimeStatsHostMap', 'VsanRuntimeStatsHostMap');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanServerHostUnicastInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostUuid', undef, undef, 1],
+   ['unicastSpec', 'VsanUnicastAddressInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanServerHostUnicastInfo', 'hostUuid', 'unicastSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanServerHostUnicastInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanServerHostUnicastInfo', 'VsanServerHostUnicastInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanServerHostUnicastInfo', 'VsanServerHostUnicastInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VSANSharedWitnessCompatibilityResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['witnessHostCompatibility', 'VSANEntityCompatibilityResult', undef, 1],
+   ['roboClusterCompatibility', 'VSANEntityCompatibilityResult', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VSANSharedWitnessCompatibilityResult', 'witnessHostCompatibility', 'roboClusterCompatibility');
 
 
 sub get_property_list {
@@ -89609,6 +93615,32 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanCloudHealthStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['collectorRunning', 'boolean', undef, 0],
+   ['lastSentTimestamp', undef, undef, 0],
+   ['internetConnectivity', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanCloudHealthStatus', 'collectorRunning', 'lastSentTimestamp', 'internetConnectivity');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanClusterBurnInTestResultList;
 our @ISA = qw(DynamicData);
 
@@ -89619,6 +93651,104 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanClusterBurnInTestResultList', 'items', 'hosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanCompliantDriver;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['driverName', undef, undef, 1],
+   ['driverVersion', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanCompliantDriver', 'driverName', 'driverVersion');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanCompliantDriver;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanCompliantDriver', 'VsanCompliantDriver', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanCompliantDriver', 'VsanCompliantDriver');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanCompliantFirmware;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['firmwareVersion', undef, undef, 1],
+   ['compliantDrivers', 'VsanCompliantDriver', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanCompliantFirmware', 'firmwareVersion', 'compliantDrivers');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanCompliantFirmware;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanCompliantFirmware', 'VsanCompliantFirmware', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanCompliantFirmware', 'VsanCompliantFirmware');
 
 
 sub get_property_list {
@@ -89790,10 +93920,96 @@ our @property_list = (
    ['disableSiteReadLocality', 'boolean', undef, 0],
    ['enableCustomizedSwapObject', 'boolean', undef, 0],
    ['largeScaleClusterSupport', 'boolean', undef, 0],
+   ['proactiveRebalanceInfo', 'VsanProactiveRebalanceInfo', undef, 0],
+   ['capacityReservationInfo', 'VsanCapacityReservationInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanExtendedConfig', 'objectRepairTimer', 'disableSiteReadLocality', 'enableCustomizedSwapObject', 'largeScaleClusterSupport');
+VIMRuntime::make_get_set('VsanExtendedConfig', 'objectRepairTimer', 'disableSiteReadLocality', 'enableCustomizedSwapObject', 'largeScaleClusterSupport', 'proactiveRebalanceInfo', 'capacityReservationInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceOvfSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['version', undef, undef, 0],
+   ['updateTime', undef, undef, 0],
+   ['task', 'ManagedObjectReference', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServiceOvfSpec', 'version', 'updateTime', 'task');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanFileServiceOvfSpec;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanFileServiceOvfSpec', 'VsanFileServiceOvfSpec', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanFileServiceOvfSpec', 'VsanFileServiceOvfSpec');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServicePreflightCheckResult;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['ovfInstalled', undef, undef, 0],
+   ['fsvmVersion', undef, undef, 0],
+   ['lastUpgradeDate', undef, undef, 0],
+   ['ovfMixedModeIssue', undef, undef, 0],
+   ['hostVersion', undef, undef, 0],
+   ['mixedModeIssue', undef, undef, 0],
+   ['networkPartitionIssue', undef, undef, 0],
+   ['vsanDatastoreIssue', undef, undef, 0],
+   ['domainConfigIssue', undef, undef, 0],
+   ['fileServiceVersion', undef, undef, 0],
+   ['dvsConfigIssue', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanFileServicePreflightCheckResult', 'ovfInstalled', 'fsvmVersion', 'lastUpgradeDate', 'ovfMixedModeIssue', 'hostVersion', 'mixedModeIssue', 'networkPartitionIssue', 'vsanDatastoreIssue', 'domainConfigIssue', 'fileServiceVersion', 'dvsConfigIssue');
 
 
 sub get_property_list {
@@ -89882,6 +94098,57 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHclDeviceConstraint;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['pciId', undef, undef, 1],
+   ['vcgLink', undef, undef, 0],
+   ['similarVcgLinks', undef, 1, 0],
+   ['compliantFirmwares', 'VsanCompliantFirmware', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHclDeviceConstraint', 'pciId', 'vcgLink', 'similarVcgLinks', 'compliantFirmwares');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclDeviceConstraint;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclDeviceConstraint', 'VsanHclDeviceConstraint', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclDeviceConstraint', 'VsanHclDeviceConstraint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHclDriverInfo;
 our @ISA = qw(DynamicData);
 
@@ -89893,10 +94160,12 @@ our @property_list = (
    ['toolsLinks', 'VsanDownloadItem', 1, 0],
    ['eula', undef, undef, 0],
    ['driverType', undef, undef, 0],
+   ['driverName', undef, undef, 0],
+   ['diskModes', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHclDriverInfo', 'driverVersion', 'driverLink', 'fwVersion', 'fwLinks', 'toolsLinks', 'eula', 'driverType');
+VIMRuntime::make_get_set('VsanHclDriverInfo', 'driverVersion', 'driverLink', 'fwVersion', 'fwLinks', 'toolsLinks', 'eula', 'driverType', 'driverName', 'diskModes');
 
 
 sub get_property_list {
@@ -89921,6 +94190,155 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVsanHclDriverInfo', 'VsanHclDriverInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHclReleaseConstraint;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['cluster', 'ManagedObjectReference', undef, 1],
+   ['release', undef, undef, 1],
+   ['hostDevices', 'VsanHostDeviceInfo', 1, 0],
+   ['constraints', 'VsanHclDeviceConstraint', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHclReleaseConstraint', 'cluster', 'release', 'hostDevices', 'constraints');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHclReleaseConstraint;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHclReleaseConstraint', 'VsanHclReleaseConstraint', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHclReleaseConstraint', 'VsanHclReleaseConstraint');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHealthThreshold;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['yellowValue', undef, undef, 1],
+   ['redValue', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHealthThreshold', 'yellowValue', 'redValue');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostDeviceInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['hostname', undef, undef, 1],
+   ['devices', 'VsanBasicDeviceInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostDeviceInfo', 'hostname', 'devices');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostDeviceInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostDeviceInfo', 'VsanHostDeviceInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostDeviceInfo', 'VsanHostDeviceInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanInternalExtendedConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vcMaxDiskVersion', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanInternalExtendedConfig', 'vcMaxDiskVersion');
 
 
 sub get_property_list {
@@ -90176,10 +94594,11 @@ our @property_list = (
    ['enoughFreeSpace', 'boolean', undef, 0],
    ['remediateAction', undef, undef, 0],
    ['hostResults', 'VsanPerfNodeInformation', 1, 0],
+   ['verboseModeStatus', 'boolean', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanPerfsvcHealthResult', 'statsObjectInfo', 'statsObjectConsistent', 'statsObjectPolicyConsistent', 'datastoreCompatible', 'enoughFreeSpace', 'remediateAction', 'hostResults');
+VIMRuntime::make_get_set('VsanPerfsvcHealthResult', 'statsObjectInfo', 'statsObjectConsistent', 'statsObjectPolicyConsistent', 'datastoreCompatible', 'enoughFreeSpace', 'remediateAction', 'hostResults', 'verboseModeStatus');
 
 
 sub get_property_list {
@@ -90207,6 +94626,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanPrepareVsanForVcsaSpec', 'vsanDiskMappingCreationSpec', 'vsanDataEfficiencyConfig', 'taskId', 'vsanDataEncryptionConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSpaceEfficiencyMetadataSize;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['dedupMetadataSize', undef, undef, 0],
+   ['compressionMetadataSize', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSpaceEfficiencyMetadataSize', 'dedupMetadataSize', 'compressionMetadataSize');
 
 
 sub get_property_list {
@@ -90325,6 +94769,32 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanVcPostDeployConfigSpec', 'dcName', 'clusterName', 'firstHost', 'hostsToAdd', 'vsanDataEfficiencyConfig', 'vsanLicenseKey', 'hostLicenseKey', 'taskId', 'vsanDataEncryptionConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanVcStretchedClusterConfigSpec;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['witnessHost', 'ManagedObjectReference', undef, 1],
+   ['clusters', 'VsanStretchedClusterConfig', 1, 1],
+   ['witnessDiskMappings', 'VsanHostDiskMapping', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanVcStretchedClusterConfigSpec', 'witnessHost', 'clusters', 'witnessDiskMappings');
 
 
 sub get_property_list {
@@ -90805,6 +95275,130 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanVumConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['baselinePreferenceType', undef, undef, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanVumConfig', 'baselinePreferenceType');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanWitnessHostConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['subClusterUuid', undef, undef, 1],
+   ['preferredFaultDomainName', undef, undef, 1],
+   ['metadataMode', 'boolean', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanWitnessHostConfig', 'subClusterUuid', 'preferredFaultDomainName', 'metadataMode');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanWitnessHostConfig;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanWitnessHostConfig', 'VsanWitnessHostConfig', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanWitnessHostConfig', 'VsanWitnessHostConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostAbortWipeDiskStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['disk', undef, undef, 1],
+   ['success', 'boolean', undef, 1],
+   ['reason', 'LocalizableMessage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostAbortWipeDiskStatus', 'disk', 'success', 'reason');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostAbortWipeDiskStatus;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostAbortWipeDiskStatus', 'VsanHostAbortWipeDiskStatus', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostAbortWipeDiskStatus', 'VsanHostAbortWipeDiskStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostAboutInfoEx;
 our @ISA = qw(DynamicData);
 
@@ -90813,10 +95407,11 @@ our @property_list = (
    ['version', undef, undef, 0],
    ['build', undef, undef, 0],
    ['buildType', undef, undef, 0],
+   ['apiVersion', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostAboutInfoEx', 'name', 'version', 'build', 'buildType');
+VIMRuntime::make_get_set('VsanHostAboutInfoEx', 'name', 'version', 'build', 'buildType', 'apiVersion');
 
 
 sub get_property_list {
@@ -90842,10 +95437,41 @@ our @property_list = (
    ['extendedConfig', 'VsanExtendedConfig', undef, 0],
    ['datastoreInfo', 'VsanDatastoreConfig', undef, 0],
    ['unmapConfig', 'VsanUnmapConfig', undef, 0],
+   ['witnessHostConfig', 'VsanWitnessHostConfig', 1, 0],
+   ['internalExtendedConfig', 'VsanInternalExtendedConfig', undef, 0],
+   ['metricsConfig', 'VsanMetricsConfig', undef, 0],
+   ['unicastConfig', 'VsanHostServerClusterUnicastConfig', undef, 0],
+   ['dataInTransitEncryptionInfo', 'VsanInTransitEncryptionInfo', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostConfigInfoEx', 'encryptionInfo', 'dataEfficiencyInfo', 'resyncIopsLimitInfo', 'extendedConfig', 'datastoreInfo', 'unmapConfig');
+VIMRuntime::make_get_set('VsanHostConfigInfoEx', 'encryptionInfo', 'dataEfficiencyInfo', 'resyncIopsLimitInfo', 'extendedConfig', 'datastoreInfo', 'unmapConfig', 'witnessHostConfig', 'internalExtendedConfig', 'metricsConfig', 'unicastConfig', 'dataInTransitEncryptionInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanInTransitEncryptionInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['enabled', 'boolean', undef, 0],
+   ['rekeyInterval', undef, undef, 0],
+   ['transitionState', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanInTransitEncryptionInfo', 'enabled', 'rekeyInterval', 'transitionState');
 
 
 sub get_property_list {
@@ -90871,10 +95497,11 @@ our @property_list = (
    ['isAllFlash', 'boolean', undef, 1],
    ['isDataEfficiency', 'boolean', undef, 0],
    ['encryptionInfo', 'VsanDataEncryptionConfig', undef, 0],
+   ['dataEfficiencyConfig', 'VsanDataEfficiencyConfig', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VimVsanHostDiskMapInfoEx', 'mapping', 'isMounted', 'unlockedEncrypted', 'isAllFlash', 'isDataEfficiency', 'encryptionInfo');
+VIMRuntime::make_get_set('VimVsanHostDiskMapInfoEx', 'mapping', 'isMounted', 'unlockedEncrypted', 'isAllFlash', 'isDataEfficiency', 'encryptionInfo', 'dataEfficiencyConfig');
 
 
 sub get_property_list {
@@ -91080,10 +95707,85 @@ our @property_list = (
    ['configGeneration', 'VsanConfigGeneration', undef, 0],
    ['supportedClusterSize', undef, undef, 0],
    ['repairTimerInfo', 'RepairTimerInfo', undef, 0],
+   ['componentLimitPerCluster', undef, undef, 0],
+   ['maxWitnessClusters', undef, undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostRuntimeStats', 'resyncIopsInfo', 'configGeneration', 'supportedClusterSize', 'repairTimerInfo');
+VIMRuntime::make_get_set('VsanHostRuntimeStats', 'resyncIopsInfo', 'configGeneration', 'supportedClusterSize', 'repairTimerInfo', 'componentLimitPerCluster', 'maxWitnessClusters');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostServerClusterUnicastConfig;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['remoteUnicastConfig', 'VsanHostServerClusterUnicastInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostServerClusterUnicastConfig', 'remoteUnicastConfig');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostServerClusterUnicastInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['clusterUuid', undef, undef, 1],
+   ['unicastInfo', 'VsanServerHostUnicastInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostServerClusterUnicastInfo', 'clusterUuid', 'unicastInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostServerClusterUnicastInfo;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostServerClusterUnicastInfo', 'VsanHostServerClusterUnicastInfo', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostServerClusterUnicastInfo', 'VsanHostServerClusterUnicastInfo');
 
 
 sub get_property_list {
@@ -91228,6 +95930,55 @@ sub get_property_list {
 
 
 ##################################################################################
+package VimVsanHostVsanDirectStorage;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['scsiDisks', 'VimVsanHostVsanScsiDisk', 1, 0],
+   ['tier', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VimVsanHostVsanDirectStorage', 'scsiDisks', 'tier');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVimVsanHostVsanDirectStorage;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VimVsanHostVsanDirectStorage', 'VimVsanHostVsanDirectStorage', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVimVsanHostVsanDirectStorage', 'VimVsanHostVsanDirectStorage');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVsanHostVsanDiskManagementSystemCapability;
 our @ISA = qw(DynamicData);
 
@@ -91287,6 +96038,31 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfVimVsanHostVsanHostCapability', 'VimVsanHostVsanHostCapability');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VimVsanHostVsanManagedDisksInfo;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['vSANDirectDisks', 'VimVsanHostVsanDirectStorage', 1, 0],
+   ['vSANDiskMapInfo', 'VimVsanHostDiskMapInfoEx', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('VimVsanHostVsanManagedDisksInfo', 'vSANDirectDisks', 'vSANDiskMapInfo');
 
 
 sub get_property_list {
@@ -91377,6 +96153,67 @@ sub get_property_list {
 
 
 ##################################################################################
+package VimVsanHostVsanScsiDisk;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['capacity', 'HostDiskDimensionsLba', undef, 1],
+   ['usedCapacity', undef, undef, 0],
+   ['devicePath', undef, undef, 1],
+   ['ssd', 'boolean', undef, 0],
+   ['localDisk', 'boolean', undef, 0],
+   ['scsiDiskType', undef, undef, 0],
+   ['uuid', undef, undef, 1],
+   ['operationalState', undef, 1, 0],
+   ['canonicalName', undef, undef, 0],
+   ['displayName', undef, undef, 0],
+   ['lunType', undef, undef, 1],
+   ['vendor', undef, undef, 0],
+   ['model', undef, undef, 0],
+   ['mountInfo', 'HostMountInfo', undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VimVsanHostVsanScsiDisk', 'capacity', 'usedCapacity', 'devicePath', 'ssd', 'localDisk', 'scsiDiskType', 'uuid', 'operationalState', 'canonicalName', 'displayName', 'lunType', 'vendor', 'model', 'mountInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVimVsanHostVsanScsiDisk;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VimVsanHostVsanScsiDisk', 'VimVsanHostVsanScsiDisk', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVimVsanHostVsanScsiDisk', 'VimVsanHostVsanScsiDisk');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHostVsanObjectSyncQueryResult;
 our @ISA = qw(DynamicData);
 
@@ -91385,10 +96222,43 @@ our @property_list = (
    ['totalBytesToSync', undef, undef, 0],
    ['totalRecoveryETA', undef, undef, 0],
    ['objects', 'VsanHostVsanObjectSyncState', 1, 0],
+   ['syncingObjectRecoveryDetails', 'VsanSyncingObjectRecoveryDetails', undef, 0],
 );
 
 
-VIMRuntime::make_get_set('VsanHostVsanObjectSyncQueryResult', 'totalObjectsToSync', 'totalBytesToSync', 'totalRecoveryETA', 'objects');
+VIMRuntime::make_get_set('VsanHostVsanObjectSyncQueryResult', 'totalObjectsToSync', 'totalBytesToSync', 'totalRecoveryETA', 'objects', 'syncingObjectRecoveryDetails');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSyncingObjectRecoveryDetails;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['activelySyncingObjectRecoveryETA', undef, undef, 0],
+   ['queuedForSyncObjectRecoveryETA', undef, undef, 0],
+   ['suspendedObjectRecoveryETA', undef, undef, 0],
+   ['activeObjectsToSync', undef, undef, 0],
+   ['queuedObjectsToSync', undef, undef, 0],
+   ['suspendedObjectsToSync', undef, undef, 0],
+   ['bytesToSyncForActiveObjects', undef, undef, 0],
+   ['bytesToSyncForQueuedObjects', undef, undef, 0],
+   ['bytesToSyncForSuspendedObjects', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanSyncingObjectRecoveryDetails', 'activelySyncingObjectRecoveryETA', 'queuedForSyncObjectRecoveryETA', 'suspendedObjectRecoveryETA', 'activeObjectsToSync', 'queuedObjectsToSync', 'suspendedObjectsToSync', 'bytesToSyncForActiveObjects', 'bytesToSyncForQueuedObjects', 'bytesToSyncForSuspendedObjects');
 
 
 sub get_property_list {
@@ -91459,6 +96329,61 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostWipeDiskStatus;
+our @ISA = qw(DynamicData);
+
+our @property_list = (
+   ['disk', undef, undef, 1],
+   ['eligible', undef, undef, 1],
+   ['ineligibleReason', 'LocalizableMessage', 1, 0],
+   ['wipeState', undef, undef, 0],
+   ['percentageCompleted', undef, undef, 0],
+   ['estimatedTime', undef, undef, 0],
+   ['wipeStartTime', undef, undef, 0],
+   ['wipeCompleteTime', undef, undef, 0],
+);
+
+
+VIMRuntime::make_get_set('VsanHostWipeDiskStatus', 'disk', 'eligible', 'ineligibleReason', 'wipeState', 'percentageCompleted', 'estimatedTime', 'wipeStartTime', 'wipeCompleteTime');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfVsanHostWipeDiskStatus;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['VsanHostWipeDiskStatus', 'VsanHostWipeDiskStatus', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfVsanHostWipeDiskStatus', 'VsanHostWipeDiskStatus');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanBrokenDiskChainIssue;
 our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
 
@@ -91468,6 +96393,29 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('VsanBrokenDiskChainIssue', 'uuids');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanDisallowDataMovementIssue;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
+
+our @property_list = (
+);
+
+
+VIMRuntime::make_get_set('VsanDisallowDataMovementIssue');
 
 
 sub get_property_list {
@@ -91579,6 +96527,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanHostsCompressionOnlyNotSupported;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
+
+our @property_list = (
+   ['hosts', 'ManagedObjectReference', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanHostsCompressionOnlyNotSupported', 'hosts');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanMixedEsxVersionIssue;
 our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
 
@@ -91650,6 +96622,30 @@ sub get_property_list {
 
 
 ##################################################################################
+package VsanRemoteClusterNotCompatible;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
+
+our @property_list = (
+   ['compatibilityInfo', 'KeyAnyValue', 1, 1],
+);
+
+
+VIMRuntime::make_get_set('VsanRemoteClusterNotCompatible', 'compatibilityInfo');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanUnknownScanIssue;
 our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
 
@@ -91674,87 +96670,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfString;
-our @ISA = qw(ComplexType);
+package VsanUnsupportedHighDiskVersionIssue;
+our @ISA = qw(VsanUpgradeSystemPreflightCheckIssue);
 
 our @property_list = (
-   ['string', undef, 1, 0],
+   ['hosts', 'ManagedObjectReference', 1, 1],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfString', 'string');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfAnyType;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['anyType', 'anyType', 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfAnyType', 'anyType');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfAnyURI;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['anyURI', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfAnyURI', 'anyURI');
-
-
-sub get_property_list {
-   my $class = shift;
-   my @super_list = $class->SUPER::get_property_list();
-   return (@super_list, @property_list);   
-}
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
-package ArrayOfBase64Binary;
-our @ISA = qw(ComplexType);
-
-our @property_list = (
-   ['base64Binary', undef, 1, 0],
-);
-
-
-VIMRuntime::make_get_set('ArrayOfBase64Binary', 'base64Binary');
+VIMRuntime::make_get_set('VsanUnsupportedHighDiskVersionIssue', 'hosts');
 
 
 sub get_property_list {
@@ -91779,6 +96703,30 @@ our @property_list = (
 
 
 VIMRuntime::make_get_set('ArrayOfManagedObjectReference', 'ManagedObjectReference');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfAnyURI;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['anyURI', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfAnyURI', 'anyURI');
 
 
 sub get_property_list {
@@ -91842,15 +96790,15 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfDouble;
+package ArrayOfShort;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['double', undef, 1, 0],
+   ['short', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfDouble', 'double');
+VIMRuntime::make_get_set('ArrayOfShort', 'short');
 
 
 sub get_property_list {
@@ -91914,15 +96862,111 @@ sub get_property_list {
 
 
 ##################################################################################
-package ArrayOfShort;
+package ArrayOfDouble;
 our @ISA = qw(ComplexType);
 
 our @property_list = (
-   ['short', undef, 1, 0],
+   ['double', undef, 1, 0],
 );
 
 
-VIMRuntime::make_get_set('ArrayOfShort', 'short');
+VIMRuntime::make_get_set('ArrayOfDouble', 'double');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfString;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['string', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfString', 'string');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfUri;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['uri', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfUri', 'uri');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfBase64Binary;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['base64Binary', undef, 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfBase64Binary', 'base64Binary');
+
+
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);   
+}
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package ArrayOfAnyType;
+our @ISA = qw(ComplexType);
+
+our @property_list = (
+   ['anyType', 'anyType', 1, 0],
+);
+
+
+VIMRuntime::make_get_set('ArrayOfAnyType', 'anyType');
 
 
 sub get_property_list {
@@ -93628,16 +98672,6 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
-package HostNasVolumeSecurityType;
-our @ISA = qw(SimpleType);
-
-1;
-##################################################################################
-
-
-
-
-##################################################################################
 package HostGraphicsConfigGraphicsType;
 our @ISA = qw(SimpleType);
 
@@ -93928,6 +98962,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package HostNasVolumeSecurityType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package HostNetStackInstanceSystemStackKey;
 our @ISA = qw(SimpleType);
 
@@ -94019,6 +99063,46 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package NvdimmNamespaceState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NvdimmNamespaceDetailsHealthStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package NvdimmNamespaceDetailsState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNvmeDiscoveryLogSubsystemType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package HostNvmeDiscoveryLogTransportRequirements;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95528,6 +100612,16 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanBaselinePreferenceType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanCapabilityStatus;
 our @ISA = qw(SimpleType);
 
@@ -95558,7 +100652,27 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanDatastoreType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimClusterVsanHostDiskMappingVsanDiskGroupCreationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIoInsightInstanceState;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95658,7 +100772,97 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanRelayoutObjectsErrorCode;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSpaceReportingEntityType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanVcClusterHealthSystemVsanHealthLogLevelEnum;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsClusterFlavor;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsClusterType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsKubernetesEntityType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package MetricFormat;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package MetricType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package QuerySelectionNameType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package CnsVolumeType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95688,6 +100892,26 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanHostQueryCheckLimitsOptionType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanIoInsightState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanObjectHealthVsanObjectHealthState;
 our @ISA = qw(SimpleType);
 
@@ -95708,6 +100932,86 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanCapacityReservationState;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileServiceVMStatus;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareAccessType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareManagingEntity;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareNfsSecType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileProtocol;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanFileShareSmbEncryptionType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VimVsanMountPrecheckType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanPerfsvcRemediateAction;
 our @ISA = qw(SimpleType);
 
@@ -95718,7 +101022,57 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanResourceCheckStatusType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanAnalyticsEventLocationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanAnalyticsEventSnapshotType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanAnalyticsEventType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanHealthPerspective;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHealthStatusType;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95748,7 +101102,27 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VsanSiteLocationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VsanSyncReason;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanSyncStatus;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95798,7 +101172,27 @@ our @ISA = qw(SimpleType);
 
 
 ##################################################################################
+package VimVsanClusterComplianceResourceCheckStatusType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
 package VimVsanHostDiskMappingCreationSpecDiskMappingCreationType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanEncryptionTransitionState;
 our @ISA = qw(SimpleType);
 
 1;
@@ -95819,6 +101213,26 @@ our @ISA = qw(SimpleType);
 
 ##################################################################################
 package VsanHostStatsType;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostWipeDiskEligible;
+our @ISA = qw(SimpleType);
+
+1;
+##################################################################################
+
+
+
+
+##################################################################################
+package VsanHostWipeDiskState;
 our @ISA = qw(SimpleType);
 
 1;
@@ -96150,7 +101564,7 @@ sub ConfigureHCI_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['clusterSpec', 'ClusterComputeResourceHCIConfigSpec'],['hostInputs', 'ClusterComputeResourceHostConfigurationInput'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('ConfigureHCI_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -96160,7 +101574,7 @@ sub ExtendHCI_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hostInputs', 'ClusterComputeResourceHostConfigurationInput'],['vSanConfigSpec', 'SDDCBase'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('ExtendHCI_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -96170,7 +101584,7 @@ sub AbandonHciWorkflow {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('AbandonHciWorkflow', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -96180,7 +101594,7 @@ sub ValidateHCIConfiguration {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hciConfigSpec', 'ClusterComputeResourceHCIConfigSpec'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('ValidateHCIConfiguration', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ClusterComputeResourceValidationResultBase', 1);
 }
@@ -96490,7 +101904,7 @@ sub BatchQueryConnectInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hostSpecs', 'HostConnectSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('BatchQueryConnectInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DatacenterBasicConnectInfo', 1);
 }
@@ -97210,7 +102624,7 @@ sub BatchAddStandaloneHosts_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['newHosts', 'FolderNewHostSpec'],['compResSpec', 'ComputeResourceConfigSpec'],['addConnected', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('BatchAddStandaloneHosts_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -97220,7 +102634,7 @@ sub BatchAddHostsToCluster_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['newHosts', 'FolderNewHostSpec'],['existingHosts', 'ManagedObjectReference'],['compResSpec', 'ComputeResourceConfigSpec'],['desiredState', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('BatchAddHostsToCluster_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -97720,7 +103134,7 @@ sub QueryProductLockerLocation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('QueryProductLockerLocation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -97730,7 +103144,7 @@ sub UpdateProductLockerLocation_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['path', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vim25/6.7"';
    my ($result, $fault) = $vim_soap->request('UpdateProductLockerLocation_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -99820,7 +105234,7 @@ sub PerformVsanUpgradePreflightCheck {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightCheck', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanUpgradeSystemPreflightCheckResult', 0);
 }
@@ -99830,7 +105244,7 @@ sub QueryVsanUpgradeStatus {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryVsanUpgradeStatus', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanUpgradeSystemUpgradeStatus', 0);
 }
@@ -99840,7 +105254,7 @@ sub PerformVsanUpgrade_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['performObjectUpgrade', undef],['downgradeFormat', undef],['allowReducedRedundancy', undef],['excludeHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgrade_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -101685,6 +107099,16 @@ sub CreateNvdimmNamespace_Task {
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
+sub CreateNvdimmPMemNamespace_Task {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['createSpec', 'NvdimmPMemNamespaceCreateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vim25/6.7"';
+   my ($result, $fault) = $vim_soap->request('CreateNvdimmPMemNamespace_Task', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
 sub DeleteNvdimmNamespace_Task {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
@@ -102710,7 +108134,7 @@ sub QueryPhysicalVsanDisks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['props', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryPhysicalVsanDisks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102720,7 +108144,7 @@ sub QueryVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102730,7 +108154,7 @@ sub QueryObjectsOnPhysicalVsanDisk {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryObjectsOnPhysicalVsanDisk', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102750,7 +108174,7 @@ sub QueryVsanStatistics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['labels', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryVsanStatistics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102770,7 +108194,7 @@ sub QuerySyncingVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QuerySyncingVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102780,7 +108204,7 @@ sub RunVsanPhysicalDiskDiagnostics {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('RunVsanPhysicalDiskDiagnostics', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemVsanPhysicalDiskDiagnosticsResult', 1);
 }
@@ -102790,7 +108214,7 @@ sub GetVsanObjExtAttrs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('GetVsanObjExtAttrs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -102820,7 +108244,7 @@ sub DeleteVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('DeleteVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemDeleteVsanObjectsResult', 1);
 }
@@ -102830,7 +108254,7 @@ sub UpgradeVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['newVersion', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('UpgradeVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'HostVsanInternalSystemVsanObjectOperationResult', 1);
 }
@@ -102840,7 +108264,7 @@ sub QueryVsanObjectUuidsByFilter {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['limit', undef],['version', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryVsanObjectUuidsByFilter', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
 }
@@ -102850,7 +108274,7 @@ sub QueryDisksForVsan {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['canonicalName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryDisksForVsan', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostDiskResult', 1);
 }
@@ -102910,7 +108334,7 @@ sub UpdateVsan_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'VsanHostConfigInfo'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('UpdateVsan_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -102930,7 +108354,7 @@ sub EvacuateVsanNode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['maintenanceSpec', 'HostMaintenanceSpec'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('EvacuateVsanNode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -102940,7 +108364,7 @@ sub RecommissionVsanNode_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('RecommissionVsanNode_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104575,16 +109999,6 @@ sub RevertVStorageObject_Task {
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
-sub DestroyPropertyFilter {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vim25/6.7"';
-   my ($result, $fault) = $vim_soap->request('DestroyPropertyFilter', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
-}
-
 sub CreateFilter {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
@@ -104695,14 +110109,34 @@ sub DestroyPropertyCollector {
    return deserialize_response($result, $fault, undef, 0);
 }
 
+sub DestroyPropertyFilter {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vim25/6.7"';
+   my ($result, $fault) = $vim_soap->request('DestroyPropertyFilter', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
 sub VsanRetrieveProperties {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['massCollectorSpecs', 'VsanMassCollectorSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanRetrieveProperties', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ObjectContent', 1);
+}
+
+sub QueryVsanCloudHealthStatus {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QueryVsanCloudHealthStatus', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanCloudHealthStatus', 0);
 }
 
 sub VsanPerformOnlineHealthCheck {
@@ -104710,7 +110144,7 @@ sub VsanPerformOnlineHealthCheck {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerformOnlineHealthCheck', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104720,7 +110154,7 @@ sub PerformVsanUpgradeEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['performObjectUpgrade', undef],['downgradeFormat', undef],['allowReducedRedundancy', undef],['excludeHosts', 'ManagedObjectReference'],['spec', 'VsanDiskFormatConversionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradeEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104730,7 +110164,7 @@ sub VsanQueryUpgradeStatusEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryUpgradeStatusEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanUpgradeStatusEx', 0);
 }
@@ -104740,7 +110174,7 @@ sub RetrieveSupportedVsanFormatVersion {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('RetrieveSupportedVsanFormatVersion', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104750,7 +110184,7 @@ sub PerformVsanUpgradePreflightCheckEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],['spec', 'VsanDiskFormatConversionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightCheckEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanDiskFormatConversionCheckResult', 0);
 }
@@ -104760,7 +110194,7 @@ sub PerformVsanUpgradePreflightAsyncCheck_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['downgradeFormat', undef],['spec', 'VsanDiskFormatConversionSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('PerformVsanUpgradePreflightAsyncCheck_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104770,7 +110204,7 @@ sub VsanGetCapabilities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['targets', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanGetCapabilities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanCapability', 1);
 }
@@ -104780,7 +110214,7 @@ sub VsanQueryClusterPhysicalDiskHealthSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterPhysicalDiskHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPhysicalDiskHealthSummary', 1);
 }
@@ -104790,7 +110224,7 @@ sub VsanQueryClusterNetworkPerfTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['multicast', undef],['durationSec', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterNetworkPerfTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 0);
 }
@@ -104800,7 +110234,7 @@ sub VsanQueryClusterAdvCfgSync {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['options', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterAdvCfgSync', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterAdvCfgSyncResult', 1);
 }
@@ -104810,7 +110244,7 @@ sub VsanRepairClusterImmediateObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanRepairClusterImmediateObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemObjectsRepairResult', 0);
 }
@@ -104820,7 +110254,7 @@ sub VsanQueryVerifyClusterNetworkSettings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVerifyClusterNetworkSettings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkHealthResult', 0);
 }
@@ -104830,7 +110264,7 @@ sub VsanQueryClusterCreateVmHealthTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCreateVmHealthTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 0);
 }
@@ -104840,7 +110274,7 @@ sub VsanQueryClusterHealthSystemVersions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterHealthSystemVersions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemVersionResult', 0);
 }
@@ -104850,7 +110284,7 @@ sub VsanClusterGetHclInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanClusterGetHclInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHclInfo', 0);
 }
@@ -104860,7 +110294,7 @@ sub VsanQueryClusterCheckLimits {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCheckLimits', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterLimitHealthResult', 0);
 }
@@ -104870,7 +110304,7 @@ sub VsanQueryClusterCaptureVsanPcap {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],['duration', undef],['vmknic', 'VsanClusterHostVmknicMapping'],['includeRawPcap', undef],['includeIgmp', undef],['cmmdsMsgTypeFilter', undef],['cmmdsPorts', undef],['clusterUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryClusterCaptureVsanPcap', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVsanClusterPcapResult', 0);
 }
@@ -104880,9 +110314,79 @@ sub VsanCheckClusterClomdLiveness {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', undef],['esxRootPassword', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanCheckClusterClomdLiveness', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterClomdLivenessResult', 0);
+}
+
+sub VsanRemediateVsanCluster {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanRemediateVsanCluster', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanRemediateVsanHost {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanRemediateVsanHost', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub StartIoInsight {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['runName', undef],['durationSec', undef],['targetHosts', 'ManagedObjectReference'],['targetVMs', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('StartIoInsight', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub QueryIoInsightInstances {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['querySpec', 'VsanIoInsightInstanceQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QueryIoInsightInstances', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanIoInsightInstance', 1);
+}
+
+sub RenameIoInsightInstance {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['oldRunName', undef],['newRunName', undef],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('RenameIoInsightInstance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub StopIoInsight {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['runName', undef],['hostsIoInsightInfos', 'VsanHostIoInsightInfo'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('StopIoInsight', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub DeleteIoInsightInstance {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['runName', undef],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('DeleteIoInsightInstance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanVitRemoveIscsiInitiatorsFromTarget {
@@ -104890,7 +110394,7 @@ sub VsanVitRemoveIscsiInitiatorsFromTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['initiatorNames', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorsFromTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104900,7 +110404,7 @@ sub VsanVitRemoveIscsiInitiatorsFromGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['initiatorNames', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorsFromGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104910,7 +110414,7 @@ sub VsanVitEditIscsiLUN {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunSpec', 'VsanIscsiLUNSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitEditIscsiLUN', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104920,7 +110424,7 @@ sub VsanVitGetIscsiLUN {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiLUN', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiLUN', 0);
 }
@@ -104930,7 +110434,7 @@ sub VsanVitEditIscsiTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetSpec', 'VsanIscsiTargetSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitEditIscsiTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -104940,7 +110444,7 @@ sub VsanVitAddIscsiInitiatorsToGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['initiatorNames', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorsToGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104950,7 +110454,7 @@ sub VsanVitAddIscsiInitiatorsToTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['initiatorNames', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorsToTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104960,7 +110464,7 @@ sub VsanVitQueryIscsiTargetServiceVersion {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitQueryIscsiTargetServiceVersion', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104970,7 +110474,7 @@ sub VsanVitAddIscsiTargetToGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['targetAlias', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiTargetToGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104980,7 +110484,7 @@ sub VsanVitRemoveIscsiTargetFromGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],['targetAlias', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiTargetFromGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -104990,7 +110494,7 @@ sub VsanVitGetIscsiLUNs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAliases', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiLUNs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiLUN', 1);
 }
@@ -105000,7 +110504,7 @@ sub VsanVitRemoveIscsiLUN {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiLUN', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105010,7 +110514,7 @@ sub VsanVitGetIscsiInitiatorGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiInitiatorGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiInitiatorGroup', 0);
 }
@@ -105020,7 +110524,7 @@ sub VsanVitRemoveIscsiInitiatorGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiInitiatorGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105030,7 +110534,7 @@ sub VsanVitGetHomeObject {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetHomeObject', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectInformation', 0);
 }
@@ -105040,7 +110544,7 @@ sub VsanVitGetIscsiTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiTarget', 0);
 }
@@ -105050,7 +110554,7 @@ sub VsanVitRemoveIscsiTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitRemoveIscsiTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105060,7 +110564,7 @@ sub VsanVitAddIscsiLUN {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetAlias', undef],['lunSpec', 'VsanIscsiLUNSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiLUN', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105070,7 +110574,7 @@ sub VsanVitGetIscsiInitiatorGroups {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiInitiatorGroups', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiInitiatorGroup', 1);
 }
@@ -105080,7 +110584,7 @@ sub VsanVitGetIscsiTargets {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitGetIscsiTargets', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanIscsiTarget', 1);
 }
@@ -105090,7 +110594,7 @@ sub VsanVitAddIscsiTarget {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetSpec', 'VsanIscsiTargetSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiTarget', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105100,7 +110604,7 @@ sub VsanVitAddIscsiInitiatorGroup {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['initiatorGroupName', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVitAddIscsiInitiatorGroup', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105110,19 +110614,9 @@ sub VosSetVsanObjectPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanObjectUuid', undef],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VosSetVsanObjectPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
-}
-
-sub VsanQueryInaccessibleVmSwapObjects {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanQueryInaccessibleVmSwapObjects', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 1);
 }
 
 sub VsanDeleteObjects_Task {
@@ -105130,19 +110624,9 @@ sub VsanDeleteObjects_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['objUuids', undef],['force', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanDeleteObjects_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
-}
-
-sub VsanQueryObjectIdentities {
-   my ($self, %args) = @_;
-   my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['objUuids', undef],['objTypes', undef],['includeHealth', undef],['includeObjIdentity', undef],['includeSpaceSummary', undef],);
-   my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanQueryObjectIdentities', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanObjectIdentityAndHealth', 0);
 }
 
 sub VosQueryVsanObjectInformation {
@@ -105150,9 +110634,49 @@ sub VosQueryVsanObjectInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanObjectQuerySpecs', 'VsanObjectQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VosQueryVsanObjectInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectInformation', 1);
+}
+
+sub RelayoutObjects {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('RelayoutObjects', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanQueryInaccessibleVmSwapObjects {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryInaccessibleVmSwapObjects', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
+}
+
+sub QuerySyncingVsanObjectsSummary {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['syncingObjectFilter', 'VsanSyncingObjectFilter'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QuerySyncingVsanObjectsSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostVsanObjectSyncQueryResult', 0);
+}
+
+sub VsanQueryObjectIdentities {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['objUuids', undef],['objTypes', undef],['includeHealth', undef],['includeObjIdentity', undef],['includeSpaceSummary', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryObjectIdentities', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanObjectIdentityAndHealth', 0);
 }
 
 sub VsanPerfDiagnose {
@@ -105160,7 +110684,7 @@ sub VsanPerfDiagnose {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['perfDiagnoseQuery', 'VsanPerfDiagnoseQuerySpec'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDiagnose', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfDiagnosticResult', 1);
 }
@@ -105170,7 +110694,7 @@ sub VsanPerfQueryClusterHealth {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryClusterHealth', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'DynamicData', 1);
 }
@@ -105180,7 +110704,7 @@ sub GetVsanPerfDiagnosisResult {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['task', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('GetVsanPerfDiagnosisResult', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfDiagnosticResult', 1);
 }
@@ -105190,7 +110714,7 @@ sub VsanPerfToggleVerboseMode {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['verboseMode', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfToggleVerboseMode', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105200,9 +110724,19 @@ sub VsanPerfDiagnoseTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['perfDiagnoseQuery', 'VsanPerfDiagnoseQuerySpec'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDiagnoseTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub QueryRemoteServerClusters {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['querySpec', 'VsanRemoteClusterQuerySpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QueryRemoteServerClusters', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 1);
 }
 
 sub VsanPerfQueryTimeRanges {
@@ -105210,7 +110744,7 @@ sub VsanPerfQueryTimeRanges {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['querySpec', 'VsanPerfTimeRangeQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryTimeRanges', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfTimeRange', 1);
 }
@@ -105220,7 +110754,7 @@ sub VsanPerfSetStatsObjectPolicy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfSetStatsObjectPolicy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105230,7 +110764,7 @@ sub VsanPerfCreateStatsObject {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfCreateStatsObject', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105240,7 +110774,7 @@ sub VsanPerfQueryPerf {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['querySpecs', 'VsanPerfQuerySpec'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryPerf', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfEntityMetricCSV', 1);
 }
@@ -105250,7 +110784,7 @@ sub VsanPerfCreateStatsObjectTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['profile', 'VirtualMachineProfileSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfCreateStatsObjectTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105260,7 +110794,7 @@ sub VsanPerfDeleteStatsObjectTask {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDeleteStatsObjectTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105270,7 +110804,7 @@ sub VsanPerfGetAggregatedEntityTypes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfGetAggregatedEntityTypes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfEntityType', 1);
 }
@@ -105280,7 +110814,7 @@ sub VsanPerfDeleteTimeRange {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['name', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDeleteTimeRange', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105290,7 +110824,7 @@ sub VsanPerfQueryStatsObjectInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryStatsObjectInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectInformation', 0);
 }
@@ -105300,7 +110834,7 @@ sub VsanPerfDeleteStatsObject {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfDeleteStatsObject', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105310,7 +110844,7 @@ sub VsanPerfSaveTimeRanges {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['timeRanges', 'VsanPerfTimeRange'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfSaveTimeRanges', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105320,7 +110854,7 @@ sub VsanPerfQueryNodeInformation {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfQueryNodeInformation', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfNodeInformation', 1);
 }
@@ -105330,7 +110864,7 @@ sub VsanPerfGetSupportedDiagnosticExceptions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfGetSupportedDiagnosticExceptions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfDiagnosticException', 1);
 }
@@ -105340,9 +110874,19 @@ sub VsanPerfGetSupportedEntityTypes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPerfGetSupportedEntityTypes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPerfEntityType', 1);
+}
+
+sub MountPrecheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['datastore', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('MountPrecheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanMountPrecheckResult', 0);
 }
 
 sub VsanQuerySpaceUsage {
@@ -105350,29 +110894,39 @@ sub VsanQuerySpaceUsage {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['storagePolicies', 'VirtualMachineProfileSpec'],['whatifCapacityOnly', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQuerySpaceUsage', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanSpaceUsage', 0);
 }
 
-sub VsanQueryClusterDrsStats {
+sub VsanQueryEntitySpaceUsage {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vms', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['querySpec', 'VsanSpaceQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanQueryClusterDrsStats', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanHostDrsStats', 1);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryEntitySpaceUsage', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanEntitySpaceUsage', 1);
 }
 
-sub VsanClusterGetConfig {
+sub QueryVsanManagedStorageSpaceUsage {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['querySpec', 'QueryVsanManagedStorageSpaceUsageSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanClusterGetConfig', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanConfigInfoEx', 0);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QueryVsanManagedStorageSpaceUsage', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanSpaceUsageWithDatastoreType', 1);
+}
+
+sub VsanValidateConfigSpec {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanReconfigSpec', 'VimVsanReconfigSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanValidateConfigSpec', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ClusterComputeResourceValidationResultBase', 1);
 }
 
 sub VsanClusterReconfig {
@@ -105380,7 +110934,7 @@ sub VsanClusterReconfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanReconfigSpec', 'VimVsanReconfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanClusterReconfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105390,9 +110944,29 @@ sub VsanClusterGetRuntimeStats {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['stats', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanClusterGetRuntimeStats', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanRuntimeStatsHostMap', 1);
+}
+
+sub VsanQueryClusterDrsStats {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vms', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryClusterDrsStats', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostDrsStats', 1);
+}
+
+sub VsanClusterGetConfig {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterGetConfig', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanConfigInfoEx', 0);
 }
 
 sub VsanEncryptedClusterRekey_Task {
@@ -105400,7 +110974,7 @@ sub VsanEncryptedClusterRekey_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['encryptedCluster', 'ManagedObjectReference'],['deepRekey', undef],['allowReducedRedundancy', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanEncryptedClusterRekey_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105410,7 +110984,7 @@ sub VsanPurgeHclFiles {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sha1sums', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPurgeHclFiles', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105418,9 +110992,9 @@ sub VsanPurgeHclFiles {
 sub VsanQueryVcClusterCreateVmHealthHistoryTest {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterCreateVmHealthHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 1);
 }
@@ -105430,7 +111004,7 @@ sub VsanQueryVcClusterObjExtAttrs {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterObjExtAttrs', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterObjectExtAttrs', 1);
 }
@@ -105440,7 +111014,7 @@ sub VsanHealthSetLogLevel {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['level', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetLogLevel', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105450,7 +111024,7 @@ sub VsanHealthTestVsanClusterTelemetryProxy {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['proxyConfig', 'VsanClusterTelemetryProxyConfig'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthTestVsanClusterTelemetryProxy', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105460,7 +111034,7 @@ sub VsanVcUploadHclDb {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['db', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcUploadHclDb', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105470,7 +111044,7 @@ sub VsanQueryVcClusterSmartStatsSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterSmartStatsSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanSmartStatsHostSummary', 1);
 }
@@ -105480,9 +111054,19 @@ sub VsanVcUpdateHclDbFromWeb {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['url', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcUpdateHclDbFromWeb', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanStopRebalanceCluster {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanStopRebalanceCluster', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VsanHealthGetVsanClusterSilentChecks {
@@ -105490,9 +111074,19 @@ sub VsanHealthGetVsanClusterSilentChecks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthGetVsanClusterSilentChecks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 1);
+}
+
+sub VsanClusterQueryFileServiceHealthSummary {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterQueryFileServiceHealthSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanClusterFileServiceHealthSummary', 0);
 }
 
 sub VsanHealthRepairClusterObjectsImmediate {
@@ -105500,7 +111094,7 @@ sub VsanHealthRepairClusterObjectsImmediate {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthRepairClusterObjectsImmediate', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105510,7 +111104,7 @@ sub VsanQueryVcClusterNetworkPerfTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['multicast', undef],['durationSec', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterNetworkPerfTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 0);
 }
@@ -105520,7 +111114,7 @@ sub VsanQueryVcClusterVmdkLoadHistoryTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterVmdkLoadHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterVmdkLoadTestResult', 1);
 }
@@ -105530,7 +111124,7 @@ sub VsanHealthIsRebalanceRunning {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthIsRebalanceRunning', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105538,11 +111132,21 @@ sub VsanHealthIsRebalanceRunning {
 sub VsanQueryVcClusterCreateVmHealthTest {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['timeout', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['timeout', undef],['datastore', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterCreateVmHealthTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterCreateVmHealthTestResult', 0);
+}
+
+sub VsanHealthQueryVsanProxyConfig {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanProxyConfig', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanClusterTelemetryProxyConfig', 0);
 }
 
 sub VsanHealthQueryVsanClusterHealthCheckInterval {
@@ -105550,7 +111154,7 @@ sub VsanHealthQueryVsanClusterHealthCheckInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanClusterHealthCheckInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105560,7 +111164,7 @@ sub VsanQueryAllSupportedHealthChecks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryAllSupportedHealthChecks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthCheckInfo', 1);
 }
@@ -105570,7 +111174,7 @@ sub VsanVcClusterGetHclInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['includeHostsResult', undef],['includeVendorInfo', undef],['esxRelease', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterGetHclInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHclInfo', 0);
 }
@@ -105580,9 +111184,29 @@ sub VsanQueryAttachToSrHistory {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryAttachToSrHistory', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanAttachToSrOperation', 1);
+}
+
+sub VsanGetReleaseRecommendation {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['minor', undef],['major', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanGetReleaseRecommendation', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHclReleaseConstraint', 1);
+}
+
+sub VsanGetHclConstraints {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['release', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanGetHclConstraints', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHclReleaseConstraint', 0);
 }
 
 sub VsanRebalanceCluster {
@@ -105590,7 +111214,7 @@ sub VsanRebalanceCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanRebalanceCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105600,7 +111224,7 @@ sub VsanVcClusterRunVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['runname', undef],['durationSec', undef],['specs', 'VsanVmdkLoadTestSpec'],['action', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterRunVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105610,7 +111234,7 @@ sub VsanHealthSendVsanTelemetry {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSendVsanTelemetry', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105618,9 +111242,9 @@ sub VsanHealthSendVsanTelemetry {
 sub VsanQueryVcClusterNetworkPerfHistoryTest {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['count', undef],['spec', 'VsanClusterNetworkPerfTaskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterNetworkPerfHistoryTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterNetworkLoadTestResult', 1);
 }
@@ -105628,9 +111252,9 @@ sub VsanQueryVcClusterNetworkPerfHistoryTest {
 sub VsanQueryVcClusterHealthSummary {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vmCreateTimeout', undef],['objUuids', undef],['includeObjUuids', undef],['fields', undef],['fetchFromCache', undef],['perspective', undef],['hosts', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vmCreateTimeout', undef],['objUuids', undef],['includeObjUuids', undef],['fields', undef],['fetchFromCache', undef],['perspective', undef],['hosts', 'ManagedObjectReference'],['spec', 'VsanClusterHealthQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSummary', 0);
 }
@@ -105638,20 +111262,20 @@ sub VsanQueryVcClusterHealthSummary {
 sub VsanQueryVcClusterHealthSummaryTask {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],['includeDataProtectionHealth', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],['includeDataProtectionHealth', undef],['includeOnlineHealth', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterHealthSummaryTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
-sub VsanStopRebalanceCluster {
+sub VsanQueryVcClusterNetworkPerfTask {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['targetHosts', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['spec', 'VsanClusterNetworkPerfTaskSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanStopRebalanceCluster', $arg_string, $soap_action);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterNetworkPerfTask', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
@@ -105660,7 +111284,7 @@ sub VsanHealthQueryVsanClusterHealthConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthQueryVsanClusterHealthConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthConfigs', 0);
 }
@@ -105670,7 +111294,7 @@ sub VsanAttachVsanSupportBundleToSr {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['srNumber', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanAttachVsanSupportBundleToSr', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105680,7 +111304,7 @@ sub VsanDownloadHclFile_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['sha1sums', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanDownloadHclFile_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105690,7 +111314,7 @@ sub VsanQueryVcClusterVmdkWorkloadTypes {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryVcClusterVmdkWorkloadTypes', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanStorageWorkloadType', 1);
 }
@@ -105700,7 +111324,7 @@ sub VsanHealthSetVsanClusterSilentChecks {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['addSilentChecks', undef],['removeSilentChecks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterSilentChecks', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105710,7 +111334,7 @@ sub VsanVcClusterQueryVerifyHealthSystemVersions {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcClusterQueryVerifyHealthSystemVersions', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanClusterHealthSystemVersionResult', 0);
 }
@@ -105720,7 +111344,7 @@ sub VsanHealthSetVsanClusterTelemetryConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanClusterHealthConfig', 'VsanClusterHealthConfigs'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterTelemetryConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105730,7 +111354,7 @@ sub VsanDownloadAndInstallVendorTool_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanDownloadAndInstallVendorTool_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105740,9 +111364,19 @@ sub VsanHealthSetVsanClusterHealthCheckInterval {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vsanClusterHealthCheckInterval', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHealthSetVsanClusterHealthCheckInterval', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub UnmountDiskMappingEx {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['mappings', 'VsanHostDiskMapping'],['maintenanceSpec', 'HostMaintenanceSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('UnmountDiskMappingEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub InitializeDiskMappings {
@@ -105750,7 +111384,7 @@ sub InitializeDiskMappings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VimVsanHostDiskMappingCreationSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('InitializeDiskMappings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105760,9 +111394,19 @@ sub QueryDiskMappings {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryDiskMappings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimVsanHostDiskMapInfoEx', 1);
+}
+
+sub RemoveDiskEx {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['disks', 'HostScsiDisk'],['maintenanceSpec', 'HostMaintenanceSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('RemoveDiskEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub QueryClusterDataEfficiencyCapacityState {
@@ -105770,7 +111414,7 @@ sub QueryClusterDataEfficiencyCapacityState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('QueryClusterDataEfficiencyCapacityState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimVsanDataEfficiencyCapacityState', 0);
 }
@@ -105780,9 +111424,19 @@ sub RetrieveAllFlashCapabilities {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('RetrieveAllFlashCapabilities', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimVsanHostVsanHostCapability', 1);
+}
+
+sub QueryVsanManagedDisks {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QueryVsanManagedDisks', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VimVsanHostVsanManagedDisksInfo', 0);
 }
 
 sub RebuildDiskMapping {
@@ -105790,8 +111444,18 @@ sub RebuildDiskMapping {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],['mapping', 'VsanHostDiskMapping'],['maintenanceSpec', 'HostMaintenanceSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('RebuildDiskMapping', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub RemoveDiskMappingEx {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['mappings', 'VsanHostDiskMapping'],['maintenanceSpec', 'HostMaintenanceSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('RemoveDiskMappingEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
@@ -105800,9 +111464,29 @@ sub VSANVcIsWitnessHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcIsWitnessHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanVcReplaceWitnessHostForClusters {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'VsanVcStretchedClusterConfigSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanVcReplaceWitnessHostForClusters', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanVcAddWitnessHostForClusters {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['configSpec', 'VsanVcStretchedClusterConfigSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanVcAddWitnessHostForClusters', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VSANVcSetPreferredFaultDomain {
@@ -105810,9 +111494,19 @@ sub VSANVcSetPreferredFaultDomain {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['preferredFd', undef],['witnessHost', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcSetPreferredFaultDomain', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub QuerySharedWitnessClusterInfo {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['witnessHost', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QuerySharedWitnessClusterInfo', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ClusterRuntimeInfo', 1);
 }
 
 sub VSANVcGetPreferredFaultDomain {
@@ -105820,7 +111514,7 @@ sub VSANVcGetPreferredFaultDomain {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcGetPreferredFaultDomain', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANPreferredFaultDomainInfo', 0);
 }
@@ -105830,7 +111524,7 @@ sub VSANIsWitnessVirtualAppliance {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANIsWitnessVirtualAppliance', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostVirtualApplianceInfo', 1);
 }
@@ -105838,9 +111532,9 @@ sub VSANIsWitnessVirtualAppliance {
 sub VSANVcAddWitnessHost {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['witnessHost', 'ManagedObjectReference'],['preferredFd', undef],['diskMapping', 'VsanHostDiskMapping'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['witnessHost', 'ManagedObjectReference'],['preferredFd', undef],['diskMapping', 'VsanHostDiskMapping'],['metadataMode', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcAddWitnessHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105850,7 +111544,7 @@ sub VSANVcGetWitnessHosts {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcGetWitnessHosts', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANWitnessHostInfo', 1);
 }
@@ -105860,7 +111554,7 @@ sub VSANVcRetrieveStretchedClusterVcCapability {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['verifyAllConnected', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcRetrieveStretchedClusterVcCapability', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VimClusterVSANStretchedClusterCapability', 1);
 }
@@ -105870,7 +111564,7 @@ sub VSANVcConvertToStretchedCluster {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['faultDomainConfig', 'VimClusterVSANStretchedClusterFaultDomainConfig'],['witnessHost', 'ManagedObjectReference'],['preferredFd', undef],['diskMapping', 'VsanHostDiskMapping'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcConvertToStretchedCluster', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105880,9 +111574,19 @@ sub VSANVcRemoveWitnessHost {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['witnessHost', 'ManagedObjectReference'],['witnessAddress', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VSANVcRemoveWitnessHost', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub QuerySharedWitnessCompatibility {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['sharedWitnessHost', 'ManagedObjectReference'],['roboClusters', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('QuerySharedWitnessCompatibility', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VSANSharedWitnessCompatibilityResult', 0);
 }
 
 sub VsanHostUpdateFirmware {
@@ -105890,7 +111594,7 @@ sub VsanHostUpdateFirmware {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['host', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostUpdateFirmware', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -105900,7 +111604,7 @@ sub FetchIsoDepotCookie {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['username', undef],['password', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('FetchIsoDepotCookie', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105910,7 +111614,7 @@ sub GetVsanVumConfig {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('GetVsanVumConfig', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVumSystemConfig', 0);
 }
@@ -105920,9 +111624,69 @@ sub VsanVcUploadReleaseDb {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['db', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcUploadReleaseDb', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub CnsCreateVolume {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['createSpecs', 'CnsVolumeCreateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsCreateVolume', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub CnsAttachVolume {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['attachSpecs', 'CnsVolumeAttachDetachSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsAttachVolume', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub CnsUpdateVolumeMetadata {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['updateSpecs', 'CnsVolumeMetadataUpdateSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsUpdateVolumeMetadata', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub CnsQueryVolume {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['filter', 'CnsQueryFilter'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsQueryVolume', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'CnsQueryResult', 0);
+}
+
+sub CnsDetachVolume {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['detachSpecs', 'CnsVolumeAttachDetachSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsDetachVolume', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub CnsDeleteVolume {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['volumeIds', 'CnsVolumeId'],['deleteDisk', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('CnsDeleteVolume', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VsanHostQueryAdvCfg {
@@ -105930,7 +111694,7 @@ sub VsanHostQueryAdvCfg {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['options', undef],['includeAllAdvOptions', undef],['nonDefaultOnly', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryAdvCfg', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'OptionValue', 1);
 }
@@ -105938,9 +111702,9 @@ sub VsanHostQueryAdvCfg {
 sub VsanHostQueryRunIperfClient {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['multicast', undef],['serverIp', undef],['durationSec', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['multicast', undef],['serverIp', undef],['durationSec', undef],['spec', 'VsanIperfClientSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryRunIperfClient', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanNetworkLoadTestResult', 0);
 }
@@ -105948,9 +111712,9 @@ sub VsanHostQueryRunIperfClient {
 sub VsanHostQueryObjectHealthSummary {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['objUuids', undef],['includeObjUuids', undef],['localHostOnly', undef],['includeNonComplianceObjDetail', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['objUuids', undef],['includeObjUuids', undef],['localHostOnly', undef],['includeNonComplianceObjDetail', undef],['spec', 'VsanHealthQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryObjectHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanObjectOverallHealth', 0);
 }
@@ -105960,9 +111724,19 @@ sub VsanStopProactiveRebalance {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanStopProactiveRebalance', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHostQueryFileServiceHealthSummary {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryFileServiceHealthSummary', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanFileServiceHealthSummary', 0);
 }
 
 sub VsanHostClomdLiveness {
@@ -105970,7 +111744,7 @@ sub VsanHostClomdLiveness {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostClomdLiveness', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -105980,7 +111754,7 @@ sub VsanHostRepairImmediateObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['repairType', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostRepairImmediateObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanRepairObjectsResult', 0);
 }
@@ -105988,9 +111762,9 @@ sub VsanHostRepairImmediateObjects {
 sub VsanHostQueryVerifyNetworkSettings {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['peers', undef],['ROBOStretchedClusterWitnesses', undef],['vMotionPeers', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['peers', undef],['ROBOStretchedClusterWitnesses', undef],['vMotionPeers', undef],['spec', 'VsanHealthQuerySpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryVerifyNetworkSettings', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanNetworkHealthResult', 0);
 }
@@ -106000,19 +111774,19 @@ sub VsanHostCleanupVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['specs', 'VsanVmdkLoadTestSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostCleanupVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VsanGetHclInfo {
+sub VsanStartProactiveRebalance {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['includeVendorInfo', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['timeSpan', undef],['varianceThreshold', undef],['timeThreshold', undef],['rateThreshold', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanGetHclInfo', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, 'VsanHostHclInfo', 0);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanStartProactiveRebalance', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
 }
 
 sub VsanHostQueryEncryptionHealthSummary {
@@ -106020,7 +111794,7 @@ sub VsanHostQueryEncryptionHealthSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryEncryptionHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanEncryptionHealthSummary', 0);
 }
@@ -106030,7 +111804,7 @@ sub VsanFlashScsiControllerFirmware_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanHclFirmwareUpdateSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanFlashScsiControllerFirmware_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -106040,7 +111814,7 @@ sub VsanQueryHostEMMState {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryHostEMMState', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostEMMSummary', 0);
 }
@@ -106050,7 +111824,7 @@ sub VsanWaitForVsanHealthGenerationIdChange {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanWaitForVsanHealthGenerationIdChange', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -106060,19 +111834,19 @@ sub VsanHostQueryHealthSystemVersion {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['displayVersion', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryHealthSystemVersion', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
 
-sub VsanStartProactiveRebalance {
+sub VsanGetHclInfo {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['timeSpan', undef],['varianceThreshold', undef],['timeThreshold', undef],['rateThreshold', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['includeVendorInfo', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
-   my ($result, $fault) = $vim_soap->request('VsanStartProactiveRebalance', $arg_string, $soap_action);
-   return deserialize_response($result, $fault, undef, 0);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanGetHclInfo', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostHclInfo', 0);
 }
 
 sub VsanHostRunVmdkLoadTest {
@@ -106080,7 +111854,7 @@ sub VsanHostRunVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['durationSec', undef],['specs', 'VsanVmdkLoadTestSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostRunVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVmdkLoadTestResult', 1);
 }
@@ -106090,7 +111864,7 @@ sub VsanHostQuerySmartStats {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],['includeAllDisks', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQuerySmartStats', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanSmartStatsHostSummary', 0);
 }
@@ -106100,7 +111874,7 @@ sub VsanHostPrepareVmdkLoadTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['runname', undef],['specs', 'VsanVmdkLoadTestSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostPrepareVmdkLoadTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -106110,7 +111884,7 @@ sub VsanHostQueryRunIperfServer {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['multicast', undef],['serverIp', undef],['durationSec', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryRunIperfServer', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanNetworkLoadTestResult', 0);
 }
@@ -106120,7 +111894,7 @@ sub VsanGetProactiveRebalanceInfo {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanGetProactiveRebalanceInfo', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanProactiveRebalanceInfoEx', 0);
 }
@@ -106130,7 +111904,7 @@ sub VsanHostQueryPhysicalDiskHealthSummary {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryPhysicalDiskHealthSummary', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanPhysicalDiskHealthSummary', 0);
 }
@@ -106140,7 +111914,7 @@ sub VsanHostQueryHostInfoByUuids {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryHostInfoByUuids', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanQueryResultHostInfo', 1);
 }
@@ -106150,7 +111924,7 @@ sub VsanHostCreateVmHealthTest {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostCreateVmHealthTest', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostCreateVmHealthTestResult', 0);
 }
@@ -106158,9 +111932,9 @@ sub VsanHostCreateVmHealthTest {
 sub VsanHostQueryCheckLimits {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanHostQueryCheckLimitsSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostQueryCheckLimits', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanLimitHealthResult', 0);
 }
@@ -106170,7 +111944,7 @@ sub VsanUnmountDiskMappingEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['mappings', 'VsanHostDiskMapping'],['maintenanceSpec', 'HostMaintenanceSpec'],['timeout', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanUnmountDiskMappingEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -106180,9 +111954,29 @@ sub VsanQuerySyncingVsanObjects {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['uuids', undef],['start', undef],['limit', undef],['includeSummary', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQuerySyncingVsanObjects', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostVsanObjectSyncQueryResult', 0);
+}
+
+sub VsanHostQueryWipeDisk {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostQueryWipeDisk', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostWipeDiskStatus', 1);
+}
+
+sub VsanQueryHostStatusEx {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['clusterUuids', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryHostStatusEx', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostClusterStatus', 1);
 }
 
 sub VsanQueryHostDrsStats {
@@ -106190,7 +111984,7 @@ sub VsanQueryHostDrsStats {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['hostUuids', undef],['vms', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryHostDrsStats', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostDrsStats', 0);
 }
@@ -106200,7 +111994,7 @@ sub VsanQueryWhatIfEvacuationResult {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['evacEntityUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanQueryWhatIfEvacuationResult', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanWhatIfEvacResult', 0);
 }
@@ -106208,11 +112002,21 @@ sub VsanQueryWhatIfEvacuationResult {
 sub VsanHostGetRuntimeStats {
    my ($self, %args) = @_;
    my $vim_soap = $self->{vim_soap};
-   my @arg_list = (['_this', 'ManagedObjectReference'],['stats', undef],);
+   my @arg_list = (['_this', 'ManagedObjectReference'],['stats', undef],['clusterUuid', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanHostGetRuntimeStats', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostRuntimeStats', 0);
+}
+
+sub VsanHostAbortWipeDisk {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostAbortWipeDisk', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanHostAbortWipeDiskStatus', 1);
 }
 
 sub VsanGetAboutInfoEx {
@@ -106220,9 +112024,19 @@ sub VsanGetAboutInfoEx {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanGetAboutInfoEx', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanHostAboutInfoEx', 0);
+}
+
+sub VsanHostWipeDisk {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['disks', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostWipeDisk', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VsanVibInstall_Task {
@@ -106230,7 +112044,7 @@ sub VsanVibInstall_Task {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vibSpecs', 'VsanVibSpec'],['scanResults', 'VsanVibScanResult'],['firmwareSpecs', 'VsanHclFirmwareUpdateSpec'],['maintenanceSpec', 'HostMaintenanceSpec'],['rolling', undef],['noSigCheck', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVibInstall_Task', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -106240,7 +112054,7 @@ sub VsanVibInstallPreflightCheck {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVibInstallPreflightCheck', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVibInstallPreflightStatus', 0);
 }
@@ -106250,7 +112064,7 @@ sub VsanVibScan {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vibSpecs', 'VsanVibSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVibScan', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVibScanResult', 1);
 }
@@ -106260,7 +112074,7 @@ sub VsanPostConfigForVcsa {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanVcPostDeployConfigSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPostConfigForVcsa', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -106270,7 +112084,7 @@ sub VsanVcsaGetBootstrapProgress {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['taskId', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVcsaGetBootstrapProgress', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVcsaDeploymentProgress', 1);
 }
@@ -106280,9 +112094,149 @@ sub VsanPrepareVsanForVcsa {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['spec', 'VsanPrepareVsanForVcsaSpec'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanPrepareVsanForVcsa', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanClusterCreateFsDomain {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['domainConfig', 'VsanFileServiceDomainConfig'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterCreateFsDomain', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanQueryFileServiceOvfs {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanQueryFileServiceOvfs', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanFileServiceOvfSpec', 1);
+}
+
+sub VsanRebalanceFileService {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanRebalanceFileService', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanClusterRemoveFsDomain {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['domainUuid', undef],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterRemoveFsDomain', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanPerformFileServiceEnablePreflightCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['domainConfig', 'VsanFileServiceDomainConfig'],['network', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanPerformFileServiceEnablePreflightCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanFileServicePreflightCheckResult', 0);
+}
+
+sub VsanFindOvfDownloadUrl {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanFindOvfDownloadUrl', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanClusterReconfigureFsDomain {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['domainUuid', undef],['domainConfig', 'VsanFileServiceDomainConfig'],['cluster', 'ManagedObjectReference'],['deleteDomainConfigFields', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterReconfigureFsDomain', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanClusterQueryFsDomains {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['querySpec', 'VsanFileServiceDomainQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterQueryFsDomains', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanFileServiceDomain', 1);
+}
+
+sub VsanUpgradeFsvm {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanUpgradeFsvm', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanClusterRemoveShare {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['shareUuid', undef],['cluster', 'ManagedObjectReference'],['force', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterRemoveShare', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanCreateFileShare {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['config', 'VsanFileShareConfig'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanCreateFileShare', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanDownloadFileServiceOvf {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['downloadUrl', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanDownloadFileServiceOvf', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanReconfigureFileShare {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['shareUuid', undef],['config', 'VsanFileShareConfig'],['cluster', 'ManagedObjectReference'],['deleteLabelKeys', undef],['force', undef],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanReconfigureFileShare', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanClusterQueryFileShares {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['querySpec', 'VsanFileShareQuerySpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanClusterQueryFileShares', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'FileShareQueryResult', 0);
 }
 
 sub VsanCompleteMigrateVmsToVds {
@@ -106290,7 +112244,7 @@ sub VsanCompleteMigrateVmsToVds {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['jobId', undef],['newState', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanCompleteMigrateVmsToVds', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }
@@ -106300,9 +112254,49 @@ sub VsanMigrateVmsToVds {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['vmConfigSpecs', 'VsanVmVdsMigrationSpec'],['vdsUuid', undef],['timeoutSec', undef],['revert', undef],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanMigrateVmsToVds', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanGetResourceCheckStatus {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['resourceCheckSpec', 'VsanResourceCheckSpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanGetResourceCheckStatus', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'VsanResourceCheckStatus', 0);
+}
+
+sub VsanPerformResourceCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['resourceCheckSpec', 'VsanResourceCheckSpec'],['cluster', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanPerformResourceCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
+}
+
+sub VsanHostCancelResourceCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostCancelResourceCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, undef, 0);
+}
+
+sub VsanHostPerformResourceCheck {
+   my ($self, %args) = @_;
+   my $vim_soap = $self->{vim_soap};
+   my @arg_list = (['_this', 'ManagedObjectReference'],['resourceCheckSpec', 'VsanResourceCheckSpec'],);
+   my $arg_string = build_arg_string(\@arg_list, \%args);
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
+   my ($result, $fault) = $vim_soap->request('VsanHostPerformResourceCheck', $arg_string, $soap_action);
+   return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
 
 sub VsanVdsMigrateVss {
@@ -106310,7 +112304,7 @@ sub VsanVdsMigrateVss {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['migrationPlan', 'VsanVdsMigrationPlan'],['vswitchName', undef],['vdsName', undef],['vmnicDevices', undef],['infraVm', 'ManagedObjectReference'],['vds', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVdsMigrateVss', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -106320,7 +112314,7 @@ sub VsanVdsGetMigrationPlan {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['vswitchName', undef],['vdsName', undef],['vmnicDevices', undef],['infraVm', 'ManagedObjectReference'],['vds', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVdsGetMigrationPlan', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'VsanVdsMigrationPlan', 0);
 }
@@ -106330,7 +112324,7 @@ sub VsanVssMigrateVds {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['cluster', 'ManagedObjectReference'],['hosts', 'ManagedObjectReference'],['vds', 'ManagedObjectReference'],['vswitchName', undef],['vmnicDevices', undef],['infraVm', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanVssMigrateVds', $arg_string, $soap_action);
    return deserialize_response($result, $fault, 'ManagedObjectReference', 0);
 }
@@ -106340,7 +112334,7 @@ sub VsanRollbackVdsToVss {
    my $vim_soap = $self->{vim_soap};
    my @arg_list = (['_this', 'ManagedObjectReference'],['task', 'ManagedObjectReference'],);
    my $arg_string = build_arg_string(\@arg_list, \%args);
-   my $soap_action = '"urn:vsan/vSAN 6.7U1"';
+   my $soap_action = '"urn:vsan/vSAN 7.0U1"';
    my ($result, $fault) = $vim_soap->request('VsanRollbackVdsToVss', $arg_string, $soap_action);
    return deserialize_response($result, $fault, undef, 0);
 }

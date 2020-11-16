@@ -553,13 +553,13 @@ sub get_property_list {
 package Network;
 our @ISA = qw(ManagedEntity NetworkOperations);
 
-VIMRuntime::make_get_set('Network', 'name', 'summary', 'host', 'vm');
+VIMRuntime::make_get_set('Network', 'summary', 'host', 'vm', 'name');
 
 our @property_list = (
-   ['name', undef, undef],
    ['summary', 'NetworkSummary', undef],
    ['host', 'HostSystem', 'true'],
    ['vm', 'VirtualMachine', 'true'],
+   ['name', undef, undef],
 );
 sub get_property_list {
    my $class = shift;
@@ -1143,6 +1143,40 @@ sub get_property_list {
 ##################################################################################
 
 ##################################################################################
+package VsanClusterMgmtInternalSystem;
+our @ISA = qw(ViewBase VsanClusterMgmtInternalSystemOperations);
+
+VIMRuntime::make_get_set('VsanClusterMgmtInternalSystem');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
+package VsanIoInsightManager;
+our @ISA = qw(ViewBase VsanIoInsightManagerOperations);
+
+VIMRuntime::make_get_set('VsanIoInsightManager');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
 package VsanIscsiTargetSystem;
 our @ISA = qw(ViewBase VsanIscsiTargetSystemOperations);
 
@@ -1181,6 +1215,23 @@ package VsanPerformanceManager;
 our @ISA = qw(ViewBase VsanPerformanceManagerOperations);
 
 VIMRuntime::make_get_set('VsanPerformanceManager');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
+package VsanRemoteDatastoreSystem;
+our @ISA = qw(ViewBase VsanRemoteDatastoreSystemOperations);
+
+VIMRuntime::make_get_set('VsanRemoteDatastoreSystem');
 
 our @property_list = (
 );
@@ -1283,6 +1334,23 @@ package VsanVumSystem;
 our @ISA = qw(ViewBase VsanVumSystemOperations);
 
 VIMRuntime::make_get_set('VsanVumSystem');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
+package CnsVolumeManager;
+our @ISA = qw(ViewBase CnsVolumeManagerOperations);
+
+VIMRuntime::make_get_set('CnsVolumeManager');
 
 our @property_list = (
 );
@@ -1791,6 +1859,23 @@ VIMRuntime::make_get_set('HostAccessManager', 'lockdownMode');
 
 our @property_list = (
    ['lockdownMode', undef, undef],
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
+package HostSpbm;
+our @ISA = qw(ViewBase HostSpbmOperations);
+
+VIMRuntime::make_get_set('HostSpbm');
+
+our @property_list = (
 );
 sub get_property_list {
    my $class = shift;
@@ -2744,10 +2829,44 @@ sub get_property_list {
 ##################################################################################
 
 ##################################################################################
+package VsanFileServiceSystem;
+our @ISA = qw(ViewBase VsanFileServiceSystemOperations);
+
+VIMRuntime::make_get_set('VsanFileServiceSystem');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
 package VsanHostVdsSystem;
 our @ISA = qw(ViewBase VsanHostVdsSystemOperations);
 
 VIMRuntime::make_get_set('VsanHostVdsSystem');
+
+our @property_list = (
+);
+sub get_property_list {
+   my $class = shift;
+   my @super_list = $class->SUPER::get_property_list();
+   return (@super_list, @property_list);
+}
+
+1;
+##################################################################################
+
+##################################################################################
+package VsanResourceCheckSystem;
+our @ISA = qw(ViewBase VsanResourceCheckSystemOperations);
+
+VIMRuntime::make_get_set('VsanResourceCheckSystem');
 
 our @property_list = (
 );
@@ -6062,6 +6181,12 @@ sub VsanRetrieveProperties {
 
 ##################################################################################
 package VsanPhoneHomeSystemOperations;
+sub QueryVsanCloudHealthStatus {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryVsanCloudHealthStatus', %args));
+   return $response
+}
+
 sub VsanPerformOnlineHealthCheck {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanPerformOnlineHealthCheck', %args));
@@ -6131,6 +6256,11 @@ sub PerformVsanUpgradePreflightAsyncCheck_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('PerformVsanUpgradePreflightAsyncCheck_Task', %args));
    return $response
+}
+
+sub PerformVsanUpgradePreflightAsyncCheck {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->PerformVsanUpgradePreflightAsyncCheck_Task(%args));
 }
 
 
@@ -6340,6 +6470,60 @@ sub VsanCheckClusterClomdLiveness {
 ##################################################################################
 
 ##################################################################################
+package VsanClusterMgmtInternalSystemOperations;
+sub VsanRemediateVsanCluster {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanRemediateVsanCluster', %args));
+   return $response
+}
+
+sub VsanRemediateVsanHost {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanRemediateVsanHost', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
+package VsanIoInsightManagerOperations;
+sub StartIoInsight {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('StartIoInsight', %args));
+   return $response
+}
+
+sub QueryIoInsightInstances {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryIoInsightInstances', %args));
+   return $response
+}
+
+sub RenameIoInsightInstance {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('RenameIoInsightInstance', %args));
+   return $response
+}
+
+sub StopIoInsight {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('StopIoInsight', %args));
+   return $response
+}
+
+sub DeleteIoInsightInstance {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('DeleteIoInsightInstance', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
 package VsanIscsiTargetSystemOperations;
 sub VsanVitRemoveIscsiInitiatorsFromTarget {
    my ($self, %args) = @_;
@@ -6485,27 +6669,44 @@ sub VosSetVsanObjectPolicy {
    return $response
 }
 
-sub VsanQueryInaccessibleVmSwapObjects {
-   my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanQueryInaccessibleVmSwapObjects', %args));
-   return $response
-}
-
 sub VsanDeleteObjects_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanDeleteObjects_Task', %args));
    return $response
 }
 
-sub VsanQueryObjectIdentities {
+sub VsanDeleteObjects {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanQueryObjectIdentities', %args));
-   return $response
+   return $self->waitForTask($self->VsanDeleteObjects_Task(%args));
 }
 
 sub VosQueryVsanObjectInformation {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VosQueryVsanObjectInformation', %args));
+   return $response
+}
+
+sub RelayoutObjects {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('RelayoutObjects', %args));
+   return $response
+}
+
+sub VsanQueryInaccessibleVmSwapObjects {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryInaccessibleVmSwapObjects', %args));
+   return $response
+}
+
+sub QuerySyncingVsanObjectsSummary {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QuerySyncingVsanObjectsSummary', %args));
+   return $response
+}
+
+sub VsanQueryObjectIdentities {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryObjectIdentities', %args));
    return $response
 }
 
@@ -6542,6 +6743,12 @@ sub VsanPerfToggleVerboseMode {
 sub VsanPerfDiagnoseTask {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanPerfDiagnoseTask', %args));
+   return $response
+}
+
+sub QueryRemoteServerClusters {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryRemoteServerClusters', %args));
    return $response
 }
 
@@ -6634,10 +6841,34 @@ sub VsanPerfGetSupportedEntityTypes {
 ##################################################################################
 
 ##################################################################################
+package VsanRemoteDatastoreSystemOperations;
+sub MountPrecheck {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('MountPrecheck', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
 package VsanSpaceReportSystemOperations;
 sub VsanQuerySpaceUsage {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQuerySpaceUsage', %args));
+   return $response
+}
+
+sub VsanQueryEntitySpaceUsage {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryEntitySpaceUsage', %args));
+   return $response
+}
+
+sub QueryVsanManagedStorageSpaceUsage {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryVsanManagedStorageSpaceUsage', %args));
    return $response
 }
 
@@ -6647,15 +6878,9 @@ sub VsanQuerySpaceUsage {
 
 ##################################################################################
 package VsanVcClusterConfigSystemOperations;
-sub VsanQueryClusterDrsStats {
+sub VsanValidateConfigSpec {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanQueryClusterDrsStats', %args));
-   return $response
-}
-
-sub VsanClusterGetConfig {
-   my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanClusterGetConfig', %args));
+   my $response = Util::check_fault($self->invoke('VsanValidateConfigSpec', %args));
    return $response
 }
 
@@ -6671,10 +6896,27 @@ sub VsanClusterGetRuntimeStats {
    return $response
 }
 
+sub VsanQueryClusterDrsStats {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryClusterDrsStats', %args));
+   return $response
+}
+
+sub VsanClusterGetConfig {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterGetConfig', %args));
+   return $response
+}
+
 sub VsanEncryptedClusterRekey_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanEncryptedClusterRekey_Task', %args));
    return $response
+}
+
+sub VsanEncryptedClusterRekey {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->VsanEncryptedClusterRekey_Task(%args));
 }
 
 
@@ -6731,9 +6973,21 @@ sub VsanVcUpdateHclDbFromWeb {
    return $response
 }
 
+sub VsanStopRebalanceCluster {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanStopRebalanceCluster', %args));
+   return $response
+}
+
 sub VsanHealthGetVsanClusterSilentChecks {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanHealthGetVsanClusterSilentChecks', %args));
+   return $response
+}
+
+sub VsanClusterQueryFileServiceHealthSummary {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterQueryFileServiceHealthSummary', %args));
    return $response
 }
 
@@ -6767,6 +7021,12 @@ sub VsanQueryVcClusterCreateVmHealthTest {
    return $response
 }
 
+sub VsanHealthQueryVsanProxyConfig {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHealthQueryVsanProxyConfig', %args));
+   return $response
+}
+
 sub VsanHealthQueryVsanClusterHealthCheckInterval {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanHealthQueryVsanClusterHealthCheckInterval', %args));
@@ -6788,6 +7048,18 @@ sub VsanVcClusterGetHclInfo {
 sub VsanQueryAttachToSrHistory {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQueryAttachToSrHistory', %args));
+   return $response
+}
+
+sub VsanGetReleaseRecommendation {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanGetReleaseRecommendation', %args));
+   return $response
+}
+
+sub VsanGetHclConstraints {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanGetHclConstraints', %args));
    return $response
 }
 
@@ -6827,9 +7099,9 @@ sub VsanQueryVcClusterHealthSummaryTask {
    return $response
 }
 
-sub VsanStopRebalanceCluster {
+sub VsanQueryVcClusterNetworkPerfTask {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanStopRebalanceCluster', %args));
+   my $response = Util::check_fault($self->invoke('VsanQueryVcClusterNetworkPerfTask', %args));
    return $response
 }
 
@@ -6849,6 +7121,11 @@ sub VsanDownloadHclFile_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanDownloadHclFile_Task', %args));
    return $response
+}
+
+sub VsanDownloadHclFile {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->VsanDownloadHclFile_Task(%args));
 }
 
 sub VsanQueryVcClusterVmdkWorkloadTypes {
@@ -6881,6 +7158,11 @@ sub VsanDownloadAndInstallVendorTool_Task {
    return $response
 }
 
+sub VsanDownloadAndInstallVendorTool {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->VsanDownloadAndInstallVendorTool_Task(%args));
+}
+
 sub VsanHealthSetVsanClusterHealthCheckInterval {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanHealthSetVsanClusterHealthCheckInterval', %args));
@@ -6893,6 +7175,12 @@ sub VsanHealthSetVsanClusterHealthCheckInterval {
 
 ##################################################################################
 package VimClusterVsanVcDiskManagementSystemOperations;
+sub UnmountDiskMappingEx {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('UnmountDiskMappingEx', %args));
+   return $response
+}
+
 sub InitializeDiskMappings {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('InitializeDiskMappings', %args));
@@ -6902,6 +7190,12 @@ sub InitializeDiskMappings {
 sub QueryDiskMappings {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('QueryDiskMappings', %args));
+   return $response
+}
+
+sub RemoveDiskEx {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('RemoveDiskEx', %args));
    return $response
 }
 
@@ -6917,9 +7211,21 @@ sub RetrieveAllFlashCapabilities {
    return $response
 }
 
+sub QueryVsanManagedDisks {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QueryVsanManagedDisks', %args));
+   return $response
+}
+
 sub RebuildDiskMapping {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('RebuildDiskMapping', %args));
+   return $response
+}
+
+sub RemoveDiskMappingEx {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('RemoveDiskMappingEx', %args));
    return $response
 }
 
@@ -6935,9 +7241,27 @@ sub VSANVcIsWitnessHost {
    return $response
 }
 
+sub VsanVcReplaceWitnessHostForClusters {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanVcReplaceWitnessHostForClusters', %args));
+   return $response
+}
+
+sub VsanVcAddWitnessHostForClusters {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanVcAddWitnessHostForClusters', %args));
+   return $response
+}
+
 sub VSANVcSetPreferredFaultDomain {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VSANVcSetPreferredFaultDomain', %args));
+   return $response
+}
+
+sub QuerySharedWitnessClusterInfo {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QuerySharedWitnessClusterInfo', %args));
    return $response
 }
 
@@ -6983,6 +7307,12 @@ sub VSANVcRemoveWitnessHost {
    return $response
 }
 
+sub QuerySharedWitnessCompatibility {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('QuerySharedWitnessCompatibility', %args));
+   return $response
+}
+
 
 1;
 ##################################################################################
@@ -7010,6 +7340,48 @@ sub GetVsanVumConfig {
 sub VsanVcUploadReleaseDb {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanVcUploadReleaseDb', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
+package CnsVolumeManagerOperations;
+sub CnsCreateVolume {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsCreateVolume', %args));
+   return $response
+}
+
+sub CnsAttachVolume {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsAttachVolume', %args));
+   return $response
+}
+
+sub CnsUpdateVolumeMetadata {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsUpdateVolumeMetadata', %args));
+   return $response
+}
+
+sub CnsQueryVolume {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsQueryVolume', %args));
+   return $response
+}
+
+sub CnsDetachVolume {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsDetachVolume', %args));
+   return $response
+}
+
+sub CnsDeleteVolume {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CnsDeleteVolume', %args));
    return $response
 }
 
@@ -8032,6 +8404,12 @@ sub ChangeLockdownMode {
 ##################################################################################
 
 ##################################################################################
+package HostSpbmOperations;
+
+1;
+##################################################################################
+
+##################################################################################
 package HostImageConfigManagerOperations;
 sub HostImageConfigGetAcceptance {
    my ($self, %args) = @_;
@@ -8363,6 +8741,17 @@ sub CreateNvdimmNamespace_Task {
 sub CreateNvdimmNamespace {
    my ($self, %args) = @_;
    return $self->waitForTask($self->CreateNvdimmNamespace_Task(%args));
+}
+
+sub CreateNvdimmPMemNamespace_Task {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('CreateNvdimmPMemNamespace_Task', %args));
+   return $response
+}
+
+sub CreateNvdimmPMemNamespace {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->CreateNvdimmPMemNamespace_Task(%args));
 }
 
 sub DeleteNvdimmNamespace_Task {
@@ -9175,6 +9564,12 @@ sub VsanStopProactiveRebalance {
    return $response
 }
 
+sub VsanHostQueryFileServiceHealthSummary {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostQueryFileServiceHealthSummary', %args));
+   return $response
+}
+
 sub VsanHostClomdLiveness {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanHostClomdLiveness', %args));
@@ -9199,9 +9594,9 @@ sub VsanHostCleanupVmdkLoadTest {
    return $response
 }
 
-sub VsanGetHclInfo {
+sub VsanStartProactiveRebalance {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanGetHclInfo', %args));
+   my $response = Util::check_fault($self->invoke('VsanStartProactiveRebalance', %args));
    return $response
 }
 
@@ -9215,6 +9610,11 @@ sub VsanFlashScsiControllerFirmware_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanFlashScsiControllerFirmware_Task', %args));
    return $response
+}
+
+sub VsanFlashScsiControllerFirmware {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->VsanFlashScsiControllerFirmware_Task(%args));
 }
 
 sub VsanQueryHostEMMState {
@@ -9235,9 +9635,9 @@ sub VsanHostQueryHealthSystemVersion {
    return $response
 }
 
-sub VsanStartProactiveRebalance {
+sub VsanGetHclInfo {
    my ($self, %args) = @_;
-   my $response = Util::check_fault($self->invoke('VsanStartProactiveRebalance', %args));
+   my $response = Util::check_fault($self->invoke('VsanGetHclInfo', %args));
    return $response
 }
 
@@ -9515,6 +9915,18 @@ sub VsanQuerySyncingVsanObjects {
    return $response
 }
 
+sub VsanHostQueryWipeDisk {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostQueryWipeDisk', %args));
+   return $response
+}
+
+sub VsanQueryHostStatusEx {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryHostStatusEx', %args));
+   return $response
+}
+
 sub VsanQueryHostDrsStats {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanQueryHostDrsStats', %args));
@@ -9533,9 +9945,21 @@ sub VsanHostGetRuntimeStats {
    return $response
 }
 
+sub VsanHostAbortWipeDisk {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostAbortWipeDisk', %args));
+   return $response
+}
+
 sub VsanGetAboutInfoEx {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanGetAboutInfoEx', %args));
+   return $response
+}
+
+sub VsanHostWipeDisk {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostWipeDisk', %args));
    return $response
 }
 
@@ -9549,6 +9973,11 @@ sub VsanVibInstall_Task {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanVibInstall_Task', %args));
    return $response
+}
+
+sub VsanVibInstall {
+   my ($self, %args) = @_;
+   return $self->waitForTask($self->VsanVibInstall_Task(%args));
 }
 
 sub VsanVibInstallPreflightCheck {
@@ -10604,6 +11033,96 @@ sub DeleteRegistryValueInGuest {
 ##################################################################################
 
 ##################################################################################
+package VsanFileServiceSystemOperations;
+sub VsanClusterCreateFsDomain {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterCreateFsDomain', %args));
+   return $response
+}
+
+sub VsanQueryFileServiceOvfs {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanQueryFileServiceOvfs', %args));
+   return $response
+}
+
+sub VsanRebalanceFileService {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanRebalanceFileService', %args));
+   return $response
+}
+
+sub VsanClusterRemoveFsDomain {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterRemoveFsDomain', %args));
+   return $response
+}
+
+sub VsanPerformFileServiceEnablePreflightCheck {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanPerformFileServiceEnablePreflightCheck', %args));
+   return $response
+}
+
+sub VsanFindOvfDownloadUrl {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanFindOvfDownloadUrl', %args));
+   return $response
+}
+
+sub VsanClusterReconfigureFsDomain {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterReconfigureFsDomain', %args));
+   return $response
+}
+
+sub VsanClusterQueryFsDomains {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterQueryFsDomains', %args));
+   return $response
+}
+
+sub VsanUpgradeFsvm {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanUpgradeFsvm', %args));
+   return $response
+}
+
+sub VsanClusterRemoveShare {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterRemoveShare', %args));
+   return $response
+}
+
+sub VsanCreateFileShare {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanCreateFileShare', %args));
+   return $response
+}
+
+sub VsanDownloadFileServiceOvf {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanDownloadFileServiceOvf', %args));
+   return $response
+}
+
+sub VsanReconfigureFileShare {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanReconfigureFileShare', %args));
+   return $response
+}
+
+sub VsanClusterQueryFileShares {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanClusterQueryFileShares', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
 package VsanHostVdsSystemOperations;
 sub VsanCompleteMigrateVmsToVds {
    my ($self, %args) = @_;
@@ -10614,6 +11133,36 @@ sub VsanCompleteMigrateVmsToVds {
 sub VsanMigrateVmsToVds {
    my ($self, %args) = @_;
    my $response = Util::check_fault($self->invoke('VsanMigrateVmsToVds', %args));
+   return $response
+}
+
+
+1;
+##################################################################################
+
+##################################################################################
+package VsanResourceCheckSystemOperations;
+sub VsanGetResourceCheckStatus {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanGetResourceCheckStatus', %args));
+   return $response
+}
+
+sub VsanPerformResourceCheck {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanPerformResourceCheck', %args));
+   return $response
+}
+
+sub VsanHostCancelResourceCheck {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostCancelResourceCheck', %args));
+   return $response
+}
+
+sub VsanHostPerformResourceCheck {
+   my ($self, %args) = @_;
+   my $response = Util::check_fault($self->invoke('VsanHostPerformResourceCheck', %args));
    return $response
 }
 

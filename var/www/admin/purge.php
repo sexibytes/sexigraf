@@ -10,7 +10,7 @@ require("helper.php");
                         <div class="panel-body"><ul>
                                 <li>This page can be used to purge old and/or unwanted whisper data objects as well as vCenter session files.</li>
                                 <li style="color:red;"><strong><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Beware as this operation cannot be undone, so there is a risk of DATA LOSS if you don't know what you're doing. <span class="glyphicon glyphicon-alert" aria-hidden="true"></span></strong></li>
-                                <li>Autopurge will automatically remove all files that are not updated since 120 days.</li>
+                                <li>Autopurge will automatically remove all files that are not updated since selected days (default is 120).</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
@@ -55,31 +55,31 @@ require("helper.php");
                         break;
                 }
         } else {
-                switch ($_POST["submit"]) {
-                        case "enable-autopurge":
-                                enableAutopurge();
-                        break;
-                        case "disable-autopurge":
-                                disableAutopurge();
-                        break;
+                if (!empty($_POST["submit"])) {
+                        switch ($_POST["submit"]) {
+                                case "enable-autopurge":
+                                        enableAutopurge(intval($_POST["nb_days_purge"]));
+                                break;
+                                case "disable-autopurge":
+                                        disableAutopurge();
+                                break;
+                                case "force-autopurge":
+                                        forceAutopurge(intval($_POST["nb_days_purge"]));
+                                break;
+                        }
                 }
-                $topn = 50;
                 echo '                <div id="purgeTree" style="display:none;">
                 <form action="purge.php" method="post">
                 <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#whisper" aria-controls="whisper" role="tab" data-toggle="tab">Whisper repository</a></li>
                         <li role="presentation"><a href="#vcenter" aria-controls="vcenter" role="tab" data-toggle="tab">vCenter session files</a></li>
-                        <li role="presentation"><a href="#oldies" aria-controls="oldies" role="tab" data-toggle="tab">Top ' . $topn . ' oldest whisper files</a></li>
                 </ul>
                 <div class="tab-content" style="padding-top: 10px;">
                         <div role="tabpanel" class="tab-pane fade in active" id="whisper">
-                        ' . php_file_tree_dir("/var/lib/graphite/whisper") . '
+                        ' . php_file_tree_dir_v2("/mnt/wfs/whisper", 2) . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="vcenter">
                         ' . php_file_tree("/tmp", "dat") . '
-                        </div>
-                        <div role="tabpanel" class="tab-pane fade" id="oldies">
-                        ' . php_file_tree_top_oldest("/var/lib/graphite/whisper", $topn) . '
                         </div>
                 </div>
                 <button name="submit" class="btn btn-danger" value="purge-files">Purge</button>
@@ -91,22 +91,28 @@ require("helper.php");
                 </script>';
         }
 ?>
+                <form action="purge.php" method="post">
                 <div class="panel panel-warning">
                         <div class="panel-body">
-                        <form action="purge.php" method="post">
                         Autopurge is currently
                         <?php
                         if (isAutopurgeEnabled()) {
-                                echo '                        <span style="color:#5cb85c;" aria-hidden="true">enabled</span>';
+                                $nbDaysPurge = file_get_contents('./graphite_autopurge');
+                                echo '                        <span style="color:#5cb85c;" aria-hidden="true">enabled after ' . $nbDaysPurge . ' days</span>';
                                 echo '                        &nbsp;<button name="submit" class="btn btn-default btn-danger" value="disable-autopurge">Disable autopurge</button>';
                         } else {
                                 echo '                        <span style="color:#d9534f;" aria-hidden="true">disabled</span>';
-                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button>';
+                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="120" style="width:80px;"> days';
                         }
                         ?>
-                        </form>
                         </div>
                 </div>
+                <div class="panel panel-warning">
+                        <div class="panel-body">
+                        Force purge items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="30" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
+                        </div>
+                </div>
+                </form>
         </div>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>

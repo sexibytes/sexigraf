@@ -16,8 +16,8 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
 
                 echo "auto lo" > /etc/network/interfaces
                 echo "iface lo inet loopback" >> /etc/network/interfaces
-                echo "allow-hotplug eth0" >> /etc/network/interfaces
-                echo "iface eth0 inet static" >> /etc/network/interfaces
+                echo "allow-hotplug ens192" >> /etc/network/interfaces
+                echo "iface ens192 inet static" >> /etc/network/interfaces
                 echo " address $GUESTIP" >> /etc/network/interfaces
                 echo " netmask $GUESTMASK" >> /etc/network/interfaces
                 echo " gateway $GUESTGW" >> /etc/network/interfaces
@@ -43,7 +43,7 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
                 /etc/init.d/networking stop && /etc/init.d/networking start
                 /etc/init.d/resolvconf stop && /etc/init.d/resolvconf start
 
-                ifdown eth0 && ifup eth0
+                ifdown ens192 && ifup ens192
 
         fi
   

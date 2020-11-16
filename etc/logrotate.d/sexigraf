@@ -7,3 +7,11 @@
   notifempty
   create 600 www-data www-data
 }
+/var/log/sexigraf/carbon-cache-a/*.log {
+  hourly
+  missingok
+  rotate 24
+  compress
+  delaycompress
+  notifempty
+}

@@ -18,7 +18,7 @@ use POSIX qw(strftime);
 use utf8;
 use Unicode::Normalize;
 
-$Util::script_version = "0.47";
+$Util::script_version = "0.48";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 
@@ -60,7 +60,7 @@ sub sexiprocess {
           host                  => '127.0.0.1',
           port                  => 2003,
           trace                 => 0,                # if true, copy what's sent to STDERR
-          proto                 => 'tcp',            # can be 'udp'
+          proto                 => 'udp',            # can be 'udp'
           timeout               => 1,                # timeout of socket connect in seconds
           fire_and_forget       => 1,                # if true, ignore sending errors
           return_connect_error  => 0,                # if true, forward connect error to caller
@@ -152,6 +152,11 @@ sub sexiprocess {
 					}
 				}
 				my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
+				my $vcenter_clean_name = lc ($vcentersdk->host);
+				$vcenter_clean_name =~ s/[ .]/_/g;
+				$vcenter_clean_name = NFD($vcenter_clean_name);
+				$vcenter_clean_name =~ s/[^[:ascii:]]//g;
+				$vcenter_clean_name =~ s/[^A-Za-z0-9-_]/_/g;
 				my $cluster = $h_cluster{($h_hostcluster{$vm_view->{'runtime.host'}->value} ? $h_hostcluster{$vm_view->{'runtime.host'}->value} : "domain-c000")};
 				my $cluster_name;
 				if ($cluster ne "N/A") {
@@ -163,7 +168,7 @@ sub sexiprocess {
 				} else {
 					$cluster_name = $cluster;
 				}
-				my $txtCluster = ($cluster_name eq "N/A") ? $cluster_name : '<a href="/dashboard/file/VMware_Cluster_FullStats.json?var-cluster=' . $cluster_name . '" target="_blank">' . $cluster_name . '</a>';
+				my $txtCluster = ($cluster_name eq "N/A") ? $cluster_name : '<a href="/d/2b9f2865/vmware-cluster-fullstats?orgId=1&var-vcenter=All&var-datacentre=All&var-cluster=' . $cluster_name . '&var-datastore=All" target="_blank">' . $cluster_name . '</a>';
 				my $datastore_name = lc ((split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1]);
 				$datastore_name =~ s/[ .()]/_/g;
 				$datastore_name = NFD($datastore_name);
@@ -175,7 +180,7 @@ sub sexiprocess {
 				$clean_vm_name =~ s/[^[:ascii:]]//g;
 				$clean_vm_name =~ s/[^A-Za-z0-9-_]/_/g;
 				my %h_vm : shared = (
-					VM => '<a href="/dashboard/file/VMware_Multi_Cluster_Top_N_VM_Stats.json?var-vm=' . $clean_vm_name . '&var-N=9" target="_blank">' . $clean_vm_name . '</a>',
+					VM => '<a href="/d/beeee82d/vmware-all-cluster-vm-stats?orgId=1&var-vcenter=' . $vcenter_clean_name . '&var-datacentre=All&var-cluster=All&var-vm=' . $clean_vm_name . '" target="_blank">' . $clean_vm_name . '</a>',
 					VCENTER => $vcentersdk->host,
 					CLUSTER => $txtCluster,
 					HOST => $h_host{$vm_view->{'runtime.host'}->value},
@@ -196,7 +201,7 @@ sub sexiprocess {
 	}
 	my $exec_duration = time - $exec_start;
 	my $vm_exec_duration_h = { time() => { "$normalizedServerName.vm" . ".exec.duration", $exec_duration } };
-	$graphite->send(path => "vi.", data => $vm_exec_duration_h) or $logger->logdie ("[ERROR] Unable to send to graphite instance.");
+	$graphite->send(path => "vi.", data => $vm_exec_duration_h);
 	$logger->info("[INFO] Successfully retrieve " . scalar @$vm_views . " VM for vCenter server $s_item in ${exec_duration}s");
 }
 
