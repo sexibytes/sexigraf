@@ -1,7 +1,5 @@
 [![SexiBanner](http://www.sexigraf.fr/wp-content/uploads/2017/07/SexiGrafBanner.png)](http://www.sexigraf.fr)
 
-[![Join the chat at https://gitter.im/sexibytes/sexigraf](https://badges.gitter.im/sexibytes/sexigraf.svg)](https://gitter.im/sexibytes/sexigraf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 SexiGraf is a fully open-source vSphere centric Graphite VMware appliance with a Grafana frontend. It pulls VI and VSAN metrics from VMware vCenter APIs, push them to Graphite and let Grafana produces the gorgeous dashboards we love so much!
 
 *Official website for this awesome appliance is available at http://www.sexigraf.fr*
