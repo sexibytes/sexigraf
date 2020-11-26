@@ -46,7 +46,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
 
     # create ISO file from export folder
-    /usr/bin/genisoimage -f -J -joliet-long -r -U -iso-level 4 -o /mnt/wfs/sexigraf-dump.iso /mnt/wfs/sexigraf-dump
+    /usr/bin/genisoimage --allow-limited-size -udf -f -J -joliet-long -r -U -iso-level 4 -o /mnt/wfs/sexigraf-dump.iso /mnt/wfs/sexigraf-dump
     ln -s /mnt/wfs/sexigraf-dump.iso /var/www/admin/sexigraf-dump.iso
 
     # cleanup
@@ -97,7 +97,7 @@ else
     rm -f /root/sexigraf-dump/conf/vicredentials.conf
 
     # create ISO file from export folder
-    /usr/bin/genisoimage -f -J -joliet-long -r -U -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
+    /usr/bin/genisoimage --allow-limited-size -udf -f -J -joliet-long -r -U -iso-level 4 -o /var/www/admin/sexigraf-dump.iso /root/sexigraf-dump
 
     # cleanup
     rm -rf /root/sexigraf-dump/
