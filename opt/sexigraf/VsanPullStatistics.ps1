@@ -4,10 +4,13 @@ param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$tru
 
 $ExecStart = Get-Date
 $ScriptVersion = "0.9.1"
+$ErrorActionPreference = "SilentlyContinue"
+$WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
     Param([string] $ExitReason)
     Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
+    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
     Stop-Transcript
     exit
