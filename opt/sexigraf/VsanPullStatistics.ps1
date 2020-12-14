@@ -25,14 +25,10 @@ try {
 try {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server"
     $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
-    if ($DupVsanPullStatisticsProcess) {
+    if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
         AltAndCatchFire "VsanPullStatistics for $server is already running!"
     }
 } catch {
-    # Write-Host "$((Get-Date).ToString("o")) [ERROR] VsanDisksPullStatistics process lookup failure"
-    # Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
-    # Stop-Transcript
-    # exit
     AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
 }
 
@@ -46,10 +42,18 @@ if ($SessionFile) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
-        # Write-Host "$((Get-Date).ToString("o")) [ERROR] SessionToken not found, invalid or connection failure"
-        # Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
-        # Stop-Transcript
-        # exit
         AltAndCatchFire "SessionToken not found, invalid or connection failure"
     }
+} elseif ($CredStore) {
+
+}
+
+try {
+    if ($($global:DefaultVIServer)) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter $server"
+    } else {
+        AltAndCatchFire "global:DefaultVIServer variable check failure"
+    }
+} catch {
+    AltAndCatchFire "Unable to verify vCenter connection"
 }
