@@ -2,8 +2,10 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ExecStart = Get-Date
 $ScriptVersion = "0.9.1"
+
+$ExecStart = Get-Date
+
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 
