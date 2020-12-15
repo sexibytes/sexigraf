@@ -152,8 +152,33 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $cluster_name = NameCleaner $vcenter_cluster.Name
             $cluster_datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
 
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name in datacenter $cluster_datacentre_name ..."
+            foreach ($cluster_host in $vcenter_cluster.Host) {
+                if ($vcenter_vmhosts_h[$cluster_host.MoRef.Value]) {
+                    [array]$cluster_hosts += $vcenter_vmhosts_h[$cluster_host.MoRef.Value]
+                }
+            }
 
+            if ($cluster_hosts) {
+
+                $cluster_vsan_uuid = $cluster_hosts[0].Config.VsanHostConfig.ClusterInfo.Uuid
+
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $cluster_datacentre_name ..."
+
+                if ($cluster_hosts[0].Config.OptionDef.Key -match "VSAN.DedupScope") {
+                    try {
+                        $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster)
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+)"
+                        $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
+
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
+                    }
+
+                }
+
+
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $cluster_datacentre_name"
+            }
         }
 
     }
