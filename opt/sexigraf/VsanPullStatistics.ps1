@@ -153,8 +153,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $cluster_datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
 
             foreach ($cluster_host in $vcenter_cluster.Host) {
+                [array]$cluster_hosts = @()
                 if ($vcenter_vmhosts_h[$cluster_host.MoRef.Value]) {
-                    [array]$cluster_hosts += $vcenter_vmhosts_h[$cluster_host.MoRef.Value]
+                   $cluster_hosts += $vcenter_vmhosts_h[$cluster_host.MoRef.Value]
                 }
             }
 
