@@ -166,9 +166,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 if ($cluster_hosts[0].Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
-                        $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster)
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+)"
+
+                        $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster)
                         $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
+                        foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
+                            $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
+                            $ClusterVsanSpaceUsageReportObjType
+                        }
 
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [ERROR] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
