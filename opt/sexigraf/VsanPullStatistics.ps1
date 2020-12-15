@@ -34,7 +34,7 @@ function NameCleaner {
     $NameToClean -replace "[ .]","_"
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
-    $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_")
+    $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
     return $NameToClean
 }
 
