@@ -10,12 +10,32 @@ $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
-    Param([string] $ExitReason)
+    Param($ExitReason)
     Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
     Stop-Transcript
     exit
+}
+
+function GetRootDc {
+	Param($child_object)	
+	if ($xfolders_vcenter_parent_h[$child_object.Parent.value]) {	
+		$Parent_folder = $child_object.Parent.value
+		while ($xfolders_vcenter_type_h[$xfolders_vcenter_parent_h[$Parent_folder]] -notmatch "^Datacenter$") {
+			if ($xfolders_vcenter_type_h[$xfolders_vcenter_parent_h[$Parent_folder]]) {$Parent_folder = $xfolders_vcenter_parent_h[$Parent_folder]}	
+		}		
+		return $xfolders_vcenter_name_h[$xfolders_vcenter_parent_h[$Parent_folder]]
+	}
+}
+
+function NameCleaner {
+    Param($NameToClean)
+    $NameToClean -replace "[ .]","_"
+    [System.Text.NormalizationForm]$NormalizationForm = "FormD"
+    $NameToClean = $NameToClean.Normalize($NormalizationForm)
+    $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_")
+    return $NameToClean
 }
 
 try {
@@ -28,7 +48,7 @@ try {
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server ..."
     $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
@@ -41,7 +61,7 @@ try {
 if ($SessionFile) {
     try {
         $SessionToken = (Get-Content -Path $SessionFile -Force -Delimiter '\"')[1]
-        Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server"
+        Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
         $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force
         if ($ServerConnection.IsConnected) {
@@ -56,7 +76,7 @@ if ($SessionFile) {
 
 try {
     if ($($global:DefaultVIServer)) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter $Server"
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter $Server ..."
         $ServiceInstance = Get-View ServiceInstance
     } else {
         AltAndCatchFire "global:DefaultVIServer variable check failure"
@@ -82,25 +102,61 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host -ForegroundColor White "$((Get-Date).ToString("o")) [INFO] vCenter objects collect ..."
 
-	$all_vCenter_folders = Get-View -ViewType folder -Property Parent, Name -Server $vCenter
-	$all_vCenter_datacenters = Get-View -ViewType datacenter -Property Name, Parent -Server $vCenter
-	$all_vCenter_clusters = Get-View -ViewType clustercomputeresource -Property Name, Parent,ConfigurationEx, Summary, CustomValue -Server $vCenter
-	# $all_vCenter_vmhosts = Get-View -ViewType hostsystem -Property Name, Parent -Server $vCenter
-	$all_vCenter_resource_pools = Get-View -ViewType ResourcePool -Property Parent, Name, Owner, Config -Server $vCenter
-	$all_vCenter_compute_pools = Get-View -ViewType ComputeResource -Property Name, Parent -Server $vCenter
-	
-	$xfolders_vCenter_name_table = @{}
-	$xfolders_vCenter_Parent_table = @{}
-	$xfolders_vCenter_type_table = @{}
+    try {
+        $vcenter_datacenters = Get-View -ViewType datacenter -Property Name, Parent -Server $Server
+        $vcenter_folders = Get-View -ViewType folder -Property Name, Parent -Server $Server
+        $vcenter_clusters = Get-View -ViewType clustercomputeresource -Property Name, Parent, Host, ResourcePool -Server $Server
+        $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType hostsystem -Property Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
+        $vcenter_vms = Get-View -ViewType hostsystem -Property Name, Parent -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        
+    } catch {
+        AltAndCatchFire "Get-View failure"
+    }
+
+    Write-Host -ForegroundColor White "$((Get-Date).ToString("o")) [INFO] Building objects tables ..."
+
+    $vcenter_root_resource_pools_h = @{}
+    foreach ($vcenter_root_resource_pool in $vcenter_root_resource_pools) {
+        $vcenter_root_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
+    }
+
+    $vcenter_clusters_h = @{}
+      foreach ($vcenter_cluster in $vcenter_clusters) {
+        $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
+    }
+
+    $vcenter_vmhosts_h = @{}
+    foreach ($vcenter_vmhost in $vcenter_vmhosts) {
+        $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
+    }
+
+	$xfolders_vcenter_name_h = @{}
+	$xfolders_vcenter_parent_h = @{}
+	$xfolders_vcenter_type_h = @{}
 
 	Write-Host -ForegroundColor White "$((Get-Date).ToString("o")) [INFO] vCenter objects relationship discover ..."
 	
-	foreach ($all_vCenter_xfolder in [array]$all_vCenter_datacenters+[array]$all_vCenter_folders+[array]$all_vCenter_clusters+[array]$all_vCenter_compute_pools+[array]$all_vCenter_resource_pools) {
-		if (!$xfolders_vCenter_name_table[$all_vCenter_xfolder.moref.value]) {$xfolders_vCenter_name_table.add($all_vCenter_xfolder.moref.value,$all_vCenter_xfolder.name)}
-		if (!$xfolders_vCenter_Parent_table[$all_vCenter_xfolder.moref.value]) {$xfolders_vCenter_Parent_table.add($all_vCenter_xfolder.moref.value,$all_vCenter_xfolder.Parent.value)}
-		if (!$xfolders_vCenter_type_table[$all_vCenter_xfolder.moref.value]) {$xfolders_vCenter_type_table.add($all_vCenter_xfolder.moref.value,$all_vCenter_xfolder.moref.type)}
+	foreach ($vcenter_xfolder in [array]$vcenter_datacenters + [array]$vcenter_folders + [array]$vcenter_clusters + [array]$vcenter_root_resource_pools + [array]$vcenter_vmhosts) {
+		if (!$xfolders_vcenter_name_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_name_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.name)}
+		if (!$xfolders_vcenter_parent_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_parent_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.Parent.value)}
+		if (!$xfolders_vcenter_type_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_type_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.moref.type)}
 	}
 
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing clusters ..."
+
+    foreach ($vcenter_cluster in $vcenter_clusters) {
+
+        if (($vcenter_cluster.Host|Measure-Object).count -gt 1) {
+
+            $cluster_name = NameCleaner $vcenter_cluster.Name
+            $cluster_datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
+
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name in datacenter $cluster_datacentre_name ..."
+
+        }
+
+    }
 
 } else {
     AltAndCatchFire "$Server is not a vcenter!"
