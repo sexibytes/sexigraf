@@ -31,10 +31,10 @@ function GetRootDc {
 
 function NameCleaner {
     Param($NameToClean)
-    $NameToClean -replace "[ .]","_"
+    $NameToClean = $NameToClean -replace "[ .]","_"
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
-    $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
+    $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
     return $NameToClean
 }
 
@@ -92,7 +92,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     try {
         if ($ServiceInstance.Content.About.ApiVersion.Split(".")[0] -ge 6) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is =>6 so we can call vSAN API"
-            $VsanSpaceReportSystem = Get-VSANView -Id "VsanSpaceReportSystem-vsan-cluster-space-report-system"
+            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system
         } else {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not =>6 so we cannot call vSAN API"
         }
@@ -169,11 +169,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+)"
 
-                        $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster)
+                        $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
                         $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
                         foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
                             $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
-                            $ClusterVsanSpaceUsageReportObjType
+                            
                         }
 
                     } catch {
