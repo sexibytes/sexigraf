@@ -207,6 +207,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 try {
                     if ($vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing VirtualDisk in cluster $cluster_name ..."
                         $cluster_vms = @()
                         foreach ($cluster_vm_moref in $vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
                             $cluster_vms += $vcenter_vms_h[$cluster_vm_moref.Value]
