@@ -116,7 +116,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_clusters = Get-View -ViewType clustercomputeresource -Property Name, Parent, Host, ResourcePool -Server $Server
         $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
         $vcenter_vmhosts = Get-View -ViewType hostsystem -Property Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
-        $vcenter_vms = Get-View -ViewType hostsystem -Property Name, Parent -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vms = Get-View -ViewType hostsystem -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
         
     } catch {
         AltAndCatchFire "Get-View failure"
@@ -137,6 +137,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_vmhosts_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
         $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
+    }
+
+    $vcenter_vms_h = @{}
+    foreach ($vcenter_vm in $vcenter_vms) {
+        $vcenter_vms_h.add($vcenter_vm.MoRef.Value, $vcenter_vm)
     }
 
 	$xfolders_vcenter_name_h = @{}
@@ -195,9 +200,22 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         }
 
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
                     }
 
+                }
+
+                try {
+                    if ($vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                        $cluster_vms = @()
+                        foreach ($cluster_vm_moref in $vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                            $cluster_vms += $vcenter_vms_h[$cluster_vm_moref.Value]
+                        }
+                    } else {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] No VM in cluster $cluster_name"
+                    }
+                } catch {
+                    AltAndCatchFire "Unable to retreive VirtualDisk in cluster $cluster_name"
                 }
 
 
