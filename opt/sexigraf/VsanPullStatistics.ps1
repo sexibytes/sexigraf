@@ -182,13 +182,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
                             $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
                             $ClusterVsanSpaceUsageReportObjTypeHash = @{
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB" = $vsanObjType.overheadB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB" = $vsanObjType.physicalUsedB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB" = $vsanObjType.overReservedB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB" = $vsanObjType.usedB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB" = $vsanObjType.temporaryOverheadB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB" = $vsanObjType.primaryCapacityB;
-                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB" = $vsanObjType.reservedCapacityB
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB" = $vsanObjType.overheadB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB" = $vsanObjType.physicalUsedB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB" = $vsanObjType.overReservedB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB" = $vsanObjType.usedB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB" = $vsanObjType.temporaryOverheadB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB" = $vsanObjType.primaryCapacityB;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB" = $vsanObjType.reservedCapacityB
                             }
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjTypeHash -DateTime $ExecStart
                             # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "toto1.toto2.toto3" -MetricValue 1 -UnixTime (New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (get-date).ToUniversalTime()).TotalSeconds
