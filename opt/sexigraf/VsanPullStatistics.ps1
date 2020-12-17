@@ -48,6 +48,14 @@ try {
 }
 
 try {
+    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
+    Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
+    Import-Module /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1
+} catch {
+    AltAndCatchFire "Powershell modules import failure"
+}
+
+try {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server ..."
     $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
     # https://github.com/PowerShell/PowerShell/issues/13944
@@ -87,7 +95,7 @@ try {
 
 if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
-    $VcenterName = $($Server.ToLower()) -replace "[. ]","_"
+    $vcenter_name = $VcenterName = $($Server.ToLower()) -replace "[. ]","_"
     
     try {
         if ($ServiceInstance.Content.About.ApiVersion.Split(".")[0] -ge 6) {
@@ -173,7 +181,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
                         foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
                             $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
-                            
+                            $ClusterVsanSpaceUsageReportObjTypeHash = @{
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB" = $vsanObjType.overheadB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB" = $vsanObjType.physicalUsedB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB" = $vsanObjType.overReservedB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB" = $vsanObjType.usedB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB" = $vsanObjType.temporaryOverheadB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB" = $vsanObjType.primaryCapacityB;
+                                "$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB" = $vsanObjType.reservedCapacityB
+                            }
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjTypeHash -DateTime $ExecStart
+                            # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "toto1.toto2.toto3" -MetricValue 1 -UnixTime (New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (get-date).ToUniversalTime()).TotalSeconds
                         }
 
                     } catch {
