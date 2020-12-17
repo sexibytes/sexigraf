@@ -111,12 +111,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     Write-Host -ForegroundColor White "$((Get-Date).ToString("o")) [INFO] vCenter objects collect ..."
 
     try {
-        $vcenter_datacenters = Get-View -ViewType datacenter -Property Name, Parent -Server $Server
-        $vcenter_folders = Get-View -ViewType folder -Property Name, Parent -Server $Server
-        $vcenter_clusters = Get-View -ViewType clustercomputeresource -Property Name, Parent, Host, ResourcePool -Server $Server
+        $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
+        $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
+        $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool -Server $Server
         $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType hostsystem -Property Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
-        $vcenter_vms = Get-View -ViewType hostsystem -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
+        $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
         
     } catch {
         AltAndCatchFire "Get-View failure"
