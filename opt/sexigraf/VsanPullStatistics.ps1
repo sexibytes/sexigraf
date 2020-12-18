@@ -51,8 +51,8 @@ function GetParent {
     param ($parent)
     if ($parent.Parent) {
         GetParent $parent.Parent
+        return $parent
     }
-    return $parent
 }
 
 try {
