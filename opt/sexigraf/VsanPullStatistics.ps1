@@ -48,11 +48,12 @@ function VmdkNameCleaner {
 }
 
 function GetParent {
-    param ($parent)
+    param ($child_parent)
+    $parent = $child_parent
     if ($parent.Parent) {
         GetParent $parent.Parent
-        return $parent
     }
+    return $parent
 }
 
 try {
