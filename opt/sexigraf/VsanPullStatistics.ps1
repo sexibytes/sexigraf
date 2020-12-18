@@ -48,12 +48,12 @@ function VmdkNameCleaner {
 }
 
 function GetParent {
-    param ($child_parent)
-    $parent = $child_parent
+    param ($parent)
     if ($parent.Parent) {
         GetParent $parent.Parent
+    } else {
+        return $parent
     }
-    return $parent
 }
 
 try {
@@ -104,6 +104,7 @@ try {
     if ($($global:DefaultVIServer)) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter $Server ..."
         $ServiceInstance = Get-View ServiceInstance
+        $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property ""
     } else {
         AltAndCatchFire "global:DefaultVIServer variable check failure"
     }
@@ -239,8 +240,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     $cluster_vdisks_id.add($cluster_vm_vdisk_parent.BackingObjectId, $cluster_vm_vdisk_parent_base_name)
                                 }
                             }
-
-
                         }
                     } else {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] No VM in cluster $cluster_name"
