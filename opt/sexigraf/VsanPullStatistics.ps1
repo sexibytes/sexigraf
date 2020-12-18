@@ -235,7 +235,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     $cluster_vm_vdisk_parent = GetParent $cluster_vm_vdisk.Backing.Parent
                                     $cluster_vm_vdisk_parent_base_name = VmdkNameCleaner $($cluster_vm_vdisk_parent -split "[/.]")[1]
                                     $cluster_vdisks_id.add($($cluster_vm_vdisk.Backing.BackingObjectId + "_root"), $cluster_vm_vdisk_parent.BackingObjectId)
-                                    $cluster_vdisks_id.add($cluster_vm_vdisk_parent.Backing.BackingObjectId, $cluster_vm_vdisk_parent_base_name)
+                                    $cluster_vdisks_id.add($cluster_vm_vdisk_parent.BackingObjectId, $cluster_vm_vdisk_parent_base_name)
                                 }
                             }
 
