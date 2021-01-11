@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh
+#!/usr/bin/pwsh -Command
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
