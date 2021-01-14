@@ -56,6 +56,24 @@ function GetParent {
     }
 }
 
+function GetDomChild {
+    param ($components,$CompChildren)
+    foreach ($component in $components.psobject.Properties.name) {
+        if ($component -match "child-") {
+            GetDomChild $($components.$component) $CompChildren
+        } elseif ($component -match "attributes") {
+            foreach ($attribute in $components.attributes) {
+                if ($attribute -match "bytesToSync") {
+                    $CompChildren.bytesToSync += $components.attributes.bytesToSync
+                    $CompChildren.Objs += 1
+                } elseif ($attribute -match "recoveryETA") {
+                    $CompChildren.recoveryETA += $components.attributes.recoveryETA
+                }
+            }
+        }
+    }
+}
+
 try {
     Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force
     Write-Host "$((Get-Date).ToString("o")) [DEBUG] VsanDisksPullStatistics v$ScriptVersion"
@@ -117,14 +135,18 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_name = $VcenterName = $($Server.ToLower()) -replace "[. ]","_"
     
     try {
-        if ($ServiceInstance.Content.About.ApiVersion.Split(".")[0] -ge 6) {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is =>6 so we can call vSAN API"
+        if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
+            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system
+            $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system
+        } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not =>6 so we cannot call vSAN API"
+            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not 6+ so we cannot call vSAN API"
         }
     } catch {
-        AltAndCatchFire "Unable to read ServiceInstance.Content.About.ApiVersion"
+        AltAndCatchFire "Unable to read ServiceInstance.Content.About.ApiVersion or call Get-VSANView"
     }
 
     Write-Host -ForegroundColor White "$((Get-Date).ToString("o")) [INFO] vCenter objects collect ..."
@@ -255,15 +277,48 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 try {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing VsanInternalSystem from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                     $cluster_host_random_VsanInternalSystem = get-view $cluster_host_random.ConfigManager.VsanInternalSystem
                 } catch {
                     AltAndCatchFire "Unable to retreive VsanInternalSystem from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
                 try {
-                    $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("*")
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
+                    # $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks(@())|ConvertFrom-Json
+                    $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("devName")|ConvertFrom-Json
                 } catch {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                }
+
+                if ($cluster_host_random.Config.Product.ApiVersion -gt 6.8) {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects in cluster $cluster_name (v6.7+) ..."
+
+                } else {
+                    try {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
+                        # querySyncingVsanObjectsSummary https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
+                        $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json
+                        if ($cluster_SyncingVsanObjects."dom_objects") {
+                            Write-Host "$((Get-Date).ToString("o")) [DEBUG] Processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
+                            $SyncingVsanObjects = ""|select bytesToSync, recoveryETA, Objs
+                            $SyncingVsanObjects.recoveryETA = 0
+                            foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").psobject.Properties.name) {
+                                GetDomChild $($cluster_SyncingVsanObjects."dom_objects").$cluster_SyncingVsanObjects_dom.config.content $SyncingVsanObjects
+                            }
+                            if ($SyncingVsanObjects.Objs -gt 0 -and $SyncingVsanObjects.recoveryETA -gt 0) {
+                                $SyncingVsanObjects.recoveryETA = $SyncingVsanObjects.recoveryETA / $SyncingVsanObjects.Objs
+                            }
+                            $SyncingVsanObjectsHash = @{
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $SyncingVsanObjects.recoveryETA;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $SyncingVsanObjects.bytesToSync;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $SyncingVsanObjects.Objs;
+                            }
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                        }
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                    }
                 }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $cluster_datacentre_name"
