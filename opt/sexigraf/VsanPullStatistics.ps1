@@ -184,8 +184,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $cluster_name = NameCleaner $vcenter_cluster.Name
             $cluster_datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
 
+            [array]$cluster_hosts = @()
             foreach ($cluster_host in $vcenter_cluster.Host) {
-                [array]$cluster_hosts = @()
                 if ($vcenter_vmhosts_h[$cluster_host.Value]) {
                    $cluster_hosts += $vcenter_vmhosts_h[$cluster_host.Value]
                 }
@@ -193,11 +193,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
             if ($cluster_hosts) {
 
-                $cluster_vsan_uuid = $cluster_hosts[0].Config.VsanHostConfig.ClusterInfo.Uuid
+                $cluster_host_random = $cluster_hosts|Get-Random -Count 1
+
+                $cluster_vsan_uuid = $cluster_host_random.Config.VsanHostConfig.ClusterInfo.Uuid
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $cluster_datacentre_name ..."
 
-                if ($cluster_hosts[0].Config.OptionDef.Key -match "VSAN.DedupScope") {
+                if ($cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+)"
 
@@ -229,7 +231,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing VirtualDisk in cluster $cluster_name ..."
                         $cluster_vdisks_id = @{}
                         foreach ($cluster_vm_moref in $vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
-                            foreach ($cluster_vm_vdisk in $vcenter_vms_h[$cluster_vm_moref.Value].Config.Hardware.Device|?{$_ -is [ VMware.Vim.VirtualDisk] -and $_.Backing.BackingObjectId}) {
+                            foreach ($cluster_vm_vdisk in $vcenter_vms_h[$cluster_vm_moref.Value].Config.Hardware.Device|?{$_ -is [VMware.Vim.VirtualDisk] -and $_.Backing.BackingObjectId}) {
                                 $cluster_vm_vdisk_base_name = VmdkNameCleaner $($cluster_vm_vdisk.Backing.FileName -split "[/.]")[1]
                                 $cluster_vdisks_id.add($cluster_vm_vdisk.Backing.BackingObjectId, $cluster_vm_vdisk_base_name)
 
@@ -247,6 +249,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 } catch {
                     AltAndCatchFire "Unable to retreive VirtualDisk in cluster $cluster_name"
                 }
+
+
 
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $cluster_datacentre_name"
