@@ -195,7 +195,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 $cluster_host_random = $cluster_hosts|Get-Random -Count 1
 
-                $cluster_vsan_uuid = $cluster_host_random.Config.VsanHostConfig.ClusterInfo.Uuid
+                try {
+                    $cluster_vsan_uuid = $cluster_host_random.Config.VsanHostConfig.ClusterInfo.Uuid
+                } catch {
+                    AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $cluster_datacentre_name ..."
 
@@ -250,8 +254,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive VirtualDisk in cluster $cluster_name"
                 }
 
+                try {
+                    $cluster_host_random_VsanInternalSystem = get-view $cluster_host_random.ConfigManager.VsanInternalSystem
+                } catch {
+                    AltAndCatchFire "Unable to retreive VsanInternalSystem from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                }
 
-
+                try {
+                    $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("*")
+                } catch {
+                    AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $cluster_datacentre_name"
             }
