@@ -315,6 +315,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $QuerySyncingVsanObjectsSummary.TotalRecoveryETA;
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $QuerySyncingVsanObjectsSummary.TotalBytesToSync;
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
                             }
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart    
                         }
