@@ -204,7 +204,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         if (($vcenter_cluster.Host|Measure-Object).count -gt 1) {
 
             $cluster_name = NameCleaner $vcenter_cluster.Name
-            $cluster_datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
+            $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
 
             [array]$cluster_hosts = @()
             foreach ($cluster_host in $vcenter_cluster.Host) {
@@ -223,7 +223,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $cluster_datacentre_name ..."
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $datacentre_name ..."
 
                 if ($cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
@@ -292,12 +292,38 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 if ($cluster_host_random.Config.Product.ApiVersion -gt 6.7) {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects in cluster $cluster_name (v6.7+) ..."
-                    $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
+                    try {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
+                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
+                        $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
+                        if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
+                            if ($QuerySyncingVsanObjectsSummary.Objects) {
+                                $ReasonsToSync = @{}
+                                foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
+                                    $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
+                                    $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
+                                }
+                                $ReasonsToSyncHash = @{}
+                                foreach ($ReasonToSync in $ReasonsToSync.keys) {
+                                    # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $ExecStart
+                                    $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
+                                }
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $ExecStart  
+                            }
+
+                            $SyncingVsanObjectsHash = @{
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $QuerySyncingVsanObjectsSummary.TotalRecoveryETA;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $QuerySyncingVsanObjectsSummary.TotalBytesToSync;
+                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
+                            }
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart    
+                        }
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
+                    }
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                        # querySyncingVsanObjectsSummary https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
                         $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json
                         if ($cluster_SyncingVsanObjects."dom_objects".psobject.Properties.name) {
                             Write-Host "$((Get-Date).ToString("o")) [DEBUG] Processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
@@ -321,7 +347,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
 
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $cluster_datacentre_name"
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $datacentre_name"
             }
         }
 
