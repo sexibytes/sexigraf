@@ -121,8 +121,8 @@ if ($SessionFile) {
 try {
     if ($($global:DefaultVIServer)) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter $Server ..."
-        $ServiceInstance = Get-View ServiceInstance
-        $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property ""
+        $ServiceInstance = Get-View ServiceInstance -Server $Server
+        $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property "" -Server $Server
     } else {
         AltAndCatchFire "global:DefaultVIServer variable check failure"
     }
@@ -137,11 +137,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     try {
         if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
-            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system
-            $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system
+            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
+            $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
-            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system
+            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
         } else {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not 6+ so we cannot call vSAN API"
         }
@@ -291,17 +291,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                if ($cluster_host_random.Config.Product.ApiVersion -gt 6.8) {
+                if ($cluster_host_random.Config.Product.ApiVersion -gt 6.7) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects in cluster $cluster_name (v6.7+) ..."
-
+                    $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                         # querySyncingVsanObjectsSummary https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
                         $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json
-                        if ($cluster_SyncingVsanObjects."dom_objects") {
+                        if ($cluster_SyncingVsanObjects."dom_objects".psobject.Properties.name) {
                             Write-Host "$((Get-Date).ToString("o")) [DEBUG] Processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                            $SyncingVsanObjects = ""|select bytesToSync, recoveryETA, Objs
+                            $SyncingVsanObjects = ""|Select-Object bytesToSync, recoveryETA, Objs
                             $SyncingVsanObjects.recoveryETA = 0
                             foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").psobject.Properties.name) {
                                 GetDomChild $($cluster_SyncingVsanObjects."dom_objects").$cluster_SyncingVsanObjects_dom.config.content $SyncingVsanObjects
