@@ -44,7 +44,7 @@
               "targetBlank": true,
               "title": "VsanSyncReason",
               "type": "absolute",
-              "url": "https://code.vmware.com/apis/398/vsan#/doc/vim.vsan.VsanSyncReason.html"
+              "url": "https://code.vmware.com/apis/1040/vsan/doc/vim.vsan.host.VsanComponentSyncState.html"
             }
           ],
           "minSpan": 12,
