@@ -167,22 +167,32 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_root_resource_pools_h = @{}
     foreach ($vcenter_root_resource_pool in $vcenter_root_resource_pools) {
-        $vcenter_root_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
+        try {
+            $vcenter_root_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
+        } catch {}
     }
 
     $vcenter_clusters_h = @{}
       foreach ($vcenter_cluster in $vcenter_clusters) {
-        $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
+        try {
+            $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
+        } catch {}
     }
 
     $vcenter_vmhosts_h = @{}
+    $vcenter_vmhosts_vsan_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
-        $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
+        try {
+            $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
+            $vcenter_vmhosts_vsan_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost.configManager.vsanInternalSystem.value)
+        } catch {}
     }
 
     $vcenter_vms_h = @{}
     foreach ($vcenter_vm in $vcenter_vms) {
-        $vcenter_vms_h.add($vcenter_vm.MoRef.Value, $vcenter_vm)
+        try {
+            $vcenter_vms_h.add($vcenter_vm.MoRef.Value, $vcenter_vm)
+        } catch {}
     }
 
 	$xfolders_vcenter_name_h = @{}
@@ -201,7 +211,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     foreach ($vcenter_cluster in $vcenter_clusters) {
 
-        if (($vcenter_cluster.Host|Measure-Object).count -gt 1) {
+        if (($vcenter_cluster.Host|Measure-Object).count -gt 0) {
 
             $cluster_name = NameCleaner $($vcenter_cluster.Name).ToLower()
             $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster).ToLower()
@@ -215,6 +225,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
             if ($cluster_hosts) {
 
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $datacentre_name ..."
+
                 $cluster_host_random = $cluster_hosts|Get-Random -Count 1
 
                 try {
@@ -223,11 +235,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing cluster $cluster_name $cluster_vsan_uuid in datacenter $datacentre_name ..."
+                try {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vsanInternalSystem in vSAN cluster $cluster_name ..."
+                    $cluster_hosts_vsanInternalSystem = Get-View $cluster_hosts.configManager.vsanInternalSystem -Server $Server
+                    $cluster_host_vsanInternalSystem_h = @{}
+                    foreach ($cluster_host_vsanInternalSystem in $cluster_hosts_vsanInternalSystem) {
+                        $cluster_host_vsanInternalSystem_h.add($cluster_host_vsanInternalSystem.moref.value,$cluster_host_vsanInternalSystem)
+                    }
+                } catch {
+                    AltAndCatchFire "Unable to retreive vsanInternalSystem in cluster $cluster_name"
+                }
 
                 if ($cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+)"
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+) ..."
 
                         $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
                         $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
@@ -286,7 +307,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                     # $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks(@())|ConvertFrom-Json
-                    $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("devName")|ConvertFrom-Json
+                    $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("devName")|ConvertFrom-Json -AsHashtable
                 } catch {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
@@ -295,6 +316,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
                         # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
+                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
                         $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
                         if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
                             if ($QuerySyncingVsanObjectsSummary.Objects) {
@@ -325,12 +347,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                        $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json
-                        if ($cluster_SyncingVsanObjects."dom_objects".psobject.Properties.name) {
+                        $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json -AsHashtable
+                        if ($cluster_SyncingVsanObjects."dom_objects".keys) {
                             Write-Host "$((Get-Date).ToString("o")) [DEBUG] Processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                             $SyncingVsanObjects = ""|Select-Object bytesToSync, recoveryETA, Objs
                             $SyncingVsanObjects.recoveryETA = 0
-                            foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").psobject.Properties.name) {
+                            foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").keys) {
                                 GetDomChild $($cluster_SyncingVsanObjects."dom_objects").$cluster_SyncingVsanObjects_dom.config.content $SyncingVsanObjects
                             }
                             if ($SyncingVsanObjects.Objs -gt 0 -and $SyncingVsanObjects.recoveryETA -gt 0) {
@@ -346,6 +368,26 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                     }
+                }
+
+                foreach ($cluster_host in $cluster_hosts) {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing QueryVsanStatistics from $($cluster_host.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
+                    $host_name = $($cluster_host.config.network.dnsConfig.hostName).ToLower()
+                    try {
+                        $cluster_host_VsanStatistics = $cluster_host_vsanInternalSystem_h[$vcenter_vmhosts_vsan_h[$cluster_host.moref.value]].QueryVsanStatistics(@('dom', 'lsom', 'dom-objects', 'disks'))|ConvertFrom-Json -AsHashtable
+                        # [
+                        #     'dom', 'lsom', 'worldlets', 'plog', 
+                        #     'dom-objects',
+                        #     'mem', 'cpus', 'slabs',
+                        #     'vscsi', 'cbrc',
+                        #     'disks',
+                        #     'rdtassocsets', 
+                        #     'system-mem', 'pnics',
+                        # ]
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
+                    }
+                    
                 }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Finish processing cluster $cluster_name in datacenter $datacentre_name"
