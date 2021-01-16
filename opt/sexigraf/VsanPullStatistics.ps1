@@ -478,7 +478,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     }
     
-    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $ExecStart -UnixTime $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart.ToUniversalTime()).TotalSeconds.split(".")[0]
+    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $ExecStart -UnixTime $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart.ToUniversalTime()).TotalSeconds.ToString().Split(".")[0]
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $Server ..."
 
