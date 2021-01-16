@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.2"
+$ScriptVersion = "0.9.3"
 
 $ExecStart = Get-Date
 
@@ -287,7 +287,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 if ($cluster_vm_vdisk.Backing.Parent) {
                                     $cluster_vm_vdisk_parent = GetParent $cluster_vm_vdisk.Backing.Parent
                                     $cluster_vm_vdisk_parent_base_name = VmdkNameCleaner $($cluster_vm_vdisk_parent.FileName -split "[/.]")[1]
-                                    if (!$cluster_vdisks_id.add[$($cluster_vm_vdisk.Backing.BackingObjectId + "_root"]) {
+                                    if (!$cluster_vdisks_id.add[$($cluster_vm_vdisk.Backing.BackingObjectId + "_root")]) {
                                         $cluster_vdisks_id.add($($cluster_vm_vdisk.Backing.BackingObjectId + "_root"), $cluster_vm_vdisk_parent.BackingObjectId)
                                     }
                                     if (!$cluster_vdisks_id.add[$cluster_vm_vdisk_parent.BackingObjectId]) {
