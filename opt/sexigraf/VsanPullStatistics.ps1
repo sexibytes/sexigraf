@@ -4,7 +4,7 @@ param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$tru
 
 $ScriptVersion = "0.9.7"
 
-$ExecStart = Get-Date
+$ExecStart = $(Get-Date).ToUniversalTime()
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -480,8 +480,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     
     $ExecDuration = ($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
     $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
+    $ExecPath = "vi.$vcenter_name.vsan.exec.duration"
 
-    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
+    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath $ExecPath -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $Server ..."
 
