@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1"
+$ScriptVersion = "0.9.2"
 
 $ExecStart = Get-Date
 
@@ -280,13 +280,19 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         foreach ($cluster_vm_moref in $vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
                             foreach ($cluster_vm_vdisk in $vcenter_vms_h[$cluster_vm_moref.Value].Config.Hardware.Device|?{$_ -is [VMware.Vim.VirtualDisk] -and $_.Backing.BackingObjectId}) {
                                 $cluster_vm_vdisk_base_name = VmdkNameCleaner $($cluster_vm_vdisk.Backing.FileName -split "[/.]")[1]
-                                $cluster_vdisks_id.add($cluster_vm_vdisk.Backing.BackingObjectId, $cluster_vm_vdisk_base_name)
+                                if (!$cluster_vdisks_id.add[$cluster_vm_vdisk.Backing.BackingObjectId]) {
+                                    $cluster_vdisks_id.add($cluster_vm_vdisk.Backing.BackingObjectId, $cluster_vm_vdisk_base_name)
+                                }
 
                                 if ($cluster_vm_vdisk.Backing.Parent) {
                                     $cluster_vm_vdisk_parent = GetParent $cluster_vm_vdisk.Backing.Parent
                                     $cluster_vm_vdisk_parent_base_name = VmdkNameCleaner $($cluster_vm_vdisk_parent.FileName -split "[/.]")[1]
-                                    $cluster_vdisks_id.add($($cluster_vm_vdisk.Backing.BackingObjectId + "_root"), $cluster_vm_vdisk_parent.BackingObjectId)
-                                    $cluster_vdisks_id.add($cluster_vm_vdisk_parent.BackingObjectId, $cluster_vm_vdisk_parent_base_name)
+                                    if (!$cluster_vdisks_id.add[$($cluster_vm_vdisk.Backing.BackingObjectId + "_root"]) {
+                                        $cluster_vdisks_id.add($($cluster_vm_vdisk.Backing.BackingObjectId + "_root"), $cluster_vm_vdisk_parent.BackingObjectId)
+                                    }
+                                    if (!$cluster_vdisks_id.add[$cluster_vm_vdisk_parent.BackingObjectId]) {
+                                        $cluster_vdisks_id.add($cluster_vm_vdisk_parent.BackingObjectId, $cluster_vm_vdisk_parent_base_name)
+                                    }
                                 }
                             }
                         }
