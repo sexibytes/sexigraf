@@ -478,7 +478,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     }
 
-    $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().split(".")[0]
+    $ExecDuration = $($(Get-Date) - $ExecStart)
     
     Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $ExecDuration -DateTime $ExecStart
 
