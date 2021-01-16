@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.4"
+$ScriptVersion = "0.9.5"
 
 $ExecStart = Get-Date
 
@@ -479,7 +479,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     
-    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $($(Get-Date) - $ExecStart).TotalSeconds -DateTime $ExecStart
+    Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vsan.exec.duration" -MetricValue $($($(Get-Date) - $ExecStart).TotalSeconds.ToString().split(".")[0]) -DateTime $ExecStart
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $Server ..."
 
