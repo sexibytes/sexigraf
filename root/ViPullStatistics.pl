@@ -612,7 +612,7 @@ if ($apiType eq "VirtualCenter") {
 				}
 			}
 
-			$cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
+			my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
 			print $cluster_host_view_product_version;
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
