@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.915";
+$Util::script_version = "0.9.916";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 my $BFG_MODE = 0;
@@ -370,7 +370,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
-	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'], filter => {'runtime.connectionState' => "connected"});
+	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo', 'config.product.version',  'config.product.build'], filter => {'runtime.connectionState' => "connected"});
 	my %all_host_views_table = ();
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -611,6 +611,9 @@ if ($apiType eq "VirtualCenter") {
 					push (@cluster_hosts_vms_moref,$cluster_host_view_vm);
 				}
 			}
+
+			$cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
+			print $cluster_host_view_product_version;
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
 
