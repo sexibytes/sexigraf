@@ -111,6 +111,7 @@ my $service_content = Vim::get_service_content();
 my $service_instance = Vim::get_service_instance();
 my $vmware_server_clock = (split /\./, $service_instance->CurrentTime())[0];
 $vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
+my $version_hash = {};
 
 my $vmware_server_clock_5 = $vmware_server_clock;
 foreach my $i (0..4) {
@@ -320,8 +321,6 @@ if ($apiType eq "VirtualCenter") {
 
 	$vcenter_fqdn =~ s/[ .]/_/g;
 	my $vmware_server_name = lc ($vcenter_fqdn);
-
-	my $version_hash = {};
 
 	my $vcenter_product_version = nameCleaner($service_content->about->version . "." . $service_content->about->build);
 	$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vpx"}{"product"}{$vcenter_product_version} += 1;
