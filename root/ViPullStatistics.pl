@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.917";
+$Util::script_version = "0.9.918";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -321,7 +321,10 @@ if ($apiType eq "VirtualCenter") {
 	$vcenter_fqdn =~ s/[ .]/_/g;
 	my $vmware_server_name = lc ($vcenter_fqdn);
 
-	my $versionCarbonHash = ();
+	my $version_hash = {};
+
+	my $vcenter_product_version = nameCleaner($service_content->about->version . "." . $service_content->about->build);
+	$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vpx"}{"product"}{$vcenter_product_version} += 1;
 		
 	$logger->info("[INFO] Processing vCenter $vmware_server objects");
 
@@ -583,6 +586,7 @@ if ($apiType eq "VirtualCenter") {
 
 			if ($cluster_host_view->{'config.product.version'} && $cluster_host_view->{'config.product.build'}) {
 				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"product"}{$cluster_host_view_product_version} += 1;
 			}
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
@@ -1806,6 +1810,11 @@ if ($apiType eq "VirtualCenter") {
 				$UnamagedResourceVMHostName = $UnamagedResourceVMHostVmk0Ip;
 			}
 
+			if ($UnamagedResourceVMHost->{'config.product.version'} && $UnamagedResourceVMHost->{'config.product.build'}) {
+				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "." . $UnamagedResourceVMHost->{'config.product.build'});
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"product"}{$UnamagedResourceVMHost_product_version} += 1;
+			}
+
 			my $UnamagedResourceVMHost_status = $UnamagedResourceVMHost->{'overallStatus'}->val; #ToClean
 			my $UnamagedResourceVMHost_status_val = 0;
 			if ($UnamagedResourceVMHost_status eq "green") {
@@ -2235,6 +2244,11 @@ if ($apiType eq "VirtualCenter") {
 				unlink $sessionfile;
 			}
 		};
+	}
+
+	if ($version_hash) {
+		my $version_hashTimed = {time() => $version_hash};
+		$graphite->send(path => "vi", data => $version_hashTimed);
 	}
 
 	my $exec_duration = time - $exec_start;
