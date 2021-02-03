@@ -110,8 +110,8 @@ if (scalar(@user_list) == 0) {
 my $service_content = Vim::get_service_content();
 my $service_instance = Vim::get_service_instance();
 my $vmware_server_clock = (split /\./, $service_instance->CurrentTime())[0];
-$vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
-my $version_hash = {};
+	$vmware_server_clock = Time::Piece->strptime($vmware_server_clock,'%Y-%m-%dT%H:%M:%S');
+my $version_hash = ();
 
 my $vmware_server_clock_5 = $vmware_server_clock;
 foreach my $i (0..4) {
@@ -2245,10 +2245,8 @@ if ($apiType eq "VirtualCenter") {
 		};
 	}
 
-	if ($version_hash) {
-		my $version_hashTimed = {time() => $version_hash};
-		$graphite->send(path => "vi", data => $version_hashTimed);
-	}
+	my $version_hashTimed = {time() => $version_hash};
+	$graphite->send(path => "vi", data => $version_hashTimed);
 
 	my $exec_duration = time - $exec_start;
 	my $esx_exec_duration_h = {
