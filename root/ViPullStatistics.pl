@@ -388,7 +388,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_pod_views_table{$all_pod_view->{'mo_ref'}->value} = $all_pod_view;
 	}
 
-	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks'], filter => {'summary.runtime.connectionState' => "connected"});
+	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'config.version', 'config.guestId', 'config.tools.toolsVersion'], filter => {'summary.runtime.connectionState' => "connected"});
 	my %all_vm_views_table = ();
 	foreach my $all_vm_view (@$all_vm_views) {
 		$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
@@ -585,7 +585,7 @@ if ($apiType eq "VirtualCenter") {
 
 			if ($cluster_host_view->{'config.product.version'} && $cluster_host_view->{'config.product.build'}) {
 				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"product"}{$cluster_host_view_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$cluster_host_view_product_version} += 1;
 			}
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
@@ -752,6 +752,15 @@ if ($apiType eq "VirtualCenter") {
 		if (scalar(@cluster_vms_views) > 0) {
 
 			foreach my $cluster_vm_view (@cluster_vms_views) {
+
+			if ($cluster_vm_view->{'config.version'} && $cluster_vm_view->{'config.guestId'} && $cluster_vm_view->{'config.tools.toolsVersion'}) {
+				$cluster_vm_view_vhw = nameCleaner($cluster_vm_view->{'config.version'});
+				$cluster_vm_view_guestid = nameCleaner($cluster_vm_view->{'config.guestId'});
+				$cluster_vm_view_vmtools = nameCleaner($cluster_vm_view->{'config.tools.toolsVersion'});
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$cluster_vm_view_vhw} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$cluster_vm_view_guestid} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$cluster_vm_view_vmtools} += 1;
+			}
 
 				if ($cluster_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
@@ -1727,7 +1736,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
 	}
 
-	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'summary.quickStats.privateMemory', 'summary.quickStats.consumedOverheadMemory', 'summary.quickStats.sharedMemory'], filter => {'summary.runtime.connectionState' => "connected"});
+	my $all_vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name', 'runtime.maxCpuUsage', 'runtime.maxMemoryUsage', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallCpuDemand', 'summary.quickStats.hostMemoryUsage', 'summary.quickStats.guestMemoryUsage', 'summary.quickStats.balloonedMemory', 'summary.quickStats.compressedMemory', 'summary.quickStats.swappedMemory', 'summary.storage.committed', 'summary.storage.uncommitted', 'config.hardware.numCPU', 'layoutEx.file', 'snapshot', 'runtime.host', 'summary.runtime.connectionState', 'summary.runtime.powerState', 'summary.config.numVirtualDisks', 'summary.quickStats.privateMemory', 'summary.quickStats.consumedOverheadMemory', 'summary.quickStats.sharedMemory', 'config.version', 'config.guestId', 'config.tools.toolsVersion'], filter => {'summary.runtime.connectionState' => "connected"});
 	my %all_vm_views_table = ();
 	foreach my $all_vm_view (@$all_vm_views) {
 		$all_vm_views_table{$all_vm_view->{'mo_ref'}->value} = $all_vm_view;
@@ -1811,7 +1820,7 @@ if ($apiType eq "VirtualCenter") {
 
 			if ($UnamagedResourceVMHost->{'config.product.version'} && $UnamagedResourceVMHost->{'config.product.build'}) {
 				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "." . $UnamagedResourceVMHost->{'config.product.build'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"product"}{$UnamagedResourceVMHost_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$UnamagedResourceVMHost_product_version} += 1;
 			}
 
 			my $UnamagedResourceVMHost_status = $UnamagedResourceVMHost->{'overallStatus'}->val; #ToClean
@@ -1943,6 +1952,15 @@ if ($apiType eq "VirtualCenter") {
 				$logger->info("[INFO] Processing vCenter $vmware_server Unamaged host $UnamagedResourceVMHostName vms in datacenter $datacentre_name");
 
 				foreach my $Unamaged_vm_view (@UnamagedResourceVMHostVmsViews) {
+
+					if ($Unamaged_vm_view->{'config.version'} && $Unamaged_vm_view->{'config.guestId'} && $Unamaged_vm_view->{'config.tools.toolsVersion'}) {
+						$Unamaged_vm_view_vhw = nameCleaner($Unamaged_vm_view->{'config.version'});
+						$Unamaged_vm_view_guestid = nameCleaner($Unamaged_vm_view->{'config.guestId'});
+						$Unamaged_vm_view_vmtools = nameCleaner($Unamaged_vm_view->{'config.tools.toolsVersion'});
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$Unamaged_vm_view_vhw} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$Unamaged_vm_view_guestid} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$Unamaged_vm_view_vmtools} += 1;
+					}
 
 					my $Unamaged_vm_view_name = nameCleaner($Unamaged_vm_view->name);
 
