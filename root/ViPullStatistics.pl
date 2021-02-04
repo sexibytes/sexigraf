@@ -370,7 +370,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
-	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo', 'config.product.version', 'config.product.build'], filter => {'runtime.connectionState' => "connected"});
+	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.distributedCpuFairness', 'summary.quickStats.distributedMemoryFairness', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo', 'config.product.version', 'config.product.build', 'summary.hardware.vendor', 'summary.hardware.model'], filter => {'runtime.connectionState' => "connected"});
 	my %all_host_views_table = ();
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -585,7 +585,9 @@ if ($apiType eq "VirtualCenter") {
 
 			if ($cluster_host_view->{'config.product.version'} && $cluster_host_view->{'config.product.build'}) {
 				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
+				my $cluster_host_view_hw_model = nameCleaner($cluster_host_view->{'summary.hardware.vendor'} . "." . $cluster_host_view->{'summary.hardware.model'});
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$cluster_host_view_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$cluster_host_view_hw_model} += 1;
 			}
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
@@ -1724,7 +1726,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_compute_views_table{$all_compute_view->{'mo_ref'}->value} = $all_compute_view;
 	}
 
-	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo', 'config.product.version', 'config.product.build'], filter => {'runtime.connectionState' => "connected"});
+	my $all_host_views = Vim::find_entity_views(view_type => 'HostSystem', properties => ['config.network.pnic', 'config.network.vnic', 'config.network.dnsConfig.hostName', 'runtime.connectionState', 'summary.hardware.numCpuCores', 'summary.quickStats.overallCpuUsage', 'summary.quickStats.overallMemoryUsage', 'summary.quickStats.uptime', 'overallStatus', 'config.storageDevice.hostBusAdapter', 'vm', 'name', 'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo', 'config.product.version', 'config.product.build', 'summary.hardware.vendor', 'summary.hardware.model'], filter => {'runtime.connectionState' => "connected"});
 	my %all_host_views_table = ();
 	foreach my $all_host_view (@$all_host_views) {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
@@ -1820,7 +1822,9 @@ if ($apiType eq "VirtualCenter") {
 
 			if ($UnamagedResourceVMHost->{'config.product.version'} && $UnamagedResourceVMHost->{'config.product.build'}) {
 				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "." . $UnamagedResourceVMHost->{'config.product.build'});
+				my $UnamagedResourceVMHost_hw_model = nameCleaner($UnamagedResourceVMHost->{'summary.hardware.vendor'} . "." . $UnamagedResourceVMHost->{'summary.hardware.model'});
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$UnamagedResourceVMHost_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$UnamagedResourceVMHost_hw_model} += 1;
 			}
 
 			my $UnamagedResourceVMHost_status = $UnamagedResourceVMHost->{'overallStatus'}->val; #ToClean
