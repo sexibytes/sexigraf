@@ -756,9 +756,9 @@ if ($apiType eq "VirtualCenter") {
 			foreach my $cluster_vm_view (@cluster_vms_views) {
 
 			if ($cluster_vm_view->{'config.version'} && $cluster_vm_view->{'config.guestId'} && $cluster_vm_view->{'config.tools.toolsVersion'}) {
-				$cluster_vm_view_vhw = nameCleaner($cluster_vm_view->{'config.version'});
-				$cluster_vm_view_guestid = nameCleaner($cluster_vm_view->{'config.guestId'});
-				$cluster_vm_view_vmtools = nameCleaner($cluster_vm_view->{'config.tools.toolsVersion'});
+				my $cluster_vm_view_vhw = nameCleaner($cluster_vm_view->{'config.version'});
+				my $cluster_vm_view_guestid = nameCleaner($cluster_vm_view->{'config.guestId'});
+				my $cluster_vm_view_vmtools = nameCleaner($cluster_vm_view->{'config.tools.toolsVersion'});
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$cluster_vm_view_vhw} += 1;
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$cluster_vm_view_guestid} += 1;
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$cluster_vm_view_vmtools} += 1;
@@ -1958,9 +1958,9 @@ if ($apiType eq "VirtualCenter") {
 				foreach my $Unamaged_vm_view (@UnamagedResourceVMHostVmsViews) {
 
 					if ($Unamaged_vm_view->{'config.version'} && $Unamaged_vm_view->{'config.guestId'} && $Unamaged_vm_view->{'config.tools.toolsVersion'}) {
-						$Unamaged_vm_view_vhw = nameCleaner($Unamaged_vm_view->{'config.version'});
-						$Unamaged_vm_view_guestid = nameCleaner($Unamaged_vm_view->{'config.guestId'});
-						$Unamaged_vm_view_vmtools = nameCleaner($Unamaged_vm_view->{'config.tools.toolsVersion'});
+						my $Unamaged_vm_view_vhw = nameCleaner($Unamaged_vm_view->{'config.version'});
+						my $Unamaged_vm_view_guestid = nameCleaner($Unamaged_vm_view->{'config.guestId'});
+						my $Unamaged_vm_view_vmtools = nameCleaner($Unamaged_vm_view->{'config.tools.toolsVersion'});
 						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$Unamaged_vm_view_vhw} += 1;
 						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$Unamaged_vm_view_guestid} += 1;
 						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$Unamaged_vm_view_vmtools} += 1;
