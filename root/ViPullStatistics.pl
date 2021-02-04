@@ -584,8 +584,8 @@ if ($apiType eq "VirtualCenter") {
 			}
 
 			if ($cluster_host_view->{'config.product.version'} && $cluster_host_view->{'config.product.build'}) {
-				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "." . $cluster_host_view->{'config.product.build'});
-				my $cluster_host_view_hw_model = nameCleaner($cluster_host_view->{'summary.hardware.vendor'} . "." . $cluster_host_view->{'summary.hardware.model'});
+				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "_" . $cluster_host_view->{'config.product.build'});
+				my $cluster_host_view_hw_model = nameCleaner($cluster_host_view->{'summary.hardware.vendor'} . "_" . $cluster_host_view->{'summary.hardware.model'});
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$cluster_host_view_product_version} += 1;
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$cluster_host_view_hw_model} += 1;
 			}
@@ -1821,8 +1821,8 @@ if ($apiType eq "VirtualCenter") {
 			}
 
 			if ($UnamagedResourceVMHost->{'config.product.version'} && $UnamagedResourceVMHost->{'config.product.build'}) {
-				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "." . $UnamagedResourceVMHost->{'config.product.build'});
-				my $UnamagedResourceVMHost_hw_model = nameCleaner($UnamagedResourceVMHost->{'summary.hardware.vendor'} . "." . $UnamagedResourceVMHost->{'summary.hardware.model'});
+				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "_" . $UnamagedResourceVMHost->{'config.product.build'});
+				my $UnamagedResourceVMHost_hw_model = nameCleaner($UnamagedResourceVMHost->{'summary.hardware.vendor'} . "_" . $UnamagedResourceVMHost->{'summary.hardware.model'});
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$UnamagedResourceVMHost_product_version} += 1;
 				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$UnamagedResourceVMHost_hw_model} += 1;
 			}
