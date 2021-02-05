@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.8"
+$ScriptVersion = "0.9.9"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
