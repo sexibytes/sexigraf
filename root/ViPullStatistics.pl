@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.918";
+$Util::script_version = "0.9.919";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -411,7 +411,7 @@ if ($apiType eq "VirtualCenter") {
 
 	my %hostmultistats = ();
 	my %vmmultistats = ();
-	my %vcmultistats = ();
+	# my %vcmultistats = ();
 	my %clumultistats = ();
 
 	my $hostmultimetricsstart = Time::HiRes::gettimeofday();
@@ -1227,6 +1227,13 @@ if ($apiType eq "VirtualCenter") {
 
 			if (!defined $StandaloneResourceVMHost or $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
+			if ($StandaloneResourceVMHost->{'config.product.version'} && $StandaloneResourceVMHost->{'config.product.build'}) {
+				my $StandaloneResourceVMHost_product_version = nameCleaner($StandaloneResourceVMHost->{'config.product.version'} . "_" . $StandaloneResourceVMHost->{'config.product.build'});
+				my $StandaloneResourceVMHost_hw_model = nameCleaner($StandaloneResourceVMHost->{'summary.hardware.vendor'} . "_" . $StandaloneResourceVMHost->{'summary.hardware.model'});
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$StandaloneResourceVMHost_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$StandaloneResourceVMHost_hw_model} += 1;
+			}
+
 			my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
 			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost->{'config.network.dnsConfig.hostName'};
@@ -1523,19 +1530,19 @@ if ($apiType eq "VirtualCenter") {
 		};
 	}
 
-	if (%vcmultistats) {
-		my $vcresCarbonHash = ();
+	# if (%vcmultistats) {
+	# 	my $vcresCarbonHash = ();
 
-		my $vcres_virtualmemusage = $vcmultistats{$perfCntr{"vcResources.virtualmemusage.average"}->key}{"group-d1"}{""};
-		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"virtualmemusage"} = $vcres_virtualmemusage;
-		my $vcres_physicalmemusage = $vcmultistats{$perfCntr{"vcResources.physicalmemusage.average"}->key}{"group-d1"}{""};
-		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"physicalmemusage"} = $vcres_physicalmemusage;
-		my $vcres_systemcpuusage = $vcmultistats{$perfCntr{"vcResources.systemcpuusage.average"}->key}{"group-d1"}{""};
-		$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"systemcpuusage"} = $vcres_systemcpuusage;
+	# 	my $vcres_virtualmemusage = $vcmultistats{$perfCntr{"vcResources.virtualmemusage.average"}->key}{"group-d1"}{""};
+	# 	$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"virtualmemusage"} = $vcres_virtualmemusage;
+	# 	my $vcres_physicalmemusage = $vcmultistats{$perfCntr{"vcResources.physicalmemusage.average"}->key}{"group-d1"}{""};
+	# 	$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"physicalmemusage"} = $vcres_physicalmemusage;
+	# 	my $vcres_systemcpuusage = $vcmultistats{$perfCntr{"vcResources.systemcpuusage.average"}->key}{"group-d1"}{""};
+	# 	$vcresCarbonHash->{$vmware_server_name}{"vi"}{"vcres"}{"systemcpuusage"} = $vcres_systemcpuusage;
 
-		my $vcresCarbonHashTimed = {time() => $vcresCarbonHash};
-		$graphite->send(path => "vi", data => $vcresCarbonHashTimed);
-	}
+	# 	my $vcresCarbonHashTimed = {time() => $vcresCarbonHash};
+	# 	$graphite->send(path => "vi", data => $vcresCarbonHashTimed);
+	# }
 
 	my $sessionCount = 0;
 	my $sessionListH = ();
@@ -1692,6 +1699,9 @@ if ($apiType eq "VirtualCenter") {
 	# 	$logger->info("[ERROR] reset dead session file $sessionfile for vCenter $vmware_server");
 	# 	unlink $sessionfile;
 	# }
+
+	my $version_hashTimed = {time() => $version_hash};
+	$graphite->send(path => "vi", data => $version_hashTimed);
 
 	my $exec_duration = time - $exec_start;
 	my $vcenter_exec_duration_h = {
