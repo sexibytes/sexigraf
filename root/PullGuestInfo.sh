@@ -40,10 +40,13 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
 
                 hostname $GUESTNAME
 
-                /etc/init.d/networking stop && /etc/init.d/networking start
-                /etc/init.d/resolvconf stop && /etc/init.d/resolvconf start
+                /etc/init.d/networking stop
+                /etc/init.d/networking start
+                /etc/init.d/resolvconf stop
+                /etc/init.d/resolvconf start
 
-                ifdown ens192 && ifup ens192
+                ifdown ens192
+                ifup ens192
 
         fi
   
