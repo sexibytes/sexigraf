@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.29"
+$ScriptVersion = "0.9.31"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
@@ -146,6 +146,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
+            $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
@@ -163,7 +164,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
         $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool -Server $Server
         $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
         
     } catch {
@@ -188,10 +189,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_vmhosts_h = @{}
     $vcenter_vmhosts_vsan_h = @{}
+    $vcenter_vmhosts_name_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
         try {
             $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
             $vcenter_vmhosts_vsan_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost.configManager.vsanInternalSystem.value)
+            $vcenter_vmhosts_name_h.add($vcenter_vmhost.name, $($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
         } catch {}
     }
 
@@ -325,7 +328,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                if ($cluster_host_random.Config.Product.ApiVersion -gt 6.7) {
+                if ($cluster_host_random.Config.Product.ApiVersion -ge 6.7) {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
                         # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
@@ -356,6 +359,29 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                    }
+
+                    try {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
+                        # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
+                        # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
+                        $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
+                        if ($VcClusterSmartStatsSummary.SmartStats) {
+				$VcClusterSmartStatsSummary_h = @{}
+                            foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
+                                $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
+                                foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
+                                    $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
+                                    foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
+                                        $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                    }
+                                }
+                            }
+				Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+                        }
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
                 } else {
@@ -510,6 +536,3 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 } else {
     AltAndCatchFire "$Server is not a vcenter!"
 }
-
-# https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-# https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
