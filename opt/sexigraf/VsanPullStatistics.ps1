@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.31"
+$ScriptVersion = "0.9.33"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
@@ -63,11 +63,11 @@ $GetParentDef = $function:GetParent.ToString()
 
 function GetDomChild {
     param ($components,$CompChildren)
-    foreach ($component in $components.psobject.Properties.name) {
+    foreach ($component in $components.keys) {
         if ($component -match "child-") {
             GetDomChild $($components.$component) $CompChildren
         } elseif ($component -match "attributes") {
-            foreach ($attribute in $components.attributes) {
+            foreach ($attribute in $components.attributes.keys) {
                 if ($attribute -match "bytesToSync") {
                     $CompChildren.bytesToSync += $components.attributes.bytesToSync
                     $CompChildren.Objs += 1
@@ -368,7 +368,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
                         $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
                         if ($VcClusterSmartStatsSummary.SmartStats) {
-				$VcClusterSmartStatsSummary_h = @{}
+				            $VcClusterSmartStatsSummary_h = @{}
                             foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
                                 $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
                                 foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
@@ -378,7 +378,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     }
                                 }
                             }
-				Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+				            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
@@ -393,7 +393,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $SyncingVsanObjects = ""|Select-Object bytesToSync, recoveryETA, Objs
                             $SyncingVsanObjects.recoveryETA = 0
                             foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").keys) {
-                                GetDomChild $($cluster_SyncingVsanObjects."dom_objects").$cluster_SyncingVsanObjects_dom.config.content $SyncingVsanObjects
+                                GetDomChild $($cluster_SyncingVsanObjects."dom_objects")[$cluster_SyncingVsanObjects_dom].config.content $SyncingVsanObjects
                             }
                             if ($SyncingVsanObjects.Objs -gt 0 -and $SyncingVsanObjects.recoveryETA -gt 0) {
                                 $SyncingVsanObjects.recoveryETA = $SyncingVsanObjects.recoveryETA / $SyncingVsanObjects.Objs
