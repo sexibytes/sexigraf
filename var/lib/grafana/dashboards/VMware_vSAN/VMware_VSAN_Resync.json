@@ -297,7 +297,9 @@
   "schemaVersion": 14,
   "style": "light",
   "tags": [
-    "vSAN"
+    "vSAN",
+    "Rebuild",
+    "Repair"
   ],
   "templating": {
     "list": [
