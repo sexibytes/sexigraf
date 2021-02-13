@@ -58,7 +58,7 @@ require("helper.php");
                 if (!empty($_POST["submit"])) {
                         switch ($_POST["submit"]) {
                                 case "enable-autopurge":
-                                        enableAutopurge(intval($_POST["nb_days_purge"]));
+                                        enableAutopurge(intval($_POST["nb_days_autopurge"]));
                                 break;
                                 case "disable-autopurge":
                                         disableAutopurge();
@@ -102,7 +102,7 @@ require("helper.php");
                                 echo '                        &nbsp;<button name="submit" class="btn btn-default btn-danger" value="disable-autopurge">Disable autopurge</button>';
                         } else {
                                 echo '                        <span style="color:#d9534f;" aria-hidden="true">disabled</span>';
-                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="120" style="width:80px;"> days';
+                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_autopurge" name="nb_days_autopurge" min="1" value="120" style="width:80px;"> days';
                         }
                         ?>
                         </div>
