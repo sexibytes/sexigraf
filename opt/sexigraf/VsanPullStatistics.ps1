@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.33"
+$ScriptVersion = "0.9.34"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
@@ -162,7 +162,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     try {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
-        $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool -Server $Server
+        $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool, ConfigurationEx -Server $Server
         $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
@@ -217,9 +217,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		if (!$xfolders_vcenter_type_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_type_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.moref.type)}
 	}
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing clusters ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN clusters ..."
 
-    foreach ($vcenter_cluster in $vcenter_clusters) {
+    foreach ($vcenter_cluster in $vcenter_clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}) {
 
         if (($vcenter_cluster.Host|Measure-Object).count -gt 0) {
 
@@ -247,6 +247,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vsanInternalSystem in vSAN cluster $cluster_name ..."
                     $cluster_hosts_vsanInternalSystem = Get-View $cluster_hosts.configManager.vsanInternalSystem -Server $Server
+                    # $_this = Get-View -Id 'HostVsanInternalSystem-ha-vsan-internal-system-11'
                     $cluster_host_vsanInternalSystem_h = @{}
                     foreach ($cluster_host_vsanInternalSystem in $cluster_hosts_vsanInternalSystem) {
                         $cluster_host_vsanInternalSystem_h.add($cluster_host_vsanInternalSystem.moref.value,$cluster_host_vsanInternalSystem)
