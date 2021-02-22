@@ -413,6 +413,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 try {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
                     $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$true,$false)
                     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                         $VcClusterObjectHealthDetail_h = @{}
