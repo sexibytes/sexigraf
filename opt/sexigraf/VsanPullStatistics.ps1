@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.34"
+$ScriptVersion = "0.9.35"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
@@ -410,6 +410,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
+                }
+
+                try {
+                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$true,$false)
+                    if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                        $VcClusterObjectHealthDetail_h = @{}
+                        foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                            $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.$SmartStatsEsxName.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
+                        }
+                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $ExecStart
+                    }
+                } catch{
+                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
+                    Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                 }
 
                 $cluster_hosts|foreach-object -Parallel {
