@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.37"
+$ScriptVersion = "0.9.38"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 
@@ -287,7 +287,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
                             }
                         }
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $ExecStart
+                        if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $ExecStart
+                        } else {
+                            AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                        }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
@@ -358,7 +362,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $ExecStart
                                     $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
                                 }
-                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $ExecStart
+                                if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                                    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $ExecStart
+                                } else {
+                                    AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                                }
                             }
 
                             $SyncingVsanObjectsHash = @{
@@ -367,7 +375,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
                             }
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            } else {
+                                AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                            }
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
@@ -390,7 +402,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     }
                                 }
                             }
-				            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+                            if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+                            } else {
+                                AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                            }
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
@@ -415,7 +431,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $SyncingVsanObjects.bytesToSync;
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $SyncingVsanObjects.Objs;
                             }
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            } else {
+                                AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                            }
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
@@ -431,7 +451,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                             $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
                         }
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $ExecStart
+                        if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $ExecStart
+                        } else {
+                            AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                        }
                     }
                 } catch{
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
@@ -538,9 +562,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.readOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.readOps)
                             $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.writeOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.writeOps)
                         }
-
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $cluster_host_VsanStatistics_h -DateTime $using:ExecStart
-
+                        if ($($(Get-Date).ToUniversalTime() - $using:ExecStart).TotalMinutes -lt 1) {
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $cluster_host_VsanStatistics_h -DateTime $using:ExecStart
+                        } else {
+                            AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                        }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive QueryVsanStatistics from $host_name in cluster $using:cluster_name"
 			            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
