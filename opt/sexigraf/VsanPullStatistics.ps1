@@ -2,9 +2,10 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.38"
+$ScriptVersion = "0.9.39"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
+# $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -102,7 +103,15 @@ try {
     $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
-        AltAndCatchFire "VsanPullStatistics for $Server is already running!"
+        $DupVsanPullStatisticsProcess5 = Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}|?{[TimeSpan]::FromTicks($(Get-Content /proc/$($_.ProcessId)/stat).split()[22]).TotalMinutes -gt 5}
+        if ($DupVsanPullStatisticsProcess5) {
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] VsanPullStatistics for $Server is already running for more than 5 minutes!"
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned VsanPullStatistics for $Server"
+            $DupVsanPullStatisticsProcessId = $DupVsanPullStatisticsProcess5.ProcessId
+            Stop-Process -Id $DupVsanPullStatisticsProcessId -Force
+        } else {
+            AltAndCatchFire "VsanPullStatistics for $Server is already running!"
+        }
     }
 } catch {
     AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
@@ -490,6 +499,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         #     'rdtassocsets', 
                         #     'system-mem', 'pnics',
                         # ]
+
+                        # tcpip
 
                         $cluster_host_VsanStatistics_h = @{}
   
