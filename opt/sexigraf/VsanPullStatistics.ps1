@@ -454,7 +454,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
-                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$true,$false)
+                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
                     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                         $VcClusterObjectHealthDetail_h = @{}
                         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
@@ -490,17 +490,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     try {
                         $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom', 'lsom', 'disks'))|ConvertFrom-Json -AsHashtable
 			
-                        # [
-                        #     'dom', 'lsom', 'worldlets', 'plog', 
-                        #     'dom-objects',
-                        #     'mem', 'cpus', 'slabs',
-                        #     'vscsi', 'cbrc',
-                        #     'disks',
-                        #     'rdtassocsets', 
-                        #     'system-mem', 'pnics',
-                        # ]
-
-                        # tcpip
+                        # 'worldlets', 'plog', 'dom-objects', 'mem', 'cpus', 'slabs', 'vscsi', 'cbrc', 'rdtassocsets',  'system-mem', 'pnics', 'rdtglobal', 'lsom-node', 'dom-objects-counts', 'tcpip'
 
                         $cluster_host_VsanStatistics_h = @{}
   
