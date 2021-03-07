@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.39"
+$ScriptVersion = "0.9.40"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -488,7 +488,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $host_name = $($cluster_host.config.network.dnsConfig.hostName).ToLower()
 
                     try {
-                        $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom', 'lsom', 'disks'))|ConvertFrom-Json -AsHashtable
+                        $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom', 'lsom', 'disks', 'tcpip'))|ConvertFrom-Json -AsHashtable
 			
                         # 'worldlets', 'plog', 'dom-objects', 'mem', 'cpus', 'slabs', 'vscsi', 'cbrc', 'rdtassocsets',  'system-mem', 'pnics', 'rdtglobal', 'lsom-node', 'dom-objects-counts', 'tcpip'
 
@@ -508,6 +508,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         foreach ($cluster_host_VsanStatistics_cachestats in $cluster_host_VsanStatistics['dom.client.cachestats'].keys) {
                             $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).esx.$host_name.vsan.client.cachestats.$cluster_host_VsanStatistics_cachestats", $cluster_host_VsanStatistics['dom.client.cachestats'].$cluster_host_VsanStatistics_cachestats)
+                        }
+
+                        foreach ($cluster_host_VsanStatistics_tcpstats in $cluster_host_VsanStatistics['tcpip.stats.tcp'].keys) {
+                            $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).esx.$host_name.vsan.tcpip.stats.$cluster_host_VsanStatistics_tcpstats", $cluster_host_VsanStatistics['tcpip.stats.tcp'].$cluster_host_VsanStatistics_tcpstats)
                         }
 
                         foreach ($cluster_host_VsanStatistics_lsom_disks in $cluster_host_VsanStatistics['lsom.disks'].keys) {
