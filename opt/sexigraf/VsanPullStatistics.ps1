@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.40"
+$ScriptVersion = "0.9.41"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -454,7 +454,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
-                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
+                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$true,$false)
                     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                         $VcClusterObjectHealthDetail_h = @{}
                         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
