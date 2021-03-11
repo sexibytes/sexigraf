@@ -240,7 +240,7 @@
       }
     }
   ],
-  "refresh": "1m",
+  "refresh": "5m",
   "schemaVersion": 27,
   "style": "light",
   "tags": [
@@ -341,7 +341,6 @@
     "notice": false,
     "now": true,
     "refresh_intervals": [
-      "1m",
       "5m",
       "15m",
       "30m",
