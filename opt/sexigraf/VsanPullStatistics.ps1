@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.41"
+$ScriptVersion = "0.9.42"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -155,7 +155,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
-            $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
+            if ($ExecStart.Minute % 5 -eq 0) {
+                $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
+            }
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
@@ -284,18 +286,18 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType.primaryCapacityB)
                             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType.reservedCapacityB)
                         }
-                        if ($ClusterVsanSpaceUsageReport.EfficientCapacity) {
-                            $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacity)
-                            $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacityUsed)
-                            $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacity)
-                            $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacityUsed)
-                            if ($ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize) {
-                                $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.CompressionMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.CompressionMetadataSize)
-                                $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.DedupMetadataSize)
-                            } elseif ($ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize) {
-                                $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
-                            }
-                        }
+                        # if ($ClusterVsanSpaceUsageReport.EfficientCapacity) {
+                        #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacity)
+                        #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacityUsed)
+                        #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacity)
+                        #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacityUsed)
+                        #     if ($ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize) {
+                        #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.CompressionMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.CompressionMetadataSize)
+                        #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.DedupMetadataSize)
+                        #     } elseif ($ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize) {
+                        #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
+                        #     }
+                        # }
                         if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $ExecStart
                         } else {
@@ -395,31 +397,33 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
 
-                    try {
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
-                        # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-                        # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
-                        $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
-                        if ($VcClusterSmartStatsSummary.SmartStats) {
-				            $VcClusterSmartStatsSummary_h = @{}
-                            foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
-                                $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
-                                foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
-                                    $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
-                                    foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                                        $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                    if ($ExecStart.Minute % 5 -eq 0) {
+                        try {
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
+                            # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
+                            # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
+                            $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
+                            if ($VcClusterSmartStatsSummary.SmartStats) {
+                                $VcClusterSmartStatsSummary_h = @{}
+                                foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
+                                    $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
+                                    foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
+                                        $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
+                                        foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
+                                            $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                        }
                                     }
                                 }
+                                if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                                    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+                                } else {
+                                    AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                                }
                             }
-                            if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
-                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
-                            } else {
-                                AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
-                            }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                         }
-                    } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
                 } else {
                     try {
