@@ -1,8 +1,8 @@
 {
   "id": null,
-  "title": "VMware vSAN SSD Stats",
+  "title": "VMware vSAN Write Buffer Stats",
   "uid": "232843a7",
-  "originalTitle": "VMware vSAN SSD Stats",
+  "originalTitle": "VMware vSAN Write Buffer Stats",
   "tags": [
     "vSAN",
     "SSD"
