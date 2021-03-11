@@ -1,7 +1,7 @@
 {
   "id": null,
   "title": "VMware vSAN Monitor",
-  "uid": "c1b2b52b",
+  "uid": "3702580f",
   "originalTitle": "VMware vSAN Monitor",
   "tags": [
     "vSAN",
@@ -59,7 +59,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -85,6 +85,11 @@
               "textEditor": false
             },
             {
+              "hide": true,
+              "target": "derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCount, 0))",
+              "textEditor": false
+            },
+            {
               "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readLatencySumUs), #A), 'read')",
               "textEditor": false
             },
@@ -94,6 +99,10 @@
             },
             {
               "target": "alias(transformNull(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteLatencySumUs), #C), 0), 'recoveryWrite')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(transformNull(divideSeries(derivative(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadLatencySumUs, 0)), #D), 0), 'resyncRead')",
               "textEditor": false
             }
           ],
@@ -118,6 +127,7 @@
           "aliasColors": {
             "reads": "#6ED0E0",
             "recoveryWrites": "#EF843C",
+            "resyncReadCount": "#F2C96D",
             "writes": "#E24D42"
           },
           "bars": false,
@@ -157,7 +167,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -180,6 +190,11 @@
             {
               "hide": false,
               "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount), 1), 'recoveryWrites')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(scaleToSeconds(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCount, 0)), 1), 'resyncReadCount')",
               "textEditor": false
             }
           ],
@@ -204,6 +219,7 @@
           "aliasColors": {
             "reads": "#0A50A1",
             "recoveryWrites": "#E0752D",
+            "resyncReadBytes": "#EAB839",
             "writes": "#BF1B00"
           },
           "bars": false,
@@ -243,7 +259,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -263,6 +279,10 @@
             },
             {
               "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteBytes), 1), 'recoveryWrites')",
+              "textEditor": false
+            },
+            {
+              "target": "alias(scaleToSeconds(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadBytes, 0)), 1), 'resyncReadBytes')",
               "textEditor": false
             }
           ],
@@ -326,7 +346,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -347,6 +367,11 @@
               "textEditor": false
             },
             {
+              "hide": true,
+              "target": "derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCount, 0))",
+              "textEditor": false
+            },
+            {
               "hide": false,
               "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCongestionSum), #A), 'readCong')",
               "textEditor": false
@@ -359,6 +384,11 @@
             {
               "hide": false,
               "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCongestionSum), #B), 'recoveryWriteCong')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(divideSeries(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCongestionSum, 0)), #C), 'resyncReadCong')",
               "textEditor": false
             }
           ],
@@ -420,7 +450,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -459,6 +489,7 @@
         },
         {
           "aliasColors": {
+            "ClientCacheRate": "#EA6460",
             "readCacheRate": "#BA43A9"
           },
           "bars": false,
@@ -498,7 +529,7 @@
           "renderer": "flot",
           "scopedVars": {
             "hostname": {
-              "text": "esx",
+              "text": "ESX",
               "value": "",
               "selected": false
             }
@@ -517,11 +548,21 @@
               "hide": false,
               "target": "alias(asPercent(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCachedCount), #A), 'readCacheRate')",
               "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.client.cachestats.lookups, 0))",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "target": "alias(asPercent(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.client.cachestats.hits, 0)), #C), 'ClientCacheRate')",
+              "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Read Cache Hit Rate",
+          "title": "Caches Hit Rate",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -540,7 +581,7 @@
       "repeat": "hostname",
       "scopedVars": {
         "hostname": {
-          "text": "esx",
+          "text": "ESX",
           "value": "",
           "selected": false
         }
@@ -566,6 +607,7 @@
       ],
       "status": "Stable",
       "time_options": [
+        "30min",
         "1h",
         "2h",
         "3h",
@@ -701,6 +743,6 @@
   },
   "refresh": "1m",
   "schemaVersion": 6,
-  "version": 5,
+  "version": 12,
   "links": []
 }
