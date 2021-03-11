@@ -1,13 +1,12 @@
 {
   "id": null,
-  "title": "VMware vSAN Monitor 2nd FTT",
+  "title": "VMware vSAN Monitor SFTT",
   "uid": "06ce769d",
-  "originalTitle": "VMware vSAN Monitor 2nd FTT",
+  "originalTitle": "VMware vSAN Monitor SFTT",
   "tags": [
     "vSAN",
     "HDD",
-    "SSD",
-    "vSAN66"
+    "SSD"
   ],
   "style": "light",
   "timezone": "browser",
