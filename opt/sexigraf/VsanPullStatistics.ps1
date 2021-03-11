@@ -458,7 +458,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                         $VcClusterObjectHealthDetail_h = @{}
                         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
-                            $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
+                            if ($ObjectHealth.NumObjects -gt 0) {
+                                $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
+                            }
                         }
                         if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $ExecStart
