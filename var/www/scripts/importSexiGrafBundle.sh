@@ -18,6 +18,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*errorsRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*errorsTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+    /usr/bin/find -L /mnt/wfs/whisper/vsan/*/*/*/vsan/spaceDetail -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 80m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \;
     chown -R carbon /mnt/wfs/whisper
 
     # Import Offline Inventory file
