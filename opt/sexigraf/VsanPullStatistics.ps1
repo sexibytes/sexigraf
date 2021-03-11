@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.42"
+$ScriptVersion = "0.9.43"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -153,14 +153,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     try {
         if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
-            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
             if ($ExecStart.Minute % 5 -eq 0) {
                 $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
+                $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             }
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
-            $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
+            if ($ExecStart.Minute % 5 -eq 0) {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
+                $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
+            }
         } else {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not 6+ so we cannot call vSAN API"
         }
@@ -267,7 +269,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive vsanInternalSystem in cluster $cluster_name"
                 }
 
-                if ($cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
+                if ($ExecStart.Minute % 5 -eq 0 -and $cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+) ..."
 
