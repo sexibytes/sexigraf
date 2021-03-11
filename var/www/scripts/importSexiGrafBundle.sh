@@ -14,6 +14,10 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*numVmotions.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} last 0 \;
+    /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*droppedRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+    /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+    /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*errorsRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+    /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*errorsTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
     chown -R carbon /mnt/wfs/whisper
 
     # Import Offline Inventory file
