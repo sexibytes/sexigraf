@@ -567,7 +567,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(collectd.sexigraf.interface-ens192.if_octets.*, 4)",
+          "target": "aliasByNode(collectd.sexigraf.interface-eth0.if_octets.*, 4)",
           "textEditor": false
         }
       ],
