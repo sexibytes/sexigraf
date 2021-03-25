@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.43"
+$ScriptVersion = "0.9.48"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -176,7 +176,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
         $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool, ConfigurationEx -Server $Server
-        $vcenter_root_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
+        # $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
+        $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner -Server $Server
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
         
@@ -186,10 +187,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Building objects tables ..."
 
-    $vcenter_root_resource_pools_h = @{}
-    foreach ($vcenter_root_resource_pool in $vcenter_root_resource_pools) {
+    # $vcenter_resource_pools_h = @{}
+    $vcenter_resource_pools_owner_vms_h = @{}
+    foreach ($vcenter_root_resource_pool in $vcenter_resource_pools) {
         try {
-            $vcenter_root_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
+            # $vcenter_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
+            if ($vcenter_root_resource_pool.owner -and $vcenter_root_resource_pool.vm) {
+                $vcenter_resource_pools_owner_vms_h[$vcenter_root_resource_pool.owner.value] += $vcenter_root_resource_pool.vm
+            }
         } catch {}
     }
 
@@ -224,7 +229,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
 	Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter objects relationship discover ..."
 	
-	foreach ($vcenter_xfolder in [array]$vcenter_datacenters + [array]$vcenter_folders + [array]$vcenter_clusters + [array]$vcenter_root_resource_pools + [array]$vcenter_vmhosts) {
+	foreach ($vcenter_xfolder in [array]$vcenter_datacenters + [array]$vcenter_folders + [array]$vcenter_clusters + [array]$vcenter_resource_pools + [array]$vcenter_vmhosts) {
 		if (!$xfolders_vcenter_name_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_name_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.name)}
 		if (!$xfolders_vcenter_parent_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_parent_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.Parent.value)}
 		if (!$xfolders_vcenter_type_h[$vcenter_xfolder.moref.value]) {$xfolders_vcenter_type_h.add($vcenter_xfolder.moref.value,$vcenter_xfolder.moref.type)}
@@ -313,10 +318,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 try {
-                    if ($vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                    # if ($vcenter_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                    if ($vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VirtualDisk in cluster $cluster_name ..."
                         $cluster_vdisks_id = @{}
-                        foreach ($cluster_vm_moref in $vcenter_root_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
+                        foreach ($cluster_vm_moref in $vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
                             foreach ($cluster_vm_vdisk in $vcenter_vms_h[$cluster_vm_moref.Value].Config.Hardware.Device|?{$_ -is [VMware.Vim.VirtualDisk] -and $_.Backing.BackingObjectId}) {
                                 $cluster_vm_vdisk_base_name = VmdkNameCleaner $($cluster_vm_vdisk.Backing.FileName -split "[/.]")[1]
                                 if (!$cluster_vdisks_id[$cluster_vm_vdisk.Backing.BackingObjectId]) {
@@ -496,7 +502,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $host_name = $($cluster_host.config.network.dnsConfig.hostName).ToLower()
 
                     try {
-                        $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom', 'lsom', 'disks', 'tcpip'))|ConvertFrom-Json -AsHashtable
+                        $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom-objects', 'dom', 'lsom', 'disks', 'tcpip'))|ConvertFrom-Json -AsHashtable
 			
                         # 'worldlets', 'plog', 'dom-objects', 'mem', 'cpus', 'slabs', 'vscsi', 'cbrc', 'rdtassocsets',  'system-mem', 'pnics', 'rdtglobal', 'lsom-node', 'dom-objects-counts', 'tcpip'
 
@@ -551,17 +557,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         foreach ($cluster_host_VsanStatistics_owners_stats in $cluster_host_VsanStatistics['dom.owners.stats'].keys) {
                             try {
-                                if ($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]) {
-                                    if ($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]) {
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
+                                if ($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]) {
+                                    if ($($using:cluster_vdisks_id)["$cluster_host_VsanStatistics_owners_stats" + "_root"]) {
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($($using:cluster_vdisks_id)["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($($using:cluster_vdisks_id)["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($($using:cluster_vdisks_id)["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($($using:cluster_vdisks_id)["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
                                     } else {
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$($using:vcenter_name).$($using:datacentre_name).$($using:cluster_name).vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($($using:cluster_vdisks_id)[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
                                     }
                                 }
                             } catch {}
