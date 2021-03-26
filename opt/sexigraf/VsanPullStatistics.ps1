@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.48"
+$ScriptVersion = "0.9.49"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -83,6 +83,7 @@ $GetDomChildDef = $function:GetDomChild.ToString()
 
 try {
     Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force
+    Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force
     Write-Host "$((Get-Date).ToString("o")) [DEBUG] VsanDisksPullStatistics v$ScriptVersion"
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] VsanDisksPullStatistics logging failure"
@@ -176,7 +177,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
         $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool, ConfigurationEx -Server $Server
-        # $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent -filter @{"Name" = "^Resources$"} -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner -Server $Server
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
@@ -187,11 +187,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Building objects tables ..."
 
-    # $vcenter_resource_pools_h = @{}
     $vcenter_resource_pools_owner_vms_h = @{}
     foreach ($vcenter_root_resource_pool in $vcenter_resource_pools) {
         try {
-            # $vcenter_resource_pools_h.add($vcenter_root_resource_pool.MoRef.Value, $vcenter_root_resource_pool)
             if ($vcenter_root_resource_pool.owner -and $vcenter_root_resource_pool.vm) {
                 $vcenter_resource_pools_owner_vms_h[$vcenter_root_resource_pool.owner.value] += $vcenter_root_resource_pool.vm
             }
@@ -318,7 +316,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 try {
-                    # if ($vcenter_resource_pools_h[$vcenter_cluster.ResourcePool.Value].Vm) {
                     if ($vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VirtualDisk in cluster $cluster_name ..."
                         $cluster_vdisks_id = @{}
@@ -357,7 +354,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                    # $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks(@())|ConvertFrom-Json
                     $cluster_PhysicalVsanDisks = $cluster_host_random_VsanInternalSystem.QueryPhysicalVsanDisks("devName")|ConvertFrom-Json -AsHashtable
                 } catch {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
@@ -504,7 +500,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     try {
                         $cluster_host_VsanStatistics = $($using:cluster_host_vsanInternalSystem_h)[$($using:vcenter_vmhosts_vsan_h)[$cluster_host.moref.value]].QueryVsanStatistics(@('dom-objects', 'dom', 'lsom', 'disks', 'tcpip'))|ConvertFrom-Json -AsHashtable
 			
-                        # 'worldlets', 'plog', 'dom-objects', 'mem', 'cpus', 'slabs', 'vscsi', 'cbrc', 'rdtassocsets',  'system-mem', 'pnics', 'rdtglobal', 'lsom-node', 'dom-objects-counts', 'tcpip'
+                        # 'worldlets', 'plog', 'mem', 'cpus', 'slabs', 'vscsi', 'cbrc', 'rdtassocsets',  'system-mem', 'pnics', 'rdtglobal', 'lsom-node', 'dom-objects-counts'
 
                         $cluster_host_VsanStatistics_h = @{}
   
