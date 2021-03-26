@@ -80,7 +80,7 @@
 			  "x-axis": true,
 			  "y-axis": true,
 			  "y_formats": [
-				"pps",
+				"iops",
 				"short"
 			  ]
 			},
@@ -145,7 +145,7 @@
 			  "x-axis": true,
 			  "y-axis": true,
 			  "y_formats": [
-				"pps",
+				"iops",
 				"short"
 			  ]
 			}
