@@ -18,7 +18,7 @@ use Time::Seconds;
 # use Sys::SigAction qw( timeout_call );
 
 $Data::Dumper::Indent = 1;
-$Util::script_version = "0.9.919";
+$Util::script_version = "0.9.920";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 Opts::parse();
@@ -586,8 +586,8 @@ if ($apiType eq "VirtualCenter") {
 			if ($cluster_host_view->{'config.product.version'} && $cluster_host_view->{'config.product.build'}) {
 				my $cluster_host_view_product_version = nameCleaner($cluster_host_view->{'config.product.version'} . "_" . $cluster_host_view->{'config.product.build'});
 				my $cluster_host_view_hw_model = nameCleaner($cluster_host_view->{'summary.hardware.vendor'} . "_" . $cluster_host_view->{'summary.hardware.model'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$cluster_host_view_product_version} += 1;
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$cluster_host_view_hw_model} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$cluster_name}{"build"}{$cluster_host_view_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$cluster_name}{"hardware"}{$cluster_host_view_hw_model} += 1;
 			}
 
 			$cluster_hosts_views_pcpus += $cluster_host_view->{'summary.hardware.numCpuCores'};
@@ -759,9 +759,9 @@ if ($apiType eq "VirtualCenter") {
 				my $cluster_vm_view_vhw = nameCleaner($cluster_vm_view->{'config.version'});
 				my $cluster_vm_view_guestid = nameCleaner($cluster_vm_view->{'config.guestId'});
 				my $cluster_vm_view_vmtools = nameCleaner($cluster_vm_view->{'config.tools.toolsVersion'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$cluster_vm_view_vhw} += 1;
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$cluster_vm_view_guestid} += 1;
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$cluster_vm_view_vmtools} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$cluster_name}{"vhw"}{$cluster_vm_view_vhw} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$cluster_name}{"guest"}{$cluster_vm_view_guestid} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$cluster_name}{"vmtools"}{$cluster_vm_view_vmtools} += 1;
 			}
 
 				if ($cluster_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
@@ -1227,13 +1227,6 @@ if ($apiType eq "VirtualCenter") {
 
 			if (!defined $StandaloneResourceVMHost or $StandaloneResourceVMHost->{'runtime.connectionState'}->val ne "connected") {next;}
 
-			if ($StandaloneResourceVMHost->{'config.product.version'} && $StandaloneResourceVMHost->{'config.product.build'}) {
-				my $StandaloneResourceVMHost_product_version = nameCleaner($StandaloneResourceVMHost->{'config.product.version'} . "_" . $StandaloneResourceVMHost->{'config.product.build'});
-				my $StandaloneResourceVMHost_hw_model = nameCleaner($StandaloneResourceVMHost->{'summary.hardware.vendor'} . "_" . $StandaloneResourceVMHost->{'summary.hardware.model'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$StandaloneResourceVMHost_product_version} += 1;
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$StandaloneResourceVMHost_hw_model} += 1;
-			}
-
 			my $StandaloneResourcePool = $all_cluster_root_pool_views_table{$StandaloneComputeResource->{'mo_ref'}->value};
 
 			my $StandaloneResourceVMHostName = $StandaloneResourceVMHost->{'config.network.dnsConfig.hostName'};
@@ -1242,6 +1235,13 @@ if ($apiType eq "VirtualCenter") {
 				my $StandaloneResourceVMHostVmk0Ip = $StandaloneResourceVMHostVmk0->spec->ip->ipAddress;
 				$StandaloneResourceVMHostVmk0Ip =~ s/[ .]/_/g;
 				$StandaloneResourceVMHostName = $StandaloneResourceVMHostVmk0Ip;
+			}
+
+			if ($StandaloneResourceVMHost->{'config.product.version'} && $StandaloneResourceVMHost->{'config.product.build'}) {
+				my $StandaloneResourceVMHost_product_version = nameCleaner($StandaloneResourceVMHost->{'config.product.version'} . "_" . $StandaloneResourceVMHost->{'config.product.build'});
+				my $StandaloneResourceVMHost_hw_model = nameCleaner($StandaloneResourceVMHost->{'summary.hardware.vendor'} . "_" . $StandaloneResourceVMHost->{'summary.hardware.model'});
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$StandaloneResourceVMHostName}{"build"}{$StandaloneResourceVMHost_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$StandaloneResourceVMHostName}{"hardware"}{$StandaloneResourceVMHost_hw_model} += 1;
 			}
 
 			# https://www.tutorialspoint.com/perl/perl_switch_statement.htm #ToClean
@@ -1315,27 +1315,27 @@ if ($apiType eq "VirtualCenter") {
 				}
 			}
 
-		foreach my $StandaloneResourceVMHost_vmhba (@{$StandaloneResourceVMHost->{'config.storageDevice.hostBusAdapter'}}) {
-				my $HbabytesRead = $hostmultistats{$perfCntr{"storageAdapter.read.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
-				my $HbabytesWrite = $hostmultistats{$perfCntr{"storageAdapter.write.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
-				if (defined($HbabytesRead) && defined($HbabytesWrite)) {
-					my $StandaloneResourceVMHost_vmhba_name = $StandaloneResourceVMHost_vmhba->device;
+			foreach my $StandaloneResourceVMHost_vmhba (@{$StandaloneResourceVMHost->{'config.storageDevice.hostBusAdapter'}}) {
+					my $HbabytesRead = $hostmultistats{$perfCntr{"storageAdapter.read.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
+					my $HbabytesWrite = $hostmultistats{$perfCntr{"storageAdapter.write.average"}->key}{$StandaloneResourceVMHost->{'mo_ref'}->value}{$StandaloneResourceVMHost_vmhba->device};
+					if (defined($HbabytesRead) && defined($HbabytesWrite)) {
+						my $StandaloneResourceVMHost_vmhba_name = $StandaloneResourceVMHost_vmhba->device;
 
-					$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesRead"} = $HbabytesRead;
-					$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
-				}
-		}
-
-		my $StandaloneResourceVMHost_host_sensors = $StandaloneResourceVMHost->{'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'};
-		# https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.host.NumericSensorInfo.html
-		
-		foreach my $StandaloneResourceVMHost_host_sensor (@$StandaloneResourceVMHost_host_sensors) {
-			if ($StandaloneResourceVMHost_host_sensor->name && $StandaloneResourceVMHost_host_sensor->sensorType && $StandaloneResourceVMHost_host_sensor->currentReading && $StandaloneResourceVMHost_host_sensor->unitModifier) {
-				my $StandaloneResourceVMHost_host_sensor_computed_reading = $StandaloneResourceVMHost_host_sensor->currentReading * (10**$StandaloneResourceVMHost_host_sensor->unitModifier);
-				my $StandaloneResourceVMHost_host_sensor_name = nameCleaner($StandaloneResourceVMHost_host_sensor->name);
-				$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"sensor"}{$StandaloneResourceVMHost_host_sensor->sensorType}{$StandaloneResourceVMHost_host_sensor_name} = $StandaloneResourceVMHost_host_sensor_computed_reading;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesRead"} = $HbabytesRead;
+						$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"hba"}{$StandaloneResourceVMHost_vmhba_name}{"bytesWrite"} = $HbabytesWrite;
+					}
 			}
-		}
+
+			my $StandaloneResourceVMHost_host_sensors = $StandaloneResourceVMHost->{'summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo'};
+			# https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.host.NumericSensorInfo.html
+			
+			foreach my $StandaloneResourceVMHost_host_sensor (@$StandaloneResourceVMHost_host_sensors) {
+				if ($StandaloneResourceVMHost_host_sensor->name && $StandaloneResourceVMHost_host_sensor->sensorType && $StandaloneResourceVMHost_host_sensor->currentReading && $StandaloneResourceVMHost_host_sensor->unitModifier) {
+					my $StandaloneResourceVMHost_host_sensor_computed_reading = $StandaloneResourceVMHost_host_sensor->currentReading * (10**$StandaloneResourceVMHost_host_sensor->unitModifier);
+					my $StandaloneResourceVMHost_host_sensor_name = nameCleaner($StandaloneResourceVMHost_host_sensor->name);
+					$StandaloneResourceCarbonHash->{$vmware_server_name}{$datacentre_name}{$StandaloneResourceVMHostName}{"sensor"}{$StandaloneResourceVMHost_host_sensor->sensorType}{$StandaloneResourceVMHost_host_sensor_name} = $StandaloneResourceVMHost_host_sensor_computed_reading;
+				}
+			}
 
 			my @StandaloneResourceVMHostVmsMoref = ();
 			if ($StandaloneResourceVMHost->vm && (scalar($StandaloneResourceVMHost->vm) > 0)) {
@@ -1361,6 +1361,15 @@ if ($apiType eq "VirtualCenter") {
 				foreach my $Standalone_vm_view (@StandaloneResourceVMHostVmsViews) {
 
 					my $Standalone_vm_view_name = nameCleaner($Standalone_vm_view->name);
+
+					if ($Standalone_vm_view->{'config.version'} && $Standalone_vm_view->{'config.guestId'} && $Standalone_vm_view->{'config.tools.toolsVersion'}) {
+						my $Standalone_vm_view_vhw = nameCleaner($Standalone_vm_view->{'config.version'});
+						my $Standalone_vm_view_guestid = nameCleaner($Standalone_vm_view->{'config.guestId'});
+						my $Standalone_vm_view_vmtools = nameCleaner($Standalone_vm_view->{'config.tools.toolsVersion'});
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$StandaloneResourceVMHostName}{"vhw"}{$Standalone_vm_view_vhw} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$StandaloneResourceVMHostName}{"guest"}{$Standalone_vm_view_guestid} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$StandaloneResourceVMHostName}{"vmtools"}{$Standalone_vm_view_vmtools} += 1;
+					}
 
 					if ($Standalone_vm_view->{'summary.runtime.powerState'}->{'val'} eq "poweredOn") {
 
@@ -1833,8 +1842,8 @@ if ($apiType eq "VirtualCenter") {
 			if ($UnamagedResourceVMHost->{'config.product.version'} && $UnamagedResourceVMHost->{'config.product.build'}) {
 				my $UnamagedResourceVMHost_product_version = nameCleaner($UnamagedResourceVMHost->{'config.product.version'} . "_" . $UnamagedResourceVMHost->{'config.product.build'});
 				my $UnamagedResourceVMHost_hw_model = nameCleaner($UnamagedResourceVMHost->{'summary.hardware.vendor'} . "_" . $UnamagedResourceVMHost->{'summary.hardware.model'});
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"build"}{$UnamagedResourceVMHost_product_version} += 1;
-				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{"hardware"}{$UnamagedResourceVMHost_hw_model} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$UnamagedResourceVMHostName}{"build"}{$UnamagedResourceVMHost_product_version} += 1;
+				$version_hash->{$vmware_server_name}{"vi"}{"version"}{"esx"}{$datacentre_name}{$UnamagedResourceVMHostName}{"hardware"}{$UnamagedResourceVMHost_hw_model} += 1;
 			}
 
 			my $UnamagedResourceVMHost_status = $UnamagedResourceVMHost->{'overallStatus'}->val; #ToClean
@@ -1971,9 +1980,9 @@ if ($apiType eq "VirtualCenter") {
 						my $Unamaged_vm_view_vhw = nameCleaner($Unamaged_vm_view->{'config.version'});
 						my $Unamaged_vm_view_guestid = nameCleaner($Unamaged_vm_view->{'config.guestId'});
 						my $Unamaged_vm_view_vmtools = nameCleaner($Unamaged_vm_view->{'config.tools.toolsVersion'});
-						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vhw"}{$Unamaged_vm_view_vhw} += 1;
-						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"guest"}{$Unamaged_vm_view_guestid} += 1;
-						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{"vmtools"}{$Unamaged_vm_view_vmtools} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$UnamagedResourceVMHostName}{"vhw"}{$Unamaged_vm_view_vhw} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$UnamagedResourceVMHostName}{"guest"}{$Unamaged_vm_view_guestid} += 1;
+						$version_hash->{$vmware_server_name}{"vi"}{"version"}{"vm"}{$datacentre_name}{$UnamagedResourceVMHostName}{"vmtools"}{$Unamaged_vm_view_vmtools} += 1;
 					}
 
 					my $Unamaged_vm_view_name = nameCleaner($Unamaged_vm_view->name);
