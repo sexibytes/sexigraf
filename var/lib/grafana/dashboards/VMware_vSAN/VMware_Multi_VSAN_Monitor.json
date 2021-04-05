@@ -459,6 +459,7 @@
         },
         {
           "aliasColors": {
+            "ClientCacheRate": "#EA6460",
             "readCacheRate": "#BA43A9"
           },
           "bars": false,
@@ -510,12 +511,32 @@
           "targets": [
             {
               "hide": true,
+              "refCount": -1,
+              "refId": "A",
               "target": "derivative(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.$layer.stats.readCount))",
               "textEditor": false
             },
             {
               "hide": false,
+              "refCount": 0,
+              "refId": "B",
               "target": "alias(asPercent(derivative(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.$layer.stats.readCachedCount)), #A), 'readCacheRate')",
+              "targetFull": "alias(asPercent(derivative(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.$layer.stats.readCachedCount)), derivative(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.$layer.stats.readCount))), 'readCacheRate')",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "refCount": 0,
+              "refId": "C",
+              "target": "derivative(sumSeries(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.client.cachestats.lookups, 0)))",
+              "textEditor": true
+            },
+            {
+              "hide": false,
+              "refCount": 1,
+              "refId": "D",
+              "target": "alias(asPercent(derivative(sumSeries(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.client.cachestats.hits, 0))), #C), 'ClientCacheRate')",
+              "targetFull": "alias(asPercent(derivative(sumSeries(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.client.cachestats.hits, 0))), derivative(sumSeries(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.client.cachestats, 0)))), 'ClientCacheRate')",
               "textEditor": false
             }
           ],
