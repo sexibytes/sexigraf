@@ -11,7 +11,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": null,,
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -23,7 +23,7 @@
       "type": "row"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -87,7 +87,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,,
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -100,7 +100,7 @@
       "type": "row"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -163,7 +163,7 @@
       "type": "piechart"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -227,7 +227,7 @@
       "type": "piechart"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -292,7 +292,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,,
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -305,7 +305,7 @@
       "type": "row"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -368,7 +368,7 @@
       "type": "piechart"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -431,7 +431,7 @@
       "type": "piechart"
     },
     {
-      "datasource": null,,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -504,7 +504,7 @@
         "allFormat": "wildcard",
         "allValue": null,
         "current": {},
-        "datasource": null,,
+        "datasource": null,
         "definition": "vi.*",
         "description": null,
         "error": null,
@@ -531,7 +531,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": null,,
+        "datasource": null,
         "definition": "vi.$vcenter.vi.version.esx.*",
         "description": null,
         "error": null,
@@ -558,7 +558,7 @@
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
-        "datasource": null,,
+        "datasource": null,
         "definition": "vi.$vcenter.vi.version.esx.$datacentre.*",
         "description": null,
         "error": null,
