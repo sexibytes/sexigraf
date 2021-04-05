@@ -509,7 +509,7 @@
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": null,
         "multi": true,
         "multiFormat": "glob",
