@@ -98,31 +98,33 @@ require("helper.php");
                                         $errorMessage = "vCenter/ESX IP or FQDN is already in credential store, duplicate entry is not supported.";
                                 } elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
                                         $errorHappened = true;
-                                        $errorMessage = "Bad username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
+                                        $errorMessage = "Wrong username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
                                 } else {
                                         # if input seems to be well-formated, we just need to test a connection query
-                                        exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        // exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        exec("/opt/sexigraf/ViConnect.ps1 -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
                                         if ($return_var) {
                                                 $errorHappened = true;
-                                                $errorMessage = "Cannot complete login due to an incorrect user name or password";
+                                                $errorMessage = "Wrong username/password or no answer at TCP:443";
                                         }
                                 }
 
                                 if ($errorHappened) {
                                         echo '  <div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . $errorMessage . '
-        </div>';
+                                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        ' . $errorMessage . '
+                                        </div>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
                                 } else {
                                         echo '  <div class="alert alert-success" role="alert">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                <span class="sr-only">Success:</span>';
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                        <span class="sr-only">Success:</span>';
                                         echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]));
                                         // Once newly vCenter has been added, we want the inventory to be updated
                                         shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                         echo '  </div>';
-                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
                                 }
                                 break;
                         case "delete-vcentry":
