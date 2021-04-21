@@ -18,7 +18,7 @@ use POSIX qw(strftime);
 use utf8;
 use Unicode::Normalize;
 
-$Util::script_version = "0.48";
+$Util::script_version = "0.49";
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 
@@ -126,76 +126,78 @@ sub sexiprocess {
 
 			$vm_views = Vim::find_entity_views(view_type => 'VirtualMachine', properties => ['name','guest','summary.config.vmPathName','runtime.connectionState','runtime.host','network','summary.config.numCpu','summary.config.memorySizeMB','summary.storage', 'parent'], filter => {'runtime.connectionState' => "connected"});
 			foreach my $vm_view (@$vm_views) {
-				my $vnics = $vm_view->guest->net;
-				my @vm_pg_string = ();
-				my @vm_ip_string = ();
-				my @vm_mac = ();
-				# my $vmPath = Util::get_inventory_path($vm_view, Vim::get_vim());
-				# $vmPath = (split(/\/([^\/]+)$/, $vmPath))[0] || "Unknown";
-				my $vmPath = getVmPath $vm_view;
-				$vmPath =~ s/[ .()]/_/g;
-				$vmPath = NFD($vmPath);
-				$vmPath =~ s/[^[:ascii:]]//g;
-				$vmPath =~ s/[^A-Za-z0-9-_\/]/_/g;
-				foreach (@$vnics) {
-					($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "N/A");
-					($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "N/A");
-					if ($_->ipConfig) {
-						my $ips = $_->ipConfig->ipAddress;
-						foreach (@$ips) {
-							if ($_->ipAddress and $_->prefixLength <= 32) {
-								push(@vm_ip_string, $_->ipAddress);
+				eval {
+					my $vnics = $vm_view->guest->net;
+					my @vm_pg_string = ();
+					my @vm_ip_string = ();
+					my @vm_mac = ();
+					# my $vmPath = Util::get_inventory_path($vm_view, Vim::get_vim());
+					# $vmPath = (split(/\/([^\/]+)$/, $vmPath))[0] || "Unknown";
+					my $vmPath = getVmPath $vm_view;
+					$vmPath =~ s/[ .()]/_/g;
+					$vmPath = NFD($vmPath);
+					$vmPath =~ s/[^[:ascii:]]//g;
+					$vmPath =~ s/[^A-Za-z0-9-_\/]/_/g;
+					foreach (@$vnics) {
+						($_->macAddress) ? push(@vm_mac, $_->macAddress) : push(@vm_mac, "N/A");
+						($_->network) ? push(@vm_pg_string, $_->network) : push(@vm_pg_string, "N/A");
+						if ($_->ipConfig) {
+							my $ips = $_->ipConfig->ipAddress;
+							foreach (@$ips) {
+								if ($_->ipAddress and $_->prefixLength <= 32) {
+									push(@vm_ip_string, $_->ipAddress);
+								}
 							}
+						} else {
+							push(@vm_ip_string, "N/A");
 						}
-					} else {
-						push(@vm_ip_string, "N/A");
 					}
+					my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
+					my $vcenter_clean_name = lc ($vcentersdk->host);
+					$vcenter_clean_name =~ s/[ .]/_/g;
+					$vcenter_clean_name = NFD($vcenter_clean_name);
+					$vcenter_clean_name =~ s/[^[:ascii:]]//g;
+					$vcenter_clean_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $cluster = $h_cluster{($h_hostcluster{$vm_view->{'runtime.host'}->value} ? $h_hostcluster{$vm_view->{'runtime.host'}->value} : "domain-c000")};
+					my $cluster_name;
+					if ($cluster ne "N/A") {
+						$cluster_name = lc ($cluster);
+						$cluster_name =~ s/[ .]/_/g;
+						$cluster_name = NFD($cluster_name);
+						$cluster_name =~ s/[^[:ascii:]]//g;
+						$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
+					} else {
+						$cluster_name = $cluster;
+					}
+					my $txtCluster = ($cluster_name eq "N/A") ? $cluster_name : '<a href="/d/2b9f2865/vmware-cluster-fullstats?orgId=1&var-vcenter=All&var-datacentre=All&var-cluster=' . $cluster_name . '&var-datastore=All" target="_blank">' . $cluster_name . '</a>';
+					my $datastore_name = lc ((split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1]);
+					$datastore_name =~ s/[ .()]/_/g;
+					$datastore_name = NFD($datastore_name);
+					$datastore_name =~ s/[^[:ascii:]]//g;
+					$datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my $clean_vm_name = lc ($vm_view->name);
+					$clean_vm_name =~ s/[ .()]/_/g;
+					$clean_vm_name = NFD($clean_vm_name);
+					$clean_vm_name =~ s/[^[:ascii:]]//g;
+					$clean_vm_name =~ s/[^A-Za-z0-9-_]/_/g;
+					my %h_vm : shared = (
+						VM => '<a href="/d/beeee82d/vmware-all-cluster-vm-stats?orgId=1&var-vcenter=' . $vcenter_clean_name . '&var-datacentre=All&var-cluster=All&var-vm=' . $clean_vm_name . '" target="_blank">' . $clean_vm_name . '</a>',
+						VCENTER => $vcentersdk->host,
+						CLUSTER => $txtCluster,
+						HOST => $h_host{$vm_view->{'runtime.host'}->value},
+						VMXPATH => $vm_view->{'summary.config.vmPathName'},
+						PORTGROUP => join(';', @vm_pg_string),
+						IP => join(';', @vm_ip_string),
+						NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "N/A"),
+						MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "N/A"),
+						COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
+						PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
+						DATASTORE => $datastore_name,
+						MAC => join(';', @vm_mac),
+						FOLDERPATH => $vmPath
+					);
+					push( @{$listVM_ref}, \%h_vm );
 				}
-				my $vcentersdk = new URI::URL $vm_view->{'vim'}->{'service_url'};
-				my $vcenter_clean_name = lc ($vcentersdk->host);
-				$vcenter_clean_name =~ s/[ .]/_/g;
-				$vcenter_clean_name = NFD($vcenter_clean_name);
-				$vcenter_clean_name =~ s/[^[:ascii:]]//g;
-				$vcenter_clean_name =~ s/[^A-Za-z0-9-_]/_/g;
-				my $cluster = $h_cluster{($h_hostcluster{$vm_view->{'runtime.host'}->value} ? $h_hostcluster{$vm_view->{'runtime.host'}->value} : "domain-c000")};
-				my $cluster_name;
-				if ($cluster ne "N/A") {
-					$cluster_name = lc ($cluster);
-					$cluster_name =~ s/[ .]/_/g;
-					$cluster_name = NFD($cluster_name);
-					$cluster_name =~ s/[^[:ascii:]]//g;
-					$cluster_name =~ s/[^A-Za-z0-9-_]/_/g;
-				} else {
-					$cluster_name = $cluster;
-				}
-				my $txtCluster = ($cluster_name eq "N/A") ? $cluster_name : '<a href="/d/2b9f2865/vmware-cluster-fullstats?orgId=1&var-vcenter=All&var-datacentre=All&var-cluster=' . $cluster_name . '&var-datastore=All" target="_blank">' . $cluster_name . '</a>';
-				my $datastore_name = lc ((split /\[/, (split /\]/, $vm_view->{'summary.config.vmPathName'})[0])[1]);
-				$datastore_name =~ s/[ .()]/_/g;
-				$datastore_name = NFD($datastore_name);
-				$datastore_name =~ s/[^[:ascii:]]//g;
-				$datastore_name =~ s/[^A-Za-z0-9-_]/_/g;
-				my $clean_vm_name = lc ($vm_view->name);
-				$clean_vm_name =~ s/[ .()]/_/g;
-				$clean_vm_name = NFD($clean_vm_name);
-				$clean_vm_name =~ s/[^[:ascii:]]//g;
-				$clean_vm_name =~ s/[^A-Za-z0-9-_]/_/g;
-				my %h_vm : shared = (
-					VM => '<a href="/d/beeee82d/vmware-all-cluster-vm-stats?orgId=1&var-vcenter=' . $vcenter_clean_name . '&var-datacentre=All&var-cluster=All&var-vm=' . $clean_vm_name . '" target="_blank">' . $clean_vm_name . '</a>',
-					VCENTER => $vcentersdk->host,
-					CLUSTER => $txtCluster,
-					HOST => $h_host{$vm_view->{'runtime.host'}->value},
-					VMXPATH => $vm_view->{'summary.config.vmPathName'},
-					PORTGROUP => join(';', @vm_pg_string),
-					IP => join(';', @vm_ip_string),
-					NUMCPU => ($vm_view->{'summary.config.numCpu'} ? $vm_view->{'summary.config.numCpu'} : "N/A"),
-					MEMORY => ($vm_view->{'summary.config.memorySizeMB'} ? $vm_view->{'summary.config.memorySizeMB'} : "N/A"),
-					COMMITED => int($vm_view->{'summary.storage'}->committed / 1073741824),
-					PROVISIONNED => int(($vm_view->{'summary.storage'}->committed + $vm_view->{'summary.storage'}->uncommitted) / 1073741824),
-					DATASTORE => $datastore_name,
-					MAC => join(';', @vm_mac),
-					FOLDERPATH => $vmPath
-				);
-				push( @{$listVM_ref}, \%h_vm );
 			}
 		}
 	}
