@@ -123,7 +123,8 @@ if ($SessionFile) {
         $SessionToken = (Get-Content -Path $SessionFile -Force -Delimiter '\"')[1]
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
-        $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force
+        # https://zhengwu.org/validating-connection-result-of-connect-viserver/
+        $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force -ErrorAction Stop
         if ($ServerConnection.IsConnected) {
             $PwCliContext = Get-PowerCLIContext
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
