@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.49"
+$ScriptVersion = "0.9.50"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -94,6 +94,7 @@ try {
 try {
     Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
+    $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
 } catch {
     AltAndCatchFire "Powershell modules import failure"
@@ -120,9 +121,8 @@ try {
 
 if ($SessionFile) {
     try {
-        $SessionToken = (Get-Content -Path $SessionFile -Force -Delimiter '\"')[1]
+        $SessionToken = Get-Content -Path $SessionFile -Force
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
-        $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
         # https://zhengwu.org/validating-connection-result-of-connect-viserver/
         $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force -ErrorAction Stop
         if ($ServerConnection.IsConnected) {
@@ -130,10 +130,28 @@ if ($SessionFile) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
-        AltAndCatchFire "SessionToken not found, invalid or connection failure"
+        Write-Host "$((Get-Date).ToString("o")) [WARNING] SessionToken not found, invalid or connection failure"
+        Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
+
     }
 } elseif ($CredStore) {
-
+    try {
+        $XPath = '//passwordEntry[server="' + $Server + '"]'
+        if ($(Select-XML -Xml $createstorexml -XPath $XPath)){
+            $item = Select-XML -Xml $createstorexml -XPath $XPath
+            $CredStoreLogin = $item.Node.username
+            $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
+        } else {
+            AltAndCatchFire "No $Server entry in CredStore"
+        }
+        $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
+        $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
+        $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+    } catch {
+        AltAndCatchFire "Explicit connection failed, check the stored credentials!"
+    }
+} else {
+    AltAndCatchFire "You need to provide SessionFile or CredStore"
 }
 
 try {
