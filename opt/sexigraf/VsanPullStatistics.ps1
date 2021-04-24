@@ -119,9 +119,9 @@ try {
     AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
 }
 
-if ($SessionFile) {
+if ($SessionFile -and (Get-Content -Path $SessionFile).Length -gt 0) {
     try {
-        $SessionToken = Get-Content -Path $SessionFile -Force
+        $SessionToken = Get-Content -Path $SessionFile
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         # https://zhengwu.org/validating-connection-result-of-connect-viserver/
         $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force -ErrorAction Stop
@@ -134,24 +134,53 @@ if ($SessionFile) {
         Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
 
     }
-} elseif ($CredStore) {
-    try {
-        $XPath = '//passwordEntry[server="' + $Server + '"]'
-        if ($(Select-XML -Xml $createstorexml -XPath $XPath)){
-            $item = Select-XML -Xml $createstorexml -XPath $XPath
-            $CredStoreLogin = $item.Node.username
-            $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
-        } else {
-            AltAndCatchFire "No $Server entry in CredStore"
+    if (!$($global:DefaultVIServer)) {
+        try {
+            $createstorexml = New-Object -TypeName XML
+            $createstorexml.Load($credstore)
+            $XPath = '//passwordEntry[server="' + $Server + '"]'
+            if ($(Select-XML -Xml $createstorexml -XPath $XPath)){
+                $item = Select-XML -Xml $createstorexml -XPath $XPath
+                $CredStoreLogin = $item.Node.username
+                $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
+            } else {
+                AltAndCatchFire "No $Server entry in CredStore"
+            }
+            $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
+            if ($ServerConnection.IsConnected) {
+                $PwCliContext = Get-PowerCLIContext
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
+                $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
+                $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+            }
+        } catch {
+            AltAndCatchFire "Explicit connection failed, check the stored credentials!"
         }
-        $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
-        $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
-        $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
-    } catch {
-        AltAndCatchFire "Explicit connection failed, check the stored credentials!"
     }
+# } elseif ($CredStore) {
+#     try {
+#         $createstorexml = New-Object -TypeName XML
+#         $createstorexml.Load($credstore)
+#         $XPath = '//passwordEntry[server="' + $Server + '"]'
+#         if ($(Select-XML -Xml $createstorexml -XPath $XPath)){
+#             $item = Select-XML -Xml $createstorexml -XPath $XPath
+#             $CredStoreLogin = $item.Node.username
+#             $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
+#         } else {
+#             AltAndCatchFire "No $Server entry in CredStore"
+#         }
+#         $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
+#         if ($ServerConnection.IsConnected) {
+#             $PwCliContext = Get-PowerCLIContext
+#             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
+#             $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
+#             $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+#         }
+#     } catch {
+#         AltAndCatchFire "Explicit connection failed, check the stored credentials!"
+#     }
 } else {
-    AltAndCatchFire "You need to provide SessionFile or CredStore"
+    AltAndCatchFire "You need to provide SessionFile and CredStore"
 }
 
 try {
