@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.50"
+$ScriptVersion = "0.9.51"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -119,7 +119,7 @@ try {
     AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
 }
 
-if ($SessionFile -and (Get-Content -Path $SessionFile).Length -gt 0) {
+if ($SessionFile) {
     try {
         $SessionToken = Get-Content -Path $SessionFile
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
@@ -180,7 +180,7 @@ if ($SessionFile -and (Get-Content -Path $SessionFile).Length -gt 0) {
 #         AltAndCatchFire "Explicit connection failed, check the stored credentials!"
 #     }
 } else {
-    AltAndCatchFire "You need to provide SessionFile and CredStore"
+    AltAndCatchFire "No SessionFile somehow..."
 }
 
 try {
