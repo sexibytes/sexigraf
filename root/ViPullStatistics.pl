@@ -376,7 +376,7 @@ if ($apiType eq "VirtualCenter") {
 		$all_host_views_table{$all_host_view->{'mo_ref'}->value} = $all_host_view;
 	}
 
-	my $all_datastore_views = Vim::find_entity_views(view_type => 'Datastore', properties => ['summary', 'iormConfiguration.enabled', 'iormConfiguration.statsCollectionEnabled', 'host'], filter => {'summary.accessible' => "true"});
+	my $all_datastore_views = Vim::find_entity_views(view_type => 'Datastore', properties => ['summary', 'iormConfiguration.enabled', 'iormConfiguration.statsCollectionEnabled', 'host'], filter => {'summary.multipleHostAccess' => "true", 'summary.accessible' => "true"});
 	my %all_datastore_views_table = ();
 	foreach my $all_datastore_view (@$all_datastore_views) {
 		$all_datastore_views_table{$all_datastore_view->{'mo_ref'}->value} = $all_datastore_view;
