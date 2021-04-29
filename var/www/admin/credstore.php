@@ -102,9 +102,10 @@ require("helper.php");
                                         $errorHappened = true;
                                         $errorMessage = "Wrong username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
                                 } else {
+
                                         # if input seems to be well-formated, we just need to test a connection query
                                         // exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
-                                        exec("/usr/bin/pwsh -f /opt/sexigraf/ViConnect.ps1 -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        shell_exec("/usr/bin/pwsh -f /opt/sexigraf/ViConnect.ps1 -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
                                         if ($return_var) {
                                                 $errorHappened = true;
                                                 $errorMessage = "Wrong username/password or no answer at TCP:443";
@@ -117,7 +118,7 @@ require("helper.php");
                                         <span class="sr-only">Error:</span>
                                         ' . $errorMessage . '
                                         </div>';
-                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
                                 } else {
                                         echo '  <div class="alert alert-success" role="alert">
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -127,7 +128,7 @@ require("helper.php");
                                         // Once newly vCenter has been added, we want the inventory to be updated
                                         shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                         echo '  </div>';
-                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
                                 }
                                 break;
                         case "delete-vcentry":
