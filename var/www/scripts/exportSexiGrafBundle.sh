@@ -33,15 +33,20 @@ if [ -d "/mnt/wfs/whisper" ]; then
     cp /var/www/admin/offline-vminventory.html /mnt/wfs/sexigraf-dump/
 
     # Retrieve credential store items
-    for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/[[:space:]]\+/;/")
-    do
-        vcenter=$(echo $creditem | cut -d ";" -f 1)
-        username=$(echo $creditem | cut -d ";" -f 2)
-        password="/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml get --server $vcenter --username '$username'"
-        password=$(eval "$password" | cut -c 11-)
-        echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
-    done
-    cp /var/www/.vmware/credstore/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
+    if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
+        for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/[[:space:]]\+/;/")
+        do
+            vcenter=$(echo $creditem | cut -d ";" -f 1)
+            username=$(echo $creditem | cut -d ";" -f 2)
+            password="/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml get --server $vcenter --username '$username'"
+            password=$(eval "$password" | cut -c 11-)
+            echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
+        done
+    fi
+
+    if [ -a "/var/www/.vmware/credstore/vipscredentials.xml" ]; then
+        cp /var/www/.vmware/credstore/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
+    fi
 
     # File encoding
     openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
