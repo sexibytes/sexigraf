@@ -41,6 +41,8 @@ if [ -d "/mnt/wfs/whisper" ]; then
         password=$(eval "$password" | cut -c 11-)
         echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
     done
+    cp /var/www/.vmware/credstore/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
+    
     # File encoding
     openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
     rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
