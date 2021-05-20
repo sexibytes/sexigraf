@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.51"
+$ScriptVersion = "0.9.52"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -245,7 +245,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     $vcenter_clusters_h = @{}
-      foreach ($vcenter_cluster in $vcenter_clusters) {
+        foreach ($vcenter_cluster in $vcenter_clusters) {
         try {
             $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
         } catch {}
@@ -293,7 +293,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             [array]$cluster_hosts = @()
             foreach ($cluster_host in $vcenter_cluster.Host) {
                 if ($vcenter_vmhosts_h[$cluster_host.Value]) {
-                   $cluster_hosts += $vcenter_vmhosts_h[$cluster_host.Value]
+                    $cluster_hosts += $vcenter_vmhosts_h[$cluster_host.Value]
                 }
             }
 
@@ -462,7 +462,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
                                         $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
                                         foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                                            $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                            if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
+                                                $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                            }
                                         }
                                     }
                                 }
