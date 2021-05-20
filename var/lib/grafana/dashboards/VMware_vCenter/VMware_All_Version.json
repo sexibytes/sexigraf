@@ -490,7 +490,7 @@
           "target": "sortByMaxima(groupByNode(vi.$vcenter.vi.version.vm.$datacentre.$cluster.vmtools.*, 8, 'sum'))"
         }
       ],
-      "title": "VM VMtools",
+      "title": "VM VMware Tools",
       "type": "piechart"
     }
   ],
