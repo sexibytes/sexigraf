@@ -1606,7 +1606,7 @@ if ($apiType eq "VirtualCenter") {
 					if ($eventInfo->key =~ m/(EventEx|ExtendedEvent)/) {
 						if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(nonviworkload|io\.latency|esx\.audit\.net\.firewall\.config\.changed)/) {
 						} else {
-							if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.)/) {
+							if ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(esx\.|com\.vmware\.vc\.ha|com\.vmware\.vc\.HA|vprob\.|com\.vmware\.vsan|vob\.|hbr\.|com\.vmware\.vcHms\.)/) {
 								push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
 							} elsif ((split(/\|/, $eventInfo->fullFormat))[0] =~ m/(com\.vmware\.vc\.)/ && $eventInfo->category =~ m/(warning|error)/) {
 								push @filteredEvents,(split(/\|/, $eventInfo->fullFormat))[0];
