@@ -16,14 +16,14 @@ require("helper.php");
                 <h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf Credential Store</h2>
                 <table class="table table-hover">
                 <thead><tr>
-                  <th class="col-sm-4">vCenter/ESX address</th>
-                  <th class="col-sm-3">Username</th>
-                  <th class="col-sm-2">Password</th>
-                  <th class="col-sm-1">VI</th>
-                  <th class="col-sm-1">vSAN</th>
-                  <th class="col-sm-1">&nbsp;</th>
+                        <th class="col-sm-4">vCenter/ESX address</th>
+                        <th class="col-sm-3">Username</th>
+                        <th class="col-sm-2">Password</th>
+                        <th class="col-sm-1">VI</th>
+                        <th class="col-sm-1">vSAN</th>
+                        <th class="col-sm-1">&nbsp;</th>
                 </tr></thead>
-              <tbody>
+        <tbody>
 <?php
         // $credstoreData = shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list");
         $credstoreData = shell_exec("/usr/bin/pwsh -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml -list");
@@ -65,7 +65,7 @@ require("helper.php");
                                 echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vsan">Enable vSAN</button></li>';
                         }
                         echo '                          <li role="separator" class="divider"></li>
-                          <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
+                                <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
                                         </ul>
                                 </div>
                         </form></td>
@@ -80,10 +80,14 @@ require("helper.php");
                         <td><input type="password" class="form-control" name="input-password" placeholder="Password" aria-describedby="password-label"></td>
                         <td>&nbsp;*</td>
                         <td>&nbsp;*</td>
-                        <td><button name="submit" class="btn btn-success" value="addmodify">Add</button></td>
+                        <td><button name="submit" class="btn btn-success" value="addmodify" onclick="document.getElementById('submitmessage').style.display = 'block'">Add</button></td>
                 </form></tr>
-              </tbody>
-            </table>
+                </tbody>
+                </table>
+                <div id="submitmessage" class="alert alert-warning" role="warning" style="display: none">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Warning:</span>Please wait while we validate server reachability and user access...
+                </div>
 <?php
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 switch ($_POST["submit"]) {
