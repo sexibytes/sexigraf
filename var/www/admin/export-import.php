@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <li>In order to import data on this appliance, just map the ISO on the VM's CD drive and use the Import tool below.</li>
                     <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                 </ul>            
-	   </div>
+        </div>
         </div>
         <h2><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SexiGraf Export/Import</h2>
 	<br />
