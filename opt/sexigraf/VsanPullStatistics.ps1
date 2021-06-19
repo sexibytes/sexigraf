@@ -106,6 +106,7 @@ try {
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
         $DupVsanPullStatisticsProcess5 = Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}|?{[TimeSpan]::FromTicks($(Get-Content /proc/$($_.ProcessId)/stat).split()[22]).TotalMinutes -gt 5}
+        #TODO fix timer
         if ($DupVsanPullStatisticsProcess5) {
             Write-Host "$((Get-Date).ToString("o")) [WARNING] VsanPullStatistics for $Server is already running for more than 5 minutes!"
             Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned VsanPullStatistics for $Server"
@@ -449,36 +450,37 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
 
-                    if ($ExecStart.Minute % 5 -eq 0) {
-                        try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
-                            # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-                            # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
-                            $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
-                            if ($VcClusterSmartStatsSummary.SmartStats) {
-                                $VcClusterSmartStatsSummary_h = @{}
-                                foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
-                                    $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
-                                    foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
-                                        $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
-                                        foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                                            if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
-                                                $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
-                                            }
-                                        }
-                                    }
-                                }
-                                if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
-                                    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
-                                } else {
-                                    AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
-                                }
-                            }
-                        } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
-                        }
-                    }
+                    # if ($ExecStart.Minute % 5 -eq 0) {
+                    #     try {
+                    #         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
+                    #         # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
+                    #         # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
+                    #         #TODO fix timeout
+                    #         $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
+                    #         if ($VcClusterSmartStatsSummary.SmartStats) {
+                    #             $VcClusterSmartStatsSummary_h = @{}
+                    #             foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
+                    #                 $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
+                    #                 foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
+                    #                     $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
+                    #                     foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
+                    #                         if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
+                    #                             $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                    #                         }
+                    #                     }
+                    #                 }
+                    #             }
+                    #             if ($($(Get-Date).ToUniversalTime() - $ExecStart).TotalMinutes -lt 1) {
+                    #                 Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
+                    #             } else {
+                    #                 AltAndCatchFire "VsanPullStatistics is running for more than 1 minute, exiting ..."
+                    #             }
+                    #         }
+                    #     } catch {
+                    #         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
+                    #         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                    #     }
+                    # }
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
