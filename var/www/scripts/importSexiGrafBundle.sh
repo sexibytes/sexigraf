@@ -52,7 +52,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
 
     # Switch from perl to powershell
     sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -f  \/opt\/sexigraf\/VsanPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vsan_*
-    sed -i 's/--sessionfile \/tmp/-sessionfile \/tmp/g' /etc/cron.d/vsan_*
+    sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
     sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
 
     # Restart services
