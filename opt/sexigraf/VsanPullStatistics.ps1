@@ -100,25 +100,24 @@ try {
     AltAndCatchFire "Powershell modules import failure"
 }
 
-# try {
-#     Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server ..."
-#     $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
-#     # https://github.com/PowerShell/PowerShell/issues/13944
-#     if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
-#         $DupVsanPullStatisticsProcess5 = Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}|?{[TimeSpan]::FromTicks($(Get-Content /proc/$($_.ProcessId)/stat).split()[22]).TotalMinutes -gt 5}
-#         #TODO fix timer
-#         if ($DupVsanPullStatisticsProcess5) {
-#             Write-Host "$((Get-Date).ToString("o")) [WARNING] VsanPullStatistics for $Server is already running for more than 5 minutes!"
-#             Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned VsanPullStatistics for $Server"
-#             $DupVsanPullStatisticsProcessId = $DupVsanPullStatisticsProcess5.ProcessId
-#             Stop-Process -Id $DupVsanPullStatisticsProcessId -Force
-#         } else {
-#             AltAndCatchFire "VsanPullStatistics for $Server is already running!"
-#         }
-#     }
-# } catch {
-#     AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
-# }
+try {
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VsanPullStatistics for $Server ..."
+    $DupVsanPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VsanPullStatistics" -and $_ -match "$Server"}
+    # https://github.com/PowerShell/PowerShell/issues/13944
+    if (($DupVsanPullStatisticsProcess|Measure-Object).Count -gt 1) {
+        $DupVsanPullStatisticsProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}).ProcessId[0]
+        $DupVsanPullStatisticsProcessTime = [INT32](ps -p $DupVsanPullStatisticsProcessId -o etimes).split()[-1]
+        if ($DupVsanPullStatisticsProcessTime -gt 300) {
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] VsanPullStatistics for $Server is already running for more than 5 minutes!"
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned VsanPullStatistics for $Server"
+            Stop-Process -Id $DupVsanPullStatisticsProcessId -Force
+        } else {
+            AltAndCatchFire "VsanPullStatistics for $Server is already running!"
+        }
+    }
+} catch {
+    AltAndCatchFire "VsanDisksPullStatistics process lookup failure"
+}
 
 if ($SessionFile) {
     try {
