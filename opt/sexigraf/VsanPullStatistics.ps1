@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.55"
+$ScriptVersion = "0.9.68"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -18,7 +18,7 @@ function AltAndCatchFire {
     Stop-Transcript
     exit
 }
-$AltAndCatchFireDef = $function:AltAndCatchFire.ToString()
+$AltAndCatchFire = $function:AltAndCatchFire.ToString()
 
 function GetRootDc {
 	Param($child_object)	
@@ -30,7 +30,7 @@ function GetRootDc {
 		return $xfolders_vcenter_name_h[$xfolders_vcenter_parent_h[$Parent_folder]]
 	}
 }
-$GetRootDcDef = $function:GetRootDc.ToString()
+$GetRootDc = $function:GetRootDc.ToString()
 
 function NameCleaner {
     Param($NameToClean)
@@ -40,7 +40,7 @@ function NameCleaner {
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
     return $NameToClean
 }
-$NameCleanerDef = $function:NameCleaner.ToString()
+$NameCleaner = $function:NameCleaner.ToString()
 
 function VmdkNameCleaner {
     Param($NameToClean)
@@ -50,7 +50,7 @@ function VmdkNameCleaner {
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
     return $NameToClean
 }
-$VmdkNameCleanerDef = $function:VmdkNameCleaner.ToString()
+$VmdkNameCleaner = $function:VmdkNameCleaner.ToString()
 
 function GetParent {
     param ($parent)
@@ -60,7 +60,7 @@ function GetParent {
         return $parent
     }
 }
-$GetParentDef = $function:GetParent.ToString()
+$GetParent = $function:GetParent.ToString()
 
 function GetDomChild {
     param ($components,$CompChildren)
@@ -79,7 +79,7 @@ function GetDomChild {
         }
     }
 }
-$GetDomChildDef = $function:GetDomChild.ToString()
+$GetDomChild = $function:GetDomChild.ToString()
 
 try {
     Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force
@@ -182,16 +182,26 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
             if ($ExecStart.Minute % 5 -eq 0) {
-                # $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
+                $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
                 $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
+            } else {
+                $VsanClusterHealthSystem = $true # to avoid "The value of the using variable '$using:VsanClusterHealthSystem' cannot be retrieved because it has not been set in the local session."
+                $VsanSpaceReportSystem = $true 
             }
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
+            $VsanObjectSystem = $true
+            $VsanClusterHealthSystem = $true
             if ($ExecStart.Minute % 5 -eq 0) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
                 $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
+            } else {
+                $VsanSpaceReportSystem = $true 
             }
         } else {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not 6+ so we cannot call vSAN API"
+            $VsanObjectSystem = $true
+            $VsanClusterHealthSystem = $true
+            $VsanSpaceReportSystem = $true
         }
     } catch {
         AltAndCatchFire "Unable to read ServiceInstance.Content.About.ApiVersion or call Get-VSANView"
@@ -264,12 +274,41 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN clusters ..."
 
-    foreach ($vcenter_cluster in $vcenter_clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}) {
+    $vcenter_clusters_vsan = $vcenter_clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}
+
+    $vcenter_clusters_vsan|foreach-object -Parallel {
+
+        Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
+        Use-PowerCLIContext -PowerCLIContext $using:PwCliContext -SkipImportModuleChecks
+        $function:AltAndCatchFire = $using:AltAndCatchFire
+        $function:GetRootDc = $using:GetRootDc
+        $function:NameCleaner = $using:NameCleaner
+        $function:VmdkNameCleaner = $using:VmdkNameCleaner
+        $function:GetParent = $using:GetParent
+        $function:GetDomChild = $using:GetDomChild
+
+        $VsanClusterHealthSystem = $using:VsanClusterHealthSystem
+        $VsanSpaceReportSystem = $using:VsanSpaceReportSystem
+
+        $vcenter_resource_pools_owner_vms_h = $using:vcenter_resource_pools_owner_vms_h
+        $ClusterPhysicalVsanDisks = $using:ClusterPhysicalVsanDisks
+        $cluster_vdisks_id = $using:cluster_vdisks_id
+        $VsanObjectSystem = $using:VsanObjectSystem
+        $vcenter_name = $using:vcenter_name
+        $vcenter_vms_h = $using:vcenter_vms_h
+        $vcenter_vmhosts_h = $using:vcenter_vmhosts_h
+
+        $xfolders_vcenter_name_h = $using:xfolders_vcenter_name_h
+        $xfolders_vcenter_parent_h = $using:xfolders_vcenter_parent_h
+        $xfolders_vcenter_type_h = $using:xfolders_vcenter_type_h
+
+        $vcenter_cluster = $_
 
         if (($vcenter_cluster.Host|Measure-Object).count -gt 0) {
 
             $cluster_name = NameCleaner $($vcenter_cluster.Name).ToLower()
-            $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster).ToLower()
+            $datacentre = GetRootDc $vcenter_cluster
+            $datacentre_name = NameCleaner $datacentre.ToLower()
 
             [array]$cluster_hosts = @()
             foreach ($cluster_host in $vcenter_cluster.Host) {
@@ -289,7 +328,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                if ($ExecStart.Minute % 5 -eq 0 -and $cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
+                if ($($using:ExecStart).Minute % 5 -eq 0 -and $cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+) ..."
 
@@ -321,7 +360,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         #     }
                         # }
 
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $ExecStart
+                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $using:ExecStart
 
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
@@ -333,7 +372,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 try {
                     if ($vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VirtualDisk in cluster $cluster_name ..."
-                        $cluster_vdisks_id = @{}
                         foreach ($cluster_vm_moref in $vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
                             foreach ($cluster_vm_vdisk in $vcenter_vms_h[$cluster_vm_moref.Value].Config.Hardware.Device|?{$_ -is [VMware.Vim.VirtualDisk] -and $_.Backing.BackingObjectId}) {
                                 $cluster_vm_vdisk_base_name = VmdkNameCleaner $($cluster_vm_vdisk.Backing.FileName -split "[/.]")[1]
@@ -362,7 +400,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 try {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanInternalSystem from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                    $cluster_host_random_VsanInternalSystem = get-view $cluster_host_random.ConfigManager.VsanInternalSystem
+                    $cluster_host_random_VsanInternalSystem = Get-View $cluster_host_random.ConfigManager.VsanInternalSystem -Server $Server
                 } catch {
                     AltAndCatchFire "Unable to retreive VsanInternalSystem from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
@@ -390,11 +428,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 }
                                 $ReasonsToSyncHash = @{}
                                 foreach ($ReasonToSync in $ReasonsToSync.keys) {
-                                    # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $ExecStart
+                                    # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $using:ExecStart
                                     $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
                                 }
 
-                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $ExecStart
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $using:ExecStart
                             }
 
                             $SyncingVsanObjectsHash = @{
@@ -404,41 +442,40 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
                             }
 
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
 
-                    # if ($ExecStart.Minute % 5 -eq 0) {
-                    #     try {
-                    #         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
-                    #         # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-                    #         # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
-                    #         #TODO fix timeout
-                    #         $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
-                    #         if ($VcClusterSmartStatsSummary.SmartStats) {
-                    #             $VcClusterSmartStatsSummary_h = @{}
-                    #             foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
-                    #                 $SmartStatsEsxName = $vcenter_vmhosts_name_h[$SmartStatsEsx.Hostname]
-                    #                 foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
-                    #                     $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
-                    #                     foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                    #                         if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
-                    #                             $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
-                    #                         }
-                    #                     }
-                    #                 }
-                    #             }
+                    if ($($using:ExecStart).Minute % 5 -eq 0) {
+                        try { 
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
+                            # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
+                            # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
+                            $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
+                            if ($VcClusterSmartStatsSummary.SmartStats) {
+                                $VcClusterSmartStatsSummary_h = @{}
+                                foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
+                                    $SmartStatsEsxName = $($using:vcenter_vmhosts_name_h)[$SmartStatsEsx.Hostname]
+                                    foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
+                                        $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
+                                        foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
+                                            if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
+                                                $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                            }
+                                        }
+                                    }
+                                }
 
-                    #             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $ExecStart
-                    #         }
-                    #     } catch {
-                    #         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
-                    #         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
-                    #     }
-                    # }
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $using:ExecStart
+                            }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        }
+                    }
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
@@ -459,7 +496,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $SyncingVsanObjects.Objs;
                             }
 
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $ExecStart
+                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
                         }
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
@@ -478,32 +515,62 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             }
                         }
 
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $ExecStart
+                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $using:ExecStart
                     }
                 } catch{
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                 }
 
-                $cluster_hosts|foreach-object -Parallel {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
+            }
+        }
+    } -ThrottleLimit 4
 
+    foreach ($vcenter_cluster in $vcenter_clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}) {
+
+        if (($vcenter_cluster.Host|Measure-Object).count -gt 0) {
+    
+            $cluster_name = NameCleaner $($vcenter_cluster.Name).ToLower()
+            $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster).ToLower()
+    
+            [array]$cluster_hosts = @()
+            foreach ($cluster_host in $vcenter_cluster.Host) {
+                if ($vcenter_vmhosts_h[$cluster_host.Value]) {
+                    $cluster_hosts += $vcenter_vmhosts_h[$cluster_host.Value]
+                }
+            }
+    
+            if ($cluster_hosts) {
+    
+                $cluster_host_random = $cluster_hosts|Get-Random -Count 1
+    
+                try {
+                    $cluster_vsan_uuid = $cluster_host_random.Config.VsanHostConfig.ClusterInfo.Uuid
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing hosts in cluster $cluster_name $cluster_vsan_uuid in datacenter $datacentre_name ..."
+                } catch {
+                    AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                }
+    
+                $cluster_hosts|foreach-object -Parallel {
+    
                     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
                     Use-PowerCLIContext -PowerCLIContext $using:PwCliContext -SkipImportModuleChecks
-                    $function:AltAndCatchFire = $using:AltAndCatchFireDef
-                    $function:GetRootDc = $using:GetRootDcDef
-                    $function:NameCleaner = $using:NameCleanerDef
-                    $function:VmdkNameCleaner = $using:VmdkNameCleanerDef
-                    $function:GetParent = $using:GetParentDef
-                    $function:GetDomChild = $using:GetDomChildDef
+                    $function:AltAndCatchFire = $using:AltAndCatchFire
+                    $function:GetRootDc = $using:GetRootDc
+                    $function:NameCleaner = $using:NameCleaner
+                    $function:VmdkNameCleaner = $using:VmdkNameCleaner
+                    $function:GetParent = $using:GetParent
+                    $function:GetDomChild = $using:GetDomChild
                 
                     $cluster_host = $_
-                    $ref_vcenter_name = $($using:vcenter_name)
-                    $ref_datacentre_name = $($using:datacentre_name)
-                    $ref_cluster_name = $($using:cluster_name)
-                    $ref_ClusterPhysicalVsanDisks = $($using:ClusterPhysicalVsanDisks)
-                    $ref_cluster_vdisks_id = $($using:cluster_vdisks_id)
+                    $vcenter_name = $($using:vcenter_name)
+                    $datacentre_name = $($using:datacentre_name)
+                    $cluster_name = $($using:cluster_name)
+                    $ClusterPhysicalVsanDisks = $($using:ClusterPhysicalVsanDisks)
+                    $cluster_vdisks_id = $($using:cluster_vdisks_id)
                 
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing QueryVsanStatistics from $($cluster_host.config.network.dnsConfig.hostName) in cluster $ref_cluster_name ..."
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing QueryVsanStatistics from $($cluster_host.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                     $host_name = $($cluster_host.config.network.dnsConfig.hostName).ToLower()
                 
                     try {
@@ -515,88 +582,88 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $cluster_host_VsanStatistics_h = @{}
                 
                         foreach ($cluster_host_VsanStatistics_compmgr_stats in $cluster_host_VsanStatistics['dom.compmgr.stats'].keys|?{$_ -notmatch "Histogram"}) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.compmgr.stats.$cluster_host_VsanStatistics_compmgr_stats", $cluster_host_VsanStatistics['dom.compmgr.stats'].$cluster_host_VsanStatistics_compmgr_stats)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.compmgr.stats.$cluster_host_VsanStatistics_compmgr_stats", $cluster_host_VsanStatistics['dom.compmgr.stats'].$cluster_host_VsanStatistics_compmgr_stats)
                         }
                 
                         foreach ($cluster_host_VsanStatistics_client_stats in $cluster_host_VsanStatistics['dom.client.stats'].keys) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.client.stats.$cluster_host_VsanStatistics_client_stats", $cluster_host_VsanStatistics['dom.client.stats'].$cluster_host_VsanStatistics_client_stats)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.client.stats.$cluster_host_VsanStatistics_client_stats", $cluster_host_VsanStatistics['dom.client.stats'].$cluster_host_VsanStatistics_client_stats)
                         }
                 
                         foreach ($cluster_host_VsanStatistics_owner_stats in $cluster_host_VsanStatistics['dom.owner.stats'].keys) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.owner.stats.$cluster_host_VsanStatistics_owner_stats", $cluster_host_VsanStatistics['dom.owner.stats'].$cluster_host_VsanStatistics_owner_stats)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.owner.stats.$cluster_host_VsanStatistics_owner_stats", $cluster_host_VsanStatistics['dom.owner.stats'].$cluster_host_VsanStatistics_owner_stats)
                         }
                 
                         foreach ($cluster_host_VsanStatistics_cachestats in $cluster_host_VsanStatistics['dom.client.cachestats'].keys) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.client.cachestats.$cluster_host_VsanStatistics_cachestats", $cluster_host_VsanStatistics['dom.client.cachestats'].$cluster_host_VsanStatistics_cachestats)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.client.cachestats.$cluster_host_VsanStatistics_cachestats", $cluster_host_VsanStatistics['dom.client.cachestats'].$cluster_host_VsanStatistics_cachestats)
                         }
                 
                         foreach ($cluster_host_VsanStatistics_tcpstats in $cluster_host_VsanStatistics['tcpip.stats.tcp'].keys) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.tcpip.stats.$cluster_host_VsanStatistics_tcpstats", $cluster_host_VsanStatistics['tcpip.stats.tcp'].$cluster_host_VsanStatistics_tcpstats)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.tcpip.stats.$cluster_host_VsanStatistics_tcpstats", $cluster_host_VsanStatistics['tcpip.stats.tcp'].$cluster_host_VsanStatistics_tcpstats)
                         }
                 
                         foreach ($cluster_host_VsanStatistics_lsom_disks in $cluster_host_VsanStatistics['lsom.disks'].keys) {
                             try {
                                 if ($cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.ssd -ne "NA" -and $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity -gt 0) {
                                     $cluster_host_VsanStatistics_lsom_disks_pct = $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed * 100 / $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity
-                                    $cluster_host_VsanStatistics_lsom_disks_ssd = $ref_ClusterPhysicalVsanDisks[$ref_cluster_name][$cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.ssd]["devName"]
+                                    $cluster_host_VsanStatistics_lsom_disks_ssd = $ClusterPhysicalVsanDisks[$cluster_name][$cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.ssd]["devName"]
                                     if ($cluster_host_VsanStatistics_lsom_disks_ssd) {
                                         $cluster_host_VsanStatistics_lsom_disks_ssd_clean_naa = $($cluster_host_VsanStatistics_lsom_disks_ssd -split "[.:]")[1]
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacityUsed", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacity", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.percentUsed", $cluster_host_VsanStatistics_lsom_disks_pct)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.diskgroup.$cluster_host_VsanStatistics_lsom_disks_ssd_clean_naa.$cluster_host_VsanStatistics_lsom_disks.percentUsed", $cluster_host_VsanStatistics_lsom_disks_pct)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacityUsed", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacity", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.percentUsed", $cluster_host_VsanStatistics_lsom_disks_pct)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.diskgroup.$cluster_host_VsanStatistics_lsom_disks_ssd_clean_naa.$cluster_host_VsanStatistics_lsom_disks.percentUsed", $cluster_host_VsanStatistics_lsom_disks_pct)
                                     }
                                 } elseif ($cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.ssd -eq "NA" -and $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity -gt 0) {
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.miss", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.miss)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.quotaEvictions", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.quotaEvictions)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.readIoCount", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.readIoCount)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.wbSize", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.wbSize)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.wbFreeSpace", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.wbFreeSpace)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.writeIoCount", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.writeIoCount)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.bytesRead", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.bytesRead)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.bytesWritten", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.bytesWritten)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.capacityUsed", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed)
-                                    $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.capacity", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.miss", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.miss)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.quotaEvictions", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.quotaEvictions)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.readIoCount", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.readIoCount)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.wbSize", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.wbSize)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.wbFreeSpace", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.wbFreeSpace)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.writeIoCount", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.writeIoCount)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.bytesRead", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.bytesRead)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.bytesWritten", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.aggStats.bytesWritten)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.capacityUsed", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed)
+                                    $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.ssd.$cluster_host_VsanStatistics_lsom_disks.capacity", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity)
                                 }
                             } catch {}
                         }
                 
                         foreach ($cluster_host_VsanStatistics_owners_stats in $cluster_host_VsanStatistics['dom.owners.stats'].keys) {
                             try {
-                                if ($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]) {
-                                    if ($ref_cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]) {
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$($ref_cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$($ref_cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$($ref_cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$($ref_cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
+                                if ($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]) {
+                                    if ($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]) {
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$($cluster_vdisks_id["$cluster_host_VsanStatistics_owners_stats" + "_root"]).$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
                                     } else {
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
-                                        $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($ref_cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeCount", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeCount)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).readBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.readBytes)
+                                        $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.dom.owners.stats.$cluster_host_VsanStatistics_owners_stats.$($cluster_vdisks_id[$cluster_host_VsanStatistics_owners_stats]).writeBytes", $cluster_host_VsanStatistics['dom.owners.stats'].$cluster_host_VsanStatistics_owners_stats.writeBytes)
                                     }
                                 }
                             } catch {}
                         }
                 
                         foreach ($cluster_host_VsanStatistics_disks_stats in $cluster_host_VsanStatistics['disks.stats'].keys) {
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.totalTimeWrites", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.totalTimeWrites)
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.totalTimeReads", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.totalTimeReads)
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.queueTimeWrites", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.queueTimeWrites)
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.queueTimeReads", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.queueTimeReads)
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.readOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.readOps)
-                            $cluster_host_VsanStatistics_h.add("vsan.$ref_vcenter_name.$ref_datacentre_name.$ref_cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.writeOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.writeOps)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.totalTimeWrites", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.totalTimeWrites)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.totalTimeReads", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.totalTimeReads)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.queueTimeWrites", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.queueTimeWrites)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.queueTimeReads", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.latency.queueTimeReads)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.readOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.readOps)
+                            $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.disks.stats.$cluster_host_VsanStatistics_disks_stats.writeOps", $cluster_host_VsanStatistics['disks.stats'].$cluster_host_VsanStatistics_disks_stats.writeOps)
                         }
                 
                         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $cluster_host_VsanStatistics_h -DateTime $using:ExecStart
                 
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive QueryVsanStatistics from $host_name in cluster $ref_cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
                         Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
                 } -ThrottleLimit 10
-
-                Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
+    
+                Write-Host "$((Get-Date).ToString("o")) [INFO] End processing hosts in cluster $cluster_name in datacenter $datacentre_name"
             }
         }
     }
