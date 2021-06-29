@@ -85,15 +85,15 @@
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadLatencySumUs), #A), 'proxyRead')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadLatencySumUs), #A), 'proxyRead')",
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteLatencySumUs), #B), 'proxyWrite')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteLatencySumUs), #B), 'proxyWrite')",
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncLatencySumUs), #C), 'proxyRWResync')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncLatencySumUs), #C), 'proxyRWResync')",
               "textEditor": false
             },
             {
@@ -112,15 +112,15 @@
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadLatencySumUs), #G), 'anchorRead')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadLatencySumUs), #G), 'anchorRead')",
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteLatencySumUs), #H), 'anchorWrite')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteLatencySumUs), #H), 'anchorWrite')",
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncLatencySumUs), #I), 'anchorRWResync')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncLatencySumUs), #I), 'anchorRWResync')",
               "textEditor": false
             }
           ],
@@ -197,32 +197,32 @@
           "targets": [
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadCount), 1), 'proxyReads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadCount), 1), 'proxyReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteCount), 1), 'proxyWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteCount), 1), 'proxyWrites')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncCount), 1), 'proxyRWResyncs')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncCount), 1), 'proxyRWResyncs')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadCount), 1), 'anchorReads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadCount), 1), 'anchorReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteCount), 1), 'anchorWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteCount), 1), 'anchorWrites')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncCount), 1), 'anchorRWResyncs')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncCount), 1), 'anchorRWResyncs')",
               "textEditor": false
             }
           ],
@@ -298,27 +298,27 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadBytes), 1), 'proxyReads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadBytes), 1), 'proxyReads')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteBytes), 1), 'proxyWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteBytes), 1), 'proxyWrites')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncBytes), 1), 'proxyRWResyncs')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncBytes), 1), 'proxyRWResyncs')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadBytes), 1), 'anchorReads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadBytes), 1), 'anchorReads')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteBytes), 1), 'anchorWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteBytes), 1), 'anchorWrites')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncBytes), 1), 'anchorRWResyncs')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncBytes), 1), 'anchorRWResyncs')",
               "textEditor": false
             }
           ],
@@ -409,17 +409,17 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadCongestionSum), #A), 'proxyReadCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyReadCongestionSum), #A), 'proxyReadCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteCongestionSum), #B), 'proxyWriteCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyWriteCongestionSum), #B), 'proxyWriteCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncCongestionSum), #C), 'proxyRWResyncCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.proxyRWResyncCongestionSum), #C), 'proxyRWResyncCong')",
               "textEditor": false
             },
             {
@@ -439,17 +439,17 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadCongestionSum), #G), 'anchorReadCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorReadCongestionSum), #G), 'anchorReadCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteCongestionSum), #H), 'anchorWriteCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorWriteCongestionSum), #H), 'anchorWriteCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncCongestionSum), #I), 'anchorRWResyncCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.anchorRWResyncCongestionSum), #I), 'anchorRWResyncCong')",
               "textEditor": false
             },
             {
@@ -459,7 +459,7 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapCongestionSum), #M), 'unmapCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapCongestionSum), #M), 'unmapCong')",
               "textEditor": false
             },
             {
@@ -469,7 +469,7 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteCongestionSum), #O), 'unmappedWriteCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteCongestionSum), #O), 'unmappedWriteCong')",
               "textEditor": false
             },
             {
@@ -479,7 +479,7 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapCongestionSum), #Q), 'recoveryUnmapCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapCongestionSum), #Q), 'recoveryUnmapCong')",
               "textEditor": false
             }
           ],
@@ -556,17 +556,17 @@
           "targets": [
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapCount), 1), 'unmapCount')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapCount), 1), 'unmapCount')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteCount), 1), 'unmappedWriteCount')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteCount), 1), 'unmappedWriteCount')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapCount), 1), 'recoveryUnmapCount')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapCount), 1), 'recoveryUnmapCount')",
               "textEditor": false
             }
           ],
@@ -642,15 +642,15 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapBytes), 1), 'unmapBytes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmapBytes), 1), 'unmapBytes')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteBytes), 1), 'unmappedWriteBytes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.unmappedWriteBytes), 1), 'unmappedWriteBytes')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapBytes), 1), 'recoveryUnmapBytes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryUnmapBytes), 1), 'recoveryUnmapBytes')",
               "textEditor": false
             }
           ],

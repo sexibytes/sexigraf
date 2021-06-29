@@ -64,7 +64,7 @@
 				{
 				  "hide": false,
 				  "refId": "A",
-				  "target": "aliasByNode(highest$view(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.readCount), 1), $N), 9)",
+				  "target": "aliasByNode(highest$view(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.readCount), 1), $N), 9)",
 				  "textEditor": true
 				}
 			  ],
@@ -129,7 +129,7 @@
 				{
 				  "hide": false,
 				  "refId": "A",
-				  "target": "aliasByNode(highest$view(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.writeCount), 1), $N), 9)",
+				  "target": "aliasByNode(highest$view(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.writeCount), 1), $N), 9)",
 				  "textEditor": true
 				}
 			  ],
@@ -204,7 +204,7 @@
 				{
 				  "hide": false,
 				  "refId": "A",
-				  "target": "aliasByNode(highest$view(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.readBytes), 1), $N), 9)",
+				  "target": "aliasByNode(highest$view(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.readBytes), 1), $N), 9)",
 				  "textEditor": true
 				}
 			  ],
@@ -269,7 +269,7 @@
 				{
 				  "hide": false,
 				  "refId": "A",
-				  "target": "aliasByNode(highest$view(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.writeBytes), 1), $N), 9)",
+				  "target": "aliasByNode(highest$view(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.vsan.dom.owners.stats.*.$vmdk.writeBytes), 1), $N), 9)",
 				  "textEditor": true
 				}
 			  ],

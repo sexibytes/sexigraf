@@ -90,19 +90,19 @@
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readLatencySumUs), #A), 'read')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readLatencySumUs), #A), 'read')",
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeLatencySumUs), #B), 'write')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeLatencySumUs), #B), 'write')",
               "textEditor": false
             },
             {
-              "target": "alias(transformNull(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteLatencySumUs), #C), 0), 'recoveryWrite')",
+              "target": "alias(transformNull(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteLatencySumUs), #C), 0), 'recoveryWrite')",
               "textEditor": false
             },
             {
-              "target": "alias(transformNull(divideSeries(derivative(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadLatencySumUs, 0)), #D), 0), 'resyncRead')",
+              "target": "alias(transformNull(divideSeries(nonNegativeDerivative(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadLatencySumUs, 0)), #D), 0), 'resyncRead')",
               "textEditor": false
             }
           ],
@@ -179,22 +179,22 @@
           "targets": [
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount), 1), 'reads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCount), 1), 'reads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount), 1), 'writes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCount), 1), 'writes')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount), 1), 'recoveryWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCount), 1), 'recoveryWrites')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(scaleToSeconds(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCount, 0)), 1), 'resyncReadCount')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCount, 0)), 1), 'resyncReadCount')",
               "textEditor": false
             }
           ],
@@ -270,19 +270,19 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readBytes), 1), 'reads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readBytes), 1), 'reads')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeBytes), 1), 'writes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeBytes), 1), 'writes')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteBytes), 1), 'recoveryWrites')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteBytes), 1), 'recoveryWrites')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadBytes, 0)), 1), 'resyncReadBytes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadBytes, 0)), 1), 'resyncReadBytes')",
               "textEditor": false
             }
           ],
@@ -373,22 +373,22 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCongestionSum), #A), 'readCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCongestionSum), #A), 'readCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCongestionSum), #B), 'writeCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.writeCongestionSum), #B), 'writeCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCongestionSum), #B), 'recoveryWriteCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.recoveryWriteCongestionSum), #B), 'recoveryWriteCong')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCongestionSum, 0)), #C), 'resyncReadCong')",
+              "target": "alias(divideSeries(nonNegativeDerivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.resyncReadCongestionSum, 0)), #C), 'resyncReadCong')",
               "textEditor": false
             }
           ],
@@ -466,7 +466,7 @@
               "textEditor": false
             },
             {
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.numOIOSum), #A), 'OIO')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.numOIOSum), #A), 'OIO')",
               "textEditor": false
             }
           ],
@@ -546,7 +546,7 @@
             },
             {
               "hide": false,
-              "target": "alias(asPercent(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCachedCount), #A), 'readCacheRate')",
+              "target": "alias(asPercent(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.stats.readCachedCount), #A), 'readCacheRate')",
               "textEditor": false
             },
             {
@@ -556,7 +556,7 @@
             },
             {
               "hide": false,
-              "target": "alias(asPercent(derivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.client.cachestats.hits, 0)), #C), 'ClientCacheRate')",
+              "target": "alias(asPercent(nonNegativeDerivative(removeBelowValue(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.client.cachestats.hits, 0)), #C), 'ClientCacheRate')",
               "textEditor": false
             }
           ],

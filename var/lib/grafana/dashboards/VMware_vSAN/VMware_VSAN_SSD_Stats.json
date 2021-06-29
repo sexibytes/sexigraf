@@ -155,7 +155,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5)",
+              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.quotaEvictions), 1), 5)",
               "textEditor": false
             }
           ],
@@ -235,11 +235,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.readIoCount), 1), 'reads')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.readIoCount), 1), 'reads')",
               "textEditor": false
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.writeIoCount), 1), 'writes')",
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.writeIoCount), 1), 'writes')",
               "textEditor": false
             }
           ],
@@ -322,10 +322,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), 1), 'reads')"
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), 1), 'reads')"
             },
             {
-              "target": "alias(scaleToSeconds(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), 1), 'writes')"
+              "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), 1), 'writes')"
             }
           ],
           "timeFrom": null,
@@ -509,7 +509,7 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), #A), 'read')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesRead), #A), 'read')",
               "textEditor": false
             },
             {
@@ -519,7 +519,7 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), #C), 'write')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.lsom.ssd.$ssd.bytesWritten), #C), 'write')",
               "textEditor": false
             }
           ],

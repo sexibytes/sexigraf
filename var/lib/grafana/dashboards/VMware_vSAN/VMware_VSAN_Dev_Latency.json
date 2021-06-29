@@ -83,22 +83,22 @@
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeReads), #A), 'tReads')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeReads), #A), 'tReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeWrites), #B), 'tWrites')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeWrites), #B), 'tWrites')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeReads), #A), 'qReads')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeReads), #A), 'qReads')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeWrites), #B), 'qWrites')",
+              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeWrites), #B), 'qWrites')",
               "textEditor": false
             },
             {
