@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.69"
+$ScriptVersion = "0.9.70"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -38,7 +38,7 @@ function NameCleaner {
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
-    return $NameToClean
+    return $NameToClean.ToLower()
 }
 $NameCleaner = $function:NameCleaner.ToString()
 
@@ -181,16 +181,19 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
+            $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
             if ($ExecStart.Minute % 5 -eq 0) {
                 $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
                 $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             } else {
                 $VsanClusterHealthSystem = $true # to avoid "The value of the using variable '$using:VsanClusterHealthSystem' cannot be retrieved because it has not been set in the local session."
-                $VsanSpaceReportSystem = $true 
+                $VsanSpaceReportSystem = $true
+                $VsanPerformanceManager = $true
             }
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
             $VsanObjectSystem = $true
             $VsanClusterHealthSystem = $true
+            $VsanPerformanceManager = $true
             if ($ExecStart.Minute % 5 -eq 0) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
                 $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
@@ -202,6 +205,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $VsanObjectSystem = $true
             $VsanClusterHealthSystem = $true
             $VsanSpaceReportSystem = $true
+            $VsanPerformanceManager = $true
         }
     } catch {
         AltAndCatchFire "Unable to read ServiceInstance.Content.About.ApiVersion or call Get-VSANView"
@@ -214,8 +218,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
         $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool, ConfigurationEx -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo.Uuid, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vsan_ds = Get-View -ViewType Datastore -Property name,info.url,info.ContainerId -Server $Server |?{$_.info.url -match "/vsan:"}
         
     } catch {
         AltAndCatchFire "Get-View failure"
@@ -233,10 +238,15 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     $vcenter_clusters_h = @{}
-        foreach ($vcenter_cluster in $vcenter_clusters) {
+    foreach ($vcenter_cluster in $vcenter_clusters) {
         try {
-            $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
+            if ($vcenter_cluster.ConfigurationEx.VsanConfigInfo.Enabled) {
+                $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
+            }
         } catch {}
+    }
+    if ($vcenter_clusters_h.count -eq 0) {
+        AltAndCatchFire "No vSAN cluster in vCenter $Server"
     }
 
     $vcenter_vmhosts_h = @{}
@@ -254,6 +264,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     foreach ($vcenter_vm in $vcenter_vms) {
         try {
             $vcenter_vms_h.add($vcenter_vm.MoRef.Value, $vcenter_vm)
+        } catch {}
+    }
+
+    $vcenter_vsan_ds_h = @{}
+    foreach ($vcenter_vsan_d in $vcenter_vsan_ds) {
+        try {
+            $vcenter_vsan_ds_h.add($vcenter_vsan_d.info.ContainerId.replace("-",""),$vcenter_vsan_d.name)
         } catch {}
     }
 
@@ -275,7 +292,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN clusters ..."
 
-    $vcenter_clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}|foreach-object -Parallel {
+    $vcenter_clusters|foreach-object -Parallel {
 
         Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
         Use-PowerCLIContext -PowerCLIContext $using:PwCliContext -SkipImportModuleChecks
@@ -288,6 +305,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $VsanClusterHealthSystem = $using:VsanClusterHealthSystem
         $VsanSpaceReportSystem = $using:VsanSpaceReportSystem
+        $VsanPerformanceManager = $using:VsanPerformanceManager
 
         $vcenter_resource_pools_owner_vms_h = $using:vcenter_resource_pools_owner_vms_h
         $ClusterPhysicalVsanDisks = $using:ClusterPhysicalVsanDisks
@@ -307,8 +325,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         if (($vcenter_cluster.Host|Measure-Object).count -gt 0) {
 
-            $cluster_name = NameCleaner $($vcenter_cluster.Name).ToLower()
-            $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster).ToLower()
+            $cluster_name = NameCleaner $vcenter_cluster.Name
+            $datacentre_name = NameCleaner $(GetRootDc $vcenter_cluster)
 
             [array]$cluster_hosts = @()
             foreach ($cluster_host in $vcenter_cluster.Host) {
@@ -479,6 +497,31 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             }
                         } catch {
                             Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        }
+
+                        try { 
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $cluster_name (v6.7+) ..."
+                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                            $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$($using:ExecStart);entityRefId="cluster-domclient:$cluster_vsan_uuid";labels="*";startTime=$($using:ExecStart).AddMinutes(-5)} 
+                            # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
+                            $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
+                            $VsanClusterPerfQueryId = @{}
+                            foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                                $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                            }
+                            $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"],$VsanClusterPerfQueryId["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
+                            $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"],$VsanClusterPerfQueryId["iopsRead"])|Measure-Object -Sum).Sum
+                            $cluster_vsan_name = NameCleaner $($using:vcenter_vsan_ds_h)[$cluster_vsan_uuid.replace("-","")]
+                            $VsanClusterPerf_h = @{
+                                "vmw.$vcenter_name.$datacentre_name.$cluster_name.datastore.$cluster_vsan_name.iorm.datastoreIops" = $VsanClusterPerfIops;
+                                "vmw.$vcenter_name.$datacentre_name.$cluster_name.datastore.$cluster_vsan_name.iorm.sizeNormalizedDatastoreLatency" = $VsanClusterPerfMaxLatency;
+                            }
+                            if ($VsanClusterPerf_h) {
+                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VsanClusterPerf_h -DateTime $using:ExecStart
+                            }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
                             Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                         }
                     }
