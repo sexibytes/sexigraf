@@ -181,7 +181,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "sortByMaxima(groupByNode(vmw.$vcenter.$datacentre.$cluster.storage.FileType.$Type, 6, 'sum'))",
+              "target": "sortByTotal(groupByNode(vmw.$vcenter.$datacentre.$cluster.storage.FileType.$Type, 6, 'sum'))",
               "textEditor": false
             },
             {
