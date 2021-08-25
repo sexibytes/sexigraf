@@ -1,9 +1,9 @@
 {
-     "PowerShellPolicies": {
-         "ScriptBlockLogging": {
-         "EnableScriptBlockInvocationLogging": false,
-         "EnableScriptBlockLogging": false
-         }
-     },
-     "LogLevel": "verbose"
- }
+    "PowerShellPolicies": {
+        "ScriptBlockLogging": {
+        "EnableScriptBlockInvocationLogging": false,
+        "EnableScriptBlockLogging": false
+        }
+    },
+    "LogLevel": "verbose"
+}
