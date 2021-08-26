@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh -Command
+#!/usr/bin/pwsh -NonInteractive -NoProfile -Command
 #
 param([Parameter (Mandatory=$true)] [string] $server, [Parameter (Mandatory=$true)] [string] $username, [Parameter (Mandatory=$true)] [string] $password)
 
