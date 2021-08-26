@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh -Command
+#!/usr/bin/pwsh -NonInteractive -NoProfile -Command
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
@@ -635,7 +635,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $cluster_host_VsanStatistics_lsom_disks_pct = $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed * 100 / $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity
                         $cluster_host_VsanStatistics_lsom_disks_ssd = $ClusterPhysicalVsanDisks[$cluster_name][$cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.ssd]["devName"]
                         if ($cluster_host_VsanStatistics_lsom_disks_ssd) {
-                            $cluster_host_VsanStatistics_lsom_disks_ssd_clean_naa = $($cluster_host_VsanStatistics_lsom_disks_ssd -split "[.:]")[1]
+                            $cluster_host_VsanStatistics_lsom_disks_ssd_clean_naa = $($cluster_host_VsanStatistics_lsom_disks_ssd -split "[.]",2 -split "[:]" -replace "[.]","_")[1]
                             $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacityUsed", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacityUsed)
                             $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.capacity", $cluster_host_VsanStatistics['lsom.disks'].$cluster_host_VsanStatistics_lsom_disks.info.capacity)
                             $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.lsom.disks.$cluster_host_VsanStatistics_lsom_disks.percentUsed", $cluster_host_VsanStatistics_lsom_disks_pct)
