@@ -12,7 +12,7 @@ if (!$(Test-Connection -TargetName $server -TcpPort 443 -TimeoutSeconds 2)) {
 
 try {
     Import-Module VMware.Vim, VMware.VimAutomation.Cis.Core, VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk
-    # $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
+    $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     $ViConnect = Connect-VIServer -Force -Server $server -User $username -Password $password -ErrorAction Stop
     $SessionSecretName = "vmw_" + $server.Replace(".","_") + ".key"
     $ViConnect.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
