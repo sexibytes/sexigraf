@@ -441,7 +441,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         }
     }
 
-    $overallStatus_h = ${}
+    $overallStatus_h = @{}
     $overallStatus_h.add("gray",0)
     $overallStatus_h.add("green",1)
     $overallStatus_h.add("yellow",2)
@@ -694,6 +694,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_vms_files_snaps = 0
         $vcenter_cluster_vms_snaps = 0
         $vcenter_cluster_vms_off = 0
+        $vcenter_cluster_vms_on = 0
         $vcenter_cluster_vmdk_per_ds = @{}
 
         foreach ($vcenter_cluster_vm in $vcenter_vms_h[$vcenter_cluster_hosts_vms_moref]) {
@@ -785,6 +786,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             if ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOn") {
+                $vcenter_cluster_vms_on ++
 
                 $vcenter_cluster_vms_vcpus += $vcenter_cluster_vm.config.hardware.numCPU
                 $vcenter_cluster_vms_vram += $vcenter_cluster_vm.runtime.maxMemoryUsage
@@ -825,7 +827,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 if ($VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$vcenter_cluster_vm.moref.value][""] -and $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_cluster_vm.moref.value][""]) {
                     $vcenter_cluster_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$vcenter_cluster_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_cluster_vm.moref.value][""]) / $vcenter_cluster_vm.config.hardware.numCPU / 20000 * 100 
-                    ### https://vdc-download.vmware.com/vmwb-repository/dcr-public/8946c1b6-2861-4c12-a45f-f14ae0d3b1b9/a5b8094c-c222-4307-9399-3b606a04af55/cpu_counters.html
                     ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                     ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
                     $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.cpu_wait_no_idle", $vcenter_cluster_vm_io_wait)
@@ -854,13 +855,45 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             } elseif ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOff") {
                 $vcenter_cluster_vms_off ++
             }
-
-            # if ($cluster_vm_views_vcpus > 0 && $cluster_hosts_views_pcpus > 0) {
-			# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"vCPUs"} = $cluster_vm_views_vcpus;
-			# 	$clusterCarbonHash->{$vmware_server_name}{$datacentre_name}{$cluster_name}{"quickstats"}{"pCPUs"} = $cluster_hosts_views_pcpus;
-			# }
-
         }
+
+        if ($vcenter_cluster_vms_vcpus -gt 0 -and $vcenter_cluster_hosts_pcpus -gt 0) {
+            $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.vCPUs", $vcenter_cluster_vms_vcpus)
+            $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.pCPUs", $vcenter_cluster_hosts_pcpus)
+        }
+        
+        if ($vcenter_cluster_vms_vram -gt 0 -and $vcenter_cluster.summary.effectiveMemory -gt 0) {
+            $vcenter_cluster_pool_quickstats_vram = $vcenter_cluster_vms_vram * 100 / $vcenter_cluster.summary.effectiveMemory
+            $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.vRAM", $vcenter_cluster_vms_vram)
+            $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.mem.allocated", $vcenter_cluster_pool_quickstats_vram)
+        }
+
+        if ($vcenter_cluster_vms_files_dedup_total) {
+            foreach ($vcenter_cluster_vms_filetype in $vcenter_cluster_vms_files_dedup_total.keys) {
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.storage.FileType.$vcenter_cluster_vms_filetype", $vcenter_cluster_vms_files_dedup_total[$vcenter_cluster_vms_filetype])
+            }
+
+            if ($vcenter_cluster_vms_files_snaps) {
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.storage.SnapshotCount", $vcenter_cluster_vms_files_snaps)
+            }
+
+            if ($vcenter_cluster_vms_snaps) {
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.storage.VmSnapshotCount", $vcenter_cluster_vms_snaps)
+            }
+        }
+
+        $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.total", ($vcenter_cluster_vms_on + $vcenter_cluster_vms_off))
+        $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.on", $vcenter_cluster_vms_on)
+        $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_dead_vms)
+
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
+
+
+        XXX
+
+
+
+
     }
 
 } elseif ($ServiceInstance.Content.About.ApiType -match "HostAgent") {
