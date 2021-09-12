@@ -415,8 +415,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"cpu.idle.summation",
 		"cpu.latency.average",
 		"disk.maxTotalLatency.latest",
-		"disk.usage.average",
-		# "disk.commandsAveraged.average",
+		"virtualdisk.write.average",
+		"virtualdisk.read.average",
 		"net.usage.average",
 		"cpu.totalCapacity.average",
 		"mem.totalCapacity.average"
@@ -841,8 +841,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency", $vcenter_cluster_vm_disk_latency)
                 }
 
-                if ($VmMultiStats[$PerfCounterTable["disk.usage.average"]][$vcenter_cluster_vm.moref.value][""]) { ### XXX to fix for vSAN/NFS
-                    $vcenter_cluster_vm_disk_usage = $VmMultiStats[$PerfCounterTable["disk.usage.average"]][$vcenter_cluster_vm.moref.value][""]
+                if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0) {
+                    $vcenter_cluster_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""]
                     $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", $vcenter_cluster_vm_disk_usage)
                 }
 
