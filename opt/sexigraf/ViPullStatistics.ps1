@@ -70,7 +70,7 @@ function GetMedian {
 function MultiQueryPerfAll {
     param($query_entity_views, $query_perfCntrs)
     foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
+        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance='*'}
     }
     foreach ($query_entity_view in $query_entity_views) {
         [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
@@ -391,7 +391,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "storageAdapter.read.average",
         "storageAdapter.write.average",
         "power.power.average",
-        "datastore.sizeNormalizedDatastoreLatency.average",
+        "datastore.sizeNormalizedDatastoreLatency.average", ### XXX need to move to datastoreVMObservedLatency at some point
         "datastore.datastoreIops.average",
         "datastore.totalWriteLatency.average",
         "datastore.totalReadLatency.average",
@@ -893,12 +893,48 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
 
+        $vcenter_cluster_datastores_count = 0
+        $vcenter_cluster_datastores_capacity = 0
+        $vcenter_cluster_datastores_freeSpace = 0
+        $vcenter_cluster_datastores_uncommitted = 0
+        $vcenter_cluster_datastores_latency = 0
+        $vcenter_cluster_datastores_iops = 0
 
-        XXX
+        foreach ($vcenter_cluster_datastore in $vcenter_datastores_h[$vcenter_clusters.Datastore.Value]) {
+            if ($vcenter_cluster_datastore.summary.accessible -and $vcenter_cluster_datastore.summary.multipleHostAccess) {
 
+                $vcenter_cluster_datastore_name = NameCleaner $vcenter_cluster_datastore.summary.name
 
+                $vcenter_cluster_datastores_count ++
 
+                $vcenter_cluster_datastore_hosts = ($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key
 
+                if($vcenter_cluster_datastore.summary.uncommitted -ge 0) {
+                    $vcenter_cluster_datastore_uncommitted = $vcenter_cluster_datastore.summary.uncommitted
+                } else {
+                    $vcenter_cluster_datastore_uncommitted = 0
+                }
+
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.capacity", $vcenter_cluster_datastore.summary.capacity)
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.freeSpace", $vcenter_cluster_datastore.summary.freeSpace)
+                $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.uncommitted", $vcenter_cluster_datastore_uncommitted)
+
+                if ($vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name]) {
+                    $vcenter_cluster_h.add("vi.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.vmdkCount", $vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name])
+                }
+
+                $vcenter_cluster_datastores_capacity += $vcenter_cluster_datastore.summary.capacity
+                $vcenter_cluster_datastores_freeSpace += $vcenter_cluster_datastore.summary.freeSpace
+                $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
+
+                if ($vcenter_cluster_datastore.iormConfiguration.enabled -or $vcenter_cluster_datastore.iormConfiguration.statsCollectionEnabled) {
+                    $vcenter_cluster_datastore_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url, '\/vmfs\/volumes\/(.*)\/').Groups[1].value)
+
+                    $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.sizeNormalizedDatastoreLatency.average"]][$vcenter_cluster_datastore_hosts.value][$vcenter_cluster_datastore_uuid] ### XXX DEAD
+                }
+
+            } ### elseif ($vcenter_cluster_datastore.summary.accessible -and !$vcenter_cluster_datastore.summary.multipleHostAccess) {} ### XXX in case non multipleHostAccess datastores would be necessary for clusters
+        }
     }
 
 } elseif ($ServiceInstance.Content.About.ApiType -match "HostAgent") {
