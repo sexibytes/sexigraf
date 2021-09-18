@@ -939,7 +939,29 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
 
                 } else {
+                    $vcenter_cluster_datastore_vsan_uuid
+                    $vcenter_cluster_datastore_vsan_uuid = $vcenter_vmhosts_h[$vcenter_cluster.Host.value][0].Config.VsanHostConfig.ClusterInfo.Uuid
 
+                    try { 
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
+                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                        $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$($using:ExecStart);entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_uuid";labels="*";startTime=$($using:ExecStart).AddMinutes(-5)} 
+                        # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
+                        $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
+                        $VsanClusterPerfQueryId = @{}
+                        foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                            $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                        }
+                        $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"],$VsanClusterPerfQueryId["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
+                        $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"],$VsanClusterPerfQueryId["iopsRead"])|Measure-Object -Sum).Sum
+
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                    }
                 }
 
             }
