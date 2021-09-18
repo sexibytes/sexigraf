@@ -391,10 +391,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "storageAdapter.read.average",
         "storageAdapter.write.average",
         "power.power.average",
-        "datastore.sizeNormalizedDatastoreLatency.average", ### XXX need to move to datastoreVMObservedLatency at some point
-        "datastore.datastoreIops.average",
-        "datastore.totalWriteLatency.average",
-        "datastore.totalReadLatency.average",
+        "datastore.datastoreVMObservedLatency.latest"
         "datastore.numberWriteAveraged.average",
         "datastore.numberReadAveraged.average",
         "cpu.latency.average",
@@ -927,10 +924,15 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_datastores_freeSpace += $vcenter_cluster_datastore.summary.freeSpace
                 $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
 
-                if ($vcenter_cluster_datastore.iormConfiguration.enabled -or $vcenter_cluster_datastore.iormConfiguration.statsCollectionEnabled) {
-                    $vcenter_cluster_datastore_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url, '\/vmfs\/volumes\/(.*)\/').Groups[1].value)
+                if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
+                    $vcenter_cluster_datastore_uuid = $vcenter_cluster_datastore.summary.url.split("/")[-2]
 
-                    $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.sizeNormalizedDatastoreLatency.average"]][$vcenter_cluster_datastore_hosts.value][$vcenter_cluster_datastore_uuid] ### XXX DEAD
+                    $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.datastoreVMObservedLatency.latest"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                    $vcenter_cluster_datastore_latency = GetMedian $vcenter_cluster_datastore_latency_raw
+
+                    $vcenter_cluster_datastore_iops_w = $HostMultiStats[$PerfCounterTable["datastore.numberWriteAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                    $vcenter_cluster_datastore_iops_r = $HostMultiStats[$PerfCounterTable["datastore.numberReadAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                    $vcenter_cluster_datastore_iops = ($vcenter_cluster_datastore_iops_w|Measure-Object -Sum).Sum + ($vcenter_cluster_datastore_iops_r|Measure-Object -Sum).Sum
                 }
 
             } ### elseif ($vcenter_cluster_datastore.summary.accessible -and !$vcenter_cluster_datastore.summary.multipleHostAccess) {} ### XXX in case non multipleHostAccess datastores would be necessary for clusters
