@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.70"
+$ScriptVersion = "0.9.71"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -216,7 +216,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     try {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
-        $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool, ConfigurationEx -Server $Server
+        $vcenter_clusters = Get-View -ViewType ClusterComputeResource -Property Name, Parent, Host, ResourcePool -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner -Server $Server
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property Name, Parent, Config.Product.ApiVersion, Config.VsanHostConfig.ClusterInfo, Config.Network.DnsConfig.HostName, ConfigManager.VsanInternalSystem, Runtime.ConnectionState, Runtime.InMaintenanceMode, Config.OptionDef -filter @{"Config.VsanHostConfig.ClusterInfo.Uuid" = "-";"Runtime.ConnectionState" = "^connected$";"runtime.inMaintenanceMode" = "false"} -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property Config.Hardware.Device, Runtime.Host -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server
@@ -240,24 +240,31 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_clusters_h = @{}
     foreach ($vcenter_cluster in $vcenter_clusters) {
         try {
-            if ($vcenter_cluster.ConfigurationEx.VsanConfigInfo.Enabled) {
-                $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
-            }
+            $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
         } catch {}
-    }
-    if ($vcenter_clusters_h.count -eq 0) {
-        AltAndCatchFire "No vSAN cluster in vCenter $Server"
     }
 
     $vcenter_vmhosts_h = @{}
     $vcenter_vmhosts_vsan_h = @{}
     $vcenter_vmhosts_name_h = @{}
+    $vcenter_vsan_clusters_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
-        try {
-            $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
-            $vcenter_vmhosts_vsan_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost.configManager.vsanInternalSystem.value)
-            $vcenter_vmhosts_name_h.add($vcenter_vmhost.name, $($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
-        } catch {}
+        if ($vcenter_vmhost.Config.VsanHostConfig.ClusterInfo.NodeUuid) {
+            try {
+                $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
+                $vcenter_vmhosts_vsan_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost.configManager.vsanInternalSystem.value)
+                $vcenter_vmhosts_name_h.add($vcenter_vmhost.name, $($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
+                if (!$vcenter_vsan_clusters_h[$vcenter_vmhost.parent.value]) {
+                    if ($vcenter_clusters_h[$vcenter_vmhost.parent.value]) {
+                        $vcenter_vsan_clusters_h.add($vcenter_vmhost.parent.value,$vcenter_clusters_h[$vcenter_vmhost.parent.value])
+                    }
+                }
+            } catch {}
+        }
+    }
+
+    if ($vcenter_vsan_clusters_h.Values.count -eq 0) {
+        AltAndCatchFire "No vSAN cluster in vCenter $Server"
     }
 
     $vcenter_vms_h = @{}
@@ -292,7 +299,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN clusters ..."
 
-    $vcenter_clusters|foreach-object -Parallel {
+    $vcenter_vsan_clusters_h.Values|foreach-object -Parallel {
 
         Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
         Use-PowerCLIContext -PowerCLIContext $using:PwCliContext -SkipImportModuleChecks
