@@ -342,6 +342,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         try {
             $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
         } catch {}
+        if ($vcenter_vmhost.Config.VsanHostConfig.ClusterInfo.NodeUuid) {
+            $vcenter_vmhost_vsan ++
+        }
     }
 
     $vcenter_datastores_h = @{}
@@ -445,8 +448,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $overallStatus_h.add("red",3)
 
     if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
-        $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
+        if ($vcenter_vmhost_vsan -gt 0) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
+            $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
+        }
     }
 
     foreach ($vcenter_cluster_moref in $vcenter_clusters_h.keys) {
