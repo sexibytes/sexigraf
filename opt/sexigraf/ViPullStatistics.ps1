@@ -258,7 +258,7 @@ try {
         $ServiceInstance = Get-View ServiceInstance -Server $Server
         # $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property "" -Server $Server
         $ServiceInstanceServerClock = $ServiceInstance.CurrentTime()
-        $ServiceInstanceServerClock_5 = $ServiceInstanceServerClock.AddMinutes(-5)        
+        $ServiceInstanceServerClock_5 = $ServiceInstanceServerClock.AddMinutes(-5)
     } else {
         AltAndCatchFire "global:DefaultVIServer variable check failure"
     }
@@ -460,7 +460,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster = $vcenter_clusters_h[$vcenter_cluster_moref]
             $vcenter_cluster_name = nameCleaner $vcenter_cluster.Name
             $vcenter_cluster_dc_name = nameCleaner $(getRootDc $vcenter_cluster)
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name in datacenter $vcenter_cluster_dc_name"
         } catch {
             AltAndCatchFire "cluster name cleaning issue"
         }
@@ -504,6 +504,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [ERROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
             Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
         }
+
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_hosts_pcpus = 0
         $vcenter_cluster_hosts_vms_moref = @()
@@ -603,7 +605,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host network metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
@@ -621,7 +623,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host hba metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
@@ -653,7 +655,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_host_overallStatus = $overallStatus_h[0]
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host fatstats metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
@@ -665,7 +667,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.Uptime", $vcenter_cluster_host.summary.quickStats.uptime)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host quickstats issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
         }
@@ -704,7 +706,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_vms_on = 0
         $vcenter_cluster_vmdk_per_ds = @{}
 
-        foreach ($vcenter_cluster_vm in $vcenter_vms_h[$vcenter_cluster_hosts_vms_moref]) {
+        foreach ($vcenter_cluster_vm in $vcenter_cluster_hosts_vms_moref) {
 
             if ($vcenter_cluster_vm.config.version) {
                 $vcenter_cluster_vm_vhw = NameCleaner $vcenter_cluster_vm.config.version
@@ -902,7 +904,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_datastores_latency = @()
         $vcenter_cluster_datastores_iops = 0
 
-        foreach ($vcenter_cluster_datastore in $vcenter_datastores_h[$vcenter_clusters.Datastore.Value]) {
+        foreach ($vcenter_cluster_datastore in $vcenter_datastores_h[$vcenter_cluster.Datastore.Value]) {
             if ($vcenter_cluster_datastore.summary.accessible -and $vcenter_cluster_datastore.summary.multipleHostAccess) {
 
                 $vcenter_cluster_datastore_name = NameCleaner $vcenter_cluster_datastore.summary.name
@@ -944,32 +946,74 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
 
                 } else {
-                    $vcenter_cluster_datastore_vsan_uuid
-                    $vcenter_cluster_datastore_vsan_uuid = $vcenter_vmhosts_h[$vcenter_cluster.Host.value][0].Config.VsanHostConfig.ClusterInfo.Uuid
+                    $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_vmhosts_h[$vcenter_cluster.Host.value][0].Config.VsanHostConfig.ClusterInfo.Uuid
+                    $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url.split,'.*vsan:(.*)\/').Groups[1].value)
 
-                    try { 
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
-                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
-                        $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$($using:ExecStart);entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_uuid";labels="*";startTime=$($using:ExecStart).AddMinutes(-5)} 
-                        # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
-                        $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
-                        $VsanClusterPerfQueryId = @{}
-                        foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
-                            $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                    if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","")) { # skip vSAN HCI Mesh
+                        try { 
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
+                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                            $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$ServiceInstanceServerClock;entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5}
+                            # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
+                            $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
+                            $VsanClusterPerfQueryId = @{}
+                            foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                                $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                            }
+                            $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
+                            $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
+                            $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"].replace(",","."),$VsanClusterPerfQueryId["iopsRead"].replace(",","."))|Measure-Object -Sum).Sum
+                            $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
+
+                            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
+                            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                         }
-                        $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"],$VsanClusterPerfQueryId["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
-                        $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"],$VsanClusterPerfQueryId["iopsRead"])|Measure-Object -Sum).Sum
-
-                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
-                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
-
-                    } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
                     }
                 }
-
             }
+        }
+
+        if ($vcenter_cluster_datastores_count -gt 0) {
+            $vcenter_cluster_datastores_utilization = ($vcenter_cluster_datastores_capacity - $vcenter_cluster_datastores_freeSpace) * 100 / $vcenter_cluster_datastores_capacity
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.count", $vcenter_cluster_datastores_count)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.capacity", $vcenter_cluster_datastores_capacity)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.freeSpace", $vcenter_cluster_datastores_freeSpace)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.utilization", $vcenter_cluster_datastores_utilization)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.uncommitted", $vcenter_cluster_datastores_uncommitted)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.max_latency", $($vcenter_cluster_datastores_latency|Measure-Object -Maximum).Maximum)
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.mid_latency", $(GetMedian $vcenter_cluster_datastores_latency))
+            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
+        }
+
+        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
+    }
+
+    foreach ($vcenter_pod_moref in $vcenter_pods_h.keys) {
+        $vcenter_pod = $vcenter_pods_h[$vcenter_pod_moref]
+        if ($vcenter_pod.childEntity) {
+            try {
+                $vcenter_pod_name = NameCleaner $vcenter_pod.Name
+                $vcenter_pod_dc_name = nameCleaner $(getRootDc $vcenter_pod)
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name pod $vcenter_pod_name in datacenter $vcenter_pod_dc_name"
+            } catch {
+                AltAndCatchFire "pod name cleaning issue"
+            }
+
+            $vcenter_pod_datastores = $vcenter_datastores_h[$vcenter_pod.childEntity.value]
+            $vcenter_pod_uncommitted = $($vcenter_pod_datastores.summary.uncommitted|Measure-Object -Sum).Sum
+            $vcenter_pod_vmdk = $($vcenter_cluster_vmdk_per_ds[$vcenter_pod_datastores.name]|Measure-Object -Sum).Sum
+
+            $vcenter_pod_h = @{}
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.capacity", $vcenter_pod.Summary.Capacity)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.freeSpace", $vcenter_pod.Summary.FreeSpace)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.uncommitted", $vcenter_pod_uncommitted)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.vmdkCount", $vcenter_pod_vmdk)
+
+            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_pod_h -DateTime $ExecStart
         }
     }
 
