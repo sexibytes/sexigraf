@@ -409,7 +409,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
+              "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')",
               "textEditor": false
             }
           ],
