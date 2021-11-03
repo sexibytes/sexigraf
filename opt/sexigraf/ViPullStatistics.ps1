@@ -1390,20 +1390,21 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = @()
+    $vCenterFilteredEventTypeIdCat = @()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
         # https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
 
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
-                if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat -notmatch "nonviworkload|io.latency|esx.audit.net.firewall.config.changed") {
-                    if ($vCenterEventInfo.fullFormat -match "esx.|com.vmware.vc.ha|com.vmware.vc.HA|vprob.|com.vmware.vsan|vob.hbr.|com.vmware.vcHms.") {
+                if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat.split("|")[0] -notmatch "nonviworkload|io\.latency|^esx\.audit\.net\.firewall\.config\.changed") {
+                    if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
                         $vCenterFilteredEventTypeId += $vCenterEventInfo.fullFormat.split("|")[0]
-                    } elseif ($vCenterEventInfo.fullFormat -match "com.vmware.vc." -and $vCenterEventInfo.category -match "warning|error") {
-                        $vCenterFilteredEventTypeId += $vCenterEventInfo.fullFormat.split("|")[0]
+                    } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
+                        $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.fullFormat.split("|")[0]
                     }
-                } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim.event.") {
-                    $vCenterFilteredEventTypeId += $vCenterEventInfo.key
+                } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "^vim\.event\.") {
+                    $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventInfo collect issue"
@@ -1411,18 +1412,27 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
 
-        if ($vCenterFilteredEventTypeId) {
+        if ($vCenterFilteredEventTypeId -or $vCenterFilteredEventTypeIdCat) {
             $vCenterEventFilterSpecByTime =  New-Object VMware.Vim.EventFilterSpecByTime -property @{BeginTime=$ServiceInstanceServerClock_5;EndTime=$ServiceInstanceServerClock}
             $vCenterEventFilterSpec =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeId}
+            $vCenterEventFilterSpecCat =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeIdCat;category=@("warning","error")}
 
-            $vCenterEventHistoryCollector = Get-View $($EventManager.CreateCollectorForEvents($vCenterEventFilterSpec))
+            # $vCenterEventHistoryCollector = Get-View $($EventManager.CreateCollectorForEvents($vCenterEventFilterSpec))
+            # do {
+            #     $vCenterEventHistoryCollectorRead = $vCenterEventHistoryCollector.ReadNextEvents("1000")
+            #     $vCenterEventsHistoryCollectorEx += $vCenterEventHistoryCollectorRead
+            # } until (($vCenterEventHistoryCollectorRead|Measure-Object).count -eq 0)
 
-            do {
-                $vCenterEventHistoryCollectorRead = $vCenterEventHistoryCollector.ReadNextEvents("1000")
-                $vCenterEventsHistoryCollectorEx += $vCenterEventHistoryCollectorRead
-            } until (($vCenterEventHistoryCollectorRead|Measure-Object).count -lt 1000)
+            # $vCenterEventHistoryCollectorCat = Get-View $($EventManager.CreateCollectorForEvents($vCenterEventFilterSpecCat))
+            # do {
+            #     $vCenterEventHistoryCollectorReadCat = $vCenterEventHistoryCollectorCat.ReadNextEvents("1000")
+            #     $vCenterEventsHistoryCollectorExCat += $vCenterEventHistoryCollectorReadCat
+            # } until (($vCenterEventHistoryCollectorReadCat|Measure-Object).count -eq 0)
 
-            foreach ($vCenterEventHistoryCollectorEx in $vCenterEventsHistoryCollectorEx) {
+            $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
+            $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
+
+            foreach ($vCenterEventHistoryCollectorEx in $($vCenterEventsHistoryCollector + $vCenterEventsHistoryCollectorCat)) {
                 if ($vCenterEventHistoryCollectorEx.EventTypeId -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
                     $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
                     $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
@@ -1431,7 +1441,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
             }
 
-            # $vmware_version_h["vi.$vcenter_name.vi.version.vm.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vmtools.$vcenter_standalone_host_vm_vmtools"] ++
         } else {
             Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in vCenter $vcenter_name"
         }
