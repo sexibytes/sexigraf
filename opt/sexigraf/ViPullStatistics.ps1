@@ -1413,50 +1413,61 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         }
 
         if ($vCenterFilteredEventTypeId -or $vCenterFilteredEventTypeIdCat) {
-            $vCenterEventFilterSpecByTime =  New-Object VMware.Vim.EventFilterSpecByTime -property @{BeginTime=$ServiceInstanceServerClock_5;EndTime=$ServiceInstanceServerClock}
-            $vCenterEventFilterSpec =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeId}
-            $vCenterEventFilterSpecCat =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeIdCat;category=@("warning","error")}
 
-            # $vCenterEventHistoryCollector = Get-View $($EventManager.CreateCollectorForEvents($vCenterEventFilterSpec))
-            # do {
-            #     $vCenterEventHistoryCollectorRead = $vCenterEventHistoryCollector.ReadNextEvents("1000")
-            #     $vCenterEventsHistoryCollectorEx += $vCenterEventHistoryCollectorRead
-            # } until (($vCenterEventHistoryCollectorRead|Measure-Object).count -eq 0)
-
-            # $vCenterEventHistoryCollectorCat = Get-View $($EventManager.CreateCollectorForEvents($vCenterEventFilterSpecCat))
-            # do {
-            #     $vCenterEventHistoryCollectorReadCat = $vCenterEventHistoryCollectorCat.ReadNextEvents("1000")
-            #     $vCenterEventsHistoryCollectorExCat += $vCenterEventHistoryCollectorReadCat
-            # } until (($vCenterEventHistoryCollectorReadCat|Measure-Object).count -eq 0)
-
-            $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
-            $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
-
-            foreach ($vCenterEventHistoryCollectorEx in $($vCenterEventsHistoryCollector + $vCenterEventsHistoryCollectorCat)) {
-                if ($vCenterEventHistoryCollectorEx.EventTypeId -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                    $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
-                    $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
-                    $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.EventTypeId.Replace(".","_")
-                    $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                    $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
-                    $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
-                    $vCenterEventHistoryCollectorExType = $(NameCleaner $vCenterEventHistoryCollectorEx.MessageInfo.id)
-                    $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                } elseif ($vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                    $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
-                    $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
-                    $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
-                    $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                }
+            try {
+                $vCenterEventFilterSpecByTime =  New-Object VMware.Vim.EventFilterSpecByTime -property @{BeginTime=$ServiceInstanceServerClock_5;EndTime=$ServiceInstanceServerClock}
+                $vCenterEventFilterSpec =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeId}
+                $vCenterEventFilterSpecCat =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeIdCat;category=@("warning","error")}
+    
+                $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
+                $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
+            if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
+                foreach ($vCenterEventHistoryCollectorEx in $($vCenterEventsHistoryCollector + $vCenterEventsHistoryCollectorCat)) {
+                    if ($vCenterEventHistoryCollectorEx.EventTypeId -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                        $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
+                        $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.EventTypeId.Replace(".","_")
+                        $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                    } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                        $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
+                        $vCenterEventHistoryCollectorExType = $(NameCleaner $vCenterEventHistoryCollectorEx.MessageInfo.id)
+                        $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                    } elseif ($vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                        $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
+                        $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
+                        $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                    } elseif ($vCenterEventHistoryCollectorEx -is [VMware.Vim.DvsHostWentOutOfSyncEvent]) {
+                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                        $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.Dvs.Name)
+                        $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
+                        $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                    }
+                }
+
+                if ($vcenter_events_h) {
+                    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_events_h -DateTime $ExecStart
+                }
+            } else {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter $vcenter_name no new event collected"
+            }
         } else {
             Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in vCenter $vcenter_name"
         }
     }
 
-    # $vmware_version_h to send
+    $vmware_version_h["vi.$vcenter_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
+
+    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vmware_version_h -DateTime $ExecStart
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $vcenter_name"
+    
 } elseif ($ServiceInstance.Content.About.ApiType -match "HostAgent") {
 
 } else {
