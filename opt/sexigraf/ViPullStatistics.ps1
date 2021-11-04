@@ -1403,7 +1403,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
                         $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.fullFormat.split("|")[0]
                     }
-                } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "^vim\.event\.") {
+                } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
                     $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
                 }
             } catch {
@@ -1437,6 +1437,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
                     $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
                     $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.EventTypeId.Replace(".","_")
+                    $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                    $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                    $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
+                    $vCenterEventHistoryCollectorExType = $(NameCleaner $vCenterEventHistoryCollectorEx.MessageInfo.id)
+                    $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
+                } elseif ($vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                    $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                    $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
+                    $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
                     $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
                 }
             }
