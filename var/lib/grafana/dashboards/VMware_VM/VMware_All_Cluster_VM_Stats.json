@@ -1046,7 +1046,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CpuWait",
+          "title": "CpuIoWait",
           "tooltip": {
             "shared": true,
             "sort": 2,
