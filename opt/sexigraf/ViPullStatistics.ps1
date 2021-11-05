@@ -1436,7 +1436,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
                         $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
                         $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
-                        $vCenterEventHistoryCollectorExType = $(NameCleaner $vCenterEventHistoryCollectorEx.MessageInfo.id)
+                        $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.MessageInfo[-1].id.Replace(".","_").ToLower()
                         $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
                     } elseif ($vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
                         $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
