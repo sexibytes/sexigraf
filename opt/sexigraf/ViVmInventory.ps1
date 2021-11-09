@@ -97,6 +97,7 @@ try {
     
 if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
+    $ViEsxsInfos = @()
     foreach ($ViServer in $ViServersList) {
         $ViServerCleanName = $ViServer.Replace(".","_")
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
@@ -161,7 +162,7 @@ if ($ViServersList.count -gt 0) {
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Parent -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
@@ -245,24 +246,58 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to get blue folder path for $($Vm.name)"
                 }
                 
-                $ViVmsInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
+                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
                 
-                $ViVmsInfo.vCenter = $ViServer
-                $ViVmsInfo.VM = $Vm.name
-                $ViVmsInfo.ESX = $VmHost
-                $ViVmsInfo.Cluster = $VmCluster
-                $ViVmsInfo.IP = $VmIpAddress
-                $ViVmsInfo.PortGroup = $VmNet -join " ; "
-                $ViVmsInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
-                $ViVmsInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
-                $ViVmsInfo.GuestId = $VmGuestId
-                $ViVmsInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmsInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
-                $ViVmsInfo.vmxPath = $Vm.summary.config.vmPathName
-                $ViVmsInfo.Folder = $VmPath
+                $ViVmInfo.vCenter = $ViServer
+                $ViVmInfo.VM = $Vm.name
+                $ViVmInfo.ESX = $VmHost
+                $ViVmInfo.Cluster = $VmCluster
+                $ViVmInfo.IP = $VmIpAddress
+                $ViVmInfo.PortGroup = $VmNet -join " ; "
+                $ViVmInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
+                $ViVmInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
+                $ViVmInfo.GuestId = $VmGuestId
+                $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
+                $ViVmInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
+                $ViVmInfo.Folder = $VmPath
                 
-                # $ViVmsInfo
-                $ViVmsInfos += $ViVmsInfo
+                $ViVmsInfos += $ViVmInfo
+            }
+
+            foreach ($Esx in $esxs) {
+            
+                if ($clusters_h[$Esx.Parent]) {
+                    $EsxCluster = $clusters_h[$Esx.Parent]
+                } else {
+                    $EsxCluster = "N/A"
+                }
+
+                if ($Esx.Config.Product.Version -and $Esx.Config.Product.Build) {
+                    $EsxVersion = $Esx.Config.Product.Version + "." + $Esx.Config.Product.Build
+                } else {
+                    $EsxVersion = "N/A"
+                }
+
+                if ($Esx.runtime.ConnectionState -eq "connected" -and $Esx.runtime.InMaintenanceMode) {
+                    $EsxState = "MaintenanceMode"
+                } else {
+                    $EsxState = $Esx.runtime.ConnectionState
+                }
+                
+                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, State, RAM, CPU, Cores
+                
+                $ViEsxInfo.vCenter = $ViServer
+                $ViEsxInfo.ESX = $($Esx.name)
+                $ViEsxInfo.Cluster = $EsxCluster
+                $ViEsxInfo.Version = $EsxVersion
+                $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
+                $ViEsxInfo.State = $EsxState
+                $ViEsxInfo.RAM = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
+                $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
+                $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
+                
+                $ViEsxsInfos += $ViEsxInfo
             }
     
         }
@@ -274,8 +309,9 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViVmsInfos) {
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ViVmInventory.csv ..."
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Inventory files ..."
             $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
+            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
         } catch {
             AltAndCatchFire "Export-Csv issue"
         }

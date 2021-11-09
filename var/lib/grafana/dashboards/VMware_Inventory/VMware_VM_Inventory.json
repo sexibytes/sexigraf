@@ -41,13 +41,7 @@
       },
       "id": 2,
       "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Cluster"
-          }
-        ]
+        "showHeader": true
       },
       "pluginVersion": "7.5.11",
       "targets": [
