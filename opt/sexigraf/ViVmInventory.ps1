@@ -20,6 +20,34 @@ function AltAndCatchFire {
     exit
 }
 
+function NameCleaner {
+    Param($NameToClean)
+    $NameToClean = $NameToClean -replace "[ .]","_"
+    [System.Text.NormalizationForm]$NormalizationForm = "FormD"
+    $NameToClean = $NameToClean.Normalize($NormalizationForm)
+    $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
+    return $NameToClean.ToLower()
+}
+
+function GetBlueFolderFullPath {
+	Param($child_object)
+	if ($child_object.Parent) {
+		if ($BlueFolders_name_table[$child_object.Parent.value]) {
+			$VmPathTree = "/"
+			$Parent_folder = $child_object.Parent.value
+			while ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
+				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder") {
+					$VmPathTree = "/" + $BlueFolders_name_table[$Parent_folder] + $VmPathTree
+				}
+				if ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
+					$Parent_folder = $BlueFolders_Parent_table[$Parent_folder]
+				}	
+			}
+			return $VmPathTree = $VmPathTree
+		}
+	}
+}
+
 try {
     Start-Transcript -Path "/var/log/sexigraf/ViVmInventory.log" -Append -Confirm:$false -Force
     Write-Host "$((Get-Date).ToString("o")) [DEBUG] ViVmInventory v$ScriptVersion"
@@ -128,9 +156,23 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name,Guest.IpAddress,Network,Summary.Storage,Config.Hardware.Device,Runtime.Host,Config.Hardware.NumCPU,Config.Hardware.MemoryMB,Guest.GuestId -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name,Parent -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Parent -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
+
+            $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
+
+            $BlueFolders_name_table = @{}
+            $BlueFolders_Parent_table = @{}
+            $BlueFolders_type_table = @{}
+            
+            foreach ($BlueFolder in [array]$BlueFolders) {
+                if ($BlueFolder.Parent.value) {
+                    if (!$BlueFolders_name_table[$BlueFolder.moref.value]) {$BlueFolders_name_table.add($BlueFolder.moref.value,$BlueFolder.name)}
+                    if (!$BlueFolders_Parent_table[$BlueFolder.moref.value]) {$BlueFolders_Parent_table.add($BlueFolder.moref.value,$BlueFolder.Parent.value)}
+                    if (!$BlueFolders_type_table[$BlueFolder.moref.value]) {$BlueFolders_type_table.add($BlueFolder.moref.value,$BlueFolder.moref.type)}
+                }
+            }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Building hashtable ..."
             
@@ -192,8 +234,14 @@ if ($ViServersList.count -gt 0) {
                     $VmGuestId = "N/A"
                 }
                 
+                try {
+                    $VmPath = "N/A"
+                    $VmPath = GetBlueFolderFullPath $Vm
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to get blue folder path for $($Vm.name)"
+                }
                 
-                $ViVmsInfo = "" | Select-Object vCenter,VM,ESX,Cluster,IP,PortGroup,CommittedGb,MAC,GuestId,vCPU,vRAM
+                $ViVmsInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
                 
                 $ViVmsInfo.vCenter = $ViServer
                 $ViVmsInfo.VM = $Vm.name
@@ -201,12 +249,13 @@ if ($ViServersList.count -gt 0) {
                 $ViVmsInfo.Cluster = $VmCluster
                 $ViVmsInfo.IP = $VmIpAddress
                 $ViVmsInfo.PortGroup = $VmNet -join " ; "
-                $ViVmsInfo.CommittedGb = [math]::round($Vm.Summary.Storage.committed/1GB,0)
+                $ViVmsInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
                 $ViVmsInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmsInfo.GuestId = $VmGuestId
                 $ViVmsInfo.vCPU = $Vm.Config.Hardware.NumCPU
                 $ViVmsInfo.vRAM = $Vm.Config.Hardware.MemoryMB
-                
+                $ViVmsInfo.vmxPath = $Vm.summary.config.vmPathName
+                $ViVmsInfo.Folder = $VmPath
                 
                 # $ViVmsInfo
                 $ViVmsInfos += $ViVmsInfo
