@@ -257,7 +257,7 @@ if ($ViServersList.count -gt 0) {
                 $ViVmsInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmsInfo.GuestId = $VmGuestId
                 $ViVmsInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmsInfo.vRAM = $Vm.Config.Hardware.MemoryMB
+                $ViVmsInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
                 $ViVmsInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmsInfo.Folder = $VmPath
                 

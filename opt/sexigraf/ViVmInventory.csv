@@ -1,1 +1,1 @@
-"Vcenter","Vm","Esx","Cluster","Ip","PortGroup","CommittedGB","Mac","GuestId","NumCPU","MemoryMB","Snapshot"
+"vCenter","VM","ESX","Cluster","IP","PortGroup","CommittedGB","MAC","GuestId","vCPU","vRAM","vmxPath","Folder"
