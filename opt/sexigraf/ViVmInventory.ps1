@@ -26,7 +26,7 @@ function NameCleaner {
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
-    return $NameToClean.ToLower()
+    continue $NameToClean.ToLower()
 }
 
 function GetBlueFolderFullPath {
@@ -43,7 +43,7 @@ function GetBlueFolderFullPath {
 					$Parent_folder = $BlueFolders_Parent_table[$Parent_folder]
 				}	
 			}
-			return $VmPathTree = $VmPathTree
+			continue $VmPathTree = $VmPathTree
 		}
 	}
 }
@@ -126,18 +126,18 @@ if ($ViServersList.count -gt 0) {
                     $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
                 } else {
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] No $ViServer entry in CredStore"
-                    return
+                    continue
                 }
                 $ServerConnection = Connect-VIServer -Server $ViServer -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
                 if ($ServerConnection.IsConnected) {
                     # $PwCliContext = Get-PowerCLIContext
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                     $SessionSecretName = "vmw_" + $ViServer.Replace(".","_") + ".key"
-                    $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+                    $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [WARNING] Explicit connection failed, check the stored credentials for $ViServer !"
-                return
+                continue
             }
         }
 
@@ -147,11 +147,11 @@ if ($ViServersList.count -gt 0) {
                 $ServiceInstance = Get-View ServiceInstance -Server $ViServer
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [WARNING] global:DefaultVIServer variable check failure for $ViServer"
-                return
+                continue
             }
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to verify vCenter connection for $ViServer"
-            return
+            continue
         }
 
         if ($ServiceInstance) {
@@ -178,7 +178,7 @@ if ($ViServersList.count -gt 0) {
                 }
             }
 
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Building hashtable ..."
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Building hashtables ..."
             
             $DvPgs_h = @{}
             foreach ($DvPg in $DvPgs) {
@@ -274,6 +274,7 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViVmsInfos) {
         try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ViVmInventory.csv ..."
             $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
         } catch {
             AltAndCatchFire "Export-Csv issue"
