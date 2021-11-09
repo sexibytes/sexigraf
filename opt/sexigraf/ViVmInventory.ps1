@@ -26,7 +26,7 @@ function NameCleaner {
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
-    continue $NameToClean.ToLower()
+    return $NameToClean.ToLower()
 }
 
 function GetBlueFolderFullPath {
@@ -43,7 +43,7 @@ function GetBlueFolderFullPath {
 					$Parent_folder = $BlueFolders_Parent_table[$Parent_folder]
 				}	
 			}
-			continue $VmPathTree = $VmPathTree
+			return $VmPathTree = $VmPathTree
 		}
 	}
 }
