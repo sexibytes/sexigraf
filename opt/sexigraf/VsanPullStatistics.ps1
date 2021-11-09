@@ -151,7 +151,7 @@ if ($SessionFile) {
                 $PwCliContext = Get-PowerCLIContext
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                 $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
-                $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+                $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force
             }
         } catch {
             AltAndCatchFire "Explicit connection failed, check the stored credentials!"
@@ -581,7 +581,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
             }
         }
-    } -ThrottleLimit 4
+    } -ThrottleLimit 4 -TimeoutSeconds 10
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN hosts ..."
 
