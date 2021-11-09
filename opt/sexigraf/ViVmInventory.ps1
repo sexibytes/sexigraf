@@ -107,7 +107,7 @@ if ($ViServersList.count -gt 0) {
             # https://zhengwu.org/validating-connection-result-of-connect-viserver/
             $ServerConnection = Connect-VIServer -Server $ViServer -Session $SessionToken -Force -ErrorAction Stop
             if ($ServerConnection.IsConnected) {
-                $PwCliContext = Get-PowerCLIContext
+                # $PwCliContext = Get-PowerCLIContext
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
             }
         } catch {
@@ -125,17 +125,19 @@ if ($ViServersList.count -gt 0) {
                     $CredStoreLogin = $item.Node.username
                     $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
                 } else {
-                    AltAndCatchFire "No $ViServer entry in CredStore"
+                    Write-Host "$((Get-Date).ToString("o")) [WARNING] No $ViServer entry in CredStore"
+                    return
                 }
                 $ServerConnection = Connect-VIServer -Server $ViServer -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
                 if ($ServerConnection.IsConnected) {
-                    $PwCliContext = Get-PowerCLIContext
+                    # $PwCliContext = Get-PowerCLIContext
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                     $SessionSecretName = "vmw_" + $ViServer.Replace(".","_") + ".key"
                     $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
                 }
             } catch {
-                AltAndCatchFire "Explicit connection failed, check the stored credentials!"
+                Write-Host "$((Get-Date).ToString("o")) [WARNING] Explicit connection failed, check the stored credentials for $ViServer !"
+                return
             }
         }
 
@@ -144,10 +146,12 @@ if ($ViServersList.count -gt 0) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $ViServer ..."
                 $ServiceInstance = Get-View ServiceInstance -Server $ViServer
             } else {
-                AltAndCatchFire "global:DefaultVIServer variable check failure"
+                Write-Host "$((Get-Date).ToString("o")) [WARNING] global:DefaultVIServer variable check failure for $ViServer"
+                return
             }
         } catch {
-            AltAndCatchFire "Unable to verify vCenter connection"
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to verify vCenter connection for $ViServer"
+            return
         }
 
         if ($ServiceInstance) {
