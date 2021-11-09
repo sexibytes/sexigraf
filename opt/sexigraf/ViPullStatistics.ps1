@@ -217,14 +217,14 @@ if ($SessionFile) {
         # https://zhengwu.org/validating-connection-result-of-connect-viserver/
         $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force -ErrorAction Stop
         if ($ServerConnection.IsConnected) {
-            $PwCliContext = Get-PowerCLIContext
+            # $PwCliContext = Get-PowerCLIContext
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [WARNING] SessionToken not found, invalid or connection failure"
         Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
-
     }
+    
     if (!$($global:DefaultVIServer)) {
         try {
             $createstorexml = New-Object -TypeName XML
@@ -239,10 +239,10 @@ if ($SessionFile) {
             }
             $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
             if ($ServerConnection.IsConnected) {
-                $PwCliContext = Get-PowerCLIContext
+                # $PwCliContext = Get-PowerCLIContext
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                 $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
-                $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName
+                $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force
             }
         } catch {
             AltAndCatchFire "Explicit connection failed, check the stored credentials!"
