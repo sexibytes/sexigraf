@@ -49,39 +49,40 @@ function GetBlueFolderFullPath {
 }
 
 try {
-    Start-Transcript -Path "/var/log/sexigraf/ViVmInventory.log" -Append -Confirm:$false -Force
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] ViVmInventory v$ScriptVersion"
+    Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force
+    Write-Host "$((Get-Date).ToString("o")) [DEBUG] ViOfflineInventory v$ScriptVersion"
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViVmInventory logging failure"
+    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViOfflineInventory logging failure"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
     exit
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli module ..."
+    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
     $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
+    Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
 } catch {
     AltAndCatchFire "Powershell modules import failure"
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another ViVmInventory ..."
-    $DupViVmInventoryProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "ViVmInventory"}
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another ViOfflineInventory ..."
+    $DupViVmInventoryProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "ViOfflineInventory"}
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupViVmInventoryProcess|Measure-Object).Count -gt 1) {
-        $DupViVmInventoryProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "ViVmInventory"}}).ProcessId[0]
+        $DupViVmInventoryProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "ViOfflineInventory"}}).ProcessId[0]
         $DupViVmInventoryProcessTime = [INT32](ps -p $DupViVmInventoryProcessId -o etimes).split()[-1]
         if ($DupViVmInventoryProcessTime -gt 21600) {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] ViVmInventory is already running for more than 6 hours!"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned ViVmInventory"
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] ViOfflineInventory is already running for more than 6 hours!"
+            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned ViOfflineInventory"
             Stop-Process -Id $DupViVmInventoryProcessId -Force
         } else {
-            AltAndCatchFire "ViVmInventory is already running!"
+            AltAndCatchFire "ViOfflineInventory is already running!"
         }
     }
 } catch {
-    AltAndCatchFire "ViVmInventory process lookup failure"
+    AltAndCatchFire "ViOfflineInventory process lookup failure"
 }
 
 try {
@@ -315,6 +316,10 @@ if ($ViServersList.count -gt 0) {
         } catch {
             AltAndCatchFire "Export-Csv issue"
         }
+        $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
+        $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
+    
+        Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vm.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
     }
 } else {
     AltAndCatchFire "No VI server to process"
