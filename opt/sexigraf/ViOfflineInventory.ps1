@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.49"
+$ScriptVersion = "0.9.50"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -219,29 +219,29 @@ if ($ViServersList.count -gt 0) {
                 if ($vm.network) {
                     $VmNet = $DvPgs_h[$vm.network]
                 } else {
-                    $VmNet = "N/A"
+                    $VmNet = ""
                 }
                 
                 if ($esxs_h[$vm.Runtime.Host]) {
                     $VmHost = $($esxs_h[$vm.Runtime.Host]).name
                 } else {
-                    $VmHost = "N/A"
+                    $VmHost = ""
                 }
                 
                 if ($clusters_h[$esxs_h[$vm.Runtime.Host].Parent]) {
                     $VmCluster = $clusters_h[$esxs_h[$vm.Runtime.Host].Parent]
                 } else {
-                    $VmCluster = "N/A"
+                    $VmCluster = ""
                 }
                 
                 if ($Vm.Guest.GuestId) {
                     $VmGuestId = $Vm.Guest.GuestId
                 } else {
-                    $VmGuestId = "N/A"
+                    $VmGuestId = ""
                 }
                 
                 try {
-                    $VmPath = "N/A"
+                    $VmPath = ""
                     $VmPath = GetBlueFolderFullPath $Vm
                 } catch {
                     Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to get blue folder path for $($Vm.name)"
@@ -271,13 +271,13 @@ if ($ViServersList.count -gt 0) {
                 if ($clusters_h[$Esx.Parent]) {
                     $EsxCluster = $clusters_h[$Esx.Parent]
                 } else {
-                    $EsxCluster = "N/A"
+                    $EsxCluster = ""
                 }
 
                 if ($Esx.Config.Product.Version -and $Esx.Config.Product.Build) {
                     $EsxVersion = $Esx.Config.Product.Version + "." + $Esx.Config.Product.Build
                 } else {
-                    $EsxVersion = "N/A"
+                    $EsxVersion = ""
                 }
 
                 if ($Esx.runtime.ConnectionState -eq "connected" -and $Esx.runtime.InMaintenanceMode) {
