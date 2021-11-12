@@ -126,7 +126,7 @@ require("helper.php");
                                         echo '  <div class="alert alert-success" role="alert">
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                         <span class="sr-only">Success:</span>';
-                                        echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]));
+                                        // echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]));
                                         echo exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml -add -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]));
                                         // Once newly vCenter has been added, we want the inventory to be updated
                                         shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
@@ -153,7 +153,7 @@ require("helper.php");
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
-                                shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml remove --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]));
+                                // shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml remove --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]));
                                 echo exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml -remove -server " . escapeshellcmd($_POST["input-vcenter"])) . "Refreshing...";
                                 shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                 echo '  </div>';

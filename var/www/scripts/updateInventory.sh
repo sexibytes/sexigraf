@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/bin/perl /root/getInventory.pl
+/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/ViOfflineInventory.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml
