@@ -396,7 +396,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "storageAdapter.read.average",
         "storageAdapter.write.average",
         "power.power.average",
-        "datastore.datastoreVMObservedLatency.latest"
+        "datastore.datastoreVMObservedLatency.latest",
         "datastore.numberWriteAveraged.average",
         "datastore.numberReadAveraged.average",
         "cpu.latency.average",
@@ -1474,6 +1474,205 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $vcenter_name"
     
 } elseif ($ServiceInstance.Content.About.ApiType -match "HostAgent") {
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] HostAgent detected, collecting unmanaged objects ..."
+
+    $vcenter_name = "_unmanaged_"
+    $unmanaged_host_dc_name = "_unmanaged_"
+    $esx_name = $($Server.ToLower()) -replace "[. ]","_"
+    $unmanaged_host_h = @{}
+    $vmware_version_h = @{}
+
+    try {
+        $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner, summary.quickStats -Server $Server
+        $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
+        $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
+    } catch {
+        AltAndCatchFire "Get-View failure"
+    }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Performance metrics collection ..."
+
+    $HostMultiMetrics = @(
+        "net.bytesRx.average",
+        "net.bytesTx.average",
+        "storageAdapter.read.average",
+        "storageAdapter.write.average"
+        # "power.power.average",
+        # "datastore.datastoreVMObservedLatency.latest",
+        # "datastore.numberWriteAveraged.average",
+        # "datastore.numberReadAveraged.average"
+    )
+
+    try {
+        $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
+        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+    } catch {
+        AltAndCatchFire "ESX MultiQueryPerfAll failure"
+    }
+
+    $VmMultiMetrics = @(
+        "cpu.ready.summation",
+		"cpu.wait.summation",
+		"cpu.idle.summation",
+		"cpu.latency.average",
+		"disk.maxTotalLatency.latest",
+		"virtualdisk.write.average",
+		"virtualdisk.read.average",
+		"net.usage.average",
+		"cpu.totalCapacity.average",
+		"mem.totalCapacity.average"
+    )
+
+    try {
+        $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
+        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+    } catch {
+        AltAndCatchFire "VM MultiQueryPerf failure"
+    }
+
+    try {
+        $unmanaged_host = $vcenter_vmhosts
+        $unmanaged_compute_resource = $vcenter_clusters
+        $unmanaged_pool = $vcenter_resource_pools|?{$_.moref.value -match "ha-root-pool"}
+        $unmanaged_host_name = $unmanaged_host.config.network.dnsConfig.hostName.ToLower() ### XXX why not $unmanaged_host.name.split(".")[0].ToLower() ?
+        if ($unmanaged_host_name -match "localhost") {
+            $unmanaged_host_name = NameCleaner $unmanaged_host.name.split(".")[0] ### previously vmk0 ip cleaned
+
+        }
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name"
+    } catch {
+        AltAndCatchFire "Unmanaged ESX name cleaning issue"
+    }
+
+    if ($unmanaged_host.config.product.version -and $unmanaged_host.config.product.build -and $unmanaged_host.summary.hardware.cpuModel) {
+        $unmanaged_host_product_version = nameCleaner $($unmanaged_host.config.product.version + "_" + $unmanaged_host.config.product.build)
+        $unmanaged_host_hw_model = nameCleaner $($unmanaged_host.summary.hardware.vendor + "_" + $unmanaged_host.summary.hardware.model)
+        $unmanaged_host_cpu_model = nameCleaner $unmanaged_host.summary.hardware.cpuModel
+
+        $vmware_version_h["vi.$esx_name.vi.version.esx.$unmanaged_host_dc_name.$unmanaged_host_name.build.$unmanaged_host_product_version"] ++
+        $vmware_version_h["vi.$esx_name.vi.version.esx.$unmanaged_host_dc_name.$unmanaged_host_name.hardware.$unmanaged_host_hw_model"] ++
+        $vmware_version_h["vi.$esx_name.vi.version.esx.$unmanaged_host_dc_name.$unmanaged_host_name.cpu.$unmanaged_host_cpu_model"] ++
+    }
+
+    try {
+        $unmanaged_host_sensors = $unmanaged_host.summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo
+        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.host.NumericSensorInfo.html
+        foreach ($unmanaged_host_sensor in $unmanaged_host_sensors) {
+            if ($unmanaged_host_sensor.name -and $unmanaged_host_sensor.sensorType -and $unmanaged_host_sensor.currentReading -and $unmanaged_host_sensor.unitModifier) {
+
+                $unmanaged_host_sensor_computed_reading = $unmanaged_host_sensor.currentReading * $([Math]::Pow(10, $unmanaged_host_sensor.unitModifier))
+                $unmanaged_host_sensor_name = NameCleaner $unmanaged_host_sensor.name
+                $unmanaged_host_sensor_type = $unmanaged_host_sensor.sensorType
+
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.sensor.$unmanaged_host_sensor_type.$unmanaged_host_sensor_name", $unmanaged_host_sensor_computed_reading)
+            }
+        }
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name sensors issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    }
+
+    if ($overallStatus_h[$unmanaged_host.overallStatus]) {
+        $unmanaged_host_overallStatus = $overallStatus_h[$unmanaged_host.overallStatus]
+    } else {
+        $unmanaged_host_overallStatus = $overallStatus_h[0]
+    }
+
+    try {
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.ballooned", $unmanaged_pool.summary.quickStats.balloonedMemory)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.compressed", $unmanaged_pool.summary.quickStats.compressed)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.consumedOverhead", $unmanaged_pool.summary.quickStats.consumedOverheadMemory)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.guest", $unmanaged_pool.summary.quickStats.guestMemoryUsage)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.usage", $unmanaged_host.summary.quickStats.OverallMemoryUsage)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.demand", $unmanaged_pool.summary.quickStats.overallCpuDemand)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.usage", $unmanaged_host.summary.quickStats.overallCpuUsage)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.overhead", $unmanaged_pool.summary.quickStats.overheadMemory)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.private", $unmanaged_pool.summary.quickStats.privateMemory)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.shared", $unmanaged_pool.summary.quickStats.sharedMemory)
+        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.swapped", $unmanaged_pool.summary.quickStats.swappedMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.effective", $unmanaged_compute_resource.summary.effectiveMemory/1MB) # in bytes for unmanaged but in MB for managed
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.total", $unmanaged_compute_resource.summary.totalMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.effective", $unmanaged_compute_resource.summary.effectiveCpu)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.total", $unmanaged_compute_resource.summary.totalCpu)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.overallStatus", $unmanaged_host_overallStatus)
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $unmanaged_host_name datastores"
+
+    foreach ($unmanaged_host_datastore in $vcenter_datastores) {
+        if ($unmanaged_host_datastore.summary.accessible) {
+            try {
+                $unmanaged_host_datastore_name = NameCleaner $unmanaged_host_datastore.summary.name
+
+                if($unmanaged_host_datastore.summary.uncommitted -ge 0) {
+                    $unmanaged_host_datastore_uncommitted = $unmanaged_host_datastore.summary.uncommitted
+                } else {
+                    $unmanaged_host_datastore_uncommitted = 0
+                }
+
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.summary.capacity", $unmanaged_host_datastore.summary.capacity)
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.summary.freeSpace", $unmanaged_host_datastore.summary.freeSpace)
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.summary.uncommitted", $unmanaged_host_datastore_uncommitted)
+
+                # if ($unmanaged_host_datastore.summary.type -notmatch "vsan") {
+                #     $unmanaged_host_datastore_uuid = $unmanaged_host_datastore.summary.url.split("/")[-2]
+
+                #     $unmanaged_host_datastore_latency = $HostMultiStats[$PerfCounterTable["datastore.maxTotalLatency.latest"]][$unmanaged_host.moref.value][$unmanaged_host_datastore_uuid]
+                #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.sizeNormalizedDatastoreLatency", $unmanaged_host_datastore_latency)
+
+                #     $unmanaged_host_datastore_iops_w = $HostMultiStats[$PerfCounterTable["datastore.numberWriteAveraged.average"]][$unmanaged_host.moref.value][$unmanaged_host_datastore_uuid]
+                #     $unmanaged_host_datastore_iops_r = $HostMultiStats[$PerfCounterTable["datastore.numberReadAveraged.average"]][$unmanaged_host.moref.value][$unmanaged_host_datastore_uuid]
+                #     $unmanaged_host_datastore_iops = $unmanaged_host_datastore_iops_w + $unmanaged_host_datastore_iops_r.Sum
+                #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.datastoreIops", $unmanaged_host_datastore_iops)
+                # }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on Unmanaged ESX $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+            }
+        }
+    }
+
+    try {
+        foreach ($unmanaged_host_vmnic in $unmanaged_host.config.network.pnic) {
+            if ($unmanaged_host_vmnic.linkSpeed -and $unmanaged_host_vmnic.linkSpeed.speedMb -ge 100) {
+                $unmanaged_host_vmnic_name = $unmanaged_host_vmnic.device
+
+                $unmanaged_host_vmnic_bytesRx = $HostMultiStats[$PerfCounterTable["net.bytesRx.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmnic_name]
+                $unmanaged_host_vmnic_bytesTx = $HostMultiStats[$PerfCounterTable["net.bytesTx.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmnic_name]
+
+                if ($unmanaged_host_vmnic_bytesRx -ge 0 -and $unmanaged_host_vmnic_bytesTx -ge 0) {
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.net.$unmanaged_host_vmnic_name.bytesRx", $unmanaged_host_vmnic_bytesRx)
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.net.$unmanaged_host_vmnic_name.bytesTx", $unmanaged_host_vmnic_bytesTx)
+                }
+            }
+        }
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name network metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    }
+
+    try {
+        foreach ($unmanaged_host_vmhba in $unmanaged_host.config.storageDevice.hostBusAdapter) { ### XXX dead paths from config.storageDevice.HostBusAdapter to add
+            $unmanaged_host_vmhba_name = $unmanaged_host_vmhba.device
+            $unmanaged_host_vmhba_bytesRead = $HostMultiStats[$PerfCounterTable["storageAdapter.read.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmhba_name]
+            $unmanaged_host_vmhba_bytesWrite = $HostMultiStats[$PerfCounterTable["storageAdapter.write.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmhba_name]
+        
+            if ($unmanaged_host_vmhba_bytesRead -ge 0 -and $unmanaged_host_vmhba_bytesWrite -ge 0) {
+
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.hba.$unmanaged_host_vmhba_name.bytesRead", $unmanaged_host_vmhba_bytesRead)
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.hba.$unmanaged_host_vmhba_name.bytesWrite", $unmanaged_host_vmhba_bytesWrite)
+            }
+        }
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name hba metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    }
 
 } else {
     AltAndCatchFire "$Server is not a vCenter/ESXi!"
