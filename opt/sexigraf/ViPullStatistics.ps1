@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.923"
+$ScriptVersion = "0.9.924"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1580,17 +1580,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     try {
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.ballooned", $unmanaged_pool.summary.quickStats.balloonedMemory)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.compressed", $unmanaged_pool.summary.quickStats.compressed)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.consumedOverhead", $unmanaged_pool.summary.quickStats.consumedOverheadMemory)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.guest", $unmanaged_pool.summary.quickStats.guestMemoryUsage)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.usage", $unmanaged_host.summary.quickStats.OverallMemoryUsage)
         # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.demand", $unmanaged_pool.summary.quickStats.overallCpuDemand)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.usage", $unmanaged_host.summary.quickStats.overallCpuUsage)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.overhead", $unmanaged_pool.summary.quickStats.overheadMemory)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.private", $unmanaged_pool.summary.quickStats.privateMemory)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.shared", $unmanaged_pool.summary.quickStats.sharedMemory)
-        # $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.swapped", $unmanaged_pool.summary.quickStats.swappedMemory)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.effective", $unmanaged_compute_resource.summary.effectiveMemory/1MB) # in bytes for unmanaged but in MB for managed
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.total", $unmanaged_compute_resource.summary.totalMemory)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.effective", $unmanaged_compute_resource.summary.effectiveCpu)
@@ -1889,17 +1881,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vCenterFilteredEventTypeIdCat = @()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
-        # https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
+
+        $vCenterFilteredEventTypeId = Get-Content /opt/sexigraf/vsp703.evt
 
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
-                if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat.split("|")[0] -notmatch "nonviworkload|io\.latency|^esx\.audit\.net\.firewall\.config\.changed") {
-                    if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
-                        $vCenterFilteredEventTypeId += $vCenterEventInfo.fullFormat.split("|")[0]
-                    } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
-                        $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.fullFormat.split("|")[0]
-                    }
-                } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
+                if ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
                     $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
                 }
             } catch {
