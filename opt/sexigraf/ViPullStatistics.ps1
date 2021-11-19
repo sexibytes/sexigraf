@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.924"
+$ScriptVersion = "0.9.926"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1524,11 +1524,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"mem.totalCapacity.average"
     )
 
-    try {
-        $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
-    } catch {
-        AltAndCatchFire "VM MultiQueryPerf failure"
+    if ($vcenter_vms)
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
+            Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerf failure"
+        }
     }
 
     try {
@@ -1902,8 +1904,15 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventFilterSpec =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeId}
                 $vCenterEventFilterSpecCat =  New-Object VMware.Vim.EventFilterSpec -property @{Time=$vCenterEventFilterSpecByTime;EventTypeId=$vCenterFilteredEventTypeIdCat;category=@("warning","error")}
     
-                $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
-                $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
+                # $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
+                # $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
+
+                $vCenterEventsHistoryCollectorObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpec) -Server $Server
+                $vCenterEventsHistoryCollectorCatObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpecCat) -Server $Server
+
+                $vCenterEventsHistoryCollector = $vCenterEventsHistoryCollectorObj.ReadNextEvents("1000")
+                $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("1000")
+
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name EventManager QueryEvents issue"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
