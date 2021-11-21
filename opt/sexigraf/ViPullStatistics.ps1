@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.926"
+$ScriptVersion = "0.9.927"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1524,7 +1524,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"mem.totalCapacity.average"
     )
 
-    if ($vcenter_vms)
+    if ($vcenter_vms) {
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
             Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
@@ -1920,24 +1920,19 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
                 foreach ($vCenterEventHistoryCollectorEx in $($vCenterEventsHistoryCollector + $vCenterEventsHistoryCollectorCat)) {
-                    if ($vCenterEventHistoryCollectorEx.EventTypeId -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                    if ($vCenterEventHistoryCollectorEx.EventTypeId -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $unmanaged_host_dc_name
                         $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
                         $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.EventTypeId.Replace(".","_")
                         $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                    } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                    } elseif ($vCenterEventHistoryCollectorEx.MessageInfo -and $vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $unmanaged_host_dc_name
                         $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
                         $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.MessageInfo[-1].id.Replace(".","_").ToLower()
                         $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                    } elseif ($vCenterEventHistoryCollectorEx.Datacenter -and $vCenterEventHistoryCollectorEx.ComputeResource) {
-                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
+                    } elseif ($vCenterEventHistoryCollectorEx.ComputeResource) {
+                        $vCenterEventHistoryCollectorExDc = $unmanaged_host_dc_name
                         $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.ComputeResource.Name)
-                        $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
-                        $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
-                    } elseif ($vCenterEventHistoryCollectorEx -is [VMware.Vim.DvsHostWentOutOfSyncEvent]) {
-                        $vCenterEventHistoryCollectorExDc = $(NameCleaner $vCenterEventHistoryCollectorEx.Datacenter.Name)
-                        $vCenterEventHistoryCollectorExComp = $(NameCleaner $vCenterEventHistoryCollectorEx.Dvs.Name)
                         $vCenterEventHistoryCollectorExType = $vCenterEventHistoryCollectorEx.pstypenames[0].split(".")[-1]
                         $vcenter_events_h["vi.$vcenter_name.vi.exec.ExEvent.$vCenterEventHistoryCollectorExDc.$vCenterEventHistoryCollectorExComp.$vCenterEventHistoryCollectorExType"] ++
                     }
