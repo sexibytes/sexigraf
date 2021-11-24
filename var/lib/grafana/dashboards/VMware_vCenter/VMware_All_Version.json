@@ -497,7 +497,9 @@
   "refresh": false,
   "schemaVersion": 27,
   "style": "light",
-  "tags": [],
+  "tags": [
+    "VI"
+  ],
   "templating": {
     "list": [
       {
