@@ -30,7 +30,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     cp /etc/sexigraf_version /mnt/wfs/sexigraf-dump/
 
     # Retrieve Offline Inventory
-    cp /var/www/admin/offline-vminventory.html /mnt/wfs/sexigraf-dump/
+    cp /mnt/wfs/inventory/*.csv /mnt/wfs/sexigraf-dump/
 
     # Retrieve credential store items
     if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then

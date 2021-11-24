@@ -22,9 +22,9 @@ if [ -d "/mnt/wfs/whisper" ]; then
     chown -R carbon /mnt/wfs/whisper
 
     # Import Offline Inventory file
-    /bin/cp /media/cdrom/offline-vminventory.html /var/www/admin/
-    chown www-data:www-data /var/www/admin/offline-vminventory.html
-    chmod 644 /var/www/admin/offline-vminventory.html
+    /bin/cp -fR /media/cdrom/*.csv /mnt/wfs/inventory/
+    # chown www-data:www-data /var/www/admin/offline-vminventory.html
+    # chmod 644 /var/www/admin/offline-vminventory.html
 
     # Import credential store items
     if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
@@ -35,7 +35,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
                 vcenter=$(echo $creditem | cut -d ";" -f 1)
                 username=$(echo $creditem | cut -d ";" -f 2)
                 password=$(echo $creditem | cut -d ";" -f 3)
-                /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
+                # /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
                 /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml -add -server $vcenter -username $username -password $password
         done
         rm -f /tmp/vicredentials.conf
@@ -51,9 +51,13 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
 
     # Switch from perl to powershell
-    sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -f  \/opt\/sexigraf\/VsanPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vsan_*
+    sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f  \/opt\/sexigraf\/VsanPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vsan_*
     sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
     sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
+
+    sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f  \/opt\/sexigraf\/ViPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vi_*
+    sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vi_*
+    sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vi_*   
 
     # Restart services
     /etc/init.d/carbon-cache start
