@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.927"
+$ScriptVersion = "0.9.928"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1591,11 +1591,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.total", $unmanaged_compute_resource.summary.totalCpu)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.overallStatus", $unmanaged_host_overallStatus)
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
         Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $unmanaged_host_name datastores"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name datastores"
 
     foreach ($unmanaged_host_datastore in $vcenter_datastores) {
         if ($unmanaged_host_datastore.summary.accessible) {
@@ -1624,7 +1624,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.datastoreIops", $unmanaged_host_datastore_iops)
                 # }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on Unmanaged ESX $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on Unmanaged ESX $esx_name"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
         }
@@ -1645,7 +1645,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name network metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name network metrics issue"
         Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     }
 
@@ -1662,7 +1662,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name hba metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name hba metrics issue"
         Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     }
 
@@ -1870,13 +1870,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.on", $unmanaged_host_vms_on)
 
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
         Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     }
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $unmanaged_host_h -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $unmanaged_host_name events"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name events"
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = @()
@@ -1892,7 +1892,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name EventInfo collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventInfo collect issue"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
         }
@@ -1914,7 +1914,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("1000")
 
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $unmanaged_host_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
@@ -1942,10 +1942,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_events_h -DateTime $ExecStart
                 }
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Unmanaged ESX $unmanaged_host_name no new event collected"
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Unmanaged ESX $esx_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in Unmanaged ESX $unmanaged_host_name"
+            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in Unmanaged ESX $esx_name"
         }
     }
 
@@ -1953,7 +1953,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vmware_version_h -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] End processing Unmanaged ESX $unmanaged_host_name"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] End processing Unmanaged ESX $esx_name"
 
 } else {
     AltAndCatchFire "$Server is not a vCenter/ESXi!"
