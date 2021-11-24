@@ -3,10 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.50"
-
-$ExecStart = $(Get-Date).ToUniversalTime()
-# $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
+$ScriptVersion = "0.9.53"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -100,8 +97,10 @@ if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
     $ViEsxsInfos = @()
     foreach ($ViServer in $ViServersList) {
-        $ViServerCleanName = $ViServer.Replace(".","_")
+        $ViServerCleanName = $($ViServer.ToLower()) -replace "[. ]","_"
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
+
+        $ExecStart = $(Get-Date).ToUniversalTime()
 
         try {
             $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
@@ -303,6 +302,11 @@ if ($ViServersList.count -gt 0) {
     
         }
         
+        $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
+        $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
+    
+        Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$ViServerCleanName.vm.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
+
         Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
         
         if ($global:DefaultVIServers) {Disconnect-VIServer * -Force -Confirm:0}
@@ -316,10 +320,6 @@ if ($ViServersList.count -gt 0) {
         } catch {
             AltAndCatchFire "Export-Csv issue"
         }
-        $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
-        $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
-    
-        Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$vcenter_name.vm.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
     }
 } else {
     AltAndCatchFire "No VI server to process"
