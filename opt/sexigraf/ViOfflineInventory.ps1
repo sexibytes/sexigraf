@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.54"
+$ScriptVersion = "0.9.57"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -30,7 +30,7 @@ function GetBlueFolderFullPath {
 	Param($child_object)
 	if ($child_object.Parent) {
 		if ($BlueFolders_name_table[$child_object.Parent.value]) {
-			$VmPathTree = "/"
+			$VmPathTree = ""
 			$Parent_folder = $child_object.Parent.value
 			while ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
 				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder") {
@@ -145,7 +145,7 @@ if ($ViServersList.count -gt 0) {
         try {
             if ($($global:DefaultVIServer)) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $ViServer ..."
-                $ServiceInstance = Get-View ServiceInstance -Server $ViServer
+                $ServiceInstance = Get-View ServiceInstance -Server $ViServer -Property ServerClock
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [WARNING] global:DefaultVIServer variable check failure for $ViServer"
                 continue
@@ -161,8 +161,8 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.GuestId -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
@@ -222,7 +222,11 @@ if ($ViServersList.count -gt 0) {
                 }
                 
                 if ($esxs_h[$vm.Runtime.Host]) {
-                    $VmHost = $($esxs_h[$vm.Runtime.Host]).name
+                    if ($($esxs_h[$vm.Runtime.Host]).config.network.dnsConfig.hostName -notmatch "localhost") {
+                        $VmHost = $($esxs_h[$vm.Runtime.Host]).config.network.dnsConfig.hostName
+                    } else {
+                        $VmHost = $($esxs_h[$vm.Runtime.Host]).name
+                    }
                 } else {
                     $VmHost = ""
                 }
@@ -234,7 +238,9 @@ if ($ViServersList.count -gt 0) {
                 }
                 
                 if ($Vm.Guest.GuestId) {
-                    $VmGuestId = $Vm.Guest.GuestId.replace('guest','')
+                    $VmGuestId = $Vm.Guest.GuestId.replace('Guest','')
+                } elseif ($Vm.Config.GuestId) {
+                    $VmGuestId = $Vm.Config.GuestId.replace('Guest','')
                 } else {
                     $VmGuestId = ""
                 }
@@ -248,7 +254,7 @@ if ($ViServersList.count -gt 0) {
                 
                 $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
                 
-                $ViVmInfo.vCenter = $ViServer
+                $ViVmInfo.vCenter = $ServerConnection.name.split(".")[0]
                 $ViVmInfo.VM = $Vm.name
                 $ViVmInfo.ESX = $VmHost
                 $ViVmInfo.Cluster = $VmCluster
