@@ -134,7 +134,7 @@ if ($ViServersList.count -gt 0) {
                     # $PwCliContext = Get-PowerCLIContext
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                     $SessionSecretName = "vmw_" + $ViServer.Replace(".","_") + ".key"
-                    $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force
+                    # $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force # PS>TerminatingError(Out-File): "Access to the path '/tmp/vmw_xxx.key' is denied."
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [WARNING] Explicit connection failed, check the stored credentials for $ViServer !"
