@@ -525,9 +525,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]) {
 
-            $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### XXX why not $vcenter_cluster_host.name.split(".")[0].ToLower() ?
+            $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_cluster_host.name.split(".")[0].ToLower() ?
             if ($vcenter_cluster_host_name -match "localhost") {
-                $vcenter_cluster_host_name = NameCleaner $vcenter_cluster_host.name.split(".")[0] ### previously vmk0 ip cleaned
+                $vcenter_cluster_host_name = NameCleaner $vcenter_cluster_host.name ### previously vmk0 ip cleaned
 
             }
 
@@ -1033,9 +1033,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         try {
             $vcenter_standalone_pool = $vcenter_compute_h[$vcenter_standalone_host_moref]
             $vcenter_standalone_host = $vcenter_vmhosts_h[$vcenter_compute_h[$vcenter_standalone_host_moref].host.value]
-            $vcenter_standalone_host_name = $vcenter_standalone_host.config.network.dnsConfig.hostName.ToLower() ### XXX why not $vcenter_standalone_host.name.split(".")[0].ToLower() ?
+            $vcenter_standalone_host_name = $vcenter_standalone_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_standalone_host.name.split(".")[0].ToLower() ? because could be ip !!!
             if ($vcenter_standalone_host_name -match "localhost") {
-                $vcenter_standalone_host_name = NameCleaner $vcenter_standalone_host.name.split(".")[0] ### previously vmk0 ip cleaned
+                $vcenter_standalone_host_name = NameCleaner $vcenter_standalone_host.name ### previously vmk0 ip cleaned
 
             }
             $vcenter_standalone_host_dc_name = nameCleaner $(getRootDc $vcenter_standalone_pool)
@@ -1537,9 +1537,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host = $vcenter_vmhosts
         $unmanaged_compute_resource = $vcenter_clusters
         # $unmanaged_pool = $vcenter_resource_pools|?{$_.moref.value -match "ha-root-pool"}
-        $unmanaged_host_name = $unmanaged_host.config.network.dnsConfig.hostName.ToLower() ### XXX why not $unmanaged_host.name.split(".")[0].ToLower() ?
+        $unmanaged_host_name = $unmanaged_host.config.network.dnsConfig.hostName.ToLower() ### why not $unmanaged_host.name.split(".")[0].ToLower() ? because could be ip !!!
         if ($unmanaged_host_name -match "localhost") {
-            $unmanaged_host_name = NameCleaner $unmanaged_host.name.split(".")[0] ### previously vmk0 ip cleaned
+            $unmanaged_host_name = NameCleaner $unmanaged_host.name ### previously vmk0 ip cleaned
 
         }
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name"
