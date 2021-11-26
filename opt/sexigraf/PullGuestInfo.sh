@@ -49,5 +49,5 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
                 ifup eth0
 
         fi
-  
+
 fi
