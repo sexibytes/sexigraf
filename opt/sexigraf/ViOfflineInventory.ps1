@@ -254,7 +254,7 @@ if ($ViServersList.count -gt 0) {
                 
                 $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
                 
-                $ViVmInfo.vCenter = $ServerConnection.name.split(".")[0]
+                $ViVmInfo.vCenter = $ServerConnection.name
                 $ViVmInfo.VM = $Vm.name
                 $ViVmInfo.ESX = $VmHost
                 $ViVmInfo.Cluster = $VmCluster
