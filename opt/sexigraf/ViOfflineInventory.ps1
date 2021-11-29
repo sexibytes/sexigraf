@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh -NonInteractive -NoProfile -Command
+#!/usr/bin/pwsh -Command
 #
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
@@ -7,6 +7,7 @@ $ScriptVersion = "0.9.57"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
+(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
 
 function AltAndCatchFire {
     Param($ExitReason)
