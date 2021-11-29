@@ -2,13 +2,14 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.928"
+$ScriptVersion = "0.9.929"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
+#(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
 
 function AltAndCatchFire {
     Param($ExitReason)
@@ -423,9 +424,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"disk.maxTotalLatency.latest",
 		"virtualdisk.write.average",
 		"virtualdisk.read.average",
-		"net.usage.average",
-		"cpu.totalCapacity.average",
-		"mem.totalCapacity.average"
+		"net.usage.average"
+		# "cpu.totalCapacity.average"
+		# "mem.totalCapacity.average"
     )
 
     try {
@@ -931,6 +932,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name]) {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.vmdkCount", $vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name])
                     }
+
+                    ### XXX if vmdkCount -gt 0
 
                     $vcenter_cluster_datastores_capacity += $vcenter_cluster_datastore.summary.capacity
                     $vcenter_cluster_datastores_freeSpace += $vcenter_cluster_datastore.summary.freeSpace
@@ -1519,9 +1522,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"disk.maxTotalLatency.latest",
 		"virtualdisk.write.average",
 		"virtualdisk.read.average",
-		"net.usage.average",
-		"cpu.totalCapacity.average",
-		"mem.totalCapacity.average"
+		"net.usage.average"
+		# "cpu.totalCapacity.average"
+		# "mem.totalCapacity.average"
     )
 
     if ($vcenter_vms) {
