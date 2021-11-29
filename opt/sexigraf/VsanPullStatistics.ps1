@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh -NonInteractive -NoProfile -Command
+#!/usr/bin/pwsh -Command
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
@@ -9,6 +9,7 @@ $ExecStart = $(Get-Date).ToUniversalTime()
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
+#(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
 
 function AltAndCatchFire {
     Param($ExitReason)
