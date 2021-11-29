@@ -1,8 +1,8 @@
-#!/usr/bin/pwsh -NonInteractive -NoProfile -Command
+#!/usr/bin/pwsh -Command
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.929"
+$ScriptVersion = "0.9.934"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -286,11 +286,11 @@ try {
     AltAndCatchFire "Unable to initialize ServiceInstance"
 }
 
-$overallStatus_h = @{}
-$overallStatus_h.add("gray",0)
-$overallStatus_h.add("green",1)
-$overallStatus_h.add("yellow",2)
-$overallStatus_h.add("red",3)
+# $overallStatus_h = @{}
+# $overallStatus_h.add("gray",0)
+# $overallStatus_h.add("green",1)
+# $overallStatus_h.add("yellow",2)
+# $overallStatus_h.add("red",3)
 
 if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
@@ -307,7 +307,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner, summary.quickStats -Server $Server
         $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
         $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
         $vcenter_pods = Get-View -ViewType StoragePod -Property name, summary, parent, childEntity -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
@@ -524,7 +524,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         # $vcenter_cluster_hosts_dead_vms = 0 ### XXX #268
 
 
-        foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]) {
+        foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]|?{$_}) {
 
             $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_cluster_host.name.split(".")[0].ToLower() ?
             if ($vcenter_cluster_host_name -match "localhost") {
@@ -655,10 +655,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_hosts_cpu_latency += $vcenter_cluster_host_cpu_latency
                 }
 
-                if ($overallStatus_h[$vcenter_cluster_host.overallStatus]) {
-                    $vcenter_cluster_host_overallStatus = $overallStatus_h[$vcenter_cluster_host.overallStatus]
+                if ($vcenter_cluster_host.overallStatus.value__) {
+                    $vcenter_cluster_host_overallStatus = $vcenter_cluster_host.overallStatus.value__
                 } else {
-                    $vcenter_cluster_host_overallStatus = $overallStatus_h[0]
+                    $vcenter_cluster_host_overallStatus = "0"
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
@@ -910,7 +910,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_datastores_latency = @()
         $vcenter_cluster_datastores_iops = 0
 
-        foreach ($vcenter_cluster_datastore in $vcenter_datastores_h[$vcenter_cluster.Datastore.Value]) {
+        foreach ($vcenter_cluster_datastore in $vcenter_datastores_h[$vcenter_cluster.Datastore.Value]|?{$_}) {
             if ($vcenter_cluster_datastore.summary.accessible -and $vcenter_cluster_datastore.summary.multipleHostAccess) {
                 try {
                     $vcenter_cluster_datastore_name = NameCleaner $vcenter_cluster_datastore.summary.name
@@ -954,8 +954,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
 
                     } else {
-                        $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_vmhosts_h[$vcenter_cluster.Host.value][0].Config.VsanHostConfig.ClusterInfo.Uuid
-                        $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url.split,'.*vsan:(.*)\/').Groups[1].value)
+
+                        ### XXX check vSAN Performance Service
+
+                        $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_cluster_host.Config.VsanHostConfig.ClusterInfo.Uuid
+                        $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url,'.*vsan:(.*)\/').Groups[1].value)
 
                         if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","")) { # skip vSAN HCI Mesh
                             try { 
@@ -964,18 +967,21 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$ServiceInstanceServerClock;entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5}
                                 # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
                                 $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
-                                $VsanClusterPerfQueryId = @{}
-                                foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
-                                    $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                                if ($VsanClusterPerfQuery) {
+                                    $VsanClusterPerfQueryId = @{}
+                                    foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                                        $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                                    }
+                                    $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
+                                    $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
+                                    $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"].replace(",","."),$VsanClusterPerfQueryId["iopsRead"].replace(",","."))|Measure-Object -Sum).Sum
+                                    $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
+
+                                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
+                                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+                                } else {
+                                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Empty VsanPerfQuery in cluster $cluster_name"
                                 }
-                                $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
-                                $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
-                                $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"].replace(",","."),$VsanClusterPerfQueryId["iopsRead"].replace(",","."))|Measure-Object -Sum).Sum
-                                $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
-
-                                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
-                                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
-
                             } catch {
                                 Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
                                 Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
@@ -1075,10 +1081,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
         }
 
-        if ($overallStatus_h[$vcenter_standalone_host.overallStatus]) {
-            $vcenter_standalone_host_overallStatus = $overallStatus_h[$vcenter_standalone_host.overallStatus]
+        if ($vcenter_standalone_host.overallStatus) {
+            $vcenter_standalone_host_overallStatus = $vcenter_standalone_host.overallStatus.value__
         } else {
-            $vcenter_standalone_host_overallStatus = $overallStatus_h[0]
+            $vcenter_standalone_host_overallStatus = "0"
         }
 
         try {
@@ -1105,7 +1111,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name datastores in datacenter $vcenter_standalone_host_dc_name"
 
-        foreach ($vcenter_standalone_host_datastore in $vcenter_datastores_h[$vcenter_standalone_pool.Datastore.value]) {
+        foreach ($vcenter_standalone_host_datastore in $vcenter_datastores_h[$vcenter_standalone_pool.Datastore.value]|?{$_}) {
             if ($vcenter_standalone_host_datastore.summary.accessible) {
                 try {
                     $vcenter_standalone_host_datastore_name = NameCleaner $vcenter_standalone_host_datastore.summary.name
@@ -1186,7 +1192,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_standalone_host_vms_on = 0
         $vcenter_standalone_host_vmdk_per_ds = @{}
 
-        foreach ($vcenter_standalone_host_vm in $vcenter_vms_h[$vcenter_standalone_host.vm.value]) {
+        foreach ($vcenter_standalone_host_vm in $vcenter_vms_h[$vcenter_standalone_host.vm.value]|?{$_}) {
 
             if ($vcenter_standalone_host_vm.config.version) {
                 $vcenter_standalone_host_vm_vhw = NameCleaner $vcenter_standalone_host_vm.config.version
@@ -1578,10 +1584,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
     }
 
-    if ($overallStatus_h[$unmanaged_host.overallStatus]) {
-        $unmanaged_host_overallStatus = $overallStatus_h[$unmanaged_host.overallStatus]
+    if ($unmanaged_host.overallStatus.value__) {
+        $unmanaged_host_overallStatus = $unmanaged_host.overallStatus.value__
     } else {
-        $unmanaged_host_overallStatus = $overallStatus_h[0]
+        $unmanaged_host_overallStatus = "0"
     }
 
     try {
