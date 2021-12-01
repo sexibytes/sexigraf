@@ -286,12 +286,6 @@ try {
     AltAndCatchFire "Unable to initialize ServiceInstance"
 }
 
-# $overallStatus_h = @{}
-# $overallStatus_h.add("gray",0)
-# $overallStatus_h.add("green",1)
-# $overallStatus_h.add("yellow",2)
-# $overallStatus_h.add("red",3)
-
 if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_name = $($Server.ToLower()) -replace "[. ]","_"
@@ -402,6 +396,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "storageAdapter.write.average",
         "power.power.average",
         "datastore.datastoreVMObservedLatency.latest",
+		# "datastore.totalWriteLatency.average",
+		# "datastore.totalReadLatency.average",
         "datastore.numberWriteAveraged.average",
         "datastore.numberReadAveraged.average",
         "cpu.latency.average",
@@ -425,8 +421,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"virtualdisk.write.average",
 		"virtualdisk.read.average",
 		"net.usage.average"
-		# "cpu.totalCapacity.average"
-		# "mem.totalCapacity.average"
     )
 
     try {
@@ -1529,8 +1523,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"virtualdisk.write.average",
 		"virtualdisk.read.average",
 		"net.usage.average"
-		# "cpu.totalCapacity.average"
-		# "mem.totalCapacity.average"
     )
 
     if ($vcenter_vms) {
