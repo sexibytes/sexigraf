@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.934"
+$ScriptVersion = "0.9.935"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -762,10 +762,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         if ($vcenter_cluster_vm_has_snap -and (($vcenter_cluster_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($vcenter_cluster_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                             $vcenter_cluster_vms_files_dedup_total["snapshotExtent"] += $vcenter_cluster_vm_file.size
                             $vcenter_cluster_vm_snap_size += $vcenter_cluster_vm_file.size
-                            $vcenter_cluster_vms_files_snaps ++
                         } elseif ($vcenter_cluster_vm_has_snap -and ($vcenter_cluster_vm_file.name -match '-[0-9]{6}\.vmdk')) {
                             $vcenter_cluster_vms_files_dedup_total["snapshotDescriptor"] += $vcenter_cluster_vm_file.size
                             $vcenter_cluster_vm_snap_size += $vcenter_cluster_vm_file.size
+                            $vcenter_cluster_vms_files_snaps ++
                         } elseif ($vcenter_cluster_vm_file.name -match '-rdm\.vmdk') {
                             $vcenter_cluster_vms_files_dedup_total["rdmExtent"] += $vcenter_cluster_vm_file.size
                         } elseif ($vcenter_cluster_vm_file.name -match '-rdmp\.vmdk') {
@@ -1242,10 +1242,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         if ($vcenter_standalone_host_vm_has_snap -and (($vcenter_standalone_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($vcenter_standalone_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                             $vcenter_standalone_host_vms_files_dedup_total["snapshotExtent"] += $vcenter_standalone_host_vm_file.size
                             $vcenter_standalone_host_vm_snap_size += $vcenter_standalone_host_vm_file.size
-                            $vcenter_standalone_host_vms_files_snaps ++
                         } elseif ($vcenter_standalone_host_vm_has_snap -and ($vcenter_standalone_host_vm_file.name -match '-[0-9]{6}\.vmdk')) {
                             $vcenter_standalone_host_vms_files_dedup_total["snapshotDescriptor"] += $vcenter_standalone_host_vm_file.size
                             $vcenter_standalone_host_vm_snap_size += $vcenter_standalone_host_vm_file.size
+                            $vcenter_standalone_host_vms_files_snaps ++
                         } elseif ($vcenter_standalone_host_vm_file.name -match '-rdm\.vmdk') {
                             $vcenter_standalone_host_vms_files_dedup_total["rdmExtent"] += $vcenter_standalone_host_vm_file.size
                         } elseif ($vcenter_standalone_host_vm_file.name -match '-rdmp\.vmdk') {
@@ -1741,10 +1741,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($unmanaged_host_vm_has_snap -and (($unmanaged_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($unmanaged_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                         $unmanaged_host_vms_files_dedup_total["snapshotExtent"] += $unmanaged_host_vm_file.size
                         $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
-                        $unmanaged_host_vms_files_snaps ++
                     } elseif ($unmanaged_host_vm_has_snap -and ($unmanaged_host_vm_file.name -match '-[0-9]{6}\.vmdk')) {
                         $unmanaged_host_vms_files_dedup_total["snapshotDescriptor"] += $unmanaged_host_vm_file.size
                         $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
+                        $unmanaged_host_vms_files_snaps ++
                     } elseif ($unmanaged_host_vm_file.name -match '-rdm\.vmdk') {
                         $unmanaged_host_vms_files_dedup_total["rdmExtent"] += $unmanaged_host_vm_file.size
                     } elseif ($unmanaged_host_vm_file.name -match '-rdmp\.vmdk') {
