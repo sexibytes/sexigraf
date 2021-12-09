@@ -176,7 +176,7 @@ function MultiQueryPerf300 {
 try {
     Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.$($Server).log" -Append -Confirm:$false -Force
     Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.log" -Append -Confirm:$false -Force
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] ViPullStatistics v$ScriptVersion"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] ViPullStatistics v$ScriptVersion"
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] ViPullStatistics logging failure"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
@@ -184,7 +184,7 @@ try {
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
     $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
@@ -200,8 +200,8 @@ try {
         $DupViPullStatisticsProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}).ProcessId[0]
         $DupViPullStatisticsProcessTime = [INT32](ps -p $DupViPullStatisticsProcessId -o etimes).split()[-1]
         if ($DupViPullStatisticsProcessTime -gt 300) {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] ViPullStatistics for $Server is already running for more than 5 minutes!"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned ViPullStatistics for $Server"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] ViPullStatistics for $Server is already running for more than 5 minutes!"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Killing stunned ViPullStatistics for $Server"
             Stop-Process -Id $DupViPullStatisticsProcessId -Force
         } else {
             AltAndCatchFire "ViPullStatistics for $Server is already running!"
@@ -222,8 +222,8 @@ if ($SessionFile) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [WARNING] SessionToken not found, invalid or connection failure"
-        Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
+        Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
+        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
     }
     
     if (!$($global:DefaultVIServer)) {
@@ -407,7 +407,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     try {
         $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
     } catch {
         AltAndCatchFire "ESX MultiQueryPerfAll failure"
     }
@@ -425,7 +425,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     try {
         $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
     } catch {
         AltAndCatchFire "VM MultiQueryPerf failure"
     }
@@ -437,7 +437,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         )
         try {
             $ClusterMultiStatsTime = Measure-Command {$ClusterMultiStats = MultiQueryPerf300 $($vcenter_clusters_h.Values.moref) $ClusterMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [DEBUG] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
@@ -974,11 +974,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
                                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
                                 } else {
-                                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Empty VsanPerfQuery in cluster $cluster_name"
+                                    Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $cluster_name"
                                 }
                             } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $cluster_name"
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                             }
                         }
                     }
@@ -1509,7 +1509,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     try {
         $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [DEBUG] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+        Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
     } catch {
         AltAndCatchFire "ESX MultiQueryPerfAll failure"
     }
@@ -1528,7 +1528,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     if ($vcenter_vms) {
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [DEBUG] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
