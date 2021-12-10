@@ -28,7 +28,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
 
     # Import credential store items
     if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
-        openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /tmp/vicredentials.conf -pass pass:sexigraf
+        openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /tmp/vicredentials.conf -pass pass:sexigraf -md md5
         # /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -createstore -credstore /var/www/.vmware/credstore/vipscredentials.xml
         for creditem in $(cat /tmp/vicredentials.conf)
             do

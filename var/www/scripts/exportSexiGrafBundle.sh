@@ -42,15 +42,14 @@ if [ -d "/mnt/wfs/whisper" ]; then
             password=$(eval "$password" | cut -c 11-)
             echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
         done
+    # File encoding
+    openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
+    rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
     fi
 
     if [ -a "/var/www/.vmware/credstore/vipscredentials.xml" ]; then
         cp /var/www/.vmware/credstore/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
     fi
-
-    # File encoding
-    openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
-    rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
 
     # create ISO file from export folder
     /usr/bin/genisoimage --allow-limited-size -udf -f -J -joliet-long -r -U -iso-level 4 -o /mnt/wfs/sexigraf-dump.iso /mnt/wfs/sexigraf-dump
