@@ -32,7 +32,7 @@ require("helper.php");
                 <h4><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
                 <span class="sr-only">Warning:</span>
                 Confirmation needed!</h4>
-                You are about to force inventory update. It should be use only for DEBUG purpose as it is already scheduled to run on a daily basis.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
+                You are about to force inventory update. It should be use only for DEBUG purpose as it is already scheduled to run hourly.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
                 <form class="form" action="refresh-inventory.php" method="post">
                         <p><button name="submit" class="btn btn-warning" value="refresh-inventory-confirmed">Confirm inventory refresh</button></p>
                 </form>';
@@ -42,8 +42,8 @@ require("helper.php");
                                 echo '  </div><div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
-                                echo shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh");
-                                echo '          Vi Offline Inventory updated successfully!
+                                echo shell_exec("nohup sudo /bin/bash /var/www/scripts/updateInventory.sh");
+                                echo '          Vi Offline Inventory update launched successfully!
         </div>';
                                 echo '<script type="text/javascript">setTimeout(function(){ location.replace("refresh-inventory.php"); }, 1000);</script>';
                                 break;
