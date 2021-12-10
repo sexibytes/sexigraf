@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $DaysOld)
 
-$ScriptVersion = "0.9.2"
+$ScriptVersion = "0.9.3"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -16,6 +16,8 @@ try {
     exit
 }
 
+Write-Host "$((Get-Date).ToString("o")) [INFO] looking for $DaysOld days old files ..."
+
 # Get-ChildItem -File -Recurse -Path /mnt/wfs/whisper/ |Group-Object -Property Directory|?{$_.group.LastWriteTime|Sort-Object -Descending|Select-Object -First 1|?{$_ -lt (Get-Date).AddDays(-1)}}|%{Remove-Item -Recurse -Path $_.name -force -confirm:$false}
 $OldFoldersGroups = Get-ChildItem -File -Recurse -Path /mnt/wfs/whisper/ |Group-Object -Property Directory|?{$_.group.LastWriteTime|Sort-Object -Descending|Select-Object -First 1|?{$_ -lt (Get-Date).AddDays(-$DaysOld)}}
 foreach ($OldFolder in $OldFoldersGroups) {
@@ -27,6 +29,8 @@ foreach ($OldFolder in $OldFoldersGroups) {
         Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
     }
 }
+
+Write-Host "$((Get-Date).ToString("o")) [INFO] looking for empty folders ..."
 
 # While((Get-ChildItem -Directory -Recurse -Path /mnt/wfs/whisper/|?{$_.GetFiles().Count -eq 0 -and $_.GetDirectories().Count -eq 0}).count -gt 0) {Get-ChildItem -Directory -Recurse -Path /mnt/wfs/whisper/|?{$_.GetFiles().Count -eq 0 -and $_.GetDirectories().Count -eq 0}|Remove-Item -force -confirm:$false}
 While(($OldEmptyFolders = Get-ChildItem -Directory -Recurse -Path /mnt/wfs/whisper/|?{$_.GetFiles().Count -eq 0 -and $_.GetDirectories().Count -eq 0}).count -gt 0) {
