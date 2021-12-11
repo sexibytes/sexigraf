@@ -4,6 +4,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
 
     # Import whiper files and re-apply Graphite ownership and correct access rights
     /etc/init.d/carbon-cache stop
+    /etc/init.d/carbon-relay stop
     /etc/init.d/cron stop
     if [ -d "/media/cdrom/whisper" ]; then
         /bin/cp -fR /media/cdrom/whisper/* /mnt/wfs/whisper/
@@ -13,6 +14,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # chown _graphite:_graphite -R /var/lib/graphite/whisper/*
     # find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
+    ### XXX check sexigraf version
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*numVmotions.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} last 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*droppedRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/ -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
@@ -48,19 +50,20 @@ if [ -d "/mnt/wfs/whisper" ]; then
     fi
 
     # Import cron entries
-    /bin/cp /media/cdrom/conf/cron.d/* /etc/cron.d/
+    /bin/cp -fR /media/cdrom/conf/cron.d/* /etc/cron.d/
 
     # Switch from perl to powershell
-    sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f  \/opt\/sexigraf\/VsanPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vsan_*
-    sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
-    sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
+    /bin/sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/VsanPullStatistics\.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials\.xml -server/g' /etc/cron.d/vsan_*
+    /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
+    /bin/sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
 
-    sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f  \/opt\/sexigraf\/ViPullStatistics.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials.xml -server/g' /etc/cron.d/vi_*
-    sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vi_*
-    sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vi_*   
+    /bin/sed -i 's/\/usr\/bin\/perl \/root\/ViPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/ViPullStatistics\.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials\.xml -server/g' /etc/cron.d/vi_*
+    /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vi_*
+    /bin/sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vi_*   
 
     # Restart services
     /etc/init.d/carbon-cache start
+    /etc/init.d/carbon-relay start
     /etc/init.d/cron start
     /etc/init.d/collectd restart
     /etc/init.d/grafana-server restart
