@@ -152,7 +152,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(esx.*.*.$esx.quickstats.cpu.total, 1000000))",
+              "target": "sumSeries(scale(esx.$vcenter.$datacentre.$esx.quickstats.cpu.total, 1000000))",
               "textEditor": false
             },
             {
@@ -204,9 +204,17 @@
           },
           "targets": [
             {
-              "hide": false,
+              "hide": true,
               "target": "sumSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 0, 'search', 'replace'))",
               "textEditor": false
+            },
+            {
+              "hide": true,
+              "target": "sumSeries(useSeriesAbove(esx.$vcenter.$datacentre.$esx.runtime.vm.total, 0, 'search', 'replace'))",
+              "textEditor": false
+            },
+            {
+              "target": "sumSeries(#A, #B)"
             }
           ],
           "thresholds": "",
@@ -278,7 +286,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.usage)"
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.quickstats.mem.usage)"
             },
             {
               "hide": true,
@@ -286,7 +294,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(esx.*.*.$esx.quickstats.mem.total, 9.53674e-7))"
+              "target": "sumSeries(scale(esx.$vcenter.$datacentre.$esx.quickstats.mem.total, 9.53674e-7))"
             },
             {
               "hide": true,
@@ -306,7 +314,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.guest)"
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.quickstats.mem.guest)"
             },
             {
               "hide": true,
@@ -371,7 +379,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.total)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.quickstats.mem.total)",
               "textEditor": false
             },
             {
@@ -429,7 +437,7 @@
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.quickstats.mem.shared)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.quickstats.mem.shared)",
               "textEditor": false
             },
             {
@@ -498,22 +506,22 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.freeSpace)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.freeSpace)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.datastore.*.summary.freeSpace)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.capacity)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.capacity)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.datastore.*.summary.capacity)",
               "textEditor": false
             },
             {
@@ -526,7 +534,7 @@
             },
             {
               "hide": false,
-              "target": "alias(asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), #E), #F), 'HDD_Usage')",
+              "target": "alias(asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.capacity), #E), #F), 'HDD_Usage')",
               "textEditor": false
             }
           ],
@@ -579,12 +587,12 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity)",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.capacity)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.capacity)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.datastore.*.summary.capacity)",
               "textEditor": false
             },
             {
@@ -637,12 +645,12 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.uncommitted)",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.uncommitted)",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(esx.*.*.$esx.datastore.*.summary.uncommitted)",
+              "target": "sumSeries(esx.$vcenter.$datacentre.$esx.datastore.*.summary.uncommitted)",
               "textEditor": false
             },
             {
@@ -711,7 +719,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "alias(sumSeries(removeAboveValue(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.datastoreIops, 50000)), 'IOPS')",
+              "target": "alias(sumSeries(removeAboveValue(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.iops, 50000)), 'IOPS')",
               "textEditor": false
             }
           ],
@@ -764,7 +772,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.iorm.sizeNormalizedDatastoreLatency)",
+              "target": "averageSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.mid_latency)",
               "textEditor": false
             }
           ],
@@ -814,7 +822,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "countSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity, 0, 'search', 'replace'))",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.datastore.count)",
               "textEditor": false
             }
           ],
@@ -983,7 +991,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "countSeries(useSeriesAbove(vmw.$vcenter.$datacentre.$cluster.esx.*.*.overallCpuUsage, 0, 'search', 'replace'))",
+              "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.esx.count)",
               "textEditor": false
             }
           ],
@@ -1055,22 +1063,22 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesRx, 1024))",
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.superstats.net.bytesRx, 1024))",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytesRx, 1024))",
+              "target": "sumSeries(scale(esx.$vcenter.$datacentre.$esx.net.*.bytesRx, 1024))",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesTx, 1024))",
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.superstats.net.bytesTx, 1024))",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytesTx, 1024))",
+              "target": "sumSeries(scale(esx.$vcenter.$datacentre.$esx.net.*.bytesTx, 1024))",
               "textEditor": false
             },
             {
@@ -1134,7 +1142,7 @@
             },
             {
               "hide": true,
-              "target": "scale(sumSeries(esx.*.*.$esx.net.*.linkSpeed), 100000)",
+              "target": "scale(sumSeries(esx.$vcenter.$datacentre.$esx.net.*.linkSpeed), 100000)",
               "textEditor": false
             },
             {
@@ -1187,12 +1195,12 @@
           "targets": [
             {
               "hide": true,
-              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytes*, 1024))",
+              "target": "sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.superstats.net.bytes*, 1024))",
               "textEditor": false
             },
             {
               "hide": true,
-              "target": "sumSeries(scale(esx.*.*.$esx.net.*.bytes*, 1024))",
+              "target": "sumSeries(scale(esx.$vcenter.$datacentre.$esx.net.*.bytes*, 1024))",
               "textEditor": false
             },
             {
