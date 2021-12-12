@@ -48,7 +48,7 @@ function GetBlueFolderFullPath {
 
 try {
     Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] ViOfflineInventory v$ScriptVersion"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] ViOfflineInventory v$ScriptVersion"
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] ViOfflineInventory logging failure"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
@@ -56,7 +56,7 @@ try {
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
     $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
@@ -72,8 +72,8 @@ try {
         $DupViVmInventoryProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "ViOfflineInventory"}}).ProcessId[0]
         $DupViVmInventoryProcessTime = [INT32](ps -p $DupViVmInventoryProcessId -o etimes).split()[-1]
         if ($DupViVmInventoryProcessTime -gt 21600) {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] ViOfflineInventory is already running for more than 6 hours!"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned ViOfflineInventory"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] ViOfflineInventory is already running for more than 6 hours!"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Killing stunned ViOfflineInventory"
             Stop-Process -Id $DupViVmInventoryProcessId -Force
         } else {
             AltAndCatchFire "ViOfflineInventory is already running!"
@@ -113,8 +113,8 @@ if ($ViServersList.count -gt 0) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] SessionToken not found, invalid or connection failure"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
+            Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
         }
 
         if (!$($global:DefaultVIServer)) {
@@ -127,7 +127,7 @@ if ($ViServersList.count -gt 0) {
                     $CredStoreLogin = $item.Node.username
                     $CredStorePassword = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($item.Node.password))
                 } else {
-                    Write-Host "$((Get-Date).ToString("o")) [WARNING] No $ViServer entry in CredStore"
+                    Write-Host "$((Get-Date).ToString("o")) [WARN] No $ViServer entry in CredStore"
                     continue
                 }
                 $ServerConnection = Connect-VIServer -Server $ViServer -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
@@ -138,7 +138,7 @@ if ($ViServersList.count -gt 0) {
                     # $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force # PS>TerminatingError(Out-File): "Access to the path '/tmp/vmw_xxx.key' is denied."
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [WARNING] Explicit connection failed, check the stored credentials for $ViServer !"
+                Write-Host "$((Get-Date).ToString("o")) [WARN] Explicit connection failed, check the stored credentials for $ViServer !"
                 continue
             }
         }
@@ -148,11 +148,11 @@ if ($ViServersList.count -gt 0) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $ViServer ..."
                 $ServiceInstance = Get-View ServiceInstance -Server $ViServer -Property ServerClock
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [WARNING] global:DefaultVIServer variable check failure for $ViServer"
+                Write-Host "$((Get-Date).ToString("o")) [WARN] global:DefaultVIServer variable check failure for $ViServer"
                 continue
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to verify vCenter connection for $ViServer"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to verify vCenter connection for $ViServer"
             continue
         }
 
@@ -250,7 +250,7 @@ if ($ViServersList.count -gt 0) {
                     $VmPath = ""
                     $VmPath = GetBlueFolderFullPath $Vm
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to get blue folder path for $($Vm.name)"
+                    Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to get blue folder path for $($Vm.name)"
                 }
                 
                 $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
