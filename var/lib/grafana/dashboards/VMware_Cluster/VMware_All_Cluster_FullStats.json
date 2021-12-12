@@ -218,6 +218,12 @@
               "refId": "F",
               "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest), 'active')",
               "textEditor": false
+            },
+            {
+              "refId": "G",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead), 'overhead')",
+              "textEditor": false,
+              "refCount": 0
             }
           ],
           "thresholds": [],
@@ -677,6 +683,11 @@
               "alias": "guest",
               "fill": 0,
               "stack": false
+            },
+            {
+              "alias": "alocated",
+              "fill": 0,
+              "stack": false
             }
           ],
           "spaceLength": 10,
@@ -714,6 +725,12 @@
             {
               "refId": "F",
               "target": "alias(diffSeries(#A, #B), 'total')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "refId": "G",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM), 'alocated')",
               "textEditor": false
             }
           ],
@@ -1425,6 +1442,6 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware All Cluster FullStats",
+  "title": "VMware All Cluster FullStats (deprecated)",
   "version": 1
 }
