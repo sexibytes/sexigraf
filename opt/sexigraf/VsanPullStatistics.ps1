@@ -85,7 +85,7 @@ $GetDomChild = $function:GetDomChild.ToString()
 try {
     Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force
     Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] VsanDisksPullStatistics v$ScriptVersion"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] VsanDisksPullStatistics v$ScriptVersion"
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] VsanDisksPullStatistics logging failure"
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
@@ -93,7 +93,7 @@ try {
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [DEBUG] Importing PowerCli and Graphite PowerShell modules ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
     $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
@@ -109,8 +109,8 @@ try {
         $DupVsanPullStatisticsProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}).ProcessId[0]
         $DupVsanPullStatisticsProcessTime = [INT32](ps -p $DupVsanPullStatisticsProcessId -o etimes).split()[-1]
         if ($DupVsanPullStatisticsProcessTime -gt 300) {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] VsanPullStatistics for $Server is already running for more than 5 minutes!"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Killing stunned VsanPullStatistics for $Server"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] VsanPullStatistics for $Server is already running for more than 5 minutes!"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Killing stunned VsanPullStatistics for $Server"
             Stop-Process -Id $DupVsanPullStatisticsProcessId -Force
         } else {
             AltAndCatchFire "VsanPullStatistics for $Server is already running!"
@@ -131,8 +131,8 @@ if ($SessionFile) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [WARNING] SessionToken not found, invalid or connection failure"
-        Write-Host "$((Get-Date).ToString("o")) [WARNING] Attempting explicit connection ..."
+        Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
+        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
 
     }
     if (!$($global:DefaultVIServer)) {
@@ -395,8 +395,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $using:ExecStart
 
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                     }
 
                 }
@@ -424,7 +424,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             }
                         }
                     } else {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] No VM in cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] No VM in cluster $cluster_name"
                     }
                 } catch {
                     AltAndCatchFire "Unable to retreive VirtualDisk in cluster $cluster_name"
@@ -477,8 +477,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
                         }
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                     }
 
                     if ($($using:ExecStart).Minute % 5 -eq 0) {
@@ -504,8 +504,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $using:ExecStart
                             }
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                         }
 
                         # try { 
@@ -529,8 +529,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VsanClusterPerf_h -DateTime $using:ExecStart
                         #     }
                         # } catch {
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanPerfQuery in cluster $cluster_name"
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $cluster_name"
+                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                         # }
                     }
                 } else {
@@ -538,7 +538,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                         $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json -AsHashtable
                         if ($cluster_SyncingVsanObjects."dom_objects".keys) {
-                            Write-Host "$((Get-Date).ToString("o")) [DEBUG] Start processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
                             $SyncingVsanObjects = ""|Select-Object bytesToSync, recoveryETA, Objs
                             $SyncingVsanObjects.recoveryETA = 0
                             foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").keys) {
@@ -556,8 +556,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
                         }
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                     }
                 }
 
@@ -575,8 +575,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $using:ExecStart
                     }
                 } catch{
-                    Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
+                    Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                 }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
@@ -694,8 +694,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $cluster_host_VsanStatistics_h -DateTime $using:ExecStart
     
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
-            Write-Host "$((Get-Date).ToString("o")) [WARNING] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
+            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
         }
     } -ThrottleLimit 10
     
