@@ -53,11 +53,11 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /bin/cp -fR /media/cdrom/conf/cron.d/* /etc/cron.d/
 
     # Switch from perl to powershell
-    /bin/sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/VsanPullStatistics\.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials\.xml -server/g' /etc/cron.d/vsan_*
+    /bin/sed -i 's/\/usr\/bin\/perl \/root\/VsanPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/VsanPullStatistics\.ps1 -credstore \/mnt\/wfs\/inventory\/vipscredentials\.xml -server/g' /etc/cron.d/vsan_*
     /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
     /bin/sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
 
-    /bin/sed -i 's/\/usr\/bin\/perl \/root\/ViPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/ViPullStatistics\.ps1 -credstore \/var\/www\/\.vmware\/credstore\/vipscredentials\.xml -server/g' /etc/cron.d/vi_*
+    /bin/sed -i 's/\/usr\/bin\/perl \/root\/ViPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/ViPullStatistics\.ps1 -credstore \/mnt\/wfs\/inventory\/vipscredentials\.xml -server/g' /etc/cron.d/vi_*
     /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vi_*
     /bin/sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vi_*   
 
