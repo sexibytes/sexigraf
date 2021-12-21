@@ -47,8 +47,8 @@ if [ -d "/mnt/wfs/whisper" ]; then
     rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
     fi
 
-    if [ -a "/var/www/.vmware/credstore/vipscredentials.xml" ]; then
-        cp /var/www/.vmware/credstore/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
+    if [ -a "/mnt/wfs/inventory/vipscredentials.xml" ]; then
+        cp /mnt/wfs/inventory/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
     fi
 
     # create ISO file from export folder

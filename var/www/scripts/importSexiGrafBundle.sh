@@ -31,22 +31,22 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # Import credential store items
     if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
         openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /tmp/vicredentials.conf -pass pass:sexigraf -md md5
-        # /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -createstore -credstore /var/www/.vmware/credstore/vipscredentials.xml
+        # /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -createstore -credstore /mnt/wfs/inventory/vipscredentials.xml
         for creditem in $(cat /tmp/vicredentials.conf)
             do
                 vcenter=$(echo $creditem | cut -d ";" -f 1)
                 username=$(echo $creditem | cut -d ";" -f 2)
                 password=$(echo $creditem | cut -d ";" -f 3)
                 # /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
-                /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /var/www/.vmware/credstore/vipscredentials.xml -add -server $vcenter -username $username -password $password
+                /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -add -server $vcenter -username $username -password $password
         done
         rm -f /tmp/vicredentials.conf
-        # chown www-data:www-data /var/www/.vmware/credstore/vipscredentials.xml
+        # chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
     fi
 
     if [ -a "/media/cdrom/conf/vipscredentials.xml" ]; then
-        /bin/cp -fR /media/cdrom/conf/vipscredentials.xml /var/www/.vmware/credstore/vipscredentials.xml
-        chown www-data:www-data /var/www/.vmware/credstore/vipscredentials.xml
+        /bin/cp -fR /media/cdrom/conf/vipscredentials.xml /mnt/wfs/inventory/vipscredentials.xml
+        chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
     fi
 
     # Import cron entries

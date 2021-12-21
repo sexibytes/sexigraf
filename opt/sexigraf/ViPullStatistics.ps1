@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.935"
+$ScriptVersion = "0.9.936"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -527,12 +527,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             if ($vcenter_cluster_host.vm) {
-                $vcenter_cluster_hosts_vms_moref += $vcenter_vms_h[$vcenter_cluster_host.vm.value]
+                $vcenter_cluster_hosts_vms_moref += $vcenter_vms_h[$vcenter_cluster_host.vm.value]|?{$_}
                 # $vcenter_cluster_host_real_vm_count = $($vcenter_cluster_host.vm|Measure-Object).Count ### XXX #268
                 # $vcenter_cluster_host_connected_vm_count = $($vcenter_vms_h[$vcenter_cluster_host.vm.value]|Measure-Object).Count
                 # if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
                 #     $vcenter_cluster_hosts_dead_vms += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
                 # }
+                ### XXX use $vcenter_resource_pools_owner_vms_h
             }
 
             if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel) {
