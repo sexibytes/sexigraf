@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-GUESTINFO=$(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv"|xml_grep 'Kind' --text_only)
+GUESTINFO=$(xml_grep 'Kind' <(/usr/bin/vmtoolsd --cmd "info-get guestinfo.ovfEnv") --text_only)
 
 if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
 
