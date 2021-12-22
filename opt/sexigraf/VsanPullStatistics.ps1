@@ -582,7 +582,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
             }
         }
-    } -ThrottleLimit 4 -TimeoutSeconds 10
+    } -ThrottleLimit 2
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN hosts ..."
 
@@ -697,7 +697,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
             Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
         }
-    } -ThrottleLimit 10
+    } -ThrottleLimit 2 -TimeoutSeconds 10
     
     $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
     $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
