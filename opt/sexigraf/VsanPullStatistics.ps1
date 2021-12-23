@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.73"
+$ScriptVersion = "0.9.75"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -10,6 +10,8 @@ $ExecStart = $(Get-Date).ToUniversalTime()
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 #(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
+
+$ncpu = /bin/nproc
 
 function AltAndCatchFire {
     Param($ExitReason)
@@ -182,31 +184,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
-            # $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
-            # if ($ExecStart.Minute % 5 -eq 0) {
-            #     # $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
-            #     $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
-            # } else {
-            #     # $VsanClusterHealthSystem = $true # to avoid "The value of the using variable '$using:VsanClusterHealthSystem' cannot be retrieved because it has not been set in the local session."
-            #     $VsanSpaceReportSystem = $true
-            #     # $VsanPerformanceManager = $true
-            # }
         } elseif ($ServiceInstance.Content.About.ApiVersion -ge 6) {
             $VsanObjectSystem = $true
-            # $VsanClusterHealthSystem = $true
-            # $VsanPerformanceManager = $true
-            # if ($ExecStart.Minute % 5 -eq 0) {
-            #     Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6+ so we can call vSAN API"
-            #     $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
-            # } else {
-            #     $VsanSpaceReportSystem = $true 
-            # }
         } else {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is not 6+ so we cannot call vSAN API"
             $VsanObjectSystem = $true
-            # $VsanClusterHealthSystem = $true
-            # $VsanSpaceReportSystem = $true
-            # $VsanPerformanceManager = $true
         }
     } catch {
         AltAndCatchFire "Unable to read ServiceInstance.Content.About.ApiVersion or call Get-VSANView"
@@ -247,14 +229,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_vmhosts_h = @{}
     $vcenter_vmhosts_vsan_h = @{}
-    # $vcenter_vmhosts_name_h = @{}
     $vcenter_vsan_clusters_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
         if ($vcenter_vmhost.Config.VsanHostConfig.ClusterInfo.NodeUuid) {
             try {
                 $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
                 $vcenter_vmhosts_vsan_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost.configManager.vsanInternalSystem.value)
-                # $vcenter_vmhosts_name_h.add($vcenter_vmhost.name, $($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
                 if (!$vcenter_vsan_clusters_h[$vcenter_vmhost.parent.value]) {
                     if ($vcenter_clusters_h[$vcenter_vmhost.parent.value]) {
                         $vcenter_vsan_clusters_h.add($vcenter_vmhost.parent.value,$vcenter_clusters_h[$vcenter_vmhost.parent.value])
@@ -311,10 +291,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $function:GetParent = $using:GetParent
         $function:GetDomChild = $using:GetDomChild
 
-        # $VsanClusterHealthSystem = $using:VsanClusterHealthSystem
-        # $VsanSpaceReportSystem = $using:VsanSpaceReportSystem
-        # $VsanPerformanceManager = $using:VsanPerformanceManager
-
         $vcenter_resource_pools_owner_vms_h = $using:vcenter_resource_pools_owner_vms_h
         $ClusterPhysicalVsanDisks = $using:ClusterPhysicalVsanDisks
         $cluster_vdisks_id = $using:cluster_vdisks_id
@@ -359,47 +335,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 } catch {
                     AltAndCatchFire "Unable to retreive VsanHostConfig.ClusterInfo.Uuid from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
-
-                # if ($($using:ExecStart).Minute % 5 -eq 0 -and $cluster_host_random.Config.OptionDef.Key -match "VSAN.DedupScope") {
-                #     try {
-                #         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $cluster_name (v6.2+) ..."
-
-                #         $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
-                #         $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
-                #         $ClusterVsanSpaceUsageReportObjType_h = @{}
-                #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.TotalCapacityB", $ClusterVsanSpaceUsageReport.TotalCapacityB)
-                #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.FreeCapacityB", $ClusterVsanSpaceUsageReport.FreeCapacityB)
-                #         foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
-                #             $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB", $vsanObjType.overheadB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType.physicalUsedB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB", $vsanObjType.overReservedB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB", $vsanObjType.usedB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType.temporaryOverheadB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType.primaryCapacityB)
-                #             $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType.reservedCapacityB)
-                #         }
-                #         # if ($ClusterVsanSpaceUsageReport.EfficientCapacity) {
-                #         #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacity)
-                #         #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.LogicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacityUsed)
-                #         #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacity)
-                #         #     $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.EfficientCapacity.PhysicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacityUsed)
-                #         #     if ($ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize) {
-                #         #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.CompressionMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.CompressionMetadataSize)
-                #         #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.DedupMetadataSize)
-                #         #     } elseif ($ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize) {
-                #         #         $ClusterVsanSpaceUsageReportObjType_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
-                #         #     }
-                #         # }
-
-                #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ClusterVsanSpaceUsageReportObjType_h -DateTime $using:ExecStart
-
-                #     } catch {
-                #         Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQuerySpaceUsage for cluster $cluster_name"
-                #         Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                #     }
-
-                # }
 
                 try {
                     if ($vcenter_resource_pools_owner_vms_h[$vcenter_cluster.moref.value]) {
@@ -481,58 +416,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                     }
 
-                    # if ($($using:ExecStart).Minute % 5 -eq 0) {
-                        # try { 
-                        #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $cluster_name (v6.7+) ..."
-                        #     # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-                        #     # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
-                        #     $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
-                        #     if ($VcClusterSmartStatsSummary.SmartStats) {
-                        #         $VcClusterSmartStatsSummary_h = @{}
-                        #         foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
-                        #             $SmartStatsEsxName = $($using:vcenter_vmhosts_name_h)[$SmartStatsEsx.Hostname]
-                        #             foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
-                        #                 $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
-                        #                 foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                        #                     if ($SmartStatsEsxDiskStats.Parameter -and !$VcClusterSmartStatsSummary_h["vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
-                        #                         $VcClusterSmartStatsSummary_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
-                        #                     }
-                        #                 }
-                        #             }
-                        #         }
-
-                        #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterSmartStatsSummary_h -DateTime $using:ExecStart
-                        #     }
-                        # } catch {
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $cluster_name"
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                        # }
-
-                        # try { 
-                        #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $cluster_name (v6.7+) ..."
-                        #     # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
-                        #     $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$($using:ExecStart);entityRefId="cluster-domclient:$cluster_vsan_uuid";labels="*";startTime=$($using:ExecStart).AddMinutes(-5)} 
-                        #     # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
-                        #     $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
-                        #     $VsanClusterPerfQueryId = @{}
-                        #     foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
-                        #         $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
-                        #     }
-                        #     $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"],$VsanClusterPerfQueryId["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
-                        #     $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"],$VsanClusterPerfQueryId["iopsRead"])|Measure-Object -Sum).Sum
-                        #     $cluster_vsan_name = NameCleaner $($using:vcenter_vsan_ds_h)[$cluster_vsan_uuid.replace("-","")]
-                        #     $VsanClusterPerf_h = @{
-                        #         "vmw.$vcenter_name.$datacentre_name.$cluster_name.datastore.$cluster_vsan_name.iorm.datastoreIops" = $VsanClusterPerfIops;
-                        #         "vmw.$vcenter_name.$datacentre_name.$cluster_name.datastore.$cluster_vsan_name.iorm.sizeNormalizedDatastoreLatency" = $VsanClusterPerfMaxLatency;
-                        #     }
-                        #     if ($VsanClusterPerf_h) {
-                        #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VsanClusterPerf_h -DateTime $using:ExecStart
-                        #     }
-                        # } catch {
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $cluster_name"
-                        #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                        # }
-                    # }
                 } else {
                     try {
                         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
@@ -582,7 +465,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
             }
         }
-    } -ThrottleLimit 2
+    } -ThrottleLimit $ncpu -UseNewRunspace
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vSAN hosts ..."
 
@@ -697,7 +580,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive QueryVsanStatistics from $host_name in cluster $cluster_name"
             Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
         }
-    } -ThrottleLimit 2 -TimeoutSeconds 20
+    } -ThrottleLimit $ncpu -UseNewRunspace
     
     $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
     $ExecStartEpoc = $(New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End $ExecStart).TotalSeconds.ToString().Split(".")[0]
