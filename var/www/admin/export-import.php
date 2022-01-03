@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <li>The export process will generate an <b>ISO file with your appliance configuration and data IF you got enough free space left</b>.</li>
                     <li>When done, download this ISO and use it to migrate your SexiGraf environement to another brand new SexiGraf VM.</li>
                     <li>In order to import data on this appliance, just map the ISO on the VM's CD drive and use the Import tool below.</li>
-                    <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
+                    <li>Please refer to the <a href="https://www.sexigraf.fr/web-admin/#export-import">project website and documentation</a> for more information.</li>
                 </ul>            
         </div>
         </div>
