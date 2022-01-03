@@ -77,7 +77,9 @@
       "from": "now-6h",
       "to": "now"
     },
-    "timepicker": {},
+    "timepicker": {
+      "hidden": true
+    },
     "timezone": "",
     "title": "VMware ESX Inventory",
     "uid": "iQlLNW57a",
