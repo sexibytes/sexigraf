@@ -848,7 +848,10 @@
   "refresh": "",
   "schemaVersion": 34,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "VI",
+    "FlambX"
+  ],
   "templating": {
     "list": []
   },
