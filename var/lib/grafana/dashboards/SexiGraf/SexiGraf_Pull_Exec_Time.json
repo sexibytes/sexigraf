@@ -119,7 +119,11 @@
   "refresh": false,
   "schemaVersion": 27,
   "style": "light",
-  "tags": [],
+  "tags": [
+    "VM",
+    "VI",
+    "vSAN"
+  ],
   "templating": {
     "list": [
       {
