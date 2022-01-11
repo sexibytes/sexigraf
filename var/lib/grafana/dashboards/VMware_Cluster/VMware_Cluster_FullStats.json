@@ -1277,6 +1277,7 @@
     },
     {
       "aliasColors": {
+        "xvmotion": "super-light-blue",
         "svmotion": "dark-orange",
         "vmotion": "#052B51"
       },
@@ -1339,6 +1340,12 @@
           "refCount": 0,
           "refId": "B",
           "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
+          "textEditor": false
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
           "textEditor": false
         }
       ],
