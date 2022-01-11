@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.75"
+$ScriptVersion = "0.9.77"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -11,7 +11,11 @@ $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 #(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
 
-$ncpu = /bin/nproc
+if ($(/bin/nproc) -gt 12) {
+    $ncpu = 4
+} else {
+    $ncpu = 2
+}
 
 function AltAndCatchFire {
     Param($ExitReason)
