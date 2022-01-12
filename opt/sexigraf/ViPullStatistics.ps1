@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.943"
+$ScriptVersion = "0.9.945"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -942,150 +942,166 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_freeSpace += $vcenter_cluster_datastore.summary.freeSpace
                     $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
 
-                    if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue in cluster $vcenter_cluster_name"
+                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                }
+
+                if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
+                    try {
+                        $vcenter_cluster_datastore_uuid = $vcenter_cluster_datastore.summary.url.split("/")[-2]
+
+                        $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.datastoreVMObservedLatency.latest"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                        $vcenter_cluster_datastore_latency = GetMedian $vcenter_cluster_datastore_latency_raw
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $vcenter_cluster_datastore_latency)
+                        $vcenter_cluster_datastores_latency += $vcenter_cluster_datastore_latency
+
+                        $vcenter_cluster_datastore_iops_w = $HostMultiStats[$PerfCounterTable["datastore.numberWriteAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                        $vcenter_cluster_datastore_iops_r = $HostMultiStats[$PerfCounterTable["datastore.numberReadAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                        $vcenter_cluster_datastore_iops = ($vcenter_cluster_datastore_iops_w|Measure-Object -Sum).Sum + ($vcenter_cluster_datastore_iops_r|Measure-Object -Sum).Sum
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $vcenter_cluster_datastore_iops)
+                        $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive performance metrics for datastore $vcenter_cluster_datastore_name in cluster $vcenter_cluster_name"
+                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                    }
+
+                } else {
+
+                    $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_cluster_host.Config.VsanHostConfig.ClusterInfo.Uuid
+                    $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url,'.*vsan:(.*)\/').Groups[1].value)
+
+                    if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull) { # skip vSAN HCI Mesh
                         try {
-                            $vcenter_cluster_datastore_uuid = $vcenter_cluster_datastore.summary.url.split("/")[-2]
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
+                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                            $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$ServiceInstanceServerClock;entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5}
+                            # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
+                            # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
+                            $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
+                            if ($VsanClusterPerfQuery) {
+                                $VsanClusterPerfQueryId = @{}
+                                foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                                    $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
+                                }
+                                $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
+                                $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
+                                $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"].replace(",","."),$VsanClusterPerfQueryId["iopsRead"].replace(",","."))|Measure-Object -Sum).Sum
+                                $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
 
-                            $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.datastoreVMObservedLatency.latest"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
-                            $vcenter_cluster_datastore_latency = GetMedian $vcenter_cluster_datastore_latency_raw
-                            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $vcenter_cluster_datastore_latency)
-                            $vcenter_cluster_datastores_latency += $vcenter_cluster_datastore_latency
-
-                            $vcenter_cluster_datastore_iops_w = $HostMultiStats[$PerfCounterTable["datastore.numberWriteAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
-                            $vcenter_cluster_datastore_iops_r = $HostMultiStats[$PerfCounterTable["datastore.numberReadAveraged.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
-                            $vcenter_cluster_datastore_iops = ($vcenter_cluster_datastore_iops_w|Measure-Object -Sum).Sum + ($vcenter_cluster_datastore_iops_r|Measure-Object -Sum).Sum
-                            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $vcenter_cluster_datastore_iops)
-                            $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
+                                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
+                                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+                            } else {
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
+                            }
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive performance metrics for datastore $vcenter_cluster_datastore_name in cluster $vcenter_cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
                             Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                         }
 
-                    } else {
+                        ### XXX add check against multiple vsan datastore on the same cluster
 
-                        $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_cluster_host.Config.VsanHostConfig.ClusterInfo.Uuid
-                        $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url,'.*vsan:(.*)\/').Groups[1].value)
-
-                        if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull) { # skip vSAN HCI Mesh
-                            try {
-                                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
-                                # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
-                                $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$ServiceInstanceServerClock;entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5}
-                                # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
-                                # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
-                                $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
-                                if ($VsanClusterPerfQuery) {
-                                    $VsanClusterPerfQueryId = @{}
-                                    foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
-                                        $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
-                                    }
-                                    $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
-                                    $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
-                                    $VsanClusterPerfIops = $(@($VsanClusterPerfQueryId["iopsWrite"].replace(",","."),$VsanClusterPerfQueryId["iopsRead"].replace(",","."))|Measure-Object -Sum).Sum
-                                    $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
-
-                                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
-                                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
-                                } else {
-                                    Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
-                                }
-                            } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                            }
-
-                            ### XXX add check against multiple vsan datastore on the same cluster
-
-                            try {
-                                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
-                                # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
-                                # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
-                                $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
-                                if ($VcClusterSmartStatsSummary.SmartStats) {
-                                    foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
-                                        $SmartStatsEsxName = $vcenter_vmhosts_short_h[$SmartStatsEsx.Hostname]
-                                        foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
-                                            $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
-                                            foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                                                if ($SmartStatsEsxDiskStats.Parameter -and !$vcenter_cluster_h["vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
-                                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
-                                                }
+                        try {
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
+                            # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
+                            # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
+                            $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
+                            if ($VcClusterSmartStatsSummary.SmartStats) {
+                                foreach ($SmartStatsEsx in $VcClusterSmartStatsSummary) {
+                                    $SmartStatsEsxName = $vcenter_vmhosts_short_h[$SmartStatsEsx.Hostname]
+                                    foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
+                                        $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
+                                        foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
+                                            if ($SmartStatsEsxDiskStats.Parameter -and !$vcenter_cluster_h["vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
+                                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disks.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
                                             }
                                         }
                                     }
                                 }
-                            } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $vcenter_cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                             }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $vcenter_cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                        }
 
-                            try {
-                                Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $vcenter_cluster_name (v6.2+) ..."
-        
-                                $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
-                                $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.TotalCapacityB", $ClusterVsanSpaceUsageReport.TotalCapacityB)
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.FreeCapacityB", $ClusterVsanSpaceUsageReport.FreeCapacityB)
-                                foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
-                                    $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB", $vsanObjType.overheadB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType.physicalUsedB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB", $vsanObjType.overReservedB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB", $vsanObjType.usedB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType.temporaryOverheadB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType.primaryCapacityB)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType.reservedCapacityB)
-                                }
-                                # if ($ClusterVsanSpaceUsageReport.EfficientCapacity) {
-                                #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.LogicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacity)
-                                #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.LogicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacityUsed)
-                                #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.PhysicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacity)
-                                #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.PhysicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacityUsed)
-                                #     if ($ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize) {
-                                #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.CompressionMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.CompressionMetadataSize)
-                                #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.DedupMetadataSize)
-                                #     } elseif ($ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize) {
-                                #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
-                                #     }
-                                # }        
-                            } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQuerySpaceUsage for cluster $vcenter_cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                        try {
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $vcenter_cluster_name (v6.2+) ..."
+    
+                            $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
+                            $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
+                            $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.TotalCapacityB", $ClusterVsanSpaceUsageReport.TotalCapacityB)
+                            $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.FreeCapacityB", $ClusterVsanSpaceUsageReport.FreeCapacityB)
+                            foreach ($vsanObjType in $ClusterVsanSpaceUsageReportObjList) {
+                                $ClusterVsanSpaceUsageReportObjType = $vsanObjType.objType
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overheadB", $vsanObjType.overheadB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.physicalUsedB", $vsanObjType.physicalUsedB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.overReservedB", $vsanObjType.overReservedB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.usedB", $vsanObjType.usedB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.temporaryOverheadB", $vsanObjType.temporaryOverheadB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.primaryCapacityB", $vsanObjType.primaryCapacityB)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.spaceDetail.spaceUsageByObjectType.$ClusterVsanSpaceUsageReportObjType.reservedCapacityB", $vsanObjType.reservedCapacityB)
                             }
+                            # if ($ClusterVsanSpaceUsageReport.EfficientCapacity) {
+                            #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.LogicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacity)
+                            #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.LogicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.LogicalCapacityUsed)
+                            #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.PhysicalCapacity", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacity)
+                            #     $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.EfficientCapacity.PhysicalCapacityUsed", $ClusterVsanSpaceUsageReport.EfficientCapacity.PhysicalCapacityUsed)
+                            #     if ($ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize) {
+                            #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.CompressionMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.CompressionMetadataSize)
+                            #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.SpaceEfficiencyMetadataSize.DedupMetadataSize)
+                            #     } elseif ($ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize) {
+                            #         $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SpaceEfficiencyMetadataSize.DedupMetadataSize", $ClusterVsanSpaceUsageReport.EfficientCapacity.DedupMetadataSize)
+                            #     }
+                            # }        
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQuerySpaceUsage for cluster $vcenter_cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                        }
 
-                            try {
-                                Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
-                                # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
-                                # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
-                                $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
-                                if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
-                                    if ($QuerySyncingVsanObjectsSummary.Objects) {
-                                        $ReasonsToSync = @{}
-                                        foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
-                                            $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
-                                            $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
-                                        }
-
-                                        foreach ($ReasonToSync in $ReasonsToSync.keys) {
-                                            $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
-                                        }        
+                        try {
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
+                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
+                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
+                            $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(New-Object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
+                            if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
+                                if ($QuerySyncingVsanObjectsSummary.Objects) {
+                                    $ReasonsToSync = @{}
+                                    foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
+                                        $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
+                                        $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
                                     }
-        
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA",$QuerySyncingVsanObjectsSummary.TotalRecoveryETA)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalBytesToSync",$QuerySyncingVsanObjectsSummary.TotalBytesToSync)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync",$QuerySyncingVsanObjectsSummary.TotalObjectsToSync)
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync",($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count)
 
+                                    foreach ($ReasonToSync in $ReasonsToSync.keys) {
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
+                                    }        
                                 }
-                            } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $vcenter_cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+    
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA",$QuerySyncingVsanObjectsSummary.TotalRecoveryETA)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalBytesToSync",$QuerySyncingVsanObjectsSummary.TotalBytesToSync)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync",$QuerySyncingVsanObjectsSummary.TotalObjectsToSync)
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync",($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count)
+
                             }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $vcenter_cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                        }
+
+                        try {
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
+                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
+                            if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                                foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                                    if ($ObjectHealth.NumObjects -gt 0) {
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
+                                    }
+                                }        
+                            }
+                        } catch {
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $vcenter_cluster_name"
+                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                         }
                     }
-                } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue in cluster $vcenter_cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
                 }
             }
         }
