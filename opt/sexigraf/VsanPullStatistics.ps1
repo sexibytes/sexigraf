@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.77"
+$ScriptVersion = "0.9.78"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -385,40 +385,40 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 if ($cluster_host_random.Config.Product.ApiVersion -ge 6.7) {
-                    try {
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
-                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
-                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
-                        $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
-                        if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
-                            if ($QuerySyncingVsanObjectsSummary.Objects) {
-                                $ReasonsToSync = @{}
-                                foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
-                                    $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
-                                    $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
-                                }
-                                $ReasonsToSyncHash = @{}
-                                foreach ($ReasonToSync in $ReasonsToSync.keys) {
-                                    # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $using:ExecStart
-                                    $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
-                                }
+                    # try {
+                    #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
+                    #     # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
+                    #     # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
+                    #     $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
+                    #     if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
+                    #         if ($QuerySyncingVsanObjectsSummary.Objects) {
+                    #             $ReasonsToSync = @{}
+                    #             foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
+                    #                 $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
+                    #                 $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
+                    #             }
+                    #             $ReasonsToSyncHash = @{}
+                    #             foreach ($ReasonToSync in $ReasonsToSync.keys) {
+                    #                 # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $using:ExecStart
+                    #                 $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
+                    #             }
 
-                                Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $using:ExecStart
-                            }
+                    #             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $using:ExecStart
+                    #         }
 
-                            $SyncingVsanObjectsHash = @{
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $QuerySyncingVsanObjectsSummary.TotalRecoveryETA;
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $QuerySyncingVsanObjectsSummary.TotalBytesToSync;
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
-                            }
+                    #         $SyncingVsanObjectsHash = @{
+                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $QuerySyncingVsanObjectsSummary.TotalRecoveryETA;
+                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $QuerySyncingVsanObjectsSummary.TotalBytesToSync;
+                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
+                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
+                    #         }
 
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
-                        }
-                    } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                    }
+                    #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
+                    #     }
+                    # } catch {
+                    #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
+                    #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                    # }
 
                 } else {
                     try {
