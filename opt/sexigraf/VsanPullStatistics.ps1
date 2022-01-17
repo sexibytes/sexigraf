@@ -448,23 +448,23 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
 
-                try {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
-                    $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
-                    if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
-                        $VcClusterObjectHealthDetail_h = @{}
-                        foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
-                            if ($ObjectHealth.NumObjects -gt 0) {
-                                $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
-                            }
-                        }
+                # try {
+                #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
+                #     $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
+                #     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                #         $VcClusterObjectHealthDetail_h = @{}
+                #         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                #             if ($ObjectHealth.NumObjects -gt 0) {
+                #                 $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
+                #             }
+                #         }
 
-                        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $using:ExecStart
-                    }
-                } catch{
-                    Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                }
+                #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $using:ExecStart
+                #     }
+                # } catch{
+                #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
+                #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                # }
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
             }
