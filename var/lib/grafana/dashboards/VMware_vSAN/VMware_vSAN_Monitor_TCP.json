@@ -697,13 +697,6 @@
         {
           "hide": false,
           "refCount": 0,
-          "refId": "E",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_reset), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
           "refId": "F",
           "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_unreach), 1), 9)",
           "textEditor": false
