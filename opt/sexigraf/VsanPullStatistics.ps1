@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.78"
+$ScriptVersion = "0.9.79"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -384,88 +384,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     AltAndCatchFire "Unable to retreive PhysicalVsanDisks from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
                 }
 
-                if ($cluster_host_random.Config.Product.ApiVersion -ge 6.7) {
-                    # try {
-                    #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $cluster_name (v6.7+) ..."
-                    #     # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
-                    #     # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
-                    #     $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(new-object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
-                    #     if ($QuerySyncingVsanObjectsSummary.TotalObjectsToSync -gt 0) {
-                    #         if ($QuerySyncingVsanObjectsSummary.Objects) {
-                    #             $ReasonsToSync = @{}
-                    #             foreach ($SyncingComponent in $QuerySyncingVsanObjectsSummary.Objects.Components) {
-                    #                 $SyncingComponentJoinReason = $SyncingComponent.Reasons -join "-"
-                    #                 $ReasonsToSync.$SyncingComponentJoinReason += $SyncingComponent.BytesToSync
-                    #             }
-                    #             $ReasonsToSyncHash = @{}
-                    #             foreach ($ReasonToSync in $ReasonsToSync.keys) {
-                    #                 # Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync" -MetricValue $ReasonsToSync.$ReasonToSync -DateTime $using:ExecStart
-                    #                 $ReasonsToSyncHash.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.bytesToSync.$ReasonToSync",$ReasonsToSync.$ReasonToSync)
-                    #             }
-
-                    #             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $ReasonsToSyncHash -DateTime $using:ExecStart
-                    #         }
-
-                    #         $SyncingVsanObjectsHash = @{
-                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $QuerySyncingVsanObjectsSummary.TotalRecoveryETA;
-                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $QuerySyncingVsanObjectsSummary.TotalBytesToSync;
-                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $QuerySyncingVsanObjectsSummary.TotalObjectsToSync;
-                    #             "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalComponentsToSync" = ($QuerySyncingVsanObjectsSummary.Objects.Components|Measure-Object -sum).count;
-                    #         }
-
-                    #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
-                    #     }
-                    # } catch {
-                    #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $cluster_name"
-                    #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                    # }
-
-                } else {
-                    try {
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                        $cluster_SyncingVsanObjects = $cluster_host_random_VsanInternalSystem.QuerySyncingVsanObjects(@())|ConvertFrom-Json -AsHashtable
-                        if ($cluster_SyncingVsanObjects."dom_objects".keys) {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjects dom_objects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name ..."
-                            $SyncingVsanObjects = ""|Select-Object bytesToSync, recoveryETA, Objs
-                            $SyncingVsanObjects.recoveryETA = 0
-                            foreach ($cluster_SyncingVsanObjects_dom in $($cluster_SyncingVsanObjects."dom_objects").keys) {
-                                GetDomChild $($cluster_SyncingVsanObjects."dom_objects")[$cluster_SyncingVsanObjects_dom].config.content $SyncingVsanObjects
-                            }
-                            if ($SyncingVsanObjects.Objs -gt 0 -and $SyncingVsanObjects.recoveryETA -gt 0) {
-                                $SyncingVsanObjects.recoveryETA = $SyncingVsanObjects.recoveryETA / $SyncingVsanObjects.Objs
-                            }
-                            $SyncingVsanObjectsHash = @{
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalRecoveryETA" = $SyncingVsanObjects.recoveryETA;
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalBytesToSync" = $SyncingVsanObjects.bytesToSync;
-                                "vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.SyncingVsanObjects.totalObjectsToSync" = $SyncingVsanObjects.Objs;
-                            }
-
-                            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $SyncingVsanObjectsHash -DateTime $using:ExecStart
-                        }
-                    } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjects from $($cluster_host_random.config.network.dnsConfig.hostName) in cluster $cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                    }
-                }
-
-                # try {
-                #     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $cluster_name ..."
-                #     $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false)
-                #     if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
-                #         $VcClusterObjectHealthDetail_h = @{}
-                #         foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
-                #             if ($ObjectHealth.NumObjects -gt 0) {
-                #                 $VcClusterObjectHealthDetail_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.vsan.ObjectHealthDetail.$($ObjectHealth.Health)", $($ObjectHealth.NumObjects))
-                #             }
-                #         }
-
-                #         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VcClusterObjectHealthDetail_h -DateTime $using:ExecStart
-                #     }
-                # } catch{
-                #     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $cluster_name"
-                #     Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
-                # }
-
                 Write-Host "$((Get-Date).ToString("o")) [INFO] End processing cluster $cluster_name in datacenter $datacentre_name"
             }
         }
@@ -504,23 +422,23 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     
             $cluster_host_VsanStatistics_h = @{}
     
-            foreach ($cluster_host_VsanStatistics_compmgr_stats in $cluster_host_VsanStatistics['dom.compmgr.stats'].keys|?{$_ -notmatch "Histogram"}) {
+            foreach ($cluster_host_VsanStatistics_compmgr_stats in $cluster_host_VsanStatistics['dom.compmgr.stats'].keys|?{$_ -notmatch "Histogram" -and $_ -match "^readCount$|^writeCount$|^recoveryWriteCount$|^readLatencySumUs$|^writeLatencySumUs$|^recoveryWriteLatencySumUs$|^readBytes$|^writeBytes$|^recoveryWriteBytes$|^readCongestionSum$|^writeCongestionSum$|^recoveryWriteCongestionSum$|^ioCount$|^numOIOSum$|^readCachedCount$|^proxyReadCount$|^proxyWriteCount$|^proxyRWResyncCount$|^proxyReadLatencySumUs$|^proxyWriteLatencySumUs$|^proxyRWResyncLatencySumUs$|^anchorReadCount$|^anchorWriteCount$|^anchorRWResyncCount$|^anchorReadLatencySumUs$|^anchorWriteLatencySumUs$|^anchorRWResyncLatencySumUs$|^proxyReadBytes$|^proxyWriteBytes$|^proxyRWResyncBytes$|^anchorReadBytes$|^anchorWriteBytes$|^anchorRWResyncBytes$|^proxyReadCongestionSum$|^proxyWriteCongestionSum$|^proxyRWResyncCongestionSum$|^anchorReadCongestionSum$|^anchorWriteCongestionSum$|^anchorRWResyncCongestionSum$|^unmapCount$|^unmapCongestionSum$|^unmappedWriteCount$|^unmappedWriteCongestionSum$|^recoveryUnmapCount$|^recoveryUnmapCongestionSum$|^unmapBytes$|^unmappedWriteBytes$|^recoveryUnmapBytes$|^resyncReadCongestionSum$"}) {
                 $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.compmgr.stats.$cluster_host_VsanStatistics_compmgr_stats", $cluster_host_VsanStatistics['dom.compmgr.stats'].$cluster_host_VsanStatistics_compmgr_stats)
             }
     
-            foreach ($cluster_host_VsanStatistics_client_stats in $cluster_host_VsanStatistics['dom.client.stats'].keys) {
+            foreach ($cluster_host_VsanStatistics_client_stats in $cluster_host_VsanStatistics['dom.client.stats'].keys|?{$_ -match "^readCount$|^writeCount$|^recoveryWriteCount$|^readLatencySumUs$|^writeLatencySumUs$|^recoveryWriteLatencySumUs$|^readBytes$|^writeBytes$|^recoveryWriteBytes$|^readCongestionSum$|^writeCongestionSum$|^recoveryWriteCongestionSum$|^ioCount$|^numOIOSum$|^readCachedCount$|^proxyReadCount$|^proxyWriteCount$|^proxyRWResyncCount$|^proxyReadLatencySumUs$|^proxyWriteLatencySumUs$|^proxyRWResyncLatencySumUs$|^anchorReadCount$|^anchorWriteCount$|^anchorRWResyncCount$|^anchorReadLatencySumUs$|^anchorWriteLatencySumUs$|^anchorRWResyncLatencySumUs$|^proxyReadBytes$|^proxyWriteBytes$|^proxyRWResyncBytes$|^anchorReadBytes$|^anchorWriteBytes$|^anchorRWResyncBytes$|^proxyReadCongestionSum$|^proxyWriteCongestionSum$|^proxyRWResyncCongestionSum$|^anchorReadCongestionSum$|^anchorWriteCongestionSum$|^anchorRWResyncCongestionSum$|^unmapCount$|^unmapCongestionSum$|^unmappedWriteCount$|^unmappedWriteCongestionSum$|^recoveryUnmapCount$|^recoveryUnmapCongestionSum$|^unmapBytes$|^unmappedWriteBytes$|^recoveryUnmapBytes$|^resyncReadCongestionSum$"}) {
                 $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.client.stats.$cluster_host_VsanStatistics_client_stats", $cluster_host_VsanStatistics['dom.client.stats'].$cluster_host_VsanStatistics_client_stats)
             }
     
-            foreach ($cluster_host_VsanStatistics_owner_stats in $cluster_host_VsanStatistics['dom.owner.stats'].keys) {
+            foreach ($cluster_host_VsanStatistics_owner_stats in $cluster_host_VsanStatistics['dom.owner.stats'].keys|?{$_ -match "^readCount$|^writeCount$|^recoveryWriteCount$|^readLatencySumUs$|^writeLatencySumUs$|^recoveryWriteLatencySumUs$|^readBytes$|^writeBytes$|^recoveryWriteBytes$|^readCongestionSum$|^writeCongestionSum$|^recoveryWriteCongestionSum$|^ioCount$|^numOIOSum$|^readCachedCount$|^proxyReadCount$|^proxyWriteCount$|^proxyRWResyncCount$|^proxyReadLatencySumUs$|^proxyWriteLatencySumUs$|^proxyRWResyncLatencySumUs$|^anchorReadCount$|^anchorWriteCount$|^anchorRWResyncCount$|^anchorReadLatencySumUs$|^anchorWriteLatencySumUs$|^anchorRWResyncLatencySumUs$|^proxyReadBytes$|^proxyWriteBytes$|^proxyRWResyncBytes$|^anchorReadBytes$|^anchorWriteBytes$|^anchorRWResyncBytes$|^proxyReadCongestionSum$|^proxyWriteCongestionSum$|^proxyRWResyncCongestionSum$|^anchorReadCongestionSum$|^anchorWriteCongestionSum$|^anchorRWResyncCongestionSum$|^unmapCount$|^unmapCongestionSum$|^unmappedWriteCount$|^unmappedWriteCongestionSum$|^recoveryUnmapCount$|^recoveryUnmapCongestionSum$|^unmapBytes$|^unmappedWriteBytes$|^recoveryUnmapBytes$|^resyncReadCongestionSum$"}) {
                 $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.owner.stats.$cluster_host_VsanStatistics_owner_stats", $cluster_host_VsanStatistics['dom.owner.stats'].$cluster_host_VsanStatistics_owner_stats)
             }
     
-            foreach ($cluster_host_VsanStatistics_cachestats in $cluster_host_VsanStatistics['dom.client.cachestats'].keys) {
+            foreach ($cluster_host_VsanStatistics_cachestats in $cluster_host_VsanStatistics['dom.client.cachestats'].keys|?{$_ -match "^lookups$|^hits$"}) {
                 $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.client.cachestats.$cluster_host_VsanStatistics_cachestats", $cluster_host_VsanStatistics['dom.client.cachestats'].$cluster_host_VsanStatistics_cachestats)
             }
     
-            foreach ($cluster_host_VsanStatistics_tcpstats in $cluster_host_VsanStatistics['tcpip.stats.tcp'].keys) {
+            foreach ($cluster_host_VsanStatistics_tcpstats in $cluster_host_VsanStatistics['tcpip.stats.tcp'].keys|?{$_ -match "^rcvpack$|^sndpack$|^rcvbyte$|^sndbyte$|^drop$|^sack_rexmits$|^sack_recovery_episode$|^sack_sboverflow$|^rcvdupack$|^rcvduppack$|^rcvpartduppack$|^rcvacktoomuch$|^rcvoopack$|^bad$|^snd_zerowin$|^rcvpackafterwin$|^sc_reset$|^sc_bucketoverflow$|^sc_cacheoverflow$|^sc_unreach$|^sc_stale$"}) {
                 $cluster_host_VsanStatistics_h.add("vsan.$vcenter_name.$datacentre_name.$cluster_name.esx.$host_name.vsan.tcpip.stats.$cluster_host_VsanStatistics_tcpstats", $cluster_host_VsanStatistics['tcpip.stats.tcp'].$cluster_host_VsanStatistics_tcpstats)
             }
     

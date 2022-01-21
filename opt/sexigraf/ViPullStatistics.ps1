@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.945"
+$ScriptVersion = "0.9.947"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -260,8 +260,6 @@ try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $Server ..."
         $ServiceInstance = Get-View ServiceInstance -Server $Server
         # $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property "" -Server $Server
-        $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server
-        $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
         $ServiceInstanceServerClock = $ServiceInstance.CurrentTime()
         $ServiceInstanceServerClock_5 = $ServiceInstanceServerClock.AddMinutes(-5)
         $vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))
@@ -270,6 +268,18 @@ try {
     }
 } catch {
     AltAndCatchFire "Unable to verify vCenter connection"
+}
+
+try {
+    if ($ServiceInstance) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SessionManager & EventManager ..."
+        $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server # Permission to perform this operation was denied. Required privilege 'Sessions.TerminateSession' on managed object with id 'Folder-group-d1'.
+        $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
+    } else {
+        AltAndCatchFire "ServiceInstance check failure"
+    }
+} catch {
+    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
 }
 
 try {
@@ -303,7 +313,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner, summary.quickStats -Server $Server
-        $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore -Server $Server
+        $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore -Server $Server # ConfigurationEx.VsanHostConfig.StorageInfo.DiskMapping.Ssd.VsanDiskInfo.VsanUuid ConfigurationEx.VsanHostConfig.StorageInfo.DiskMapping.NonSsd.VsanDiskInfo.VsanUuid
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
         $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
         $vcenter_pods = Get-View -ViewType StoragePod -Property name, summary, parent, childEntity -Server $Server
@@ -343,12 +353,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_vmhosts_h = @{}
     $vcenter_vmhosts_short_h = @{}
+    $vcenter_vmhosts_NodeUuid_h = @{}
     foreach ($vcenter_vmhost in $vcenter_vmhosts) {
         try {
             $vcenter_vmhosts_h.add($vcenter_vmhost.MoRef.Value, $vcenter_vmhost)
         } catch {}
         if ($vcenter_vmhost.Config.VsanHostConfig.ClusterInfo.NodeUuid) {
-            $vcenter_vmhost_vsan ++
+            $vcenter_vmhosts_NodeUuid_h.add($vcenter_vmhost.Config.VsanHostConfig.ClusterInfo.NodeUuid,$($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
             $vcenter_vmhosts_short_h.add($vcenter_vmhost.name, $($vcenter_vmhost.config.network.dnsConfig.hostName).ToLower())
         }
     }
@@ -449,7 +460,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
-        if ($vcenter_vmhost_vsan -gt 0 -and $vSanPull) {
+        if ($vcenter_vmhosts_NodeUuid_h.Count -gt 0 -and $vSanPull) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
             $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
@@ -966,22 +977,31 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                     }
 
-                } else {
+                } else { # VsanPullStatistics
 
                     $vcenter_cluster_datastore_vsan_cluster_uuid = $vcenter_cluster_host.Config.VsanHostConfig.ClusterInfo.Uuid
                     $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url,'.*vsan:(.*)\/').Groups[1].value)
 
-                    if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull) { # skip vSAN HCI Mesh
+                    if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull -and $ServiceInstance.Content.About.ApiVersion -ge 6.7) { # skip vSAN HCI Mesh
                         try {
                             Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
                             # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
-                            $VsanClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{endTime=$ServiceInstanceServerClock;entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5}
                             # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
                             # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
-                            $VsanClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanClusterPerfQuerySpec,$vcenter_cluster.moref)
-                            if ($VsanClusterPerfQuery) {
+                            $VsanHostsAndClusterPerfQuerySpec = @()
+                            # cluster-domclient
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            # host-domclient host-domowner host-domcompmgr vsan-vnic-net
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:*";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:*";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:*";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            
+                            $VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)
+                            if ($VsanHostsAndClusterPerfQuery) {
+                                # cluster-domclient
                                 $VsanClusterPerfQueryId = @{}
-                                foreach ($VsanClusterPerfQueryValue in $VsanClusterPerfQuery.Value) {
+                                foreach ($VsanClusterPerfQueryValue in $($VsanHostsAndClusterPerfQuery|?{$_.EntityRefId -match $vcenter_cluster_datastore_vsan_cluster_uuid}).Value) {
                                     $VsanClusterPerfQueryId.add($VsanClusterPerfQueryValue.MetricId.Label,$VsanClusterPerfQueryValue.Values)
                                 }
                                 $VsanClusterPerfMaxLatency = $(@($VsanClusterPerfQueryId["latencyAvgRead"].replace(",","."),$VsanClusterPerfQueryId["latencyAvgWrite"].replace(",","."))|Measure-Object -Maximum).Maximum
@@ -991,6 +1011,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
                                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+
+
                             } else {
                                 Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
                             }
