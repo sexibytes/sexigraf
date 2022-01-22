@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.950"
+$ScriptVersion = "0.9.954"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -261,7 +261,6 @@ try {
         $ServiceInstance = Get-View ServiceInstance -Server $Server
         # $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property "" -Server $Server
         $ServiceInstanceServerClock = $ServiceInstance.CurrentTime()
-        $ServiceInstanceServerClock_1s = $ServiceInstanceServerClock.AddSeconds(-1)
         $ServiceInstanceServerClock_5 = $ServiceInstanceServerClock.AddMinutes(-5)
         $vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))
     } else {
@@ -995,23 +994,25 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
                             $VsanHostsAndClusterPerfQuerySpec = @()
                             # cluster-domclient
-                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_1s;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             # host-domclient host-domowner host-domcompmgr
                             foreach ($vcenter_vmhost_NodeUuid in $vcenter_vmhosts_moref_NodeUuid_h[$vcenter_cluster.Host.value]|?{$_}) {
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_1s;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_1s;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_1s;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             }
                             # vsan-vnic-net
-                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("*");startTime=$ServiceInstanceServerClock_1s;endTime=$ServiceInstanceServerClock}
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+
+                            $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSan Cluster $vcenter_cluster_name in vCenter $vcenter_name"
                             
-                            $VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)
                             if ($VsanHostsAndClusterPerfQuery) {
                                 $VsanPerfEntityMetric = @{}
                                 foreach ($VsanHostsAndClusterPerfEntity in $VsanHostsAndClusterPerfQuery) {
                                     $VsanHostsAndClusterPerfMetrics = @{}
                                     foreach ($VsanHostsAndClusterPerfEntityMetrics in $VsanHostsAndClusterPerfEntity.Value) {
-                                        $VsanHostsAndClusterPerfMetrics.add($VsanHostsAndClusterPerfEntityMetrics.MetricId.Label,$VsanHostsAndClusterPerfEntityMetrics.Values)
+                                        $VsanHostsAndClusterPerfMetrics.add($VsanHostsAndClusterPerfEntityMetrics.MetricId.Label,$VsanHostsAndClusterPerfEntityMetrics.Values.split(",")[-1])
                                     }
                                     $VsanHostsAndClusterPerfEntityRef = @{}
                                     $VsanHostsAndClusterPerfEntityRef.add($VsanHostsAndClusterPerfEntity.EntityRefId.Split(":")[0],$VsanHostsAndClusterPerfMetrics)
@@ -1023,15 +1024,66 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     }
                                 }
 
-                                # cluster-domclient
                                 if ($VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]) {
-                                    $VsanClusterPerfMaxLatency = $(@($VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]["latencyAvgRead"],$VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]d["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
+                                    $VsanClusterPerfMaxLatency = $(@($VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]["latencyAvgRead"],$VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]["latencyAvgWrite"])|Measure-Object -Maximum).Maximum
                                     $vcenter_cluster_datastores_latency += $VsanClusterPerfMaxLatency
                                     $VsanClusterPerfIops = $(@($VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]["iopsWrite"],$VsanPerfEntityMetric[$vcenter_cluster_datastore_vsan_cluster_uuid]["cluster-domclient"]["iopsRead"])|Measure-Object -Sum).Sum
                                     $vcenter_cluster_datastores_iops += $VsanClusterPerfIops 
     
                                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $VsanClusterPerfIops)
                                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $VsanClusterPerfMaxLatency)
+                                }
+
+                                foreach ($vcenter_vmhost_NodeUuid in $vcenter_vmhosts_moref_NodeUuid_h[$vcenter_cluster.Host.value]|?{$_}) {
+                                    $vcenter_vmhost_NodeUuid_Name = $($vcenter_vmhosts_NodeUuid_name_h[$vcenter_vmhost_NodeUuid])
+                                    # iopsRead
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.iopsRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["iopsRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.iopsRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["iopsRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.iopsRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["iopsRead"])
+                                    # iopsWrite
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.iopsWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["iopsWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.iopsWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["iopsWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.iopsWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["iopsWrite"])
+                                    # throughputRead
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.throughputRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["throughputRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.throughputRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["tputRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.throughputRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["throughputRead"])
+                                    # throughputWrite
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.throughputWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["throughputWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.throughputWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["tputWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.throughputWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["throughputWrite"])
+                                    # latencyAvgRead
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.latencyAvgRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["latencyAvgRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.latencyAvgRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["latencyAvgRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.latencyAvgRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latencyAvgRead"])
+                                    # latencyAvgWrite
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.latencyAvgWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["latencyAvgWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.latencyAvgWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["latencyAvgWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.latencyAvgWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latencyAvgWrite"])
+                                    # readCongestion
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.readCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["readCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.readCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["readCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.readCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["readCongestion"])
+                                    # writeCongestion
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.writeCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["writeCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.writeCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["writeCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.writeCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["writeCongestion"])
+                                    # latencyAvgRecWrite
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.latencyAvgRecWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["latencyAvgRecWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.latencyAvgRecWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latencyAvgRecWrite"])
+                                    # iopsResyncRead
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.iopsResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["iopsResyncRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.iopsResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["iopsResyncRead"])
+                                    # tputResyncRead
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domowner.tputResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domowner"]["tputResyncRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.tputResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["tputResyncRead"])
+                                    #
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.resyncReadCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["resyncReadCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.recWriteCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["recWriteCongestion"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.latAvgResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latAvgResyncRead"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.throughputRecWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["throughputRecWrite"])
+                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.clientCacheHitRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["writeCongestion"])
+
                                 }
 
                             } else {
