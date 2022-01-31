@@ -7,7 +7,7 @@
   notifempty
   create 600 www-data www-data
 }
-/var/log/sexigraf/carbon/carbon-cache-a/*.log {
+/var/log/sexigraf/carbon/carbon-cache-*/*.log {
   hourly
   missingok
   rotate 24
@@ -15,15 +15,7 @@
   delaycompress
   notifempty
 }
-/var/log/sexigraf/carbon/carbon-cache-b/*.log {
-  hourly
-  missingok
-  rotate 24
-  compress
-  delaycompress
-  notifempty
-}
-/var/log/sexigraf/carbon/carbon-relay-a/*.log {
+/var/log/sexigraf/carbon/carbon-relay-*/*.log {
   hourly
   missingok
   rotate 24
