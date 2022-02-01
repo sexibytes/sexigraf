@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.970"
+$ScriptVersion = "0.9.972"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1026,18 +1026,19 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                             # host-domclient host-domowner host-domcompmgr
                             foreach ($vcenter_vmhost_NodeUuid in $vcenter_vmhosts_moref_NodeUuid_h[$vcenter_cluster.Host.value]|?{$_}) {
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","oio","clientCacheHits");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","oio","clientCacheHitRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","tputRead","tputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","oio");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="dom-proxy-owner:$vcenter_vmhost_NodeUuid";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","resyncReadCongestion","recWriteCongestion","latAvgResyncRead","throughputRecWrite","oio");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-host-net:$vcenter_vmhost_NodeUuid";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","txPacketsLossRate","tcpTxRexmitRate","rxPacketsLossRate","tcpRxErrRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             }
 
                             # vsan-vnic-net
-                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
+                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
 
                             # cache-disk disk-group
                             foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cache-disk:$vcenter_cluster_vsan_Ssd_uuid";labels=@("latencyDevRead","latencyDevWrite","wbFreePct","rcHitRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-                                # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="disk-group:$vcenter_cluster_vsan_Ssd_uuid";labels=@("*");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cache-disk:$vcenter_cluster_vsan_Ssd_uuid";labels=@("latencyDevRead","latencyDevWrite","wbFreePct");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             }
 
                             # capacity-disk
@@ -1140,50 +1141,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["recWriteCongestion"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.recWriteCongestion", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["recWriteCongestion"])}
                                 if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latAvgResyncRead"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.latAvgResyncRead", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["latAvgResyncRead"])}
                                 if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["throughputRecWrite"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domcompmgr.throughputRecWrite", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domcompmgr"]["throughputRecWrite"])}
-                                # if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHitRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.clientCacheHitRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHitRate"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHits"] -gt 0 -and $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["iopsRead"] -gt 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.clientCacheHitRate", $([INT64]$VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHits"]) * 100 / [INT64]$VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["iopsRead"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHits"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.clientCacheHits", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHits"])}
-                                # vsan-vnic-net
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txPackets"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.txPackets", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txPackets"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxPackets"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.rxPackets", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxPackets"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txThroughput"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.txThroughput", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txThroughput"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxThroughput"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.rxThroughput", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxThroughput"])}
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRxErrRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpRxErrRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRxErrRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvduppackRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpRcvduppackRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvduppackRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvdupackRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpRcvdupackRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvdupackRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpTimeoutDropRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpTimeoutDropRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpTimeoutDropRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackSendBlocksRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpSackSendBlocksRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackSendBlocksRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxPacketsLossRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.rxPacketsLossRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["rxPacketsLossRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackRcvBlocksRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpSackRcvBlocksRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackRcvBlocksRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpTxRexmitRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpTxRexmitRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpTxRexmitRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpHalfopenDropRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpHalfopenDropRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpHalfopenDropRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackRexmitsRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpSackRexmitsRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpSackRexmitsRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvoopackRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.tcpRcvoopackRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["tcpRcvoopackRate"])
-                                }
-                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txPacketsLossRate"] -ge 0) {
-                                    $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.vnic.txPacketsLossRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-vnic-net"]["txPacketsLossRate"])
-                                }
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHitRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.domclient.clientCacheHitRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["host-domclient"]["clientCacheHitRate"])}
+                                # vsan-host-net
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txPackets"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.txPackets", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txPackets"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxPackets"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.rxPackets", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxPackets"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txThroughput"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.txThroughput", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txThroughput"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxThroughput"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.rxThroughput", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxThroughput"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["tcpRxErrRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.tcpRxErrRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["tcpRxErrRate"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxPacketsLossRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.rxPacketsLossRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["rxPacketsLossRate"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["tcpTxRexmitRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.tcpTxRexmitRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["tcpTxRexmitRate"])}
+                                if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txPacketsLossRate"] -ge 0) {$vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.txPacketsLossRate", $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["txPacketsLossRate"])}
                             }
 
                             foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
@@ -1191,9 +1158,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 $vcenter_cluster_vsan_Ssd_name = $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_Ssd_uuid]
                                 $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevRead"])
                                 $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevWrite"])
-                                $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
-                                $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.rcHitRate", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["rcHitRate"])
-
+                                $vcenter_cluster_h.add("virtualsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.domcompmgr.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
                             }
 
                             foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
