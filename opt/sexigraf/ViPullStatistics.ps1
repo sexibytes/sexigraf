@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.976"
+$ScriptVersion = "0.9.977"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1195,7 +1195,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 $vcenter_cluster_vsan_nonSsd_name = $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_nonSsd_uuid]
                                 $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevRead"])
                                 $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevWrite"])
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
+                                # $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
                                 $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.percentUsed", $([INT64]$VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"] * 100 / [INT64]$vcenter_vmhosts_vsan_disk_capa_h[$vcenter_cluster_vsan_nonSsd_uuid]))
                             }
 

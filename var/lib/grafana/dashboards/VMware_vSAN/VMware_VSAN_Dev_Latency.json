@@ -72,38 +72,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.readOps)",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "derivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.writeOps)",
+              "hide": false,
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.$dev.latencyDevRead, 'Read')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeReads), #A), 'tReads')",
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.$dev.latencyDevWrite, 'Write')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.totalTimeWrites), #B), 'tWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeReads), #A), 'qReads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(divideSeries(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.queueTimeWrites), #B), 'qWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "aliasByNode(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.$dev.writeOps, 0), 5)",
+              "target": "aliasByNode(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.*.$dev.latencyDevWrite, -1), 5)",
               "textEditor": false
             }
           ],
@@ -134,7 +114,6 @@
       "notice": false,
       "now": true,
       "refresh_intervals": [
-        "1m",
         "5m",
         "15m",
         "30m",
@@ -236,6 +215,39 @@
         "type": "query"
       },
       {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "*"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "multi": false,
+        "name": "tier",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "*"
+          },
+          {
+            "selected": false,
+            "text": "cache",
+            "value": "cache"
+          },
+          {
+            "selected": false,
+            "text": "capacity",
+            "value": "capacity"
+          }
+        ],
+        "query": "cache,capacity",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {
@@ -247,7 +259,7 @@
         "name": "dev",
         "options": [
         ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disks.stats.*.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.*",
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
@@ -258,7 +270,7 @@
   "annotations": {
     "list": []
   },
-  "refresh": "1m",
+  "refresh": "rm",
   "schemaVersion": 6,
   "version": 2,
   "links": []

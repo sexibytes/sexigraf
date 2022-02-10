@@ -6,7 +6,8 @@
   "tags": [
     "vSAN",
     "HDD",
-    "SSD"
+    "SSD",
+    "AF"
   ],
   "style": "light",
   "timezone": "browser",
@@ -638,7 +639,7 @@
             },
             {
               "hide": false,
-              "target": "alias(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.cache.*.wbFreePct), 'WriteBufferFree')",
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.cache.*.wbFreePct, 'WriteBufferFree')",
               "textEditor": false
             }
           ],

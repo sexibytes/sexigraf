@@ -89,14 +89,14 @@
       "targets": [
         {
           "refCount": 0,
-          "refId": "H",
-          "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvpack), 1), 'Inbound')",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxPackets, 'Inbound')",
           "textEditor": false
         },
         {
           "refCount": 0,
-          "refId": "A",
-          "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sndpack), 1), 'Outbound')",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txPackets, 'Outbound')",
           "textEditor": false
         }
       ],
@@ -207,13 +207,13 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvbyte), 1), 'Inbound')",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxThroughput, 'Inbound')",
           "textEditor": false
         },
         {
           "refCount": 0,
-          "refId": "C",
-          "target": "alias(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sndbyte), 1), 'Outbound')",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txThroughput, 'Outbound')",
           "textEditor": false
         }
       ],
@@ -314,8 +314,8 @@
         {
           "hide": false,
           "refCount": 0,
-          "refId": "G",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.*drop*), 1), 9)",
+          "refId": "A",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.tcpRxErrRate, 8)",
           "textEditor": false
         }
       ],
@@ -341,7 +341,7 @@
         {
           "$$hashKey": "object:2050",
           "decimals": 0,
-          "format": "pps",
+          "format": "percent",
           "logBase": 1,
           "max": null,
           "min": 0,
@@ -418,51 +418,14 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sack_rexmits), 1), 9)",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxPacketsLossRate, 8)",
           "textEditor": false
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sack_recovery_episode), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
-          "refId": "C",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sack_sboverflow), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "D",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvdupack), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "E",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvduppack), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "F",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvpartduppack), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "G",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvacktoomuch), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "H",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvoopack), 1), 9)",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txPacketsLossRate, 8)",
           "textEditor": false
         }
       ],
@@ -470,7 +433,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "SACK/DUP/OOO",
+      "title": "Packet Loss",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -488,7 +451,7 @@
         {
           "$$hashKey": "object:4100",
           "decimals": 0,
-          "format": "pps",
+          "format": "percent",
           "logBase": 1,
           "max": null,
           "min": 0,
@@ -563,12 +526,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.*bad*), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "refId": "B",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.snd_zerowin), 1), 9)",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.tcpTxRexmitRate, 8)",
           "textEditor": false
         }
       ],
@@ -576,7 +534,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bad",
+      "title": "TCP Tx Rexmit",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -594,7 +552,7 @@
         {
           "$$hashKey": "object:5766",
           "decimals": 0,
-          "format": "pps",
+          "format": "percent",
           "logBase": 1,
           "max": null,
           "min": 0,
@@ -671,41 +629,13 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.rcvpackafterwin), 1), 9)",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.portRxDropsRate, 8)",
           "textEditor": false
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_reset), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
-          "refId": "C",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_bucketoverflow), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
-          "refId": "D",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_cacheoverflow), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
-          "refId": "F",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_unreach), 1), 9)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refCount": 0,
-          "refId": "G",
-          "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.tcpip.stats.sc_stale), 1), 9)",
+          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.portTxDropsRate, 8)",
           "textEditor": false
         }
       ],
@@ -713,7 +643,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "SynCache",
+      "title": "Tx Drops",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -731,7 +661,7 @@
         {
           "$$hashKey": "object:8106",
           "decimals": 0,
-          "format": "pps",
+          "format": "percent",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -752,7 +682,7 @@
       }
     }
   ],
-  "refresh": "1m",
+  "refresh": "5m",
   "schemaVersion": 26,
   "style": "light",
   "tags": [
@@ -878,7 +808,6 @@
     "notice": false,
     "now": true,
     "refresh_intervals": [
-      "1m",
       "5m",
       "15m",
       "30m",
@@ -888,7 +817,6 @@
     ],
     "status": "Stable",
     "time_options": [
-      "30min",
       "1h",
       "2h",
       "3h",
@@ -904,7 +832,7 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware vSAN Monitor TCP",
+  "title": "VMware vSAN Network Monitor",
   "uid": "qnnvY-8Gk",
   "version": 11
 }
