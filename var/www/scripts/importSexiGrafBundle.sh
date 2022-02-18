@@ -18,7 +18,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # chown _graphite:_graphite -R /var/lib/graphite/whisper/*
     # find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
-    ### XXX check sexigraf version
+    ### XXX ToDo check sexigraf version
     /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*numVmotions.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} last 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
     /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
