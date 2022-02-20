@@ -7,25 +7,30 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /etc/init.d/carbon-relay stop
     /etc/init.d/cron stop
     if [ -d "/media/cdrom/whisper" ]; then
-        # /bin/cp -fR /media/cdrom/whisper/* /mnt/wfs/whisper/
-        ### XXX ToDo filter next release
-        rsync -aq /media/cdrom/whisper/ /mnt/wfs/whisper/ --exclude "vsan" --exclude "carbon" --exclude "collectd"
-        mkdir -p /mnt/wfs/whisper/vsan
-        rsync -aq /mnt/wfs/whisper/vsan/ /mnt/wfs/whisper/virtualsan/ --include "*/" --include "*spaceDetail*/**" --exclude='*' --prune-empty-dirs
+        if [[ $(< /media/cdrom/sexigraf_version) = '0.99h "Highway 17"' ]]; then
+            rsync -aq /media/cdrom/whisper/ /mnt/wfs/whisper/ --exclude "carbon" --exclude "collectd"
+        else
+            rsync -aq /media/cdrom/whisper/ /mnt/wfs/whisper/ --exclude "vsan" --exclude "carbon" --exclude "collectd"
+            mkdir -p /mnt/wfs/whisper/vsan
+            rsync -aq /mnt/wfs/whisper/vsan/ /mnt/wfs/whisper/virtualsan/ --include "*/" --include "*spaceDetail*/**" --exclude='*' --prune-empty-dirs
+        fi
     else
         tar -zxvf /media/cdrom/whisper.tgz -C /mnt/wfs/whisper/
     fi
     # chown _graphite:_graphite -R /var/lib/graphite/whisper/*
     # find /var/lib/graphite/whisper/ -type d -exec chmod 755 {} \;
     # find /var/lib/graphite/whisper/ -type f -exec chmod 644 {} \;
-    ### XXX ToDo check sexigraf version
-    /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*numVmotions.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} last 0 \;
-    /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
-    /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
-    /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*errorsRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
-    /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*errorsTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
-    /usr/bin/find -L /mnt/wfs/whisper/vsan/*/*/*/vsan/spaceDetail -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \;
-    chown -R carbon /mnt/wfs/whisper
+    if [[ $(< /media/cdrom/sexigraf_version) != '0.99h "Highway 17"' ]]; then
+        /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*numVmotions.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} last 0 \;
+        /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+        /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*droppedTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+        /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*errorsRx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+        /usr/bin/find -L /mnt/wfs/whisper/vmw -type f \( -name '*errorsTx.wsp' \) -exec /usr/local/bin/whisper-set-aggregation-method.py {} sum 0 \;
+        /usr/bin/find -L /mnt/wfs/whisper/vsan/*/*/*/vsan/spaceDetail -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \;
+        chown -R carbon /mnt/wfs/whisper
+    else
+        chown -R carbon /mnt/wfs/whisper
+    fi
 
     # Import Offline Inventory file
     /bin/cp -fR /media/cdrom/*.csv /mnt/wfs/inventory/
