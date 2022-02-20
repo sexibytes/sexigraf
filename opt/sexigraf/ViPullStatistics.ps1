@@ -2,14 +2,14 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.977"
+$ScriptVersion = "0.9.978"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
-#(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
+(Get-Process -Id $pid).PriorityClass = 'Idle'
 
 function AltAndCatchFire {
     Param($ExitReason)
@@ -19,7 +19,6 @@ function AltAndCatchFire {
     Stop-Transcript
     exit
 }
-# $AltAndCatchFire = $function:AltAndCatchFire.ToString()
 
 function GetRootDc {
 	Param($child_object)	
@@ -31,7 +30,6 @@ function GetRootDc {
 		return $xfolders_vcenter_name_h[$xfolders_vcenter_parent_h[$Parent_folder]]
 	}
 }
-# $GetRootDc = $function:GetRootDc.ToString()
 
 function NameCleaner {
     Param($NameToClean)
@@ -41,7 +39,6 @@ function NameCleaner {
     $NameToClean = $NameToClean -replace "[^[:ascii:]]","" -replace "[^A-Za-z0-9-_]","_"
     return $NameToClean.ToLower()
 }
-# $NameCleaner = $function:NameCleaner.ToString()
 
 function GetParent {
     param ($parent)
@@ -51,7 +48,6 @@ function GetParent {
         return $parent
     }
 }
-# $GetParent = $function:GetParent.ToString()
 
 function GetMedian {
     param($numberSeries)
