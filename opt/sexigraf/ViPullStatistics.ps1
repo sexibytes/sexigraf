@@ -471,7 +471,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     )
 
     try {
-        $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetrics}
+        $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
         Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
     } catch {
         AltAndCatchFire "VM MultiQueryPerf failure"
