@@ -85,7 +85,7 @@ if ($nbProcess > 1) : ?>
         <div class="alert alert-info" role="alert">
             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
             <span class="sr-only">Info:</span>
-            Beware that importing data from/to different version could cause some issues...<br>
+            Beware that importing data from a upper or a very old version could cause some issues...<br>
             Current appliance version is: <strong><?php echo file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH); ?></strong><br>
             Export version is: <strong><?php echo file_get_contents('/media/cdrom/sexigraf_version', FILE_USE_INCLUDE_PATH); ?></strong>            
         </div>
