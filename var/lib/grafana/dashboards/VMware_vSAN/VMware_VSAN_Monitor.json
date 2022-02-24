@@ -257,7 +257,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "iops",
             "short"
           ]
         },
@@ -788,7 +788,7 @@
         "allFormat": "glob",
         "current": {
           "tags": [],
-          "text": "domclient",
+          "text": "client",
           "value": "domclient"
         },
         "datasource": null,
