@@ -58,7 +58,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "overallCpuUsage",
+          "title": "CPU Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -134,7 +134,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "GuestMemoryUsage",
+          "title": "Guest Memory Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -209,7 +209,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HostMemoryUsage",
+          "title": "Host Memory Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -284,7 +284,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "storage.committed",
+          "title": "Storage Committed",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -359,7 +359,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "storage.uncommitted",
+          "title": "Storage Uncommitted",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -434,7 +434,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "storage.delta",
+          "title": "Snapshot Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -509,7 +509,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "disk usage",
+          "title": "Disk Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -584,7 +584,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "net usage",
+          "title": "Network Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -671,7 +671,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CpuUtilization",
+          "title": "CPU Utilization",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -746,7 +746,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "MemUtilization",
+          "title": "Memory Utilization",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -821,7 +821,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CpuReady",
+          "title": "CPU Ready",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -896,7 +896,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CpuLatency",
+          "title": "CPU Latency",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -971,7 +971,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "maxTotalLatency",
+          "title": "Disk Latency",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -1046,7 +1046,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CpuIoWait",
+          "title": "CPU IO Wait",
           "tooltip": {
             "shared": true,
             "sort": 2,
