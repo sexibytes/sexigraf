@@ -36,6 +36,7 @@
     {
       "collapse": false,
       "enable": false,
+      "hidden": true,
       "notice": false,
       "now": true,
       "refresh_intervals": [
