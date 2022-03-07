@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.980"
+$ScriptVersion = "0.9.981"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -459,22 +459,55 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         AltAndCatchFire "ESX MultiQueryPerfAll failure"
     }
 
-    $VmMultiMetrics = @(
-        "cpu.ready.summation",
-		"cpu.wait.summation",
-		"cpu.idle.summation",
-		"cpu.latency.average",
-		"disk.maxTotalLatency.latest",
-		"virtualdisk.write.average",
-		"virtualdisk.read.average",
-		"net.usage.average"
-    )
+    if (($vcenter_vms|Measure-Object).Count -gt 10000) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] 10K+ VMs mode for vCenter $vcenter_name"
 
-    try {
-        $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
-    } catch {
-        AltAndCatchFire "VM MultiQueryPerf failure"
+        $VmMultiMetricsR1 = @(
+            "cpu.ready.summation",
+            "cpu.wait.summation",
+            "cpu.idle.summation",
+            "cpu.latency.average"
+        )
+
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR1}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 1st round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerf failure"
+        }
+
+        $VmMultiMetricsR2 = @(
+            "disk.maxTotalLatency.latest",
+            "virtualdisk.write.average",
+            "virtualdisk.read.average",
+            "net.usage.average"
+        )
+
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR2}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 2nd round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerf failure"
+        }
+
+    } else {
+        $VmMultiMetrics = @(
+            "cpu.ready.summation",
+            "cpu.wait.summation",
+            "cpu.idle.summation",
+            "cpu.latency.average",
+            "disk.maxTotalLatency.latest",
+            "virtualdisk.write.average",
+            "virtualdisk.read.average",
+            "net.usage.average"
+        )
+    
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerf failure"
+        }
     }
 
     if ($vcenter_clusters_h.Keys) {
