@@ -1353,6 +1353,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
         }
 
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending metrics for cluster $vcenter_cluster_name ..."
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
     }
 
