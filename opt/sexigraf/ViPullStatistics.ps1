@@ -778,6 +778,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.power", $vcenter_cluster_hosts_power_usage)
         }
 
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending hosts metrics to Graphite for cluster $vcenter_cluster_name ..."
+        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
+        $vcenter_cluster_h = @{}
+
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name vms in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_vms_vcpus = 0
@@ -1353,7 +1357,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending metrics for cluster $vcenter_cluster_name ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
     }
 
