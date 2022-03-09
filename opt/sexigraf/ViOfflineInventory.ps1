@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.57"
+$ScriptVersion = "0.9.58"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -163,7 +163,7 @@ if ($ViServersList.count -gt 0) {
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.GuestId -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
@@ -292,7 +292,7 @@ if ($ViServersList.count -gt 0) {
                     $EsxState = $Esx.runtime.ConnectionState
                 }
                 
-                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, State, RAM, CPU, Cores
+                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, State, RAM, CPU, Cores, vmk0Ip, vmk0Mac
                 
                 $ViEsxInfo.vCenter = $ViServer
                 $ViEsxInfo.ESX = $($Esx.name)
@@ -303,6 +303,8 @@ if ($ViServersList.count -gt 0) {
                 $ViEsxInfo.RAM = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
                 $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
+                $ViEsxInfo.vmk0Ip = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Ip.IpAddress
+                $ViEsxInfo.vmk0Mac = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Mac
                 
                 $ViEsxsInfos += $ViEsxInfo
             }
