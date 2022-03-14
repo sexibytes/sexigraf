@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.981"
+$ScriptVersion = "0.9.983"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -598,7 +598,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_hosts_hba_bytesRead = 0
         $vcenter_cluster_hosts_hba_bytesWrite = 0
         $vcenter_cluster_hosts_power_usage = 0
-        # $vcenter_cluster_hosts_dead_vms = 0 ### XXX #268
+        $vcenter_cluster_hosts_dead_vms = 0
 
 
         foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]|?{$_}) {
@@ -611,11 +611,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
             if ($vcenter_cluster_host.vm) {
                 $vcenter_cluster_hosts_vms_moref += $vcenter_vms_h[$vcenter_cluster_host.vm.value]|?{$_}
-                # $vcenter_cluster_host_real_vm_count = $($vcenter_cluster_host.vm|Measure-Object).Count ### XXX #268
-                # $vcenter_cluster_host_connected_vm_count = $($vcenter_vms_h[$vcenter_cluster_host.vm.value]|Measure-Object).Count
-                # if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
-                #     $vcenter_cluster_hosts_dead_vms += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
-                # }
+                $vcenter_cluster_host_real_vm_count = $($vcenter_cluster_host.vm|Measure-Object).Count
+                $vcenter_cluster_host_connected_vm_count = $($vcenter_vms_h[$vcenter_cluster_host.vm.value]|Measure-Object).Count
+                if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
+                    $vcenter_cluster_hosts_dead_vms += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
+                }
                 ### XXX use $vcenter_resource_pools_owner_vms_h
             }
 
@@ -777,10 +777,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         if ($vcenter_cluster_hosts_power_usage -ge 0) {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.power", $vcenter_cluster_hosts_power_usage)
         }
-
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending hosts metrics to Graphite for cluster $vcenter_cluster_name ..."
-        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
-        $vcenter_cluster_h = @{}
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name vms in datacenter $vcenter_cluster_dc_name"
 
@@ -981,7 +977,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.total", ($vcenter_cluster_vms_on + $vcenter_cluster_vms_off))
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.on", $vcenter_cluster_vms_on)
-        # $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_dead_vms) ### XXX #268
+        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_dead_vms)
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
 
@@ -1730,7 +1726,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.total", ($vcenter_standalone_host_vms_on + $vcenter_standalone_host_vms_off))
         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.on", $vcenter_standalone_host_vms_on)
-        # $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.dead", $vcenter_standalone_host_hosts_dead_vms) ### XXX #268
+        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.dead", $vcenter_standalone_host_hosts_dead_vms)
 
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_standalone_host_h -DateTime $ExecStart
     }
