@@ -598,7 +598,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_hosts_hba_bytesRead = 0
         $vcenter_cluster_hosts_hba_bytesWrite = 0
         $vcenter_cluster_hosts_power_usage = 0
-        $vcenter_cluster_hosts_dead_vms = 0
+        $vcenter_cluster_hosts_vms_dead = 0
 
 
         foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]|?{$_}) {
@@ -614,7 +614,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_host_real_vm_count = $($vcenter_cluster_host.vm|Measure-Object).Count
                 $vcenter_cluster_host_connected_vm_count = $($vcenter_vms_h[$vcenter_cluster_host.vm.value]|Measure-Object).Count
                 if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
-                    $vcenter_cluster_hosts_dead_vms += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
+                    $vcenter_cluster_hosts_vms_dead += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
                 }
                 ### XXX use $vcenter_resource_pools_owner_vms_h
             }
@@ -977,7 +977,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.total", ($vcenter_cluster_vms_on + $vcenter_cluster_vms_off))
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.on", $vcenter_cluster_vms_on)
-        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_dead_vms)
+        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_vms_dead)
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
 
@@ -1726,7 +1726,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.total", ($vcenter_standalone_host_vms_on + $vcenter_standalone_host_vms_off))
         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.on", $vcenter_standalone_host_vms_on)
-        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.dead", $vcenter_standalone_host_hosts_dead_vms)
+        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.dead", $vcenter_standalone_host_hosts_vms_dead)
 
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_standalone_host_h -DateTime $ExecStart
     }
@@ -2036,179 +2036,189 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $unmanaged_host_vms_snaps = 0
     $unmanaged_host_vms_off = 0
     $unmanaged_host_vms_on = 0
+    $unmanaged_host_vms_dead = 0
     $unmanaged_host_vmdk_per_ds = @{}
 
-    foreach ($unmanaged_host_vm in $vcenter_vms) {
+    if ($unmanaged_host.vm) {
 
-        if ($unmanaged_host_vm.config.version) {
-            $unmanaged_host_vm_vhw = NameCleaner $unmanaged_host_vm.config.version
-            $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.vhw.$unmanaged_host_vm_vhw"] ++
+        $unmanaged_host_real_vms_count = $($unmanaged_host.vm|Measure-Object).Count
+        $unmanaged_host_connected_vms_count = $($vcenter_vms|Measure-Object).Count
+        if ($unmanaged_host_real_vms_count -gt $unmanaged_host_connected_vms_count) {
+            $unmanaged_host_vms_dead += $unmanaged_host_real_vms_count - $unmanaged_host_connected_vms_count
         }
 
-        if ($unmanaged_host_vm.config.guestId) {
-            $unmanaged_host_vm_guestId = NameCleaner $unmanaged_host_vm.config.guestId
-            $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.guest.$unmanaged_host_vm_guestId"] ++
-        }
+        foreach ($unmanaged_host_vm in $vcenter_vms) {
 
-        if ($unmanaged_host_vm.config.tools.toolsVersion) {
-            $unmanaged_host_vm_vmtools = NameCleaner $unmanaged_host_vm.config.tools.toolsVersion
-            $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.vmtools.$unmanaged_host_vm_vmtools"] ++
-        }
-
-        $unmanaged_host_vm_name = NameCleaner $unmanaged_host_vm.Name
-
-        try {
-            $unmanaged_host_vm_files = $unmanaged_host_vm.layoutEx.file
-            ### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wSsdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
-
-            $unmanaged_host_vm_snap_size = 0
-
-            if ($unmanaged_host_vm.snapshot) {
-                $unmanaged_host_vm_has_snap = 1
-                $unmanaged_host_vms_snaps ++
-            } else {
-                $unmanaged_host_vm_has_snap = 0
+            if ($unmanaged_host_vm.config.version) {
+                $unmanaged_host_vm_vhw = NameCleaner $unmanaged_host_vm.config.version
+                $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.vhw.$unmanaged_host_vm_vhw"] ++
             }
 
-            $unmanaged_host_vm_num_vdisk = $unmanaged_host_vm.summary.config.numVirtualDisks
-            $unmanaged_host_vm_real_vdisk = 0
-            $unmanaged_host_vm_has_diskExtent = 0
+            if ($unmanaged_host_vm.config.guestId) {
+                $unmanaged_host_vm_guestId = NameCleaner $unmanaged_host_vm.config.guestId
+                $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.guest.$unmanaged_host_vm_guestId"] ++
+            }
 
-            foreach ($unmanaged_host_vm_file in $unmanaged_host_vm_files) {
-                if ($unmanaged_host_vm_file.type -eq "diskDescriptor") {
-                    $unmanaged_host_vm_real_vdisk ++
-                    $unmanaged_host_vm_file_ds_name = nameCleaner $([regex]::match($unmanaged_host_vm_file.name, '^\[(.*)\]').Groups[1].value)
-                    $unmanaged_host_vmdk_per_ds[$unmanaged_host_vm_file_ds_name] ++
-                } elseif ($unmanaged_host_vm_file.type -eq "diskExtent") {
-                    $unmanaged_host_vm_has_diskExtent ++
+            if ($unmanaged_host_vm.config.tools.toolsVersion) {
+                $unmanaged_host_vm_vmtools = NameCleaner $unmanaged_host_vm.config.tools.toolsVersion
+                $vmware_version_h["vi.$vcenter_name.vi.version.vm.$unmanaged_host_dc_name.$unmanaged_host_name.vmtools.$unmanaged_host_vm_vmtools"] ++
+            }
+
+            $unmanaged_host_vm_name = NameCleaner $unmanaged_host_vm.Name
+
+            try {
+                $unmanaged_host_vm_files = $unmanaged_host_vm.layoutEx.file
+                ### http://pubs.vmware.com/vsphere-60/topic/com.vmware.wSsdk.apiref.doc/vim.vm.FileLayoutEx.FileType.html
+
+                $unmanaged_host_vm_snap_size = 0
+
+                if ($unmanaged_host_vm.snapshot) {
+                    $unmanaged_host_vm_has_snap = 1
+                    $unmanaged_host_vms_snaps ++
+                } else {
+                    $unmanaged_host_vm_has_snap = 0
                 }
-            }
 
-            if ($unmanaged_host_vm_real_vdisk -gt $unmanaged_host_vm_num_vdisk) {
-                $unmanaged_host_vm_has_snap = 1
-            }
+                $unmanaged_host_vm_num_vdisk = $unmanaged_host_vm.summary.config.numVirtualDisks
+                $unmanaged_host_vm_real_vdisk = 0
+                $unmanaged_host_vm_has_diskExtent = 0
 
-            foreach ($unmanaged_host_vm_file in $unmanaged_host_vm_files) {
-                if(!$unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name]) { ### XXX would need name & moref
-                    $unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name] = $unmanaged_host_vm_file.size
-                    if ($unmanaged_host_vm_has_snap -and (($unmanaged_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($unmanaged_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
-                        $unmanaged_host_vms_files_dedup_total["snapshotExtent"] += $unmanaged_host_vm_file.size
-                        $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
-                    } elseif ($unmanaged_host_vm_has_snap -and ($unmanaged_host_vm_file.name -match '-[0-9]{6}\.vmdk')) {
-                        $unmanaged_host_vms_files_dedup_total["snapshotDescriptor"] += $unmanaged_host_vm_file.size
-                        $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
-                        $unmanaged_host_vms_files_snaps ++
-                    } elseif ($unmanaged_host_vm_file.name -match '-rdm\.vmdk') {
-                        $unmanaged_host_vms_files_dedup_total["rdmExtent"] += $unmanaged_host_vm_file.size
-                    } elseif ($unmanaged_host_vm_file.name -match '-rdmp\.vmdk') {
-                        $unmanaged_host_vms_files_dedup_total["rdmpExtent"] += $unmanaged_host_vm_file.size
-                    } elseif ((!$unmanaged_host_vm_has_diskExtent) -and $unmanaged_host_vm_file.type -eq "diskDescriptor") {
-                        $unmanaged_host_vms_files_dedup_total["virtualExtent"] += $unmanaged_host_vm_file.size
-                    } else {
-                        $unmanaged_host_vms_files_dedup_total[$unmanaged_host_vm_file.type] += $unmanaged_host_vm_file.size
+                foreach ($unmanaged_host_vm_file in $unmanaged_host_vm_files) {
+                    if ($unmanaged_host_vm_file.type -eq "diskDescriptor") {
+                        $unmanaged_host_vm_real_vdisk ++
+                        $unmanaged_host_vm_file_ds_name = nameCleaner $([regex]::match($unmanaged_host_vm_file.name, '^\[(.*)\]').Groups[1].value)
+                        $unmanaged_host_vmdk_per_ds[$unmanaged_host_vm_file_ds_name] ++
+                    } elseif ($unmanaged_host_vm_file.type -eq "diskExtent") {
+                        $unmanaged_host_vm_has_diskExtent ++
                     }
                 }
-            }
 
-            if ($unmanaged_host_vm_snap_size -gt 0) {
-                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.delta", $unmanaged_host_vm_snap_size)
-            }
-        } catch {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-        }
-
-        try {
-            $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.committed", $unmanaged_host_vm.summary.storage.committed)
-            $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.uncommitted", $unmanaged_host_vm.summary.storage.uncommitted)
-        } catch {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-        }
-
-        if ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOn") {
-            try {
-                $unmanaged_host_vms_on ++
-
-                $unmanaged_host_vms_vcpus += $unmanaged_host_vm.config.hardware.numCPU
-                $unmanaged_host_vms_vram += $unmanaged_host_vm.runtime.maxMemoryUsage
-
-
-                if ($unmanaged_host_vm.runtime.maxCpuUsage -gt 0 -and $unmanaged_host_vm.summary.quickStats.overallCpuUsage) {
-                    $unmanaged_host_vm_CpuUtilization = $unmanaged_host_vm.summary.quickStats.overallCpuUsage * 100 / $unmanaged_host_vm.runtime.maxCpuUsage
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.runtime.CpuUtilization", $unmanaged_host_vm_CpuUtilization)
+                if ($unmanaged_host_vm_real_vdisk -gt $unmanaged_host_vm_num_vdisk) {
+                    $unmanaged_host_vm_has_snap = 1
                 }
 
-                if ($unmanaged_host_vm.summary.quickStats.guestMemoryUsage -gt 0 -and $unmanaged_host_vm.runtime.maxMemoryUsage) {
-                    $unmanaged_host_vm_MemUtilization = $unmanaged_host_vm.summary.quickStats.guestMemoryUsage * 100 / $unmanaged_host_vm.runtime.maxMemoryUsage
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.runtime.MemUtilization", $unmanaged_host_vm_MemUtilization)
+                foreach ($unmanaged_host_vm_file in $unmanaged_host_vm_files) {
+                    if(!$unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name]) { ### XXX would need name & moref
+                        $unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name] = $unmanaged_host_vm_file.size
+                        if ($unmanaged_host_vm_has_snap -and (($unmanaged_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($unmanaged_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
+                            $unmanaged_host_vms_files_dedup_total["snapshotExtent"] += $unmanaged_host_vm_file.size
+                            $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
+                        } elseif ($unmanaged_host_vm_has_snap -and ($unmanaged_host_vm_file.name -match '-[0-9]{6}\.vmdk')) {
+                            $unmanaged_host_vms_files_dedup_total["snapshotDescriptor"] += $unmanaged_host_vm_file.size
+                            $unmanaged_host_vm_snap_size += $unmanaged_host_vm_file.size
+                            $unmanaged_host_vms_files_snaps ++
+                        } elseif ($unmanaged_host_vm_file.name -match '-rdm\.vmdk') {
+                            $unmanaged_host_vms_files_dedup_total["rdmExtent"] += $unmanaged_host_vm_file.size
+                        } elseif ($unmanaged_host_vm_file.name -match '-rdmp\.vmdk') {
+                            $unmanaged_host_vms_files_dedup_total["rdmpExtent"] += $unmanaged_host_vm_file.size
+                        } elseif ((!$unmanaged_host_vm_has_diskExtent) -and $unmanaged_host_vm_file.type -eq "diskDescriptor") {
+                            $unmanaged_host_vms_files_dedup_total["virtualExtent"] += $unmanaged_host_vm_file.size
+                        } else {
+                            $unmanaged_host_vms_files_dedup_total[$unmanaged_host_vm_file.type] += $unmanaged_host_vm_file.size
+                        }
+                    }
                 }
 
-                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.overallCpuUsage", $unmanaged_host_vm.summary.quickStats.overallCpuUsage)
-                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.overallCpuDemand", $unmanaged_host_vm.summary.quickStats.overallCpuDemand)
-                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.HostMemoryUsage", $unmanaged_host_vm.summary.quickStats.hostMemoryUsage)
-                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.GuestMemoryUsage", $unmanaged_host_vm.summary.quickStats.guestMemoryUsage)
-
-                if ($unmanaged_host_vm.summary.quickStats.balloonedMemory -gt 0) {
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.BalloonedMemory", $unmanaged_host_vm.summary.quickStats.balloonedMemory)
-                    $UnamagedResourcePoolBalloonedMemory += $unmanaged_host_vm.summary.quickStats.balloonedMemory
+                if ($unmanaged_host_vm_snap_size -gt 0) {
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.delta", $unmanaged_host_vm_snap_size)
                 }
-
-                if ($unmanaged_host_vm.summary.quickStats.compressedMemory -gt 0) {
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.CompressedMemory", $unmanaged_host_vm.summary.quickStats.compressedMemory)
-                    $UnamagedResourcePoolCompressedMemory += $unmanaged_host_vm.summary.quickStats.compressedMemory
-                }
-
-                if ($unmanaged_host_vm.summary.quickStats.swappedMemory -gt 0) {
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.SwappedMemory", $unmanaged_host_vm.summary.quickStats.swappedMemory)
-                    $UnamagedResourcePoolSwappedMemory += $unmanaged_host_vm.summary.quickStats.swappedMemory
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$unmanaged_host_vm.moref.value][""]) {
-                    $unmanaged_host_vm_ready = $VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$unmanaged_host_vm.moref.value][""] / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
-                    ### https://kb.vmware.com/kb/2002181
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_ready_summation", $unmanaged_host_vm_ready)
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] -and $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) {
-                    $unmanaged_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
-                    ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
-                    ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_wait_no_idle", $unmanaged_host_vm_io_wait)
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["cpu.latency.average"]][$unmanaged_host_vm.moref.value][""]) {
-                    $unmanaged_host_vm_cpu_latency = $VmMultiStats[$PerfCounterTable["cpu.latency.average"]][$unmanaged_host_vm.moref.value][""]
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_latency_average", $unmanaged_host_vm_cpu_latency)
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]) {
-                    $unmanaged_host_vm_disk_latency = $VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.maxTotalLatency", $unmanaged_host_vm_disk_latency)
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
-                    $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", $unmanaged_host_vm_disk_usage)
-                }
-
-                if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]) {
-                    $unmanaged_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]
-                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
-                }
-                
-                if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
-                if ($unmanaged_host_vm.summary.quickStats.GuestMemoryUsage -gt 0) {$UnamagedResourcePoolGuestMemoryUsage += $unmanaged_host_vm.summary.quickStats.GuestMemoryUsage}
-                if ($unmanaged_host_vm.summary.quickStats.SharedMemory -gt 0) {$UnamagedResourcePoolSharedMemory += $unmanaged_host_vm.summary.quickStats.SharedMemory}
-                if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
-            
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"  
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
             }
 
-        } elseif ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOff") {
-            $unmanaged_host_vms_off ++
+            try {
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.committed", $unmanaged_host_vm.summary.storage.committed)
+                $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.uncommitted", $unmanaged_host_vm.summary.storage.uncommitted)
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+            }
+
+            if ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOn") {
+                try {
+                    $unmanaged_host_vms_on ++
+
+                    $unmanaged_host_vms_vcpus += $unmanaged_host_vm.config.hardware.numCPU
+                    $unmanaged_host_vms_vram += $unmanaged_host_vm.runtime.maxMemoryUsage
+
+
+                    if ($unmanaged_host_vm.runtime.maxCpuUsage -gt 0 -and $unmanaged_host_vm.summary.quickStats.overallCpuUsage) {
+                        $unmanaged_host_vm_CpuUtilization = $unmanaged_host_vm.summary.quickStats.overallCpuUsage * 100 / $unmanaged_host_vm.runtime.maxCpuUsage
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.runtime.CpuUtilization", $unmanaged_host_vm_CpuUtilization)
+                    }
+
+                    if ($unmanaged_host_vm.summary.quickStats.guestMemoryUsage -gt 0 -and $unmanaged_host_vm.runtime.maxMemoryUsage) {
+                        $unmanaged_host_vm_MemUtilization = $unmanaged_host_vm.summary.quickStats.guestMemoryUsage * 100 / $unmanaged_host_vm.runtime.maxMemoryUsage
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.runtime.MemUtilization", $unmanaged_host_vm_MemUtilization)
+                    }
+
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.overallCpuUsage", $unmanaged_host_vm.summary.quickStats.overallCpuUsage)
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.overallCpuDemand", $unmanaged_host_vm.summary.quickStats.overallCpuDemand)
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.HostMemoryUsage", $unmanaged_host_vm.summary.quickStats.hostMemoryUsage)
+                    $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.GuestMemoryUsage", $unmanaged_host_vm.summary.quickStats.guestMemoryUsage)
+
+                    if ($unmanaged_host_vm.summary.quickStats.balloonedMemory -gt 0) {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.BalloonedMemory", $unmanaged_host_vm.summary.quickStats.balloonedMemory)
+                        $UnamagedResourcePoolBalloonedMemory += $unmanaged_host_vm.summary.quickStats.balloonedMemory
+                    }
+
+                    if ($unmanaged_host_vm.summary.quickStats.compressedMemory -gt 0) {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.CompressedMemory", $unmanaged_host_vm.summary.quickStats.compressedMemory)
+                        $UnamagedResourcePoolCompressedMemory += $unmanaged_host_vm.summary.quickStats.compressedMemory
+                    }
+
+                    if ($unmanaged_host_vm.summary.quickStats.swappedMemory -gt 0) {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.SwappedMemory", $unmanaged_host_vm.summary.quickStats.swappedMemory)
+                        $UnamagedResourcePoolSwappedMemory += $unmanaged_host_vm.summary.quickStats.swappedMemory
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$unmanaged_host_vm.moref.value][""]) {
+                        $unmanaged_host_vm_ready = $VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$unmanaged_host_vm.moref.value][""] / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
+                        ### https://kb.vmware.com/kb/2002181
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_ready_summation", $unmanaged_host_vm_ready)
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] -and $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) {
+                        $unmanaged_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
+                        ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
+                        ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_wait_no_idle", $unmanaged_host_vm_io_wait)
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["cpu.latency.average"]][$unmanaged_host_vm.moref.value][""]) {
+                        $unmanaged_host_vm_cpu_latency = $VmMultiStats[$PerfCounterTable["cpu.latency.average"]][$unmanaged_host_vm.moref.value][""]
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_latency_average", $unmanaged_host_vm_cpu_latency)
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]) {
+                        $unmanaged_host_vm_disk_latency = $VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.maxTotalLatency", $unmanaged_host_vm_disk_latency)
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
+                        $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", $unmanaged_host_vm_disk_usage)
+                    }
+
+                    if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]) {
+                        $unmanaged_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
+                    }
+                    
+                    if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
+                    if ($unmanaged_host_vm.summary.quickStats.GuestMemoryUsage -gt 0) {$UnamagedResourcePoolGuestMemoryUsage += $unmanaged_host_vm.summary.quickStats.GuestMemoryUsage}
+                    if ($unmanaged_host_vm.summary.quickStats.SharedMemory -gt 0) {$UnamagedResourcePoolSharedMemory += $unmanaged_host_vm.summary.quickStats.SharedMemory}
+                    if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
+                
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"  
+                }
+
+            } elseif ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOff") {
+                $unmanaged_host_vms_off ++
+            }
         }
     }
 
@@ -2222,6 +2232,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.swapped", $UnamagedResourcePoolSwappedMemory)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.total", $($unmanaged_host_vms_on + $unmanaged_host_vms_off))
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.on", $unmanaged_host_vms_on)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.dead", $unmanaged_host_vms_dead)
 
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"

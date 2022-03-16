@@ -567,6 +567,7 @@
     },
     {
       "aliasColors": {
+        "vm.dead": "dark-red",
         "vm.on": "#1F78C1",
         "vm.registered": "#BA43A9"
       },
@@ -621,6 +622,13 @@
           "lines": false,
           "stack": false,
           "yaxis": 2
+        },
+        {
+          "alias": "vm.dead",
+          "dashes": true,
+          "fill": 0,
+          "stack": false,
+          "yaxis": 2
         }
       ],
       "spaceLength": 10,
@@ -638,8 +646,11 @@
         },
         {
           "refId": "C",
-          "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')",
-          "textEditor": false
+          "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')"
+        },
+        {
+          "refId": "D",
+          "target": "alias(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1)), 'vm.dead')"
         }
       ],
       "thresholds": [],
