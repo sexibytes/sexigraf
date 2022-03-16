@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.983"
+$ScriptVersion = "0.9.984"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1373,10 +1373,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_pod_vmdk = $($vcenter_cluster_vmdk_per_ds[$vcenter_pod_datastores.name]|Measure-Object -Sum).Sum
 
             $vcenter_pod_h = @{}
-            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.capacity", $vcenter_pod.Summary.Capacity)
-            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.freeSpace", $vcenter_pod.Summary.FreeSpace)
-            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.uncommitted", $vcenter_pod_uncommitted)
-            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_pod_name.summary.vmdkCount", $vcenter_pod_vmdk)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_pod_dc_name.$vcenter_pod_name.summary.capacity", $vcenter_pod.Summary.Capacity)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_pod_dc_name.$vcenter_pod_name.summary.freeSpace", $vcenter_pod.Summary.FreeSpace)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_pod_dc_name.$vcenter_pod_name.summary.uncommitted", $vcenter_pod_uncommitted)
+            $vcenter_pod_h.add("pod.$vcenter_name.$vcenter_pod_dc_name.$vcenter_pod_name.summary.vmdkCount", $vcenter_pod_vmdk)
 
             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_pod_h -DateTime $ExecStart
         }
