@@ -394,7 +394,7 @@
         }
       ],
       "maxPerRow": 1,
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
