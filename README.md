@@ -6,9 +6,9 @@ SexiGraf is a fully open-source vSphere centric Graphite VMware appliance with a
 
 *Official website for this awesome appliance is available at http://www.sexigraf.fr*
 
-## VMware VSAN
+## VMware vSAN
 
-The metrics used in the various VSAN dashboards are collected every 5 minutes using to the `VsanPerfQueryPerf` API method of `VsanPerformanceManager` from the famous `vSAN performance service`. With some educated guesses, it is possible to access any metrics from the VSAN cluster. And guess what! We’re already working on more cool SexiPanels for vSAN: http://www.sexigraf.fr/vsan-sexipanels/
+The metrics used in the various VSAN dashboards are now collected every 5 minutes using to the `VsanPerfQueryPerf` API method of `VsanPerformanceManager` from the famous `vSAN performance service`. With some educated guesses, it is possible to access almost any metrics from the vSAN cluster. And guess what! We’re already working on more cool SexiPanels for vSAN: http://www.sexigraf.fr/vsan-sexipanels/
 
 ## VMware vSphere
 
