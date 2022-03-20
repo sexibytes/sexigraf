@@ -319,7 +319,7 @@ if ($ViServersList.count -gt 0) {
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
         
-        if ($global:DefaultVIServers) {Disconnect-VIServer * -Force -Confirm:0}
+        # if ($global:DefaultVIServers) {Disconnect-VIServer * -Force -Confirm:0}
     }
 
     if ($ViVmsInfos) {
