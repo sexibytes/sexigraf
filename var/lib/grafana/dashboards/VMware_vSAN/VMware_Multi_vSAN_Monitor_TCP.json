@@ -21,8 +21,8 @@
       },
       "id": 29,
       "panels": [],
-      "repeat": "hostname",
-      "title": "$hostname",
+      "repeat": "cluster",
+      "title": "$cluster",
       "type": "row"
     },
     {
@@ -90,13 +90,13 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxPackets, 'Inbound')",
+          "target": "alias(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.rxPackets), 'Inbound')",
           "textEditor": false
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txPackets, 'Outbound')",
+          "target": "alias(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.txPackets), 'Outbound')",
           "textEditor": false
         }
       ],
@@ -207,13 +207,13 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxThroughput, 'Inbound')",
+          "target": "alias(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.rxThroughput), 'Inbound')",
           "textEditor": false
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txThroughput, 'Outbound')",
+          "target": "alias(sumSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.txThroughput), 'Outbound')",
           "textEditor": false
         }
       ],
@@ -316,7 +316,7 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.tcpRxErrRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.tcpRxErrRate), 8)",
           "textEditor": false
         }
       ],
@@ -421,14 +421,14 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.rxPacketsLossRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.rxPacketsLossRate), 8)",
           "textEditor": false
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.txPacketsLossRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.txPacketsLossRate), 8)",
           "textEditor": false
         }
       ],
@@ -530,7 +530,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.tcpTxRexmitRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.tcpTxRexmitRate), 8)",
           "textEditor": false
         }
       ],
@@ -635,13 +635,13 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.portRxDropsRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.portRxDropsRate), 8)",
           "textEditor": false
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.net.portTxDropsRate, 8)",
+          "target": "aliasByNode(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.*.vsan.net.portTxDropsRate), 8)",
           "textEditor": false
         }
       ],
@@ -699,13 +699,13 @@
     "list": [
       {
         "allFormat": "wildcard",
-        "allValue": "*",
+        "allValue": "none",
         "current": {},
         "datasource": "local",
         "definition": "",
         "error": null,
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": null,
         "multi": true,
         "multiFormat": "glob",
@@ -750,32 +750,6 @@
         "useTags": false
       },
       {
-        "allFormat": "glob",
-        "allValue": null,
-        "current": {},
-        "datasource": "local",
-        "definition": "",
-        "error": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "multiFormat": "glob",
-        "name": "cluster",
-        "options": [],
-        "query": "vsan.$vcenter.$datacentre.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
@@ -783,14 +757,13 @@
         "definition": "",
         "error": null,
         "hide": 0,
-        "hideLabel": false,
         "includeAll": true,
-        "label": "esx",
+        "label": null,
         "multi": true,
         "multiFormat": "glob",
-        "name": "hostname",
+        "name": "cluster",
         "options": [],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
+        "query": "vsan.$vcenter.$datacentre.*",
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
@@ -838,7 +811,7 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware vSAN Monitor Network",
+  "title": "VMware Multi vSAN Monitor Network",
   "uid": "qnnvY-8Gk",
   "version": 11
 }
