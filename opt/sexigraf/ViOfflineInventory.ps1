@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.59"
+$ScriptVersion = "0.9.60"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -98,7 +98,7 @@ if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
     $ViEsxsInfos = @()
     foreach ($ViServer in $ViServersList) {
-        $ViServerCleanName = $($ViServer.ToLower()) -replace "[. ]","_"
+        $ViServerCleanName = $ViServer.Replace(".","_")
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
 
         $ExecStart = $(Get-Date).ToUniversalTime()
@@ -117,7 +117,7 @@ if ($ViServersList.count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
         }
 
-        if (!$($global:DefaultVIServer)) {
+        if (!$($global:DefaultVIServers|?{$_.Name -eq $ViServer})) {
             try {
                 # $createstorexml = New-Object -TypeName XML
                 # $createstorexml.Load($credstore)
@@ -144,7 +144,7 @@ if ($ViServersList.count -gt 0) {
         }
 
         try {
-            if ($($global:DefaultVIServer)) {
+            if ($($global:DefaultVIServer|?{$_.Name -eq $ViServer})) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $ViServer ..."
                 $ServiceInstance = Get-View ServiceInstance -Server $ViServer -Property ServerClock
             } else {
