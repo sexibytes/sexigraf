@@ -51,3 +51,9 @@ if [[ $GUESTINFO =~ "VMware ESXi" ]]; then
         fi
 
 fi
+
+# https://kb.vmware.com/s/article/1014038
+vmwtimesync=$(vmware-toolbox-cmd timesync status)
+if [[ $vmwtimesync =~ "Disabled" ]]; then
+        vmware-toolbox-cmd timesync enable
+fi
