@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.985"
+$ScriptVersion = "0.9.988"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -316,7 +316,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
         $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
         $vcenter_pods = Get-View -ViewType StoragePod -Property name, summary, parent, childEntity -Server $Server
-        $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
+        $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion, summary.quickStats.privateMemory, summary.quickStats.consumedOverheadMemory, summary.quickStats.sharedMemory -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
     } catch {
         AltAndCatchFire "Get-View failure"
     }
@@ -1384,12 +1384,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     foreach ($vcenter_standalone_host_moref in $vcenter_compute_h.keys) {
 
-        if ($vcenter_compute_h[$vcenter_standalone_host_moref] -and $vcenter_vmhosts_h[$vcenter_compute_h[$vcenter_standalone_host_moref].host.value]) {
+        if ($vcenter_compute_h[$vcenter_standalone_host_moref] -and $vcenter_vmhosts_h[$vcenter_compute_h[$vcenter_standalone_host_moref].host.value] -and $vcenter_resource_pools_h[$vcenter_standalone_host_moref]) {
 
             $vcenter_standalone_host_h = @{}
 
             try {
                 $vcenter_standalone_pool = $vcenter_compute_h[$vcenter_standalone_host_moref]
+                # $vcenter_standalone_rpool = $vcenter_resource_pools_h[$vcenter_standalone_host_moref]
                 $vcenter_standalone_host = $vcenter_vmhosts_h[$vcenter_compute_h[$vcenter_standalone_host_moref].host.value]
                 $vcenter_standalone_host_name = $vcenter_standalone_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_standalone_host.name.split(".")[0].ToLower() ? because could be ip !!!
                 if ($vcenter_standalone_host_name -match "localhost") {
@@ -1437,21 +1438,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             try {
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.ballooned", $vcenter_standalone_pool.summary.quickStats.balloonedMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.compressed", $vcenter_standalone_pool.summary.quickStats.compressed)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.consumedOverhead", $vcenter_standalone_pool.summary.quickStats.consumedOverheadMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.guest", $vcenter_standalone_pool.summary.quickStats.guestMemoryUsage)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.usage", $vcenter_standalone_pool.summary.quickStats.hostMemoryUsage)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.demand", $vcenter_standalone_pool.summary.quickStats.overallCpuDemand)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.usage", $vcenter_standalone_pool.summary.quickStats.overallCpuUsage)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.overhead", $vcenter_standalone_pool.summary.quickStats.overheadMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.private", $vcenter_standalone_pool.summary.quickStats.privateMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.shared", $vcenter_standalone_pool.summary.quickStats.sharedMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.swapped", $vcenter_standalone_pool.summary.quickStats.swappedMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.effective", $vcenter_standalone_host.summary.effectiveMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.total", $vcenter_standalone_host.summary.totalMemory)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.effective", $vcenter_standalone_host.summary.effectiveCpu)
-                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.total", $vcenter_standalone_host.summary.totalCpu)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.usage", $vcenter_standalone_host.Summary.QuickStats.OverallMemoryUsage)
+                # $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.demand", $vcenter_standalone_rpool.summary.quickStats.overallCpuDemand)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.usage", $vcenter_standalone_host.Summary.QuickStats.overallCpuUsage)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.effective", $vcenter_standalone_pool.summary.effectiveMemory)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.total", $vcenter_standalone_pool.summary.totalMemory)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.effective", $vcenter_standalone_pool.summary.effectiveCpu)
+                $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.total", $vcenter_standalone_pool.summary.totalCpu)
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.overallStatus", $vcenter_standalone_host_overallStatus)
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
@@ -1530,6 +1523,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name vms in datacenter $vcenter_standalone_host_dc_name"
+
+            $StandaloneResourcePoolPrivateMemory = 0
+            $StandaloneResourcePoolSharedMemory = 0
+            $StandaloneResourcePoolBalloonedMemory = 0
+            $StandaloneResourcePoolCompressedMemory = 0
+            $StandaloneResourcePoolSwappedMemory = 0
+            $StandaloneResourcePoolGuestMemoryUsage = 0
+            $StandaloneResourcePoolConsumedOverheadMemory = 0
 
             $vcenter_standalone_host_vms_vcpus = 0
             $vcenter_standalone_host_vms_vram = 0
@@ -1653,14 +1654,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     if ($vcenter_standalone_host_vm.summary.quickStats.balloonedMemory -gt 0) {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.quickstats.BalloonedMemory", $vcenter_standalone_host_vm.summary.quickStats.balloonedMemory)
+                        $StandaloneResourcePoolBalloonedMemory += $vcenter_standalone_host_vm.summary.quickStats.balloonedMemory
                     }
 
                     if ($vcenter_standalone_host_vm.summary.quickStats.compressedMemory -gt 0) {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.quickstats.CompressedMemory", $vcenter_standalone_host_vm.summary.quickStats.compressedMemory)
+                        $StandaloneResourcePoolCompressedMemory += $vcenter_standalone_host_vm.summary.quickStats.compressedMemory
                     }
 
                     if ($vcenter_standalone_host_vm.summary.quickStats.swappedMemory -gt 0) {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.quickstats.SwappedMemory", $vcenter_standalone_host_vm.summary.quickStats.swappedMemory)
+                        $StandaloneResourcePoolSwappedMemory += $vcenter_standalone_host_vm.summary.quickStats.swappedMemory
                     }
 
                     if ($VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$vcenter_standalone_host_vm.moref.value][""]) {
@@ -1696,6 +1700,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netUsage", $vcenter_standalone_host_vm_net_usage)
                     }
 
+                    if ($vcenter_standalone_host_vm.summary.quickStats.privateMemory -gt 0) {$StandaloneResourcePoolPrivateMemory += $vcenter_standalone_host_vm.summary.quickStats.privateMemory}
+                    if ($vcenter_standalone_host_vm.summary.quickStats.GuestMemoryUsage -gt 0) {$StandaloneResourcePoolGuestMemoryUsage += $vcenter_standalone_host_vm.summary.quickStats.GuestMemoryUsage}
+                    if ($vcenter_standalone_host_vm.summary.quickStats.SharedMemory -gt 0) {$StandaloneResourcePoolSharedMemory += $vcenter_standalone_host_vm.summary.quickStats.SharedMemory}
+                    if ($vcenter_standalone_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$StandaloneResourcePoolConsumedOverheadMemory += $vcenter_standalone_host_vm.summary.quickStats.ConsumedOverheadMemory}
+
                 } elseif ($vcenter_standalone_host_vm.summary.runtime.powerState -eq "poweredOff") {
                     $vcenter_standalone_host_vms_off ++
                 }
@@ -1729,6 +1738,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.total", ($vcenter_standalone_host_vms_on + $vcenter_standalone_host_vms_off))
             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.on", $vcenter_standalone_host_vms_on)
             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.runtime.vm.dead", $vcenter_standalone_host_hosts_vms_dead)
+
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.ballooned", $StandaloneResourcePoolBalloonedMemory)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.compressed", $StandaloneResourcePoolCompressedMemory)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.consumedOverhead", $StandaloneResourcePoolConsumedOverheadMemory)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.guest", $StandaloneResourcePoolGuestMemoryUsage)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.private", $StandaloneResourcePoolPrivateMemory)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.shared", $StandaloneResourcePoolSharedMemory)
+            $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.mem.swapped", $StandaloneResourcePoolSwappedMemory)
 
             Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_standalone_host_h -DateTime $ExecStart
         }
