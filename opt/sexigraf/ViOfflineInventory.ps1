@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.60"
+$ScriptVersion = "0.9.61"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -162,7 +162,7 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.GuestId -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config., Runtime.PowerState -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
@@ -253,7 +253,7 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to get blue folder path for $($Vm.name)"
                 }
                 
-                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, AllocatedGB, MAC, GuestId, vCPU, vRAM, vmxPath, Folder
+                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, AllocatedGB, MAC, GuestId, vCPU, vRAM, PowerState, vmxPath, Folder
                 
                 $ViVmInfo.vCenter = $ServerConnection.name
                 $ViVmInfo.VM = $Vm.name
@@ -267,6 +267,7 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.GuestId = $VmGuestId
                 $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
                 $ViVmInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.PowerState =  $Vm.Runtime.PowerState
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
                 
