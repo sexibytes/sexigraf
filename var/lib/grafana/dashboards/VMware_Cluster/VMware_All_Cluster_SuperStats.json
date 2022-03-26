@@ -616,6 +616,10 @@
           "refId": "C",
           "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.esx.count), 'hosts')",
           "textEditor": false
+        },
+        {
+          "refId": "D",
+          "target": "alias(sumSeries(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1))), 'vm.dead')"
         }
       ],
       "thresholds": [],
