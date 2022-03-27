@@ -545,6 +545,7 @@
     },
     {
       "aliasColors": {
+        "vm.dead": "dark-red",
         "vm.on": "#1F78C1",
         "vm.registered": "#BA43A9"
       },
@@ -592,6 +593,13 @@
           "bars": false,
           "lines": false,
           "points": false,
+          "stack": false,
+          "yaxis": 2
+        },
+        {
+          "alias": "vm.dead",
+          "dashes": true,
+          "fill": 0,
           "stack": false,
           "yaxis": 2
         }
