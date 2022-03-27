@@ -673,17 +673,17 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "none",
           "logBase": 1,
           "max": null,
           "min": 0,
           "show": true
         },
         {
-          "format": "short",
+          "format": "none",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": false
         }
       ],
