@@ -23,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="panel-heading"><h3 class="panel-title">Export/Import Notes</h3></div>
             <div class="panel-body">
                 <ul>
-                    <li>The export process will generate an <b>ISO file with your appliance configuration and data</b>.</li>
+                    <li>The export process will generate an <b>ISO file with your appliance configuration and data IF you got enough free space left</b>.</li>
                     <li>When done, download this ISO and use it to migrate your SexiGraf environement to another brand new SexiGraf VM.</li>
                     <li>In order to import data on this appliance, just map the ISO on the VM's CD drive and use the Import tool below.</li>
-                    <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
+                    <li>Please refer to the <a href="https://www.sexigraf.fr/web-admin/#export-import">project website and documentation</a> for more information.</li>
                 </ul>            
-	   </div>
+        </div>
         </div>
         <h2><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SexiGraf Export/Import</h2>
 	<br />
@@ -85,7 +85,7 @@ if ($nbProcess > 1) : ?>
         <div class="alert alert-info" role="alert">
             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
             <span class="sr-only">Info:</span>
-            Beware that importing data from/to different version could cause some issues...<br>
+            Beware that importing data from a upper or a very old version could cause some issues...<br>
             Current appliance version is: <strong><?php echo file_get_contents('/etc/sexigraf_version', FILE_USE_INCLUDE_PATH); ?></strong><br>
             Export version is: <strong><?php echo file_get_contents('/media/cdrom/sexigraf_version', FILE_USE_INCLUDE_PATH); ?></strong>            
         </div>

@@ -151,7 +151,7 @@
           "format": "percent",
           "label": "",
           "logBase": 1,
-          "max": 100,
+          "max": 110,
           "min": 0,
           "show": true
         }
@@ -545,6 +545,7 @@
     },
     {
       "aliasColors": {
+        "vm.dead": "dark-red",
         "vm.on": "#1F78C1",
         "vm.registered": "#BA43A9"
       },
@@ -594,6 +595,13 @@
           "points": false,
           "stack": false,
           "yaxis": 2
+        },
+        {
+          "alias": "vm.dead",
+          "dashes": true,
+          "fill": 0,
+          "stack": false,
+          "yaxis": 2
         }
       ],
       "spaceLength": 10,
@@ -616,6 +624,10 @@
           "refId": "C",
           "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.superstats.esx.count), 'hosts')",
           "textEditor": false
+        },
+        {
+          "refId": "D",
+          "target": "alias(sumSeries(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1))), 'vm.dead')"
         }
       ],
       "thresholds": [],
@@ -638,7 +650,7 @@
       },
       "yaxes": [
         {
-          "format": "none",
+          "format": "short",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1234,6 +1246,7 @@
     },
     {
       "aliasColors": {
+        "xvmotion": "super-light-blue",
         "svmotion": "dark-orange",
         "vmotion": "#052B51"
       },
@@ -1291,6 +1304,12 @@
           "refCount": 0,
           "refId": "B",
           "target": "alias(sumSeries(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions)), 'svmotion')",
+          "textEditor": false
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(sumSeries(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions)), 'xvmotion')",
           "textEditor": false
         }
       ],

@@ -1,12 +1,12 @@
 {
   "id": null,
-  "title": "VMware vSAN Capacity",
-  "uid": "bd0359d6",
-  "originalTitle": "VMware vSAN Capacity",
+  "title": "VMware vSAN Disk Latency",
+  "uid": "08a027bc",
+  "originalTitle": "VMware vSAN Disk Latency",
   "tags": [
-    "vSAN",
     "HDD",
-    "SSD"
+    "SSD",
+    "vSAN"
   ],
   "style": "light",
   "timezone": "browser",
@@ -20,11 +20,7 @@
       "height": "200px",
       "panels": [
         {
-          "aliasColors": {
-            "avg": "#052B51",
-            "max": "#2F575E",
-            "min": "#2F575E"
-          },
+          "aliasColors": {},
           "bars": false,
           "datasource": null,
           "editable": false,
@@ -32,82 +28,68 @@
           "fill": 0,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": 100,
+            "leftMax": null,
             "leftMin": 0,
             "rightLogBase": 1,
-            "rightMax": 100,
-            "rightMin": 0,
-            "threshold1": 70,
-            "threshold1Color": "rgba(220, 239, 9, 0.29)",
-            "threshold2": 80,
-            "threshold2Color": "rgba(234, 15, 15, 0.23)",
-            "thresholdLine": false
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 49,
+          "id": 1,
           "legend": {
             "avg": false,
-            "current": true,
+            "current": false,
+            "hideEmpty": false,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
-          "linewidth": 1,
+          "linewidth": 2,
           "links": [],
+          "minSpan": 3,
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
+          "repeat": "dev",
           "scopedVars": {
-            "hostname": {
-              "text": "esx",
-              "value": "",
-              "selected": false
+            "dev": {
+              "selected": false,
+              "text": "",
+              "value": ""
             }
           },
-          "seriesOverrides": [
-            {
-              "alias": "avg",
-              "linewidth": 2,
-              "yaxis": 2,
-              "zindex": 3
-            },
-            {
-              "alias": "max",
-              "fillBelowTo": "min",
-              "lines": false
-            },
-            {
-              "alias": "min",
-              "lines": false
-            }
-          ],
-          "span": 12,
+          "seriesOverrides": [],
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "hide": false,
-              "target": "alias(minSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'min')",
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.$dev.latencyDevRead, 'Read')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(averageSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'avg')",
+              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.$dev.latencyDevWrite, 'Write')",
               "textEditor": false
             },
             {
               "hide": false,
-              "target": "alias(maxSeries(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*.percentUsed), 'max')",
+              "target": "aliasByNode(removeAboveValue(vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.*.$dev.latencyDevWrite, -1), 5)",
               "textEditor": false
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "$hostname",
+          "title": "$dev",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -117,19 +99,12 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "percent",
-            "percent"
+            "µs",
+            "short"
           ]
         }
       ],
-      "repeat": "hostname",
-      "scopedVars": {
-        "hostname": {
-          "text": "esx",
-          "value": "",
-          "selected": false
-        }
-      }
+      "title": "Device latency"
     }
   ],
   "nav": [
@@ -176,7 +151,7 @@
         },
         "datasource": "local",
         "includeAll": true,
-        "multi": true,
+        "multi": false,
         "multiFormat": "glob",
         "name": "vcenter",
         "options": [
@@ -194,7 +169,7 @@
         },
         "datasource": "local",
         "includeAll": true,
-        "multi": true,
+        "multi": false,
         "multiFormat": "glob",
         "name": "datacentre",
         "options": [
@@ -202,15 +177,12 @@
         "query": "vsan.$vcenter.*",
         "refresh": 1,
         "refresh_on_load": true,
-        "regex": "",
         "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {
-          "text": "None",
-          "value": "",
-          "isNone": true
         },
         "datasource": "local",
         "includeAll": false,
@@ -222,7 +194,6 @@
         "query": "vsan.$vcenter.$datacentre.*",
         "refresh": 1,
         "refresh_on_load": true,
-        "regex": "",
         "type": "query"
       },
       {
@@ -231,32 +202,76 @@
         "current": {
         },
         "datasource": "local",
-        "hideLabel": false,
         "includeAll": true,
-        "label": "esx",
         "multi": true,
         "multiFormat": "glob",
-        "name": "hostname",
+        "name": "esx",
         "options": [
-          {
-            "text": "All",
-            "value": "*"
-          }
         ],
         "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "*"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "multi": false,
+        "name": "tier",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "*"
+          },
+          {
+            "selected": false,
+            "text": "cache",
+            "value": "cache"
+          },
+          {
+            "selected": false,
+            "text": "capacity",
+            "value": "capacity"
+          }
+        ],
+        "query": "cache,capacity",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allFormat": "wildcard",
+        "allValue": "*",
+        "current": {
+        },
+        "datasource": "local",
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "glob",
+        "name": "dev",
+        "options": [
+        ],
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$esx.vsan.disk.$tier.*",
+        "refresh": 1,
+        "refresh_on_load": true,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
   "annotations": {
     "list": []
   },
-  "refresh": false,
+  "refresh": "rm",
   "schemaVersion": 6,
-  "version": 32,
+  "version": 2,
   "links": []
 }

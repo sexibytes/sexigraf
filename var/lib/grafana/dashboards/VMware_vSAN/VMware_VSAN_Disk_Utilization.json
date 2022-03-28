@@ -32,7 +32,7 @@
           "fill": 0,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": 100,
+            "leftMax": 105,
             "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
@@ -56,11 +56,13 @@
           "lines": true,
           "linewidth": 1,
           "links": [],
+          "minSpan": 3,
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
+          "repeat": "hostname",
           "scopedVars": {
             "hostname": {
               "selected": false,
@@ -75,7 +77,7 @@
           "targets": [
             {
               "hide": false,
-              "target": "aliasByNode(sortByMaxima(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.$device.percentUsed), 9)",
+              "target": "aliasByNode(sortByMaxima(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.disk.capacity.$dev.percentUsed), 9)",
               "textEditor": false
             }
           ],
@@ -96,7 +98,6 @@
           ]
         }
       ],
-      "repeat": "hostname",
       "scopedVars": {
         "hostname": {
           "selected": false,
@@ -226,10 +227,10 @@
         "includeAll": true,
         "multi": true,
         "multiFormat": "glob",
-        "name": "device",
+        "name": "dev",
         "options": [
         ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.lsom.disks.*",
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.disk.capacity.*",
         "refresh": 1,
         "refresh_on_load": true,
         "type": "query"

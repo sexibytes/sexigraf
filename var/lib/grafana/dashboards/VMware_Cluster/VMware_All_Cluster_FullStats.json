@@ -131,7 +131,7 @@
               "format": "percent",
               "label": "",
               "logBase": 1,
-              "max": 100,
+              "max": 110,
               "min": 0,
               "show": true
             }
@@ -218,6 +218,12 @@
               "refId": "F",
               "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest), 'active')",
               "textEditor": false
+            },
+            {
+              "refId": "G",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead), 'overhead')",
+              "textEditor": false,
+              "refCount": 0
             }
           ],
           "thresholds": [],
@@ -511,7 +517,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
+              "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')",
               "textEditor": false
             }
           ],
@@ -677,6 +683,11 @@
               "alias": "guest",
               "fill": 0,
               "stack": false
+            },
+            {
+              "alias": "alocated",
+              "fill": 0,
+              "stack": false
             }
           ],
           "spaceLength": 10,
@@ -714,6 +725,12 @@
             {
               "refId": "F",
               "target": "alias(diffSeries(#A, #B), 'total')",
+              "textEditor": false
+            },
+            {
+              "hide": false,
+              "refId": "G",
+              "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM), 'alocated')",
               "textEditor": false
             }
           ],
@@ -1425,6 +1442,6 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware All Cluster FullStats",
+  "title": "VMware All Cluster FullStats (deprecated)",
   "version": 1
 }

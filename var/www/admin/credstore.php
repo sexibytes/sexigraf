@@ -16,19 +16,21 @@ require("helper.php");
                 <h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf Credential Store</h2>
                 <table class="table table-hover">
                 <thead><tr>
-                  <th class="col-sm-4">vCenter/ESX address</th>
-                  <th class="col-sm-3">Username</th>
-                  <th class="col-sm-2">Password</th>
-                  <th class="col-sm-1">VI</th>
-                  <th class="col-sm-1">vSAN</th>
-                  <th class="col-sm-1">&nbsp;</th>
+                        <th class="col-sm-4">vCenter/ESX address</th>
+                        <th class="col-sm-3">Username</th>
+                        <th class="col-sm-2">Password</th>
+                        <th class="col-sm-1">VI</th>
+                        <th class="col-sm-1">vSAN</th>
+                        <th class="col-sm-1">&nbsp;</th>
                 </tr></thead>
-              <tbody>
+        <tbody>
 <?php
-        $credstoreData = shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list");
+        // $credstoreData = shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list");
+        $credstoreData = shell_exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -list");
         foreach(preg_split("/((\r?\n)|(\r\n?))/", $credstoreData) as $line) {
-                if (strlen($line) == 0) { break; }
-                if (preg_match('/^(?:(?!Server).)/', $line)) {
+                if (strlen($line) == 0) { continue; }
+                // if (preg_match('/^(?:(?!Server).)/', $line)) {
+                if (preg_match('/^(?:(?!__localhost__).)/', $line)) {
                         $lineObjects = preg_split('/\s+/', $line);
                         echo '              <tr>
                         <td>' . $lineObjects[0] . "</td>
@@ -63,7 +65,7 @@ require("helper.php");
                                 echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vsan">Enable vSAN</button></li>';
                         }
                         echo '                          <li role="separator" class="divider"></li>
-                          <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
+                                <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
                                         </ul>
                                 </div>
                         </form></td>
@@ -78,10 +80,14 @@ require("helper.php");
                         <td><input type="password" class="form-control" name="input-password" placeholder="Password" aria-describedby="password-label"></td>
                         <td>&nbsp;*</td>
                         <td>&nbsp;*</td>
-                        <td><button name="submit" class="btn btn-success" value="addmodify">Add</button></td>
+                        <td><button name="submit" class="btn btn-success" value="addmodify" onclick="document.getElementById('submitmessage').style.display = 'block'">Add</button></td>
                 </form></tr>
-              </tbody>
-            </table>
+                </tbody>
+                </table>
+                <div id="submitmessage" class="alert alert-warning" role="warning" style="display: none">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Warning:</span>Please wait while we validate server reachability and user access...
+                </div>
 <?php
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 switch ($_POST["submit"]) {
@@ -93,36 +99,39 @@ require("helper.php");
                                 } elseif (!filter_var($_POST["input-vcenter"], FILTER_VALIDATE_IP) and (gethostbyname($_POST["input-vcenter"]) == $_POST["input-vcenter"])) {
                                         $errorHappened = true;
                                         $errorMessage = "vCenter/ESX IP or FQDN is not correct.";
-                                } elseif (shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list --server " . $_POST["input-vcenter"] . " | grep " . $_POST["input-vcenter"] . " | wc -l") > 0) {
+                                } elseif (shell_exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -check -server " . $_POST["input-vcenter"]) > 0) {
                                         $errorHappened = true;
                                         $errorMessage = "vCenter/ESX IP or FQDN is already in credential store, duplicate entry is not supported.";
                                 } elseif (preg_match("/^([a-zA-Z0-9-_.]*)\\\\?([a-zA-Z0-9-_.]+)$|^([a-zA-Z0-9-_.]*)$|^([a-zA-Z0-9-_.]+)@([a-zA-Z0-9-_.]*)$/", $_POST["input-username"]) == 0) {
                                         $errorHappened = true;
-                                        $errorMessage = "Bad username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
+                                        $errorMessage = "Wrong username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
                                 } else {
                                         # if input seems to be well-formated, we just need to test a connection query
-                                        exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        // exec("/usr/lib/vmware-vcli/apps/general/connect.pl --server " . escapeshellcmd($_POST["input-vcenter"]) . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/ViConnect.ps1 -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
                                         if ($return_var) {
                                                 $errorHappened = true;
-                                                $errorMessage = "Cannot complete login due to an incorrect user name or password";
+                                                $errorMessage = "Wrong username/password or no answer at TCP:443";
                                         }
                                 }
 
                                 if ($errorHappened) {
                                         echo '  <div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . $errorMessage . '
-        </div>';
+                                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        ' . $errorMessage . '
+                                        </div>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
                                 } else {
                                         echo '  <div class="alert alert-success" role="alert">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                <span class="sr-only">Success:</span>';
-                                        echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]));
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                        <span class="sr-only">Success:</span> Success!';
+                                        // echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]) . " --password " . escapeshellcmd($_POST["input-password"]));
+                                        echo exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -add -server " . escapeshellcmd($_POST["input-vcenter"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]));
                                         // Once newly vCenter has been added, we want the inventory to be updated
                                         shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                         echo '  </div>';
-                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
+                                        echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 2000);</script>';
                                 }
                                 break;
                         case "delete-vcentry":
@@ -144,7 +153,8 @@ require("helper.php");
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
-                                echo shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml remove --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"])) . "Refreshing...";
+                                // shell_exec("/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml remove --server " . $_POST["input-vcenter"] . " --username " . escapeshellcmd($_POST["input-username"]));
+                                echo exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -remove -server " . escapeshellcmd($_POST["input-vcenter"])) . "Refreshing...";
                                 shell_exec("sudo /bin/bash /var/www/scripts/updateInventory.sh > /dev/null 2>/dev/null &");
                                 echo '  </div>';
                                 echo '<script type="text/javascript">setTimeout(function(){ location.replace("credstore.php"); }, 1000);</script>';
