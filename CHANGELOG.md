@@ -1,5 +1,77 @@
 # Changelog
 
+## [0.99h](https://github.com/sexibytes/sexigraf/tree/0.99h) (2022-03-28)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99g...0.99h)
+
+**Implemented enhancements:**
+
+- unify datastore iops and latency measure [\#272](https://github.com/sexibytes/sexigraf/issues/272)
+- Implementation of a certificate [\#270](https://github.com/sexibytes/sexigraf/issues/270)
+- inventory export in csv from commandline [\#269](https://github.com/sexibytes/sexigraf/issues/269)
+- add non connected vm status count to VM graph in cluster dashboards [\#268](https://github.com/sexibytes/sexigraf/issues/268)
+- Derivative to nonNegativeDerivative in vSAN dashboards [\#265](https://github.com/sexibytes/sexigraf/issues/265)
+- Switch from VsanInternalSystem to VsanPerfQueryPerf [\#264](https://github.com/sexibytes/sexigraf/issues/264)
+- add vSAN memory metrics [\#263](https://github.com/sexibytes/sexigraf/issues/263)
+- add vSphere Replication events  [\#259](https://github.com/sexibytes/sexigraf/issues/259)
+- Add 7.0 U2 sdk [\#255](https://github.com/sexibytes/sexigraf/issues/255)
+- Perl-SDK to PowerCLI migration [\#254](https://github.com/sexibytes/sexigraf/issues/254)
+- add vSAN tcpip metrics [\#250](https://github.com/sexibytes/sexigraf/issues/250)
+- add stunned process killer [\#249](https://github.com/sexibytes/sexigraf/issues/249)
+- add EfficientCapacity metrics [\#248](https://github.com/sexibytes/sexigraf/issues/248)
+- add VsanObjectIdentityAndHealth to resync dashboard [\#247](https://github.com/sexibytes/sexigraf/issues/247)
+- increase inodes on sdb1 [\#238](https://github.com/sexibytes/sexigraf/issues/238)
+- add allocated to all ram utilization dashboards [\#229](https://github.com/sexibytes/sexigraf/issues/229)
+- Reduce whisper aggregation aggressivity during the first 48h to enhance troubleshooting capability [\#217](https://github.com/sexibytes/sexigraf/issues/217)
+- improve purge script [\#215](https://github.com/sexibytes/sexigraf/issues/215)
+- split ViPullStatistics.log and VsanDisksPullStatistics.log per server for troubleshooting purpose [\#212](https://github.com/sexibytes/sexigraf/issues/212)
+- enhance vmotions count [\#203](https://github.com/sexibytes/sexigraf/issues/203)
+- Kindly Add Virtual Disk matrics [\#180](https://github.com/sexibytes/sexigraf/issues/180)
+- Frequently \(every 1 minute\) VsanPullStatistics from \<vcenter\> is already running! at /root/VsanPullStatistics.pl line 76 [\#174](https://github.com/sexibytes/sexigraf/issues/174)
+- VMware Multi Cluster Usage Dashboard \(missing resource\) [\#162](https://github.com/sexibytes/sexigraf/issues/162)
+- create a VMware\_Multi\_VSAN\_Monitor\_66 dashboard [\#154](https://github.com/sexibytes/sexigraf/issues/154)
+- Empty vSAN latency/iops metrics in cluster fullstats dashboards [\#143](https://github.com/sexibytes/sexigraf/issues/143)
+- Create some CHANGELOG file [\#55](https://github.com/sexibytes/sexigraf/issues/55)
+
+**Fixed bugs:**
+
+- disable ScriptBlockLogging to avoid flooding /var/log/syslog [\#261](https://github.com/sexibytes/sexigraf/issues/261)
+- getinventory error  [\#253](https://github.com/sexibytes/sexigraf/issues/253)
+- VMs in resource pools are not processed [\#252](https://github.com/sexibytes/sexigraf/issues/252)
+- VSAN Top vmdk [\#251](https://github.com/sexibytes/sexigraf/issues/251)
+- ImportError: No module named 'graphite' in /etc/cron.hourly/graphite-build-index [\#242](https://github.com/sexibytes/sexigraf/issues/242)
+- Vmware ESXi 6.0/6.5 import ova error [\#241](https://github.com/sexibytes/sexigraf/issues/241)
+- standalone managed hosts only get multipleHostAccess datastores [\#237](https://github.com/sexibytes/sexigraf/issues/237)
+- Export feature failed if data bigger than 4gb [\#233](https://github.com/sexibytes/sexigraf/issues/233)
+- VMware\_Multi\_Cluster\_Top\_N\_VM\_Stats no Datapoint for disk usage [\#182](https://github.com/sexibytes/sexigraf/issues/182)
+
+**Closed issues:**
+
+- Maximum vCenter amount [\#288](https://github.com/sexibytes/sexigraf/issues/288)
+- SexiGraf VI Offline Inventory panel does not refresh [\#286](https://github.com/sexibytes/sexigraf/issues/286)
+- Can't connect to xxxxx.xxxxxx.xxx:443 \(Name or service not known\) [\#285](https://github.com/sexibytes/sexigraf/issues/285)
+- Add "datastore - vm" association to "VMware Multi Cluster Top N VM Latency" [\#282](https://github.com/sexibytes/sexigraf/issues/282)
+- configure e-mail server for grafana alerts via SexiGraf Web Admin [\#281](https://github.com/sexibytes/sexigraf/issues/281)
+- Description for "VMware All Cluster Capacity Planning" [\#280](https://github.com/sexibytes/sexigraf/issues/280)
+- Replace FlambX by BroStats dashboard [\#277](https://github.com/sexibytes/sexigraf/issues/277)
+- Make export/import possible via vmdk swap [\#276](https://github.com/sexibytes/sexigraf/issues/276)
+- How to change interval of collecting date ?  [\#271](https://github.com/sexibytes/sexigraf/issues/271)
+- Sexigraf Ports [\#267](https://github.com/sexibytes/sexigraf/issues/267)
+- Is there an easy way to change credentials for vcenters in credential store [\#266](https://github.com/sexibytes/sexigraf/issues/266)
+- Error downloading older SUP-files [\#262](https://github.com/sexibytes/sexigraf/issues/262)
+- Removing cluster in vcentre, loses historical data in sexigrafs [\#260](https://github.com/sexibytes/sexigraf/issues/260)
+- Similar to \#204 - Limiting web admin access to view only users [\#256](https://github.com/sexibytes/sexigraf/issues/256)
+- Increase storage retention storage-schema.conf [\#246](https://github.com/sexibytes/sexigraf/issues/246)
+- components version dashboard [\#244](https://github.com/sexibytes/sexigraf/issues/244)
+- ova import error [\#240](https://github.com/sexibytes/sexigraf/issues/240)
+- configure SexiGraph [\#236](https://github.com/sexibytes/sexigraf/issues/236)
+- Number of hosts - no history [\#234](https://github.com/sexibytes/sexigraf/issues/234)
+- add vsan smart metric [\#221](https://github.com/sexibytes/sexigraf/issues/221)
+
+**Merged pull requests:**
+
+- Merge before release 0.99h - Highway 17 [\#289](https://github.com/sexibytes/sexigraf/pull/289) ([vmdude](https://github.com/vmdude))
+
 ## [0.99g](https://github.com/sexibytes/sexigraf/tree/0.99g) (2020-11-16)
 
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99f...0.99g)
@@ -11,13 +83,11 @@
 - replace IORM by IOPS to clarify datastore performance dashboards [\#207](https://github.com/sexibytes/sexigraf/issues/207)
 - limit All and Top N dashboards to first vcenter on load to avoid IO storm [\#206](https://github.com/sexibytes/sexigraf/issues/206)
 - Remove access for Web admin dashboard for non admin roles [\#204](https://github.com/sexibytes/sexigraf/issues/204)
-- enhance vmotions count [\#203](https://github.com/sexibytes/sexigraf/issues/203)
 - add pfsense support [\#202](https://github.com/sexibytes/sexigraf/issues/202)
 - group graphite calls [\#199](https://github.com/sexibytes/sexigraf/issues/199)
 - add consumed Overhead Memory to quickstats dashboards [\#196](https://github.com/sexibytes/sexigraf/issues/196)
 - exportSexiGrafBundle.sh sizing issue [\#186](https://github.com/sexibytes/sexigraf/issues/186)
 - add vdmk per datastore metric [\#185](https://github.com/sexibytes/sexigraf/issues/185)
-- Kindly Add Virtual Disk matrics [\#180](https://github.com/sexibytes/sexigraf/issues/180)
 - switch unit from short to none in Right Y [\#161](https://github.com/sexibytes/sexigraf/issues/161)
 - add datastore \# in shared datastores utilization graphs on clusters dashboards [\#158](https://github.com/sexibytes/sexigraf/issues/158)
 - add 1 decimal instead of auto for % in dashboards [\#153](https://github.com/sexibytes/sexigraf/issues/153)
