@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.988"
+$ScriptVersion = "0.9.989"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -313,7 +313,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner, summary.quickStats -Server $Server
         $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore, ConfigurationEx -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, summary.hardware.NumCpuPkgs, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
         $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
         $vcenter_pods = Get-View -ViewType StoragePod -Property name, summary, parent, childEntity -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion, summary.quickStats.privateMemory, summary.quickStats.consumedOverheadMemory, summary.quickStats.sharedMemory -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
@@ -619,14 +619,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 ### XXX use $vcenter_resource_pools_owner_vms_h
             }
 
-            if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel) {
+            if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel -and $vcenter_cluster_host.summary.hardware.NumCpuPkgs) {
                 $vcenter_cluster_host_product_version = nameCleaner $($vcenter_cluster_host.config.product.version + "_" + $vcenter_cluster_host.config.product.build)
                 $vcenter_cluster_host_hw_model = nameCleaner $($vcenter_cluster_host.summary.hardware.vendor + "_" + $vcenter_cluster_host.summary.hardware.model)
                 $vcenter_cluster_host_cpu_model = nameCleaner $vcenter_cluster_host.summary.hardware.cpuModel
 
                 $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.build.$vcenter_cluster_host_product_version"] ++
                 $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.hardware.$vcenter_cluster_host_hw_model"] ++
-                $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.cpu.$vcenter_cluster_host_cpu_model"] ++
+                $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.cpu.$vcenter_cluster_host_cpu_model"] += [INT32]$vcenter_cluster_host.summary.hardware.NumCpuPkgs
             }
 
             $vcenter_cluster_hosts_pcpus += $vcenter_cluster_host.summary.hardware.numCpuCores
