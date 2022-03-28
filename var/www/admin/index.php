@@ -80,7 +80,7 @@ require("header.php");
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">The VI Offline Inventory is automatically schedule to be updated every 6 hours. If you want to force a refresh, you can use this section to perform update.</span>
+                                                <span class="pull-left">The VI Offline Inventory is automatically schedule to be updated every hours. If you want to force a refresh, you can use this section to perform update.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>

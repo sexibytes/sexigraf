@@ -89,7 +89,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "overallCpuUsage",
+          "title": "CPU Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -172,7 +172,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HostMemoryUsage",
+          "title": "Host Memory Usage",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -255,7 +255,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "storage.committed",
+          "title": "Storage Committed",
           "tooltip": {
             "shared": true,
             "sort": 2,

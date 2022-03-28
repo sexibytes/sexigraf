@@ -270,6 +270,12 @@
           "refId": "F",
           "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'active')",
           "textEditor": true
+        },
+        {
+          "refId": "G",
+          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead, 'overhead')",
+          "textEditor": false,
+          "refCount": 0
         }
       ],
       "thresholds": [],
@@ -561,6 +567,7 @@
     },
     {
       "aliasColors": {
+        "vm.dead": "dark-red",
         "vm.on": "#1F78C1",
         "vm.registered": "#BA43A9"
       },
@@ -615,6 +622,13 @@
           "lines": false,
           "stack": false,
           "yaxis": 2
+        },
+        {
+          "alias": "vm.dead",
+          "dashes": true,
+          "fill": 0,
+          "stack": false,
+          "yaxis": 2
         }
       ],
       "spaceLength": 10,
@@ -632,8 +646,11 @@
         },
         {
           "refId": "C",
-          "target": "alias(countSeries(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus), 'hosts')",
-          "textEditor": false
+          "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')"
+        },
+        {
+          "refId": "D",
+          "target": "alias(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1)), 'vm.dead')"
         }
       ],
       "thresholds": [],
@@ -656,17 +673,17 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "none",
           "logBase": 1,
           "max": null,
           "min": 0,
           "show": true
         },
         {
-          "format": "short",
+          "format": "none",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": false
         }
       ],
@@ -843,6 +860,11 @@
           "alias": "guest",
           "fill": 0,
           "stack": false
+        },
+        {
+          "alias": "alocated",
+          "fill": 0,
+          "stack": false
         }
       ],
       "spaceLength": 10,
@@ -879,6 +901,12 @@
         {
           "refId": "F",
           "target": "alias(diffSeries(#A, #B), 'total')",
+          "textEditor": false
+        },
+        {
+          "hide": false,
+          "refId": "G",
+          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, 'alocated')",
           "textEditor": false
         }
       ],
@@ -1260,6 +1288,7 @@
     },
     {
       "aliasColors": {
+        "xvmotion": "super-light-blue",
         "svmotion": "dark-orange",
         "vmotion": "#052B51"
       },
@@ -1322,6 +1351,12 @@
           "refCount": 0,
           "refId": "B",
           "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
+          "textEditor": false
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
           "textEditor": false
         }
       ],
@@ -1410,13 +1445,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1110",
-          "alias": "/distributedMemoryFairness/i",
-          "transform": "negative-Y"
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,

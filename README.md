@@ -1,14 +1,14 @@
 [![SexiBanner](http://www.sexigraf.fr/wp-content/uploads/2017/07/SexiGrafBanner.png)](http://www.sexigraf.fr)
 
-SexiGraf is a fully open-source vSphere centric Graphite VMware appliance with a Grafana frontend. It pulls VI and VSAN metrics from VMware vCenter APIs, push them to Graphite and let Grafana produces the gorgeous dashboards we love so much!
+SexiGraf is a fully open-source vSphere centric Graphite VMware appliance with a Grafana frontend. It pulls VI and vSAN metrics from VMware vCenter APIs, push them to Graphite and let Grafana produces the gorgeous dashboards we love so much!
 
 *Full changelog is available here: [CHANGELOG.md](CHANGELOG.md)*
 
 *Official website for this awesome appliance is available at http://www.sexigraf.fr*
 
-## VMware VSAN
+## VMware vSAN
 
-The metrics used in the various VSAN dashboards are collected every minutes using to the `QueryVsanStatistics` API method of `HostVsanInternalSystem`. With some json ticks, it is possible to access any metrics from the VSAN cluster. And guess what! We’re already working on other cool SexiPanels for VSAN: http://www.sexigraf.fr/vsan-sexipanels/
+The metrics used in the various VSAN dashboards are now collected every 5 minutes using to the `VsanPerfQueryPerf` API method of `VsanPerformanceManager` from the famous `vSAN performance service`. With some educated guesses, it is possible to access almost any metrics from the vSAN cluster. And guess what! We’re already working on more cool SexiPanels for vSAN: http://www.sexigraf.fr/vsan-sexipanels/
 
 ## VMware vSphere
 

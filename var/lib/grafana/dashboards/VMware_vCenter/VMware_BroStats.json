@@ -1,0 +1,870 @@
+{
+  "annotations": {
+    "list": [
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
+            "mode": "fixed"
+          },
+          "displayName": "Cluster",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(offset(scale(vmw.*.*.*.superstats.esx.count, 0), 1), *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-orange",
+            "mode": "fixed"
+          },
+          "displayName": "ESX",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 5,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.esx.count, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(offset(scale(esx.*.*.*.quickstats.overallStatus, 0), 1), *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "sumSeries(#A, #B)",
+          "targetFull": "sumSeries(removeBelowValue(sumSeries(vmw.*.*.*.superstats.esx.count, *), 0), removeBelowValue(sumSeries(offset(scale(esx.*.*.*.quickstats.overallStatus, 0), 1), *), 0))"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "displayName": "VM",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 10,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.runtime.vm.total, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(esx.*.*.*.runtime.vm.total, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "sumSeries(#A, #B)",
+          "targetFull": "sumSeries(removeBelowValue(sumSeries(vmw.*.*.*.runtime.vm.total, *), 0), removeBelowValue(sumSeries(esx.*.*.*.runtime.vm.total, *), 0))"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-purple",
+            "mode": "fixed"
+          },
+          "displayName": "vmdk",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 15,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.datastore.*.summary.vmdkCount, *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-yellow",
+            "mode": "fixed"
+          },
+          "displayName": "snapshot",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 9
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.storage.SnapshotCount, *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-green",
+            "mode": "fixed"
+          },
+          "displayName": "Datastore",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 5,
+        "y": 9
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.datastore.capacity, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(esx.*.*.*.datastore.*.summary.capacity, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "sumSeries(#A, #B)",
+          "targetFull": "sumSeries(removeBelowValue(sumSeries(vmw.*.*.*.superstats.datastore.capacity, *), 0), removeBelowValue(sumSeries(esx.*.*.*.datastore.*.summary.capacity, *), 0))"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-red",
+            "mode": "fixed"
+          },
+          "displayName": "Power",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 8,
+        "y": 9
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.power, *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "~Latency",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "µs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 11,
+        "y": 9
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(averageSeries(vmw.*.*.*.superstats.datastore.mid_latency, *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-yellow",
+            "mode": "fixed"
+          },
+          "displayName": "RAM",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "mbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 14,
+        "y": 9
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(scale(sumSeries(vmw.*.*.*.quickstats.mem.total, *), 9.5367431640625e-7), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(scale(sumSeries(esx.*.*.*.quickstats.*.total, *), 9.5367431640625e-7), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "sumSeries(#A, #B)",
+          "targetFull": "sumSeries(removeBelowValue(scale(sumSeries(vmw.*.*.*.quickstats.mem.total, *), 9.5367431640625e-7), 0), removeBelowValue(scale(sumSeries(esx.*.*.*.quickstats.*.total, *), 9.5367431640625e-7), 0))"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "CPU",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "rothz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 17,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(scale(vmw.*.*.*.quickstats.cpu.total, 1000000), *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(scale(esx.*.*.*.quickstats.cpu.total, 1000000), *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "sumSeries(#A, #B)",
+          "targetFull": "sumSeries(removeBelowValue(sumSeries(scale(vmw.*.*.*.quickstats.cpu.total, 1000000), *), 0), removeBelowValue(sumSeries(scale(esx.*.*.*.quickstats.cpu.total, 1000000), *), 0))"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-yellow",
+            "mode": "fixed"
+          },
+          "displayName": "vmhba",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 5,
+        "y": 16
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.hba.*, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(esx.*.*.*.hba.*.*, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "scale(sumSeries(#A, #B), 1024)",
+          "targetFull": "scale(sumSeries(removeBelowValue(sumSeries(vmw.*.*.*.superstats.hba.*, *), 0), removeBelowValue(sumSeries(esx.*.*.*.hba.*.*, *), 0)), 1024)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-green",
+            "mode": "fixed"
+          },
+          "displayName": "iops",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "iops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 9,
+        "y": 16
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": -1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.datastore.iops, *), 0)"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-orange",
+            "mode": "fixed"
+          },
+          "displayName": "vmnic",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 13,
+        "y": 16
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "A",
+          "target": "removeBelowValue(sumSeries(vmw.*.*.*.superstats.net.*, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": true,
+          "refCount": 1,
+          "refId": "B",
+          "target": "removeBelowValue(sumSeries(esx.*.*.*.net.*.bytes*, *), 0)"
+        },
+        {
+          "datasource": null,
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "scale(sumSeries(#A, #B), 1024)",
+          "targetFull": "scale(sumSeries(removeBelowValue(sumSeries(vmw.*.*.*.superstats.net.*, *), 0), removeBelowValue(sumSeries(esx.*.*.*.net.*.bytes*, *), 0)), 1024)"
+        }
+      ],
+      "type": "stat"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": [
+    "VI",
+    "FlambX"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": true
+  },
+  "timezone": "",
+  "title": "VMware BroStats (beta)",
+  "uid": "RIBKtJT7k",
+  "version": 10,
+  "weekStart": ""
+}

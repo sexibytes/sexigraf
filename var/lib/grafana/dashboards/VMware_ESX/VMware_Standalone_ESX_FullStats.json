@@ -396,8 +396,7 @@
         },
         {
           "aliasColors": {
-            "cluster.vm.on": "#BA43A9",
-            "cluster.vm.registered": "#447EBC",
+            "vm.dead": "dark-red",
             "vm.on": "#1F78C1",
             "vm.registered": "#BA43A9"
           },
@@ -436,7 +435,15 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "vm.dead",
+              "dashes": true,
+              "fill": 0,
+              "stack": false,
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -446,6 +453,9 @@
             },
             {
               "target": "alias(diffSeries(esx.$vcenter.$datacentre.$esx.runtime.vm.total, #A), 'vm.registered')"
+            },
+            {
+              "target": "alias(removeEmptySeries(removeBelowValue(esx.$vcenter.$datacentre.$esx.runtime.vm.dead, 1)), 'vm.dead')"
             }
           ],
           "timeFrom": null,

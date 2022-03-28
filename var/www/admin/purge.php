@@ -10,7 +10,7 @@ require("helper.php");
                         <div class="panel-body"><ul>
                                 <li>This page can be used to purge old and/or unwanted whisper data objects as well as vCenter session files.</li>
                                 <li style="color:red;"><strong><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Beware as this operation cannot be undone, so there is a risk of DATA LOSS if you don't know what you're doing. <span class="glyphicon glyphicon-alert" aria-hidden="true"></span></strong></li>
-                                <li>Autopurge will automatically remove all files that are not updated since selected days (default is 120).</li>
+                                <li>Autopurge will automatically remove all files that are not updated since selected days (i.e. orphaned vms).</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
@@ -58,7 +58,7 @@ require("helper.php");
                 if (!empty($_POST["submit"])) {
                         switch ($_POST["submit"]) {
                                 case "enable-autopurge":
-                                        enableAutopurge(intval($_POST["nb_days_purge"]));
+                                        enableAutopurge(intval($_POST["nb_days_autopurge"]));
                                 break;
                                 case "disable-autopurge":
                                         disableAutopurge();
@@ -102,7 +102,7 @@ require("helper.php");
                                 echo '                        &nbsp;<button name="submit" class="btn btn-default btn-danger" value="disable-autopurge">Disable autopurge</button>';
                         } else {
                                 echo '                        <span style="color:#d9534f;" aria-hidden="true">disabled</span>';
-                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="120" style="width:80px;"> days';
+                                echo '                        &nbsp;<button name="submit" class="btn btn-default btn-success" value="enable-autopurge">Enable autopurge</button> for <input type="number" id="nb_days_autopurge" name="nb_days_autopurge" min="1" value="120" style="width:80px;"> days';
                         }
                         ?>
                         </div>

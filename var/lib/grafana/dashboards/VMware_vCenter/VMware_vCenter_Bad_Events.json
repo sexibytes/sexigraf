@@ -54,7 +54,7 @@
             {
               "hide": false,
               "refId": "B",
-              "target": "sortByMaxima(groupByNode(vi.$vCenter.vi.exec.ExEvent.$Datacentre.$Cluster.$Events, 6, 'sum'))",
+              "target": "sortByTotal(groupByNode(vi.$vCenter.vi.exec.ExEvent.$Datacentre.$Cluster.$Events, 6, 'sum'))",
               "textEditor": false
             }
           ],
@@ -136,7 +136,7 @@
             {
               "hide": false,
               "refId": "B",
-              "target": "sortByMaxima(groupByNode(vi.$vCenter.vi.exec.ExEvent.$Datacentre.$Cluster.$Events, 7, 'sum'))",
+              "target": "sortByTotal(groupByNode(vi.$vCenter.vi.exec.ExEvent.$Datacentre.$Cluster.$Events, 7, 'sum'))",
               "textEditor": false
             }
           ],

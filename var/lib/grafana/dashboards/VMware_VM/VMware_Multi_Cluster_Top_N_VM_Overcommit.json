@@ -70,7 +70,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "BalloonedMemory",
+          "title": "Ballooned Memory",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -135,7 +135,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CompressedMemory",
+          "title": "Compressed Memory",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -200,7 +200,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "SwappedMemory",
+          "title": "Swapped Memory",
           "tooltip": {
             "shared": true,
             "sort": 2,
