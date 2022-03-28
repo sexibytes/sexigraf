@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.61"
+$ScriptVersion = "0.9.62"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -47,7 +47,7 @@ function GetBlueFolderFullPath {
 }
 
 try {
-    Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force
+    Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force -UseMinimalHeader
     Write-Host "$((Get-Date).ToString("o")) [INFO] ViOfflineInventory v$ScriptVersion"
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] ViOfflineInventory logging failure"
