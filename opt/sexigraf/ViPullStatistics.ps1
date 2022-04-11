@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.989"
+$ScriptVersion = "0.9.990"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -519,7 +519,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $ClusterMultiStatsTime = Measure-Command {$ClusterMultiStats = MultiQueryPerf300 $($vcenter_clusters_h.Values.moref) $ClusterMultiMetrics}
             Write-Host "$((Get-Date).ToString("o")) [INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            AltAndCatchFire "VM MultiQueryPerf failure"
+            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [ERROR] VM MultiQueryPerf failure"
         }
     }
 
@@ -1353,7 +1354,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending cluster, hosts, vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
     }
 
