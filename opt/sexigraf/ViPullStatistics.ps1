@@ -2296,8 +2296,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollectorObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpec) -Server $Server
                 $vCenterEventsHistoryCollectorCatObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpecCat) -Server $Server
 
-                $vCenterEventsHistoryCollector = $vCenterEventsHistoryCollectorObj.ReadNextEvents("1000")
-                $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("1000")
+                $vCenterEventsHistoryCollector = $vCenterEventsHistoryCollectorObj.ReadNextEvents("999")
+                $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("999")
 
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
