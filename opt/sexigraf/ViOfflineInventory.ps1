@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.62"
+$ScriptVersion = "0.9.63"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -34,8 +34,11 @@ function GetBlueFolderFullPath {
 			$VmPathTree = ""
 			$Parent_folder = $child_object.Parent.value
 			while ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
-				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder") {
+				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder" -and $BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]] -ne "Datacenter") {
 					$VmPathTree = "/" + $BlueFolders_name_table[$Parent_folder] + $VmPathTree
+				}
+                if ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]] -eq "Datacenter") {
+					$VmPathTree = "/" + $BlueFolders_name_table[$BlueFolders_Parent_table[$Parent_folder]] + $VmPathTree
 				}
 				if ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
 					$Parent_folder = $BlueFolders_Parent_table[$Parent_folder]
@@ -166,13 +169,14 @@ if ($ViServersList.count -gt 0) {
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
+            $Datacenters = Get-View -ViewType datacenter -Property Parent, Name -Server $ViServer
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
 
             $BlueFolders_name_table = @{}
             $BlueFolders_Parent_table = @{}
             $BlueFolders_type_table = @{}
             
-            foreach ($BlueFolder in [array]$BlueFolders) {
+            foreach ($BlueFolder in [array]$BlueFolders + [array]$Datacenters) {
                 if ($BlueFolder.Parent.value) {
                     if (!$BlueFolders_name_table[$BlueFolder.moref.value]) {$BlueFolders_name_table.add($BlueFolder.moref.value,$BlueFolder.name)}
                     if (!$BlueFolders_Parent_table[$BlueFolder.moref.value]) {$BlueFolders_Parent_table.add($BlueFolder.moref.value,$BlueFolder.Parent.value)}
