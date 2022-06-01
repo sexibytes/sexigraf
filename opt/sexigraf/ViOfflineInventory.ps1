@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.63"
+$ScriptVersion = "0.9.64"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -165,7 +165,7 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config., Runtime.PowerState -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config., Runtime.PowerState -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
@@ -214,8 +214,8 @@ if ($ViServersList.count -gt 0) {
     
             foreach ($Vm in $Vms) {
             
-                if ($Vm.Guest.IpAddress) {
-                    $VmIpAddress = $Vm.Guest.IpAddress
+                if ($Vm.Guest.Net) {
+                    $VmIpAddress = $Vm.Guest.Net.IpAddress|?{$_}
                 } else {
                     $VmIpAddress = ""
                 }
@@ -263,7 +263,7 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.VM = $Vm.name
                 $ViVmInfo.ESX = $VmHost
                 $ViVmInfo.Cluster = $VmCluster
-                $ViVmInfo.IP = $VmIpAddress
+                $ViVmInfo.IP = $VmIpAddress -join " ; "
                 $ViVmInfo.PortGroup = $VmNet -join " ; "
                 $ViVmInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
                 $ViVmInfo.AllocatedGB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
