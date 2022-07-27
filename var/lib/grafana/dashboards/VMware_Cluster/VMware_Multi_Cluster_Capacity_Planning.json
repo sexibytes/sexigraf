@@ -20,7 +20,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
-          "decimals": null,
+          "decimals": 0,
           "editable": false,
           "error": false,
           "fill": 1,
@@ -57,7 +57,7 @@
               "yaxis": 2
             },
             {
-              "alias": "vm.mb",
+              "alias": "vm.vram",
               "lines": false,
               "yaxis": 2
             }
@@ -75,7 +75,7 @@
             {
               "hide": false,
               "refId": "B",
-              "target": "alias(diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 100), maxSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective,$scale))), asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective,$scale))))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on)), 'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), 100), maxSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective,$compute_scale))), asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective,$compute_scale))))),sumSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on)), 'vm.left')",
               "textEditor": true
             },
             {
@@ -90,7 +90,7 @@
             },
             {
               "refId": "E",
-              "target": "alias(divideSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private,vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), \"vm.mb\")",
+              "target": "alias(divideSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private,vmw.$vcenter.$datacentre.$cluster.runtime.vm.on), \"vm.vram\")",
               "textEditor": true
             }
           ],
@@ -188,7 +188,7 @@
             },
             {
               "refId": "B",
-              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.total),'vm.left')",
+              "target": "alias(diffSeries(divideSeries(scale(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, 100), asPercent(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity), sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.freeSpace)), sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.datastore.*.summary.capacity,$storage_scale)))),vmw.$vcenter.$datacentre.$cluster.runtime.vm.total),'vm.left')",
               "textEditor": true
             },
             {
@@ -233,7 +233,7 @@
               "logBase": 1,
               "max": null,
               "min": null,
-              "show": true
+              "show": false
             }
           ]
         }
@@ -334,10 +334,71 @@
         "datasource": null,
         "hide": 0,
         "includeAll": false,
-        "label": "",
+        "label": "Compute Scale",
         "multi": false,
         "multiFormat": "glob",
-        "name": "scale",
+        "name": "compute_scale",
+        "options": [
+          {
+            "selected": false,
+            "text": "0.5",
+            "value": "0.5"
+          },
+          {
+            "selected": false,
+            "text": "0.6",
+            "value": "0.6"
+          },
+          {
+            "selected": false,
+            "text": "0.75",
+            "value": "0.75"
+          },
+          {
+            "selected": false,
+            "text": "0.8",
+            "value": "0.8"
+          },
+          {
+            "selected": false,
+            "text": "0.9",
+            "value": "0.9"
+          },
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "1.15",
+            "value": "1.15"
+          },
+          {
+            "selected": false,
+            "text": "1.25",
+            "value": "1.25"
+          }
+        ],
+        "query": "0.5,0.6,0.75,0.8,0.9,1,1.15,1.25",
+        "refresh": 0,
+        "refresh_on_load": true,
+        "type": "custom"
+      },
+      {
+        "allFormat": "glob",
+        "allValue": null,
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Storage Scale",
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "storage_scale",
         "options": [
           {
             "selected": false,
