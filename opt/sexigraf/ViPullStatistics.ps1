@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.990"
+$ScriptVersion = "0.9.992"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -582,7 +582,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             if ($vcenter_cluster_pool_quickstats.hostMemoryUsage -gt 0 -and $vcenter_cluster.summary.effectiveMemory -gt 0) {
                 $vcenter_cluster_pool_quickstats_ram = $vcenter_cluster_pool_quickstats.hostMemoryUsage * 100 / $vcenter_cluster.summary.effectiveMemory
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.mem.utilization", $vcenter_cluster_pool_quickstats_ram)
-            }	
+            }
+
+            if ($vcenter_cluster.summary.NumVmsPerDrsScoreBucket -and $vcenter_cluster.summary.DrsScore) {
+                # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bf660c0a-f060-46e8-a94d-4b5e6ffc77ad/208bc706-e281-49b6-a0ce-b402ec19ef82/SDK/vsphere-ws/docs/ReferenceGuide/vim.ClusterComputeResource.Summary.html#numVmsPerDrsScoreBucket
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.0_20", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[0])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.21_40", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[1])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.41_60", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[2])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.61_80", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[3])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.81_100", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[4])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.DrsScore", $vcenter_cluster.summary.DrsScore)
+            }
 
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [ERROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
