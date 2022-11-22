@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.997"
+$ScriptVersion = "0.9.998"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -349,6 +349,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             try {
                 $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
             } catch {}
+            # $vcenter_cluster.ConfigurationEx.VsanHostConfig.VsanEsaEnabled
+            # https://vdc-repo.vmware.com/vmwb-repository/dcr-public/4fcedce4-0e06-49cc-bb39-38732c40995d/c087e649-192b-416c-9aa1-dcbb75e74d17/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
             if ($vcenter_cluster.ConfigurationEx.VsanHostConfig -and $vSanPull) {
                 foreach ($ClusterVsanHostConfig in $vcenter_cluster.ConfigurationEx.VsanHostConfig) {
                     if ($ClusterVsanHostConfig.Enabled -and $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mounted) {
