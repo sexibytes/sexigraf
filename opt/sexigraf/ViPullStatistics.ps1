@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.999"
+$ScriptVersion = "0.9.1000"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -937,6 +937,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($vcenter_cluster_vm.runtime.maxCpuUsage -gt 0 -and $vcenter_cluster_vm.summary.quickStats.overallCpuUsage) {
                     $vcenter_cluster_vm_CpuUtilization = $vcenter_cluster_vm.summary.quickStats.overallCpuUsage * 100 / $vcenter_cluster_vm.runtime.maxCpuUsage
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.runtime.CpuUtilization", $vcenter_cluster_vm_CpuUtilization)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.runtime.CpuUtilization", 0)
                 }
 
                 if ($vcenter_cluster_vm.summary.quickStats.guestMemoryUsage -gt 0 -and $vcenter_cluster_vm.runtime.maxMemoryUsage) {
