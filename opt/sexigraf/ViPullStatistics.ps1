@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1000"
+$ScriptVersion = "0.9.1001"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -487,8 +487,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $VmMultiMetricsR2 = @(
             "disk.maxTotalLatency.latest",
             "virtualdisk.write.average",
-            "virtualdisk.read.average",
-            "net.usage.average"
+            "virtualdisk.read.average"
         )
 
         try {
@@ -500,7 +499,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $VmMultiMetricsAll = @(
             "virtualdisk.numberWriteAveraged.average",
-            "virtualdisk.numberReadAveraged.average"
+            "virtualdisk.numberReadAveraged.average",
+            "net.received.average",
+            "net.transmitted.average"
         )
 
         try {
@@ -518,8 +519,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             "cpu.latency.average",
             "disk.maxTotalLatency.latest",
             "virtualdisk.write.average",
-            "virtualdisk.read.average",
-            "net.usage.average"
+            "virtualdisk.read.average"
         )
     
         try {
@@ -531,7 +531,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $VmMultiMetricsAll = @(
             "virtualdisk.numberWriteAveraged.average",
-            "virtualdisk.numberReadAveraged.average"
+            "virtualdisk.numberReadAveraged.average",
+            "net.received.average",
+            "net.transmitted.average"
         )
 
         try {
@@ -996,9 +998,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskiops", $vcenter_cluster_vm_disk_iops)
                 }
 
-                if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]) {
-                    $vcenter_cluster_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]
-                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", $vcenter_cluster_vm_net_usage)
+                if ($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.received.average"]][$vcenter_cluster_vm.moref.value]) {
+                    $vcenter_cluster_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.received.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", $vcenter_cluster_vm_disk_iops)
                 }
 
             } elseif ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -1999,13 +2001,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"cpu.latency.average",
 		"disk.maxTotalLatency.latest",
 		"virtualdisk.write.average",
-		"virtualdisk.read.average",
-		"net.usage.average"
+		"virtualdisk.read.average"
     )
 
     $VmMultiMetricsAll = @(
         "virtualdisk.numberWriteAveraged.average",
-        "virtualdisk.numberReadAveraged.average"
+        "virtualdisk.numberReadAveraged.average",
+        "net.received.average",
+        "net.transmitted.average"
     )
 
     if ($vcenter_vms) {
@@ -2348,9 +2351,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskiops", $unmanaged_host_vm_disk_iops)
                     }
 
-                    if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]) {
-                        $unmanaged_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]
-                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
+                    if ($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.received.average"]][$unmanaged_host_vm.moref.value]) {
+                        $unmanaged_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.received.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskiops", $unmanaged_host_vm_disk_iops)
                     }
                     
                     if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
