@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1001"
+$ScriptVersion = "0.9.1002"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -66,12 +66,12 @@ function GetMedian {
 
 function MultiQueryPerfAll {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance='*'}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance='*'}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -101,12 +101,12 @@ function MultiQueryPerfAll {
 
 function MultiQueryPerf {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -136,12 +136,12 @@ function MultiQueryPerf {
 
 function MultiQueryPerf300 {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;startTime=$ServiceInstanceServerClock_5;intervalId="300";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;startTime=$ServiceInstanceServerClock_5;intervalId="300";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -642,7 +642,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_hosts_pcpus = 0
-        $vcenter_cluster_hosts_vms_moref = @()
+        $vcenter_cluster_hosts_vms_moref = [System.Collections.ArrayList]@()
         $vcenter_cluster_hosts_cpu_latency = @()
         $vcenter_cluster_hosts_net_bytesRx = 0
         $vcenter_cluster_hosts_net_bytesTx = 0
@@ -661,7 +661,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             if ($vcenter_cluster_host.vm) {
-                $vcenter_cluster_hosts_vms_moref += $vcenter_vms_h[$vcenter_cluster_host.vm.value]|?{$_}
+                $vcenter_vms_h[$vcenter_cluster_host.vm.value]|?{$_}|%{$null = $vcenter_cluster_hosts_vms_moref.Add($_)}
                 $vcenter_cluster_host_real_vm_count = $($vcenter_cluster_host.vm|Measure-Object).Count
                 $vcenter_cluster_host_connected_vm_count = $($vcenter_vms_h[$vcenter_cluster_host.vm.value]|Measure-Object).Count
                 if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
@@ -975,6 +975,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$vcenter_cluster_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_cluster_vm.moref.value][""]) / $vcenter_cluster_vm.config.hardware.numCPU / 20000 * 100 
                     ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                     ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                    # https://kb.vmware.com/s/article/85393
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.cpu_wait_no_idle", $vcenter_cluster_vm_io_wait)
                 }
 
@@ -1875,8 +1876,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name events"
 
     $vcenter_events_h = @{}
-    $vCenterFilteredEventTypeId = @()
-    $vCenterFilteredEventTypeIdCat = @()
+    $vCenterFilteredEventTypeId = [System.Collections.ArrayList]@()
+    $vCenterFilteredEventTypeIdCat = [System.Collections.ArrayList]@()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
         # https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
@@ -1885,12 +1886,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             try {
                 if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat.split("|")[0] -notmatch "nonviworkload|io\.latency|^esx\.audit\.net\.firewall\.config\.changed") {
                     if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
-                        $vCenterFilteredEventTypeId += $vCenterEventInfo.fullFormat.split("|")[0]
+                        $null = $vCenterFilteredEventTypeId.add($vCenterEventInfo.fullFormat.split("|")[0])
                     } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
-                        $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.fullFormat.split("|")[0]
+                        $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.fullFormat.split("|")[0])
                     }
                 } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
-                    $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
+                    $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventInfo collect issue"
@@ -2328,6 +2329,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $unmanaged_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
                         ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                         ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                        # https://kb.vmware.com/s/article/85393
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_wait_no_idle", $unmanaged_host_vm_io_wait)
                     }
 
@@ -2395,7 +2397,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = @()
-    $vCenterFilteredEventTypeIdCat = @()
+    $vCenterFilteredEventTypeIdCat = [System.Collections.ArrayList]@()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
 
@@ -2404,7 +2406,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
                 if ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
-                    $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
+                    $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventInfo collect issue"
