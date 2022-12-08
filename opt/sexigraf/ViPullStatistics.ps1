@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1003"
+$ScriptVersion = "0.9.1004"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -994,6 +994,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0) {
                     $vcenter_cluster_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_cluster_vm.moref.value][""]
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", $vcenter_cluster_vm_disk_usage)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", 0)
                 }
 
                 # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value]) {
@@ -1009,6 +1011,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]) {
                     $vcenter_cluster_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", $vcenter_cluster_vm_net_usage)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", 0)
                 }
 
             } elseif ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -1803,6 +1807,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_standalone_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_standalone_host_vm.moref.value][""] -ge 0) {
                         $vcenter_standalone_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_standalone_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_standalone_host_vm.moref.value][""]
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskUsage", $vcenter_standalone_host_vm_disk_usage)
+                    } else {
+                        vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskUsage", 0)
                     }
 
                     # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value]) {
@@ -1813,6 +1819,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_standalone_host_vm.moref.value][""]) {
                         $vcenter_standalone_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_standalone_host_vm.moref.value][""]
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netUsage", $vcenter_standalone_host_vm_net_usage)
+                    } else {
+                        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netUsage", 0)
                     }
 
                     if ($vcenter_standalone_host_vm.summary.quickStats.privateMemory -gt 0) {$StandaloneResourcePoolPrivateMemory += $vcenter_standalone_host_vm.summary.quickStats.privateMemory}
@@ -2354,6 +2362,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
                         $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", $unmanaged_host_vm_disk_usage)
+                    } else {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", 0)
                     }
 
                     # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value]) {
@@ -2369,6 +2379,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]) {
                         $unmanaged_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
+                    } else {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", 0)
                     }
                     
                     if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
