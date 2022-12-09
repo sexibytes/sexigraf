@@ -1791,6 +1791,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$vcenter_standalone_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_standalone_host_vm.moref.value][""]) / $vcenter_standalone_host_vm.config.hardware.numCPU / 20000 * 100 
                         ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                         ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                        # https://kb.vmware.com/s/article/85393
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.cpu_wait_no_idle", $vcenter_standalone_host_vm_io_wait)
                     }
 
