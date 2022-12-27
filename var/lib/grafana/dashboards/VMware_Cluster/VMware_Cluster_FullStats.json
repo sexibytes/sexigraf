@@ -1,1979 +1,2001 @@
 {
-  "annotations": {
-    "list": [
-    ]
-  },
-  "editable": false,
-  "gnetId": null,
-  "graphTooltip": 1,
-  "id": null,
-  "iteration": 1601222415254,
-  "links": [],
-  "panels": [
-    {
-      "collapsed": false,
-      "datasource": "local",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 16,
-      "panels": [],
-      "repeat": null,
-      "title": "$cluster",
-      "type": "row"
+    "annotations": {
+      "list": [
+      ]
     },
-    {
-      "aliasColors": {
-        "cpu.usage": "#BF1B00",
-        "mem.usage": "#1F78C1"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "decimals": 1,
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "hiddenSeries": false,
-      "id": 1,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "mem.allocated",
-          "fill": 0,
-          "stack": false
-        },
-        {
-          "alias": "cpu.latency",
-          "fill": 0,
-          "stack": false
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": true,
-          "refId": "A",
-          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective",
-          "textEditor": false
-        },
-        {
-          "hide": true,
-          "refId": "B",
-          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "C",
-          "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, #A), 'cpu.usage')",
-          "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "D",
-          "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
-          "targetFull": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')), 'mem.usage')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "E",
-          "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
-          "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), 'mem.allocated')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "F",
-          "target": "alias(scale(averageSeries(vmw.$vcenter.$datacentre.$cluster.superstats.cpu.latency), 0.01), 'cpu.latency')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "cpu/ram usage",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": 110,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": 110,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "active": "#CCA300",
-        "ballooned": "#EAB839",
-        "private": "#052B51",
-        "shared": "#508642",
-        "zipped": "#6ED0E0"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 6,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "sort": null,
-        "sortDesc": null,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "active",
-          "fill": 0,
-          "linewidth": 2,
-          "stack": false
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
-          "textEditor": false
-        },
-        {
-          "refId": "B",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.shared, 'shared')",
-          "textEditor": false
-        },
-        {
-          "refId": "C",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.ballooned, 'ballooned')",
-          "textEditor": false
-        },
-        {
-          "refId": "D",
-          "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.compressed, 0.0009765625), 'zipped')",
-          "textEditor": false
-        },
-        {
-          "refId": "E",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.swapped, 'swapped')",
-          "textEditor": false
-        },
-        {
-          "refId": "F",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'active')",
-          "textEditor": true
-        },
-        {
-          "refId": "G",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead, 'overhead')",
-          "textEditor": false,
-          "refCount": 0
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "memory quickstats",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "mbytes",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "mbytes",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "capacity": "#BF1B00",
-        "commited": "#052B51",
-        "provisioned": "#E5AC0E",
-        "total": "#BF1B00",
-        "uncommitted": "#E5AC0E",
-        "used": "#052B51"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 7
-      },
-      "hiddenSeries": false,
-      "id": 5,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "capacity",
-          "fill": 0,
-          "stack": false
-        },
-        {
-          "alias": "uncommitted",
-          "fill": 1
-        },
-        {
-          "alias": "capacity",
-          "zindex": 3
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": true,
-          "refId": "A",
-          "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "B",
-          "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), #A), 'used')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "C",
-          "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.uncommitted), 'uncommitted')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "D",
-          "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), 'capacity')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "shared datastores utilization",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bytes",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "percent",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 7
-      },
-      "hiddenSeries": false,
-      "id": 7,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "bytesRx",
-          "color": "#629E51",
-          "lines": false
-        },
-        {
-          "alias": "bytesTx",
-          "bars": false,
-          "color": "#0A50A1"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesRx, 1024)), 8)",
-          "textEditor": true
-        },
-        {
-          "refId": "B",
-          "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesTx, 1024)), 8)",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "vmnic traffic",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "vm.dead": "dark-red",
-        "vm.on": "#1F78C1",
-        "vm.registered": "#BA43A9"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "decimals": 0,
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 4,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 13
-      },
-      "hiddenSeries": false,
-      "id": 3,
-      "legend": {
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "hosts",
-          "lines": false,
-          "stack": false,
-          "yaxis": 2
-        },
-        {
-          "alias": "vm.dead",
-          "dashes": true,
-          "fill": 0,
-          "stack": false,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')"
-        },
-        {
-          "refId": "B",
-          "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')",
-          "targetFull": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')), 'vm.registered')"
-        },
-        {
-          "refId": "C",
-          "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')"
-        },
-        {
-          "refId": "D",
-          "target": "alias(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1)), 'vm.dead')"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "VM count",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "none",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "none",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 13
-      },
-      "hiddenSeries": false,
-      "id": 15,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "bytesRead",
-          "color": "#E24D42",
-          "lines": false
-        },
-        {
-          "alias": "bytesWrite",
-          "bars": false,
-          "color": "#1F78C1"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesRead, 1024)), 8)",
-          "textEditor": false
-        },
-        {
-          "refId": "B",
-          "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesWrite, 1024)), 8)",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "vmhba traffic",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "effective": "#6ED0E0",
-        "guest": "#7EB26D",
-        "private": "#EAB839",
-        "total": "#EF843C"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 19
-      },
-      "hiddenSeries": false,
-      "id": 8,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "guest",
-          "fill": 0,
-          "stack": false
-        },
-        {
-          "alias": "alocated",
-          "fill": 0,
-          "stack": false
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": true,
-          "refId": "A",
-          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.5367431640625e-7)",
-          "textEditor": false
-        },
-        {
-          "hide": true,
-          "refId": "B",
-          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
-          "textEditor": false
-        },
-        {
-          "refId": "C",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'guest')",
-          "textEditor": false
-        },
-        {
-          "refId": "D",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
-          "textEditor": false
-        },
-        {
-          "refId": "E",
-          "target": "alias(diffSeries(#B, #D), 'effective')",
-          "textEditor": false
-        },
-        {
-          "refId": "F",
-          "target": "alias(diffSeries(#A, #B), 'total')",
-          "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "G",
-          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, 'alocated')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "RAM utilization",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "mbytes",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 19
-      },
-      "hiddenSeries": false,
-      "id": 10,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "demand",
-          "fill": 0,
-          "stack": false
-        }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": true,
-          "refId": "A",
-          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000)",
-          "textEditor": false
-        },
-        {
-          "hide": true,
-          "refId": "B",
-          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective, 1000000)",
-          "textEditor": false
-        },
-        {
-          "refId": "C",
-          "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000), 'demand')",
-          "textEditor": false
-        },
-        {
-          "refId": "D",
-          "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000), 'usage')",
-          "textEditor": false
-        },
-        {
-          "refId": "E",
-          "target": "alias(diffSeries(#B, #D), 'effective')",
-          "textEditor": false
-        },
-        {
-          "refId": "F",
-          "target": "alias(diffSeries(#A, #B), 'total')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "CPU utilization/demand",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "hertz",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "decimals": 1,
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 25
-      },
-      "hiddenSeries": false,
-      "id": 13,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 3,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "/vCPU/i",
-          "color": "#6D1F62"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": true,
-          "refId": "A",
-          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs"
-        },
-        {
-          "hide": true,
-          "refId": "B",
-          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs"
-        },
-        {
-          "refId": "C",
-          "target": "alias(divideSeries(#B, #A), '$cluster.vCPU/pCPU')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "vCPU per pCPU ratio",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 25
-      },
-      "hiddenSeries": false,
-      "id": 14,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": false,
-          "refId": "A",
-          "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "power usage",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "watt",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "xvmotion": "super-light-blue",
-        "svmotion": "dark-orange",
-        "vmotion": "#052B51"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "decimals": 0,
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 4,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 31
-      },
-      "hiddenSeries": false,
-      "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": true,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion')",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
-          "textEditor": false
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "vMotion count",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "none",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 12,
-        "y": 31
-      },
-      "hiddenSeries": false,
-      "id": 9,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "hide": false,
-          "refId": "A",
-          "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedCpuFairness, 5)"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "distributed CPU fairness",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1117",
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1118",
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 18,
-        "y": 31
-      },
-      "hiddenSeries": false,
-      "id": 18,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "B",
-          "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedMemoryFairness, 5)"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "distributed RAM fairness",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1279",
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1280",
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "datasource": "local",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 37
-      },
-      "id": 17,
-      "panels": [],
-      "repeat": null,
-      "title": "IOPS",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 38
-      },
-      "hiddenSeries": false,
-      "id": 11,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "Avg",
-          "color": "#E24D42"
-        },
-        {
-          "alias": "Max",
-          "color": "#EAB839",
-          "fill": 0
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Avg')",
-          "textEditor": false
-        },
-        {
-          "refId": "B",
-          "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Max')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Normalized Datastores Latency",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "µs",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "local",
-      "editable": false,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 38
-      },
-      "hiddenSeries": false,
-      "id": 12,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "/.*/",
-          "color": "#1F78C1"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refId": "A",
-          "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 'IOPS')",
-          "textEditor": false
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Aggregated Datastores IOPS",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    }
-  ],
-  "refresh": false,
-  "schemaVersion": 26,
-  "style": "light",
-  "tags": [
-    "CPU",
-    "RAM",
-    "HDD",
-    "DRS",
-    "VM",
-    "vmotion",
-    "vmnic",
-    "IORM",
-    "vmhba"
-  ],
-  "templating": {
-    "list": [
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": null,
+    "iteration": 1672179421999,
+    "links": [],
+    "liveNow": false,
+    "panels": [
       {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {},
+        "collapsed": false,
         "datasource": "local",
-        "definition": "",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "vcenter",
-        "options": [],
-        "query": "vmw.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 16,
+        "panels": [],
+        "title": "$cluster",
+        "type": "row"
       },
       {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {},
+        "aliasColors": {
+          "cpu.usage": "#BF1B00",
+          "mem.usage": "#1F78C1"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
         "datasource": "local",
-        "definition": "",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "datacentre",
-        "options": [],
-        "query": "vmw.$vcenter.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "decimals": 1,
+        "editable": false,
+        "error": false,
+        "fill": 1,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 1
+        },
+        "hiddenSeries": false,
+        "id": 1,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "mem.allocated",
+            "fill": 0,
+            "stack": false
+          },
+          {
+            "alias": "cpu.latency",
+            "fill": 0,
+            "stack": false
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": true,
+            "refId": "A",
+            "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective",
+            "textEditor": false
+          },
+          {
+            "hide": true,
+            "refId": "B",
+            "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "C",
+            "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, #A), 'cpu.usage')",
+            "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "D",
+            "target": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, #B), #C), 'mem.usage')",
+            "targetFull": "alias(diffSeries(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective), 'cpu.usage')), 'mem.usage')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "E",
+            "target": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, #B), 'mem.allocated')",
+            "targetFull": "alias(asPercent(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective), 'mem.allocated')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "F",
+            "target": "alias(scale(averageSeries(vmw.$vcenter.$datacentre.$cluster.superstats.cpu.latency), 0.01), 'cpu.latency')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "cpu/ram usage",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "",
+            "logBase": 1,
+            "max": 110,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "percent",
+            "label": "",
+            "logBase": 1,
+            "max": 110,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
       },
       {
-        "allFormat": "glob",
-        "allValue": null,
-        "current": {},
+        "aliasColors": {
+          "active": "#CCA300",
+          "ballooned": "#EAB839",
+          "private": "#052B51",
+          "shared": "#508642",
+          "zipped": "#6ED0E0"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
         "datasource": "local",
-        "definition": "",
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "multiFormat": "glob",
-        "name": "cluster",
-        "options": [],
-        "query": "vmw.$vcenter.$datacentre.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "editable": false,
+        "error": false,
+        "fill": 6,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 1
+        },
+        "hiddenSeries": false,
+        "id": 2,
+        "legend": {
+          "alignAsTable": false,
+          "avg": false,
+          "current": false,
+          "hideEmpty": false,
+          "max": false,
+          "min": false,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "active",
+            "fill": 0,
+            "linewidth": 2,
+            "stack": false
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
+            "textEditor": false
+          },
+          {
+            "refId": "B",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.shared, 'shared')",
+            "textEditor": false
+          },
+          {
+            "refId": "C",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.ballooned, 'ballooned')",
+            "textEditor": false
+          },
+          {
+            "refId": "D",
+            "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.compressed, 0.0009765625), 'zipped')",
+            "textEditor": false
+          },
+          {
+            "refId": "E",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.swapped, 'swapped')",
+            "textEditor": false
+          },
+          {
+            "refId": "F",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'active')",
+            "textEditor": true
+          },
+          {
+            "refCount": 0,
+            "refId": "G",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.consumedOverhead, 'overhead')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "memory quickstats",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "mbytes",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "mbytes",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
       },
       {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {},
+        "aliasColors": {
+          "capacity": "#BF1B00",
+          "commited": "#052B51",
+          "provisioned": "#E5AC0E",
+          "total": "#BF1B00",
+          "uncommitted": "#E5AC0E",
+          "used": "#052B51"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
         "datasource": "local",
-        "definition": "",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "datastore",
-        "options": [],
-        "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "editable": false,
+        "error": false,
+        "fill": 2,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 7
+        },
+        "hiddenSeries": false,
+        "id": 5,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "capacity",
+            "fill": 0,
+            "stack": false
+          },
+          {
+            "alias": "uncommitted",
+            "fill": 1
+          },
+          {
+            "alias": "capacity",
+            "zindex": 3
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": true,
+            "refId": "A",
+            "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.freeSpace)",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "B",
+            "target": "alias(diffSeries(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), #A), 'used')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "C",
+            "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.uncommitted), 'uncommitted')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "D",
+            "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.capacity), 'capacity')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "shared datastores utilization",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "bytes",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "percent",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 0,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 7
+        },
+        "hiddenSeries": false,
+        "id": 7,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "bytesRx",
+            "color": "#629E51",
+            "lines": false
+          },
+          {
+            "alias": "bytesTx",
+            "bars": false,
+            "color": "#0A50A1"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesRx, 1024)), 8)",
+            "textEditor": true
+          },
+          {
+            "refId": "B",
+            "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.net.*.bytesTx, 1024)), 8)",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "vmnic traffic",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "Bps",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {
+          "vm.dead": "dark-red",
+          "vm.on": "#1F78C1",
+          "vm.registered": "#BA43A9"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "decimals": 0,
+        "editable": false,
+        "error": false,
+        "fill": 4,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 13
+        },
+        "hiddenSeries": false,
+        "id": 3,
+        "legend": {
+          "avg": false,
+          "current": true,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "hosts",
+            "lines": false,
+            "stack": false,
+            "yaxis": 2
+          },
+          {
+            "alias": "vm.dead",
+            "dashes": true,
+            "fill": 0,
+            "stack": false,
+            "yaxis": 2
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')"
+          },
+          {
+            "refId": "B",
+            "target": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, #A), 'vm.registered')",
+            "targetFull": "alias(diffSeries(vmw.$vcenter.$datacentre.$cluster.runtime.vm.total, alias(vmw.$vcenter.$datacentre.$cluster.runtime.vm.on, 'vm.on')), 'vm.registered')"
+          },
+          {
+            "refId": "C",
+            "target": "alias(sumSeries(offset(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.overallStatus, 0), 1)), 'hosts')"
+          },
+          {
+            "refId": "D",
+            "target": "alias(removeEmptySeries(removeBelowValue(vmw.$vcenter.$datacentre.$cluster.runtime.vm.dead, 1)), 'vm.dead')"
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "VM count",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "none",
+            "logBase": 1,
+            "min": 0,
+            "show": false
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 0,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 13
+        },
+        "hiddenSeries": false,
+        "id": 15,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "bytesRead",
+            "color": "#E24D42",
+            "lines": false
+          },
+          {
+            "alias": "bytesWrite",
+            "bars": false,
+            "color": "#1F78C1"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesRead, 1024)), 8)",
+            "textEditor": false
+          },
+          {
+            "refId": "B",
+            "target": "aliasByNode(sumSeries(scale(vmw.$vcenter.$datacentre.$cluster.esx.*.hba.*.bytesWrite, 1024)), 8)",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "vmhba traffic",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "Bps",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {
+          "effective": "#6ED0E0",
+          "guest": "#7EB26D",
+          "private": "#EAB839",
+          "total": "#EF843C"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 2,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 19
+        },
+        "hiddenSeries": false,
+        "id": 8,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "guest",
+            "fill": 0,
+            "stack": false
+          },
+          {
+            "alias": "alocated",
+            "fill": 0,
+            "stack": false
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": true,
+            "refId": "A",
+            "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.5367431640625e-7)",
+            "textEditor": false
+          },
+          {
+            "hide": true,
+            "refId": "B",
+            "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
+            "textEditor": false
+          },
+          {
+            "refId": "C",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'guest')",
+            "textEditor": false
+          },
+          {
+            "refId": "D",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
+            "textEditor": false
+          },
+          {
+            "refId": "E",
+            "target": "alias(diffSeries(#B, #D), 'effective')",
+            "textEditor": false
+          },
+          {
+            "refId": "F",
+            "target": "alias(diffSeries(#A, #B), 'total')",
+            "textEditor": false
+          },
+          {
+            "hide": false,
+            "refId": "G",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM, 'alocated')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "RAM utilization",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "mbytes",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 2,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 19
+        },
+        "hiddenSeries": false,
+        "id": 10,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "demand",
+            "fill": 0,
+            "stack": false
+          }
+        ],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": true,
+            "refId": "A",
+            "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000)",
+            "textEditor": false
+          },
+          {
+            "hide": true,
+            "refId": "B",
+            "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective, 1000000)",
+            "textEditor": false
+          },
+          {
+            "refId": "C",
+            "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000), 'demand')",
+            "textEditor": false
+          },
+          {
+            "refId": "D",
+            "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000), 'usage')",
+            "textEditor": false
+          },
+          {
+            "refId": "E",
+            "target": "alias(diffSeries(#B, #D), 'effective')",
+            "textEditor": false
+          },
+          {
+            "refId": "F",
+            "target": "alias(diffSeries(#A, #B), 'total')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "CPU utilization/demand",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "hertz",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "VM",
+              "axisPlacement": "left",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "0_20"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-purple",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "21_40"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "41_60"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-orange",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "61_80"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "81_100"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-green",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "ClusterDrsScore"
+              },
+              "properties": [
+                {
+                  "id": "custom.drawStyle",
+                  "value": "line"
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "custom.stacking",
+                  "value": {
+                    "group": "A",
+                    "mode": "none"
+                  }
+                },
+                {
+                  "id": "max",
+                  "value": 100
+                },
+                {
+                  "id": "min",
+                  "value": 0
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 2
+                },
+                {
+                  "id": "custom.axisLabel",
+                  "value": ""
+                },
+                {
+                  "id": "unit",
+                  "value": "percent"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 25
+        },
+        "id": 19,
+        "links": [],
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "8.4.4",
+        "targets": [
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "A",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.0_20, 6)",
+            "textEditor": false
+          },
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "B",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.21_40, 6)",
+            "textEditor": false
+          },
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "C",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.41_60, 6)",
+            "textEditor": false
+          },
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "D",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.61_80, 6)",
+            "textEditor": false
+          },
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "E",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.81_100, 6)",
+            "textEditor": false
+          },
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "F",
+            "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.drs.DrsScore, 'ClusterDrsScore')",
+            "textEditor": false
+          }
+        ],
+        "title": "DrsScoreBucket",
+        "type": "timeseries"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 1,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 25
+        },
+        "hiddenSeries": false,
+        "id": 14,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": false,
+            "refId": "A",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.fatstats.power, 5)"
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "power usage",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "watt",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {
+          "svmotion": "dark-orange",
+          "vmotion": "#052B51",
+          "xvmotion": "super-light-blue"
+        },
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "decimals": 0,
+        "editable": false,
+        "error": false,
+        "fill": 4,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 31
+        },
+        "hiddenSeries": false,
+        "id": 4,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": true,
+          "values": true
+        },
+        "lines": false,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion')",
+            "textEditor": false
+          },
+          {
+            "refCount": 0,
+            "refId": "B",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
+            "textEditor": false
+          },
+          {
+            "refCount": 0,
+            "refId": "C",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "vMotion count",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "decimals": 1,
+        "editable": false,
+        "error": false,
+        "fill": 0,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 31
+        },
+        "hiddenSeries": false,
+        "id": 13,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 3,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "/vCPU/i",
+            "color": "#6D1F62"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": true,
+            "refId": "A",
+            "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs"
+          },
+          {
+            "hide": true,
+            "refId": "B",
+            "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs"
+          },
+          {
+            "refId": "C",
+            "target": "alias(divideSeries(#B, #A), '$cluster.vCPU/pCPU')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "vCPU per pCPU ratio",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 0,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 31
+        },
+        "hiddenSeries": false,
+        "id": 9,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "hide": false,
+            "refId": "A",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedCpuFairness, 5)"
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "distributed CPU fairness",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:1117",
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:1118",
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 0,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 31
+        },
+        "hiddenSeries": false,
+        "id": 18,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "B",
+            "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.*.quickstats.distributedMemoryFairness, 5)"
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "distributed RAM fairness",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:1279",
+            "format": "short",
+            "logBase": 1,
+            "min": "0",
+            "show": true
+          },
+          {
+            "$$hashKey": "object:1280",
+            "format": "short",
+            "logBase": 1,
+            "show": false
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "collapsed": false,
+        "datasource": "local",
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 37
+        },
+        "id": 17,
+        "panels": [],
+        "title": "IOPS",
+        "type": "row"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 1,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 38
+        },
+        "hiddenSeries": false,
+        "id": 11,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "Avg",
+            "color": "#E24D42"
+          },
+          {
+            "alias": "Max",
+            "color": "#EAB839",
+            "fill": 0
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(averageSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Avg')",
+            "textEditor": false
+          },
+          {
+            "refId": "B",
+            "target": "alias(maxSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.sizeNormalizedDatastoreLatency), 'Max')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "Normalized Datastores Latency",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "µs",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "editable": false,
+        "error": false,
+        "fill": 1,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 38
+        },
+        "hiddenSeries": false,
+        "id": 12,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
+        },
+        "lines": false,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "/.*/",
+            "color": "#1F78C1"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(sumSeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.iorm.datastoreIops), 'IOPS')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "Aggregated Datastores IOPS",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
       }
-    ]
-  },
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
-  "timepicker": {
-    "collapse": false,
-    "enable": true,
-    "notice": false,
-    "now": true,
-    "refresh_intervals": [
-      "5m",
-      "15m",
-      "1h",
-      "2h",
-      "3h",
-      "6h",
-      "12h",
-      "24h"
     ],
-    "status": "Stable",
-    "time_options": [
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d",
-      "7d",
-      "30d"
-    ],
-    "type": "timepicker"
-  },
-  "timezone": "browser",
-  "title": "VMware Cluster FullStats",
-  "uid": "2b9f2865",
-  "version": 1
-}
+    "refresh": false,
+    "schemaVersion": 35,
+    "style": "light",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allFormat": "wildcard",
+          "allValue": "*",
+          "current": {},
+          "datasource": "local",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "multi": true,
+          "multiFormat": "glob",
+          "name": "vcenter",
+          "options": [],
+          "query": "vmw.*",
+          "refresh": 1,
+          "refresh_on_load": true,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allFormat": "wildcard",
+          "allValue": "*",
+          "current": {},
+          "datasource": "local",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "multi": true,
+          "multiFormat": "glob",
+          "name": "datacentre",
+          "options": [],
+          "query": "vmw.$vcenter.*",
+          "refresh": 1,
+          "refresh_on_load": true,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allFormat": "glob",
+          "current": {},
+          "datasource": "local",
+          "definition": "",
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "cluster",
+          "options": [],
+          "query": "vmw.$vcenter.$datacentre.*",
+          "refresh": 1,
+          "refresh_on_load": true,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allFormat": "wildcard",
+          "allValue": "*",
+          "current": {},
+          "datasource": "local",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "multi": true,
+          "multiFormat": "glob",
+          "name": "datastore",
+          "options": [],
+          "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
+          "refresh": 1,
+          "refresh_on_load": true,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5m",
+        "15m",
+        "1h",
+        "2h",
+        "3h",
+        "6h",
+        "12h",
+        "24h"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "type": "timepicker"
+    },
+    "timezone": "browser",
+    "title": "VMware Cluster FullStats",
+    "uid": "7NMB0enVk",
+    "version": 6,
+    "weekStart": ""
+  }
