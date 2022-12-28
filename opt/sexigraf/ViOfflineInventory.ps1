@@ -333,13 +333,14 @@ if ($ViServersList.count -gt 0) {
 
             foreach ($Datastore in $datastores) {
                 
-                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity, FreeSpace, Url
+                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity, FreeSpace, Usage, Url
                 
                 $ViDatastoreInfo.vCenter = $ViServer
                 $ViDatastoreInfo.Datastore = $($Datastore.name)
                 $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
                 $ViDatastoreInfo.Capacity = $($Datastore.Summary.Capacity)
                 $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.FreeSpace)
+                $ViDatastoreInfo.Usage = "$([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))" + "%"
                 $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
