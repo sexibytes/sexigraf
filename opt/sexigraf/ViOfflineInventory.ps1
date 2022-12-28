@@ -340,7 +340,7 @@ if ($ViServersList.count -gt 0) {
                 $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
                 $ViDatastoreInfo.Capacity = $($Datastore.Summary.Capacity)
                 $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.FreeSpace)
-                $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.Url)
+                $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
             }
