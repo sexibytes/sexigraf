@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.66"
+$ScriptVersion = "0.9.67"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -100,6 +100,7 @@ try {
 if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
     $ViEsxsInfos = @()
+    $ViDatastoresInfos = @()
     foreach ($ViServer in $ViServersList) {
         $ViServerCleanName = $ViServer.Replace(".","_")
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
@@ -168,6 +169,7 @@ if ($ViServersList.count -gt 0) {
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
+            $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
 
             $Datacenters = Get-View -ViewType datacenter -Property Parent, Name -Server $ViServer
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
@@ -328,6 +330,20 @@ if ($ViServersList.count -gt 0) {
                 
                 $ViEsxsInfos += $ViEsxInfo
             }
+
+            foreach ($Datastore in $datastores) {
+                
+                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity, FreeSpace, Url
+                
+                $ViDatastoreInfo.vCenter = $ViServer
+                $ViDatastoreInfo.Datastore = $($Datastore.name)
+                $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
+                $ViDatastoreInfo.Capacity = $($Datastore.Summary.Capacity)
+                $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.FreeSpace)
+                $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.Url)
+                
+                $ViDatastoresInfos += $ViDatastoreInfo
+            }
     
         }
         
@@ -343,13 +359,31 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViVmsInfos) {
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Inventory files ..."
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory files ..."
             $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
-            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
         } catch {
-            AltAndCatchFire "Export-Csv issue"
+            AltAndCatchFire "VM Export-Csv issue"
         }
     }
+
+    if ($ViEsxsInfos) {
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Esx Inventory files ..."
+            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
+        } catch {
+            AltAndCatchFire "ESX Export-Csv issue"
+        }
+    }
+
+    if ($ViDatastoresInfos) {
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
+            $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force
+        } catch {
+            AltAndCatchFire "Datastore Export-Csv issue"
+        }
+    }
+
 } else {
     AltAndCatchFire "No VI server to process"
 }
