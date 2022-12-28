@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.65"
+$ScriptVersion = "0.9.66"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -166,7 +166,7 @@ if ($ViServersList.count -gt 0) {
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
 
             $Datacenters = Get-View -ViewType datacenter -Property Parent, Name -Server $ViServer
@@ -304,14 +304,21 @@ if ($ViServersList.count -gt 0) {
                 } else {
                     $EsxState = $Esx.runtime.ConnectionState
                 }
+
+                if ($Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue) {
+                    $EsxServiceTag = $Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue
+                } else {
+                    $EsxServiceTag = ""
+                }
                 
-                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, State, RAM, CPU, Cores, vmk0Ip, vmk0Mac
+                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, SerialNumber, State, RAM, CPU, Cores, vmk0Ip, vmk0Mac
                 
                 $ViEsxInfo.vCenter = $ViServer
                 $ViEsxInfo.ESX = $($Esx.name)
                 $ViEsxInfo.Cluster = $EsxCluster
                 $ViEsxInfo.Version = $EsxVersion
                 $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
+                $ViEsxInfo.SerialNumber = $EsxServiceTag
                 $ViEsxInfo.State = $EsxState
                 $ViEsxInfo.RAM = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
