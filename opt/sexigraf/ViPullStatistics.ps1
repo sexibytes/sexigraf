@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1004"
+$ScriptVersion = "0.9.1005"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -351,10 +351,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
             } catch {}
             if ($vcenter_cluster.ConfigurationEx.VsanHostConfig -and $vSanPull) {
-                if ($vcenter_cluster.ConfigurationEx.VsanHostConfig.VsanEsaEnabled) {
+                if (($vcenter_cluster.ConfigurationEx.VsanHostConfig.VsanEsaEnabled|Measure-Object).count -gt 0) {
                     try {
                         $vcenter_clusters_vsan_efa_h.add($vcenter_cluster.MoRef.Value,$vcenter_cluster)
-
                     } catch {}
                 } else {
                     foreach ($ClusterVsanHostConfig in $vcenter_cluster.ConfigurationEx.VsanHostConfig) {
