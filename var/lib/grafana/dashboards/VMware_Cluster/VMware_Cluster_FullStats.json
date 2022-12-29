@@ -1871,7 +1871,16 @@
     "refresh": false,
     "schemaVersion": 35,
     "style": "light",
-    "tags": [],
+    "tags": [
+      "CPU",
+      "RAM",
+      "HDD",
+      "VM",
+      "vmotion",
+      "vmnic",
+      "IORM",
+      "vmhba"
+    ],
     "templating": {
       "list": [
         {
