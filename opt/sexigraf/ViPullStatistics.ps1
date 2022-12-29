@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1005"
+$ScriptVersion = "0.9.1006"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -2426,7 +2426,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     if ($EventManager.LatestEvent.Key -gt 0) {
 
-        $vCenterFilteredEventTypeId = Get-Content /opt/sexigraf/vsp703.evt
+        $vCenterFilteredEventTypeId = Get-Content /opt/sexigraf/vsp801.evt
 
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
