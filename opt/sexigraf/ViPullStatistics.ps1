@@ -13,9 +13,9 @@ $WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
     Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     Stop-Transcript
     exit
 }
@@ -178,8 +178,8 @@ try {
         Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
     }
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViPullStatistics logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] ViPullStatistics logging failure"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     exit
 }
 
@@ -278,7 +278,7 @@ try {
         AltAndCatchFire "ServiceInstance check failure"
     }
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
 }
 
 try {
@@ -555,8 +555,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $ClusterMultiStatsTime = Measure-Command {$ClusterMultiStats = MultiQueryPerf300 $($vcenter_clusters_h.Values.moref) $ClusterMultiMetrics}
             Write-Host "$((Get-Date).ToString("o")) [INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] VM MultiQueryPerf failure"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM MultiQueryPerf failure"
         }
     }
 
@@ -636,8 +636,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
@@ -697,8 +697,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -741,8 +741,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -759,8 +759,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -791,8 +791,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_host_overallStatus = "0"
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -803,8 +803,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.Uptime", $vcenter_cluster_host.summary.quickStats.uptime)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -918,16 +918,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.delta", $vcenter_cluster_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.committed", $vcenter_cluster_vm.summary.storage.committed)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.uncommitted", $vcenter_cluster_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -1087,8 +1087,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue in cluster $vcenter_cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue in cluster $vcenter_cluster_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
@@ -1540,8 +1540,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vcenter_standalone_host.overallStatus) {
@@ -1560,8 +1560,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.total", $vcenter_standalone_pool.summary.totalCpu)
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.overallStatus", $vcenter_standalone_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name datastores in datacenter $vcenter_standalone_host_dc_name"
@@ -1593,8 +1593,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.datastore.$vcenter_standalone_host_datastore_name.iorm.datastoreIops", $vcenter_standalone_host_datastore_iops)
                         }
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
-                        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                     }
                 }
             }
@@ -1614,8 +1614,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -1631,8 +1631,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name vms in datacenter $vcenter_standalone_host_dc_name"
@@ -1731,16 +1731,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.delta", $vcenter_standalone_host_vm_snap_size)
                     }
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 try {
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.committed", $vcenter_standalone_host_vm.summary.storage.committed)
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.uncommitted", $vcenter_standalone_host_vm.summary.storage.uncommitted)
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 if ($vcenter_standalone_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -1909,8 +1909,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventInfo collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -1924,8 +1924,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
                 $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -1960,7 +1960,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter $vcenter_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in vCenter $vcenter_name"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in vCenter $vcenter_name"
         }
     }
 
@@ -2087,8 +2087,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name sensors issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name sensors issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     if ($unmanaged_host.overallStatus.value__) {
@@ -2107,8 +2107,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.total", $unmanaged_compute_resource.summary.totalCpu)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.overallStatus", $unmanaged_host_overallStatus)
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name datastores"
@@ -2140,8 +2140,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.datastoreIops", $unmanaged_host_datastore_iops)
                 # }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on Unmanaged ESX $esx_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on Unmanaged ESX $esx_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
     }
@@ -2161,8 +2161,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name network metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name network metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     try {
@@ -2178,8 +2178,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name hba metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name hba metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     $UnamagedResourcePoolPrivateMemory = 0
@@ -2285,16 +2285,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.delta", $unmanaged_host_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.committed", $unmanaged_host_vm.summary.storage.committed)
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.uncommitted", $unmanaged_host_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -2389,8 +2389,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
                 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"  
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"  
                 }
 
             } elseif ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -2412,8 +2412,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.dead", $unmanaged_host_vms_dead)
 
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $unmanaged_host_h -DateTime $ExecStart
@@ -2434,8 +2434,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventInfo collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -2456,8 +2456,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("999")
 
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -2487,7 +2487,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Unmanaged ESX $esx_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in Unmanaged ESX $esx_name"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in Unmanaged ESX $esx_name"
         }
     }
 
