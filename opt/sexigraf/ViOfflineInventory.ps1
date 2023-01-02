@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh -Command
+#!/usr/bin/pwsh -Command[EROR]
 #
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
@@ -11,9 +11,9 @@ $WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
     Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     Stop-Transcript
     exit
 }
@@ -53,8 +53,8 @@ try {
     Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force -UseMinimalHeader
     Write-Host "$((Get-Date).ToString("o")) [INFO] ViOfflineInventory v$ScriptVersion"
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViOfflineInventory logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] ViOfflineInventory logging failure"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     exit
 }
 
