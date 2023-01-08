@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.67"
+$ScriptVersion = "0.9.68"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -265,7 +265,7 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to get blue folder path for $($Vm.name)"
                 }
                 
-                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, AllocatedGB, MAC, GuestId, vCPU, vRAM, PowerState, vmxPath, Folder, bootTime
+                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, Committed_GB, Allocated_GB, MAC, GuestId, vCPU, vRAM_GB, PowerState, vmxPath, Folder, bootTime
                 
                 $ViVmInfo.vCenter = $ServerConnection.name
                 $ViVmInfo.VM = $Vm.name
@@ -273,12 +273,12 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.Cluster = $VmCluster
                 $ViVmInfo.IP = $VmIpAddress -join " ; "
                 $ViVmInfo.PortGroup = $VmNet -join " ; "
-                $ViVmInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
-                $ViVmInfo.AllocatedGB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
+                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
+                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
                 $ViVmInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmInfo.GuestId = $VmGuestId
                 $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
                 $ViVmInfo.PowerState =  $Vm.Runtime.PowerState
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
@@ -313,7 +313,7 @@ if ($ViServersList.count -gt 0) {
                     $EsxServiceTag = ""
                 }
                 
-                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, SerialNumber, State, RAM, CPU, Cores, vmk0Ip, vmk0Mac
+                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, SerialNumber, State, RAM_GB, CPU, Cores, vmk0Ip, vmk0Mac
                 
                 $ViEsxInfo.vCenter = $ViServer
                 $ViEsxInfo.ESX = $($Esx.name)
@@ -322,7 +322,7 @@ if ($ViServersList.count -gt 0) {
                 $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
                 $ViEsxInfo.SerialNumber = $EsxServiceTag
                 $ViEsxInfo.State = $EsxState
-                $ViEsxInfo.RAM = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
+                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
                 $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
                 $ViEsxInfo.vmk0Ip = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Ip.IpAddress
@@ -333,14 +333,14 @@ if ($ViServersList.count -gt 0) {
 
             foreach ($Datastore in $datastores) {
                 
-                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity, FreeSpace, Usage, Url
+                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity_GB, FreeSpace_GB, "Usage_%", Url
                 
                 $ViDatastoreInfo.vCenter = $ViServer
                 $ViDatastoreInfo.Datastore = $($Datastore.name)
                 $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
-                $ViDatastoreInfo.Capacity = $($Datastore.Summary.Capacity)
-                $ViDatastoreInfo.FreeSpace = $($Datastore.Summary.FreeSpace)
-                $ViDatastoreInfo.Usage = "$([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))" + "%"
+                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,1))
+                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,1))
+                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))
                 $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
@@ -353,7 +353,7 @@ if ($ViServersList.count -gt 0) {
     
         Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$ViServerCleanName.vm.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
+        # Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
         
         # if ($global:DefaultVIServers) {Disconnect-VIServer * -Force -Confirm:0}
     }
