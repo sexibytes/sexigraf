@@ -167,7 +167,7 @@ if ($ViServersList.count -gt 0) {
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic, Hardware.SystemInfo.SerialNumber -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
             $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
 
@@ -307,7 +307,9 @@ if ($ViServersList.count -gt 0) {
                     $EsxState = $Esx.runtime.ConnectionState
                 }
 
-                if ($Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue) {
+                if ($Esx.Hardware.SystemInfo.SerialNumber) {
+                    $EsxServiceTag = $Esx.Hardware.SystemInfo.SerialNumber
+                } elseif ($Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue) {
                     $EsxServiceTag = $Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue
                 } else {
                     $EsxServiceTag = ""
