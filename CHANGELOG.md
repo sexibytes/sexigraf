@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.99i](https://github.com/sexibytes/sexigraf/tree/0.99i) (2023-01-09)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99h...0.99i)
+
+**Implemented enhancements:**
+
+- Force Https [\#309](https://github.com/sexibytes/sexigraf/issues/309)
+- Feature request - Scale storage on Capacity planning [\#304](https://github.com/sexibytes/sexigraf/issues/304)
+- get rid of += in ps1 scripts [\#299](https://github.com/sexibytes/sexigraf/issues/299)
+- Enhance PullGuestInfo [\#278](https://github.com/sexibytes/sexigraf/issues/278)
+- add ntp servers option during ova deploy [\#211](https://github.com/sexibytes/sexigraf/issues/211)
+
+**Fixed bugs:**
+
+- fix empty network vm metrics [\#314](https://github.com/sexibytes/sexigraf/issues/314)
+- near 0 values not written [\#311](https://github.com/sexibytes/sexigraf/issues/311)
+
+**Closed issues:**
+
+- force legacy dashboard alerting [\#320](https://github.com/sexibytes/sexigraf/issues/320)
+- add grafana annotation limits [\#319](https://github.com/sexibytes/sexigraf/issues/319)
+- add Datastores info inventory [\#318](https://github.com/sexibytes/sexigraf/issues/318)
+- add ServiceTag in ESX inventory [\#317](https://github.com/sexibytes/sexigraf/issues/317)
+- Add ability to load interface in HomeAssistant as iFrame [\#316](https://github.com/sexibytes/sexigraf/issues/316)
+- Is Alerting possible for other dashboards too like vcenter bad events [\#315](https://github.com/sexibytes/sexigraf/issues/315)
+- add full vSAN ESA support [\#312](https://github.com/sexibytes/sexigraf/issues/312)
+- CPU and RAM Utilization above 100% [\#308](https://github.com/sexibytes/sexigraf/issues/308)
+- Add IOPS per VM data [\#303](https://github.com/sexibytes/sexigraf/issues/303)
+- VM per host count \(HA risk monitoring\) [\#302](https://github.com/sexibytes/sexigraf/issues/302)
+- Direct link rendered image not working [\#301](https://github.com/sexibytes/sexigraf/issues/301)
+- multiple ip in vm not listed in inventory [\#300](https://github.com/sexibytes/sexigraf/issues/300)
+- Increase performance of Send-BulkGraphiteMetrics [\#298](https://github.com/sexibytes/sexigraf/issues/298)
+- No data but show machines inventory [\#296](https://github.com/sexibytes/sexigraf/issues/296)
+- add a way to identify vm restart by ha [\#295](https://github.com/sexibytes/sexigraf/issues/295)
+- sexigraf 0.99g : OS vulnerabilities detected in banner reporting \(PCI-DSS check\) / severity high / CVSS v2 7.5 [\#294](https://github.com/sexibytes/sexigraf/issues/294)
+- pre-install MIBs for collectd agent [\#293](https://github.com/sexibytes/sexigraf/issues/293)
+- SHA1 checksum incorrect? [\#292](https://github.com/sexibytes/sexigraf/issues/292)
+- fix cpu count in All Version dashboard [\#291](https://github.com/sexibytes/sexigraf/issues/291)
+- "QueryPerf" with "1" argument\(s\): "A specified parameter was not correct: querySpec.interval"" [\#290](https://github.com/sexibytes/sexigraf/issues/290)
+- Sexigraf Powershell version:  "Exception calling "QueryPerf" with "1" argument\(s\): "XML document element count exceeds configured maximum 500000" [\#287](https://github.com/sexibytes/sexigraf/issues/287)
+-  VMware Multi Datastore Usage: monitor unused vmdks [\#283](https://github.com/sexibytes/sexigraf/issues/283)
+- Add DRS score dashboard [\#228](https://github.com/sexibytes/sexigraf/issues/228)
+
+**Merged pull requests:**
+
+- Merge before release 0.99i - Victory Mine  [\#323](https://github.com/sexibytes/sexigraf/pull/323) ([rschitz](https://github.com/rschitz))
+
 ## [0.99h](https://github.com/sexibytes/sexigraf/tree/0.99h) (2022-03-28)
 
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99g...0.99h)
