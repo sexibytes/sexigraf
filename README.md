@@ -14,9 +14,9 @@ The metrics used in the various VSAN dashboards are now collected every 5 minute
 
 Fast. Very fast. That’s what we had in mind when we designed SexiGraf. When you need vSphere metrics, the obvious way is the `PerformanceManager`, but we need something faster so we choosed managed object properties and quickstats like `ResourcePoolQuickStats`. If we have no other choice, we failback to the `PerformanceManager` but we only query the last 15 samples of the `RealTime samplingPeriod` since we pull vSphere metrics every 5 minutes. http://www.sexigraf.fr/vsphere-sexipanels/  
 
-## FreeNAS
+## FreeNAS/TrueNAS
 
-Starting from version 9.10, FreeNAS allows users to set a “Remote Graphite Server” target to send all the metrics harvested by Collectd. Guess what would make a nice Graphite target! http://www.sexigraf.fr/freenas-sexipanel/
+Starting from version 9.10, FreeNAS/TrueNAS allows users to set a “Remote Graphite Server” target to send all the metrics harvested by Collectd. Guess what would make a nice Graphite target! http://www.sexigraf.fr/freenas-sexipanel/
 
 ## Windows
 
