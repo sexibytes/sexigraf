@@ -1,9 +1,9 @@
-#!/usr/bin/pwsh -Command
+#!/usr/bin/pwsh -Command[EROR]
 #
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.61"
+$ScriptVersion = "0.9.69"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -11,9 +11,9 @@ $WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
     Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     Stop-Transcript
     exit
 }
@@ -34,8 +34,11 @@ function GetBlueFolderFullPath {
 			$VmPathTree = ""
 			$Parent_folder = $child_object.Parent.value
 			while ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
-				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder") {
+				if ($BlueFolders_type_table[$Parent_folder] -eq "Folder" -and $BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]] -ne "Datacenter") {
 					$VmPathTree = "/" + $BlueFolders_name_table[$Parent_folder] + $VmPathTree
+				}
+                if ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]] -eq "Datacenter") {
+					$VmPathTree = "/" + $BlueFolders_name_table[$BlueFolders_Parent_table[$Parent_folder]] + $VmPathTree
 				}
 				if ($BlueFolders_type_table[$BlueFolders_Parent_table[$Parent_folder]]) {
 					$Parent_folder = $BlueFolders_Parent_table[$Parent_folder]
@@ -47,11 +50,11 @@ function GetBlueFolderFullPath {
 }
 
 try {
-    Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force
+    Start-Transcript -Path "/var/log/sexigraf/ViOfflineInventory.log" -Append -Confirm:$false -Force -UseMinimalHeader
     Write-Host "$((Get-Date).ToString("o")) [INFO] ViOfflineInventory v$ScriptVersion"
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViOfflineInventory logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] ViOfflineInventory logging failure"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     exit
 }
 
@@ -97,6 +100,7 @@ try {
 if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
     $ViEsxsInfos = @()
+    $ViDatastoresInfos = @()
     foreach ($ViServer in $ViServersList) {
         $ViServerCleanName = $ViServer.Replace(".","_")
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
@@ -162,17 +166,19 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Config.Hardware.Device, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config., Runtime.PowerState -Server $ViServer
-            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime -Server $ViServer
+            $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic, Hardware.SystemInfo.SerialNumber -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
+            $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
 
+            $Datacenters = Get-View -ViewType datacenter -Property Parent, Name -Server $ViServer
             $BlueFolders = Get-View -ViewType folder -Property Parent, Name, ChildType -Server $ViServer
 
             $BlueFolders_name_table = @{}
             $BlueFolders_Parent_table = @{}
             $BlueFolders_type_table = @{}
             
-            foreach ($BlueFolder in [array]$BlueFolders) {
+            foreach ($BlueFolder in [array]$BlueFolders + [array]$Datacenters) {
                 if ($BlueFolder.Parent.value) {
                     if (!$BlueFolders_name_table[$BlueFolder.moref.value]) {$BlueFolders_name_table.add($BlueFolder.moref.value,$BlueFolder.name)}
                     if (!$BlueFolders_Parent_table[$BlueFolder.moref.value]) {$BlueFolders_Parent_table.add($BlueFolder.moref.value,$BlueFolder.Parent.value)}
@@ -210,8 +216,8 @@ if ($ViServersList.count -gt 0) {
     
             foreach ($Vm in $Vms) {
             
-                if ($Vm.Guest.IpAddress) {
-                    $VmIpAddress = $Vm.Guest.IpAddress
+                if ($Vm.Guest.Net) {
+                    $VmIpAddress = $Vm.Guest.Net.IpAddress|?{$_}
                 } else {
                     $VmIpAddress = ""
                 }
@@ -220,6 +226,12 @@ if ($ViServersList.count -gt 0) {
                     $VmNet = $DvPgs_h[$vm.network]
                 } else {
                     $VmNet = ""
+                }
+
+                if ($vm.Runtime.bootTime) {
+                    $VmBootTime = $vm.Runtime.bootTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                } else {
+                    $VmBootTime = ""
                 }
                 
                 if ($esxs_h[$vm.Runtime.Host]) {
@@ -253,23 +265,24 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to get blue folder path for $($Vm.name)"
                 }
                 
-                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, CommittedGB, AllocatedGB, MAC, GuestId, vCPU, vRAM, PowerState, vmxPath, Folder
+                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, Committed_GB, Allocated_GB, MAC, GuestId, vCPU, vRAM_GB, PowerState, vmxPath, Folder, bootTime
                 
                 $ViVmInfo.vCenter = $ServerConnection.name
                 $ViVmInfo.VM = $Vm.name
                 $ViVmInfo.ESX = $VmHost
                 $ViVmInfo.Cluster = $VmCluster
-                $ViVmInfo.IP = $VmIpAddress
+                $ViVmInfo.IP = $VmIpAddress -join " ; "
                 $ViVmInfo.PortGroup = $VmNet -join " ; "
-                $ViVmInfo.CommittedGB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
-                $ViVmInfo.AllocatedGB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
+                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
+                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
                 $ViVmInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmInfo.GuestId = $VmGuestId
                 $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmInfo.vRAM = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
                 $ViVmInfo.PowerState =  $Vm.Runtime.PowerState
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
+                $ViVmInfo.bootTime = $VmBootTime
                 
                 $ViVmsInfos += $ViVmInfo
             }
@@ -293,22 +306,46 @@ if ($ViServersList.count -gt 0) {
                 } else {
                     $EsxState = $Esx.runtime.ConnectionState
                 }
+
+                if ($Esx.Hardware.SystemInfo.SerialNumber) {
+                    $EsxServiceTag = $Esx.Hardware.SystemInfo.SerialNumber
+                } elseif ($Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue) {
+                    $EsxServiceTag = $Esx.Summary.Hardware.OtherIdentifyingInfo[3].IdentifierValue
+                } else {
+                    $EsxServiceTag = ""
+                }
                 
-                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, State, RAM, CPU, Cores, vmk0Ip, vmk0Mac
+                $ViEsxInfo = "" | Select-Object vCenter, ESX, Cluster, Version, Model, SerialNumber, State, RAM_GB, CPU, Cores, vmk0Ip, vmk0Mac
                 
                 $ViEsxInfo.vCenter = $ViServer
                 $ViEsxInfo.ESX = $($Esx.name)
                 $ViEsxInfo.Cluster = $EsxCluster
                 $ViEsxInfo.Version = $EsxVersion
                 $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
+                $ViEsxInfo.SerialNumber = $EsxServiceTag
                 $ViEsxInfo.State = $EsxState
-                $ViEsxInfo.RAM = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
+                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
                 $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
                 $ViEsxInfo.vmk0Ip = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Ip.IpAddress
                 $ViEsxInfo.vmk0Mac = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Mac
                 
                 $ViEsxsInfos += $ViEsxInfo
+            }
+
+            foreach ($Datastore in $datastores) {
+                
+                $ViDatastoreInfo = "" | Select-Object vCenter, Datastore, Type, Capacity_GB, FreeSpace_GB, "Usage_%", Url
+                
+                $ViDatastoreInfo.vCenter = $ViServer
+                $ViDatastoreInfo.Datastore = $($Datastore.name)
+                $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
+                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,1))
+                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,1))
+                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))
+                $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
+                
+                $ViDatastoresInfos += $ViDatastoreInfo
             }
     
         }
@@ -318,20 +355,38 @@ if ($ViServersList.count -gt 0) {
     
         Send-GraphiteMetric -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -MetricPath "vi.$ViServerCleanName.vm.exec.duration" -MetricValue $ExecDuration -UnixTime $ExecStartEpoc
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
+        # Write-Host "$((Get-Date).ToString("o")) [INFO] Disconnecting from $ViServer ..."
         
         # if ($global:DefaultVIServers) {Disconnect-VIServer * -Force -Confirm:0}
     }
 
     if ($ViVmsInfos) {
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Inventory files ..."
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory files ..."
             $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
-            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
         } catch {
-            AltAndCatchFire "Export-Csv issue"
+            AltAndCatchFire "VM Export-Csv issue"
         }
     }
+
+    if ($ViEsxsInfos) {
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Esx Inventory files ..."
+            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
+        } catch {
+            AltAndCatchFire "ESX Export-Csv issue"
+        }
+    }
+
+    if ($ViDatastoresInfos) {
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
+            $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force
+        } catch {
+            AltAndCatchFire "Datastore Export-Csv issue"
+        }
+    }
+
 } else {
     AltAndCatchFire "No VI server to process"
 }

@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.988"
+$ScriptVersion = "0.9.1006"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -13,9 +13,9 @@ $WarningPreference = "SilentlyContinue"
 
 function AltAndCatchFire {
     Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     Stop-Transcript
     exit
 }
@@ -66,12 +66,12 @@ function GetMedian {
 
 function MultiQueryPerfAll {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance='*'}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance='*'}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -101,12 +101,12 @@ function MultiQueryPerfAll {
 
 function MultiQueryPerf {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;maxSample="15";intervalId="20";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -136,12 +136,12 @@ function MultiQueryPerf {
 
 function MultiQueryPerf300 {
     param($query_entity_views, $query_perfCntrs)
-    foreach ($query_perfCntr in $query_perfCntrs) {
-        [ARRAY]$PerfMetrics += New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
-    }
-    foreach ($query_entity_view in $query_entity_views) {
-        [ARRAY]$PerfQuerySpecs += New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;startTime=$ServiceInstanceServerClock_5;intervalId="300";metricId=$PerfMetrics}
-    }
+    [ARRAY]$PerfMetrics = $(foreach ($query_perfCntr in $query_perfCntrs) {
+        New-Object VMware.Vim.PerfMetricId -Property @{counterId=$PerfCounterTable[$query_perfCntr];instance=''}
+    })
+    [ARRAY]$PerfQuerySpecs = $(foreach ($query_entity_view in $query_entity_views) {
+        New-Object VMware.Vim.PerfQuerySpec -Property @{entity=$query_entity_view;startTime=$ServiceInstanceServerClock_5;intervalId="300";metricId=$PerfMetrics}
+    })
     $metrics = $PerformanceManager.QueryPerf($PerfQuerySpecs)
     # https://kb.vmware.com/s/article/2107096
     $fatmetrics = @{}
@@ -178,8 +178,8 @@ try {
         Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
     }
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] ViPullStatistics logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] ViPullStatistics logging failure"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
     exit
 }
 
@@ -278,7 +278,7 @@ try {
         AltAndCatchFire "ServiceInstance check failure"
     }
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
 }
 
 try {
@@ -313,7 +313,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_datacenters = Get-View -ViewType Datacenter -Property Name, Parent -Server $Server
         $vcenter_resource_pools = Get-View -ViewType ResourcePool -Property Vm, Parent, Owner, summary.quickStats -Server $Server
         $vcenter_clusters = Get-View -ViewType ComputeResource -Property name, parent, summary, resourcePool, host, datastore, ConfigurationEx -Server $Server
-        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
+        $vcenter_vmhosts = Get-View -ViewType HostSystem -Property config.network.pnic, config.network.vnic, config.network.dnsConfig.hostName, runtime.connectionState, summary.hardware.numCpuCores, summary.quickStats.distributedCpuFairness, summary.quickStats.distributedMemoryFairness, summary.quickStats.overallCpuUsage, summary.quickStats.overallMemoryUsage, summary.quickStats.uptime, overallStatus, config.storageDevice.hostBusAdapter, vm, name, summary.runtime.healthSystemRuntime.systemHealthInfo.numericSensorInfo, config.product.version, config.product.build, summary.hardware.vendor, summary.hardware.model, summary.hardware.cpuModel, summary.hardware.NumCpuPkgs, Config.VsanHostConfig.ClusterInfo -filter @{"Runtime.ConnectionState" = "^connected$"} -Server $Server
         $vcenter_datastores = Get-View -ViewType Datastore -Property summary, iormConfiguration.enabled, iormConfiguration.statsCollectionEnabled, host -filter @{"summary.accessible" = "true"} -Server $Server
         $vcenter_pods = Get-View -ViewType StoragePod -Property name, summary, parent, childEntity -Server $Server
         $vcenter_vms = Get-View -ViewType VirtualMachine -Property name, runtime.maxCpuUsage, runtime.maxMemoryUsage, summary.quickStats.overallCpuUsage, summary.quickStats.overallCpuDemand, summary.quickStats.hostMemoryUsage, summary.quickStats.guestMemoryUsage, summary.quickStats.balloonedMemory, summary.quickStats.compressedMemory, summary.quickStats.swappedMemory, summary.storage.committed, summary.storage.uncommitted, config.hardware.numCPU, layoutEx.file, snapshot, runtime.host, summary.runtime.connectionState, summary.runtime.powerState, summary.config.numVirtualDisks, config.version, config.guestId, config.tools.toolsVersion, summary.quickStats.privateMemory, summary.quickStats.consumedOverheadMemory, summary.quickStats.sharedMemory -filter @{"Summary.Runtime.ConnectionState" = "^connected$"} -Server $Server       
@@ -342,6 +342,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_clusters_vsan_nonSsd_uuid_naa_h = @{}
     $vcenter_vmhosts_vsan_disk_moref_h = @{}
     $vcenter_vmhosts_vsan_disk_capa_h = @{}
+    $vcenter_clusters_vsan_efa_h = @{}
     foreach ($vcenter_cluster in $vcenter_clusters) {
         $vcenter_vmhosts_vsan_Ssd_uuid_naa_h = @{}
         $vcenter_vmhosts_vsan_nonSsd_uuid_naa_h = @{}
@@ -350,26 +351,32 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_clusters_h.add($vcenter_cluster.MoRef.Value, $vcenter_cluster)
             } catch {}
             if ($vcenter_cluster.ConfigurationEx.VsanHostConfig -and $vSanPull) {
-                foreach ($ClusterVsanHostConfig in $vcenter_cluster.ConfigurationEx.VsanHostConfig) {
-                    if ($ClusterVsanHostConfig.Enabled -and $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mounted) {
-                        foreach ($ClusterVsanHostConfigSsd in $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mapping.Ssd) {
-                            try {
-                                $vcenter_vmhosts_vsan_Ssd_uuid_naa_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$(NameCleaner $ClusterVsanHostConfigSsd.CanonicalName))
-                                $vcenter_vmhosts_vsan_disk_moref_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$ClusterVsanHostConfig.HostSystem.Value)
-                                $vcenter_vmhosts_vsan_disk_capa_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$($ClusterVsanHostConfigSsd.Capacity.BlockSize * $ClusterVsanHostConfigSsd.Capacity.Block))
-                            } catch {}
-                        }
-                        foreach ($ClusterVsanHostConfigNonSsd in $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mapping.nonSsd) {
-                            try {
-                                $vcenter_vmhosts_vsan_nonSsd_uuid_naa_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$(NameCleaner $ClusterVsanHostConfigNonSsd.CanonicalName))
-                                $vcenter_vmhosts_vsan_disk_moref_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$ClusterVsanHostConfig.HostSystem.Value)
-                                $vcenter_vmhosts_vsan_disk_capa_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$($ClusterVsanHostConfigNonSsd.Capacity.BlockSize * $ClusterVsanHostConfigNonSsd.Capacity.Block))
-                            } catch {}
+                if (($vcenter_cluster.ConfigurationEx.VsanHostConfig.VsanEsaEnabled|Measure-Object).count -gt 0) {
+                    try {
+                        $vcenter_clusters_vsan_efa_h.add($vcenter_cluster.MoRef.Value,$vcenter_cluster)
+                    } catch {}
+                } else {
+                    foreach ($ClusterVsanHostConfig in $vcenter_cluster.ConfigurationEx.VsanHostConfig) {
+                        if ($ClusterVsanHostConfig.Enabled -and $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mounted) {
+                            foreach ($ClusterVsanHostConfigSsd in $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mapping.Ssd) {
+                                try {
+                                    $vcenter_vmhosts_vsan_Ssd_uuid_naa_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$(NameCleaner $ClusterVsanHostConfigSsd.CanonicalName))
+                                    $vcenter_vmhosts_vsan_disk_moref_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$ClusterVsanHostConfig.HostSystem.Value)
+                                    $vcenter_vmhosts_vsan_disk_capa_h.add($ClusterVsanHostConfigSsd.VsanDiskInfo.VsanUuid,$($ClusterVsanHostConfigSsd.Capacity.BlockSize * $ClusterVsanHostConfigSsd.Capacity.Block))
+                                } catch {}
+                            }
+                            foreach ($ClusterVsanHostConfigNonSsd in $ClusterVsanHostConfig.StorageInfo.diskMapInfo.mapping.nonSsd) {
+                                try {
+                                    $vcenter_vmhosts_vsan_nonSsd_uuid_naa_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$(NameCleaner $ClusterVsanHostConfigNonSsd.CanonicalName))
+                                    $vcenter_vmhosts_vsan_disk_moref_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$ClusterVsanHostConfig.HostSystem.Value)
+                                    $vcenter_vmhosts_vsan_disk_capa_h.add($ClusterVsanHostConfigNonSsd.VsanDiskInfo.VsanUuid,$($ClusterVsanHostConfigNonSsd.Capacity.BlockSize * $ClusterVsanHostConfigNonSsd.Capacity.Block))
+                                } catch {}
+                            }
                         }
                     }
+                    $vcenter_clusters_vsan_Ssd_uuid_naa_h.add($vcenter_cluster.MoRef.Value,$vcenter_vmhosts_vsan_Ssd_uuid_naa_h)
+                    $vcenter_clusters_vsan_nonSsd_uuid_naa_h.add($vcenter_cluster.MoRef.Value,$vcenter_vmhosts_vsan_nonSsd_uuid_naa_h)
                 }
-                $vcenter_clusters_vsan_Ssd_uuid_naa_h.add($vcenter_cluster.MoRef.Value,$vcenter_vmhosts_vsan_Ssd_uuid_naa_h)
-                $vcenter_clusters_vsan_nonSsd_uuid_naa_h.add($vcenter_cluster.MoRef.Value,$vcenter_vmhosts_vsan_nonSsd_uuid_naa_h)
             }
         } elseif ($vcenter_cluster.MoRef.Type -eq "ComputeResource"){
             try {
@@ -473,7 +480,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR1}
             Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 1st round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            AltAndCatchFire "VM MultiQueryPerf failure"
+            AltAndCatchFire "VM MultiQueryPerf R1 failure"
         }
 
         $VmMultiMetricsR2 = @(
@@ -487,8 +494,22 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR2}
             Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 2nd round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            AltAndCatchFire "VM MultiQueryPerf failure"
+            AltAndCatchFire "VM MultiQueryPerf R2 failure"
         }
+
+        # $VmMultiMetricsAll = @(
+        #     "virtualdisk.numberWriteAveraged.average",
+        #     "virtualdisk.numberReadAveraged.average",
+        #     "net.received.average",
+        #     "net.transmitted.average"
+        # )
+
+        # try {
+        #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
+        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        # } catch {
+        #     AltAndCatchFire "VM MultiQueryPerfAll failure"
+        # }
 
     } else {
         $VmMultiMetrics = @(
@@ -508,6 +529,21 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
+
+        # $VmMultiMetricsAll = @(
+        #     "virtualdisk.numberWriteAveraged.average",
+        #     "virtualdisk.numberReadAveraged.average",
+        #     "net.received.average",
+        #     "net.transmitted.average"
+        # )
+
+        # try {
+        #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
+        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        # } catch {
+        #     AltAndCatchFire "VM MultiQueryPerfAll failure"
+        # }
+
     }
 
     if ($vcenter_clusters_h.Keys) {
@@ -519,7 +555,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $ClusterMultiStatsTime = Measure-Command {$ClusterMultiStats = MultiQueryPerf300 $($vcenter_clusters_h.Values.moref) $ClusterMultiMetrics}
             Write-Host "$((Get-Date).ToString("o")) [INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            AltAndCatchFire "VM MultiQueryPerf failure"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM MultiQueryPerf failure"
         }
     }
 
@@ -530,6 +567,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
+            # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
+            # if ($vcenter_clusters_vsan_efa_h.keys) {
+            #     $VsanVcDiskManagementSystem = Get-VSANView -Id VimClusterVsanVcDiskManagementSystem-vsan-disk-management-system -Server $Server
+            #     Write-Host "$((Get-Date).ToString("o")) [INFO] vSAN EFA clusters detected ..."
+            # }
         }
     }
 
@@ -581,11 +623,21 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             if ($vcenter_cluster_pool_quickstats.hostMemoryUsage -gt 0 -and $vcenter_cluster.summary.effectiveMemory -gt 0) {
                 $vcenter_cluster_pool_quickstats_ram = $vcenter_cluster_pool_quickstats.hostMemoryUsage * 100 / $vcenter_cluster.summary.effectiveMemory
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.mem.utilization", $vcenter_cluster_pool_quickstats_ram)
-            }	
+            }
+
+            if ($vcenter_cluster.summary.NumVmsPerDrsScoreBucket -and $vcenter_cluster.summary.DrsScore) {
+                # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bf660c0a-f060-46e8-a94d-4b5e6ffc77ad/208bc706-e281-49b6-a0ce-b402ec19ef82/SDK/vsphere-ws/docs/ReferenceGuide/vim.ClusterComputeResource.Summary.html#numVmsPerDrsScoreBucket
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.0_20", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[0])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.21_40", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[1])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.41_60", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[2])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.61_80", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[3])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.81_100", $vcenter_cluster.summary.NumVmsPerDrsScoreBucket[4])
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.DrsScore", $vcenter_cluster.summary.DrsScore)
+            }
 
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
 
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
@@ -619,14 +671,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 ### XXX use $vcenter_resource_pools_owner_vms_h
             }
 
-            if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel) {
+            if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel -and $vcenter_cluster_host.summary.hardware.NumCpuPkgs) {
                 $vcenter_cluster_host_product_version = nameCleaner $($vcenter_cluster_host.config.product.version + "_" + $vcenter_cluster_host.config.product.build)
                 $vcenter_cluster_host_hw_model = nameCleaner $($vcenter_cluster_host.summary.hardware.vendor + "_" + $vcenter_cluster_host.summary.hardware.model)
                 $vcenter_cluster_host_cpu_model = nameCleaner $vcenter_cluster_host.summary.hardware.cpuModel
 
                 $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.build.$vcenter_cluster_host_product_version"] ++
                 $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.hardware.$vcenter_cluster_host_hw_model"] ++
-                $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.cpu.$vcenter_cluster_host_cpu_model"] ++
+                $vmware_version_h["vi.$vcenter_name.vi.version.esx.$vcenter_cluster_dc_name.$vcenter_cluster_name.cpu.$vcenter_cluster_host_cpu_model"] += [INT32]$vcenter_cluster_host.summary.hardware.NumCpuPkgs
             }
 
             $vcenter_cluster_hosts_pcpus += $vcenter_cluster_host.summary.hardware.numCpuCores
@@ -645,8 +697,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -689,8 +741,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -707,8 +759,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -739,8 +791,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_host_overallStatus = "0"
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -751,8 +803,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.Uptime", $vcenter_cluster_host.summary.quickStats.uptime)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -866,16 +918,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.delta", $vcenter_cluster_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.committed", $vcenter_cluster_vm.summary.storage.committed)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.uncommitted", $vcenter_cluster_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -888,6 +940,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($vcenter_cluster_vm.runtime.maxCpuUsage -gt 0 -and $vcenter_cluster_vm.summary.quickStats.overallCpuUsage) {
                     $vcenter_cluster_vm_CpuUtilization = $vcenter_cluster_vm.summary.quickStats.overallCpuUsage * 100 / $vcenter_cluster_vm.runtime.maxCpuUsage
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.runtime.CpuUtilization", $vcenter_cluster_vm_CpuUtilization)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.runtime.CpuUtilization", 0)
                 }
 
                 if ($vcenter_cluster_vm.summary.quickStats.guestMemoryUsage -gt 0 -and $vcenter_cluster_vm.runtime.maxMemoryUsage) {
@@ -922,6 +976,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$vcenter_cluster_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_cluster_vm.moref.value][""]) / $vcenter_cluster_vm.config.hardware.numCPU / 20000 * 100 
                     ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                     ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                    # https://kb.vmware.com/s/article/85393
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.cpu_wait_no_idle", $vcenter_cluster_vm_io_wait)
                 }
 
@@ -938,11 +993,25 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_cluster_vm.moref.value][""] -ge 0) {
                     $vcenter_cluster_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_cluster_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_cluster_vm.moref.value][""]
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", $vcenter_cluster_vm_disk_usage)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", 0)
                 }
+
+                # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value]) {
+                #     $vcenter_cluster_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                #     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskiops", $vcenter_cluster_vm_disk_iops)
+                # }
+
+                # if ($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.received.average"]][$vcenter_cluster_vm.moref.value]) {
+                #     $vcenter_cluster_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.received.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                #     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", $vcenter_cluster_vm_disk_iops)
+                # }
 
                 if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]) {
                     $vcenter_cluster_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_cluster_vm.moref.value][""]
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", $vcenter_cluster_vm_net_usage)
+                } else {
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.netUsage", 0)
                 }
 
             } elseif ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -1018,8 +1087,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue in cluster $vcenter_cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue in cluster $vcenter_cluster_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
@@ -1047,27 +1116,58 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastore_vsan_uuid = $([regex]::match($vcenter_cluster_datastore.summary.url,'.*vsan:(.*)\/').Groups[1].value)
 
                     if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull -and $ServiceInstance.Content.About.ApiVersion -ge 6.7) { # skip vSAN HCI Mesh
-                        try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
-                            # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
-                            # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
-                            # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
-                            $VsanHostsAndClusterPerfQuerySpec = @()
-                            # cluster-domclient
-                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                        
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
+                        # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                        # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
+                        # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
+                        $VsanHostsAndClusterPerfQuerySpec = @()
+                        # cluster-domclient
+                        $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cluster-domclient:$vcenter_cluster_datastore_vsan_cluster_uuid";labels=@("latencyAvgRead","latencyAvgWrite","iopsWrite","iopsRead");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
 
-                            # host-domclient host-domowner host-domcompmgr
-                            foreach ($vcenter_vmhost_NodeUuid in $vcenter_vmhosts_moref_NodeUuid_h[$vcenter_cluster.Host.value]|?{$_}) {
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","oio","clientCacheHitRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","tputRead","tputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","oio","latencyAvgResyncRead","tputRecWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="dom-proxy-owner:$vcenter_vmhost_NodeUuid";labels=@("anchorRWResyncCongestion","proxyLatencyAvgRead","anchorLatencyAvgRead","proxyIopsWrite","proxyTputRWResync","anchorLatencyAvgRWResync","anchorIopsRWResync","proxyTputWrite","proxyLatencyAvgRWResync","proxyReadCongestion","anchorTputRWResync","anchorLatencyAvgWrite","proxyLatencyAvgWrite","anchorReadCongestion","proxyIopsRWResync","proxyWriteCongestion","proxyRWResyncCongestion","anchorIopsRead","proxyTputRead","anchorWriteCongestion","anchorTputRead","proxyIopsRead","anchorTputWrite","anchorIopsWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","resyncReadCongestion","recWriteCongestion","latAvgResyncRead","throughputRecWrite","oio");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-                                $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-host-net:$vcenter_vmhost_NodeUuid";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","txPacketsLossRate","tcpTxRexmitRate","rxPacketsLossRate","tcpRxErrRate","portRxpkts","portTxpkts","portTxDrops","portRxDrops");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                        # host-domclient host-domowner host-domcompmgr
+                        foreach ($vcenter_vmhost_NodeUuid in $vcenter_vmhosts_moref_NodeUuid_h[$vcenter_cluster.Host.value]|?{$_}) {
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domclient:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","oio","clientCacheHitRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domowner:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","tputRead","tputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","oio","latencyAvgResyncRead","tputRecWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="dom-proxy-owner:$vcenter_vmhost_NodeUuid";labels=@("anchorRWResyncCongestion","proxyLatencyAvgRead","anchorLatencyAvgRead","proxyIopsWrite","proxyTputRWResync","anchorLatencyAvgRWResync","anchorIopsRWResync","proxyTputWrite","proxyLatencyAvgRWResync","proxyReadCongestion","anchorTputRWResync","anchorLatencyAvgWrite","proxyLatencyAvgWrite","anchorReadCongestion","proxyIopsRWResync","proxyWriteCongestion","proxyRWResyncCongestion","anchorIopsRead","proxyTputRead","anchorWriteCongestion","anchorTputRead","proxyIopsRead","anchorTputWrite","anchorIopsWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="host-domcompmgr:$vcenter_vmhost_NodeUuid";labels=@("iopsRead","iopsWrite","throughputRead","throughputWrite","latencyAvgRead","latencyAvgWrite","readCongestion","writeCongestion","latencyAvgRecWrite","iopsResyncRead","iopsRecWrite","tputResyncRead","resyncReadCongestion","recWriteCongestion","latAvgResyncRead","throughputRecWrite","oio");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-host-net:$vcenter_vmhost_NodeUuid";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","txPacketsLossRate","tcpTxRexmitRate","rxPacketsLossRate","tcpRxErrRate","portRxpkts","portTxpkts","portTxDrops","portRxDrops");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                        }
+
+                        # vsan-vnic-net
+                        # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
+
+                        if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # EFA vSan cluster
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing EFA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
+                            # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
+                            # $VsanHostsAndClusterStoragePoolSpec = New-Object VMware.Vsan.Views.VimVsanHostQueryVsanDisksSpec -property @{vsanDiskType="storagePool"}
+                            try {
+                                $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,"physicalDisksHealth",$true,$null,$null,$null)
+                            } catch {
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
                             }
 
-                            # vsan-vnic-net
-                            # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
-
+                            if ($ClusterHealthSummary.PhysicalDisksHealth) {
+                                $PhysicalDisksHealthVsanUuidHosts = @{}
+                                $PhysicalDisksHealthVsanUuidObj = @{}
+                                foreach ($PhysicalDisksHealthHost in $ClusterHealthSummary.PhysicalDisksHealth) {
+                                    foreach ($PhysicalDisksHealthHostDisk in $PhysicalDisksHealthHost.Disks) {
+                                        if (!$PhysicalDisksHealthVsanUuidHosts[$PhysicalDisksHealthHostDisk.Uuid]) {
+                                            $PhysicalDisksHealthVsanUuidHosts.add($PhysicalDisksHealthHostDisk.Uuid,$PhysicalDisksHealthHost.Hostname)
+                                        }
+                                        if (!$PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthHostDisk.Uuid]) {
+                                            $PhysicalDisksHealthVsanUuidObj.add($PhysicalDisksHealthHostDisk.Uuid,$PhysicalDisksHealthHostDisk)
+                                        }
+                                    }
+                                }
+                                foreach ($PhysicalDisksHealthVsanUuid in $PhysicalDisksHealthVsanUuidHosts.keys) {
+                                    $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-esa-disk-scsifw:$PhysicalDisksHealthVsanUuid";labels=@("latencyDevRead","latencyDevWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                                }
+                            } else {
+                                Write-Host "$((Get-Date).ToString("o")) [WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
+                            }
+                        } else { # Non EFA vSAN cluster
                             # cache-disk disk-group
                             foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cache-disk:$vcenter_cluster_vsan_Ssd_uuid";labels=@("latencyDevRead","latencyDevWrite","wbFreePct");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
@@ -1077,9 +1177,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="capacity-disk:$vcenter_cluster_vsan_nonSsd_uuid";labels=@("latencyDevRead","latencyDevWrite","capacityUsed");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             }
+                        }
 
+                        try {
                             $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSan Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+                            Write-Host "$((Get-Date).ToString("o")) [INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
 
                         } catch {
                             Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
@@ -1213,21 +1315,32 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxpkts"] -gt 0) {$vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.portRxDropsRate", $($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxDrops"] * 100 / $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxpkts"]))}
                             }
 
-                            foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
-                                $vcenter_cluster_vsan_Ssd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_Ssd_uuid]].name]
-                                $vcenter_cluster_vsan_Ssd_name = $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_Ssd_uuid]
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevRead"])
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevWrite"])
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.domcompmgr.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
-                            }
+                            if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # EFA vSan cluster
+                                foreach ($PhysicalDisksHealthVsanUuid in $PhysicalDisksHealthVsanUuidHosts.keys) {
+                                    $PhysicalDisksHealthVsanUuidName = NameCleaner $PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthVsanUuid].Name
+                                    $PhysicalDisksHealthVsanUuidHost = $vcenter_vmhosts_short_h[$PhysicalDisksHealthVsanUuidHosts[$PhysicalDisksHealthVsanUuid]]
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$PhysicalDisksHealthVsanUuidHost.vsan.disk.capacity.$PhysicalDisksHealthVsanUuidName.percentUsed", $([INT64]$PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthVsanUuid].UsedCapacity * 100 / [INT64]$PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthVsanUuid].Capacity))
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$PhysicalDisksHealthVsanUuidHost.vsan.disk.capacity.$PhysicalDisksHealthVsanUuidName.latencyDevRead", $VsanPerfEntityMetric[$PhysicalDisksHealthVsanUuid]["vsan-esa-disk-scsifw"]["latencyDevRead"])
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$PhysicalDisksHealthVsanUuidHost.vsan.disk.capacity.$PhysicalDisksHealthVsanUuidName.latencyDevWrite", $VsanPerfEntityMetric[$PhysicalDisksHealthVsanUuid]["vsan-esa-disk-scsifw"]["latencyDevWrite"])
+                                }
+                            } else { # Non EFA vSAN cluster
 
-                            foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
-                                $vcenter_cluster_vsan_nonSsd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_nonSsd_uuid]].name]
-                                $vcenter_cluster_vsan_nonSsd_name = $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_nonSsd_uuid]
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevRead"])
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevWrite"])
-                                # $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
-                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.percentUsed", $([INT64]$VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"] * 100 / [INT64]$vcenter_vmhosts_vsan_disk_capa_h[$vcenter_cluster_vsan_nonSsd_uuid]))
+                                foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
+                                    $vcenter_cluster_vsan_Ssd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_Ssd_uuid]].name]
+                                    $vcenter_cluster_vsan_Ssd_name = $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_Ssd_uuid]
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevRead"])
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevWrite"])
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.domcompmgr.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
+                                }
+    
+                                foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
+                                    $vcenter_cluster_vsan_nonSsd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_nonSsd_uuid]].name]
+                                    $vcenter_cluster_vsan_nonSsd_name = $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_nonSsd_uuid]
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevRead"])
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevWrite"])
+                                    # $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
+                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.percentUsed", $([INT64]$VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"] * 100 / [INT64]$vcenter_vmhosts_vsan_disk_capa_h[$vcenter_cluster_vsan_nonSsd_uuid]))
+                                }
                             }
 
                         } else {
@@ -1353,7 +1466,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending cluster, hosts, vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
     }
 
@@ -1427,8 +1540,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vcenter_standalone_host.overallStatus) {
@@ -1447,8 +1560,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.total", $vcenter_standalone_pool.summary.totalCpu)
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.overallStatus", $vcenter_standalone_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name datastores in datacenter $vcenter_standalone_host_dc_name"
@@ -1480,8 +1593,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.datastore.$vcenter_standalone_host_datastore_name.iorm.datastoreIops", $vcenter_standalone_host_datastore_iops)
                         }
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
-                        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                     }
                 }
             }
@@ -1501,8 +1614,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
@@ -1518,8 +1631,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name vms in datacenter $vcenter_standalone_host_dc_name"
@@ -1618,16 +1731,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.delta", $vcenter_standalone_host_vm_snap_size)
                     }
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 try {
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.committed", $vcenter_standalone_host_vm.summary.storage.committed)
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.uncommitted", $vcenter_standalone_host_vm.summary.storage.uncommitted)
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                 }
 
                 if ($vcenter_standalone_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -1677,6 +1790,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$vcenter_standalone_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$vcenter_standalone_host_vm.moref.value][""]) / $vcenter_standalone_host_vm.config.hardware.numCPU / 20000 * 100 
                         ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                         ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                        # https://kb.vmware.com/s/article/85393
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.cpu_wait_no_idle", $vcenter_standalone_host_vm_io_wait)
                     }
 
@@ -1693,11 +1807,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_standalone_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_standalone_host_vm.moref.value][""] -ge 0) {
                         $vcenter_standalone_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$vcenter_standalone_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$vcenter_standalone_host_vm.moref.value][""]
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskUsage", $vcenter_standalone_host_vm_disk_usage)
+                    } else {
+                        vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskUsage", 0)
                     }
+
+                    # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value]) {
+                    #     $vcenter_standalone_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                    #     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskiops", $vcenter_standalone_host_vm_disk_iops)
+                    # }
 
                     if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_standalone_host_vm.moref.value][""]) {
                         $vcenter_standalone_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_standalone_host_vm.moref.value][""]
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netUsage", $vcenter_standalone_host_vm_net_usage)
+                    } else {
+                        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netUsage", 0)
                     }
 
                     if ($vcenter_standalone_host_vm.summary.quickStats.privateMemory -gt 0) {$StandaloneResourcePoolPrivateMemory += $vcenter_standalone_host_vm.summary.quickStats.privateMemory}
@@ -1768,8 +1891,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name events"
 
     $vcenter_events_h = @{}
-    $vCenterFilteredEventTypeId = @()
-    $vCenterFilteredEventTypeIdCat = @()
+    $vCenterFilteredEventTypeId = [System.Collections.ArrayList]@()
+    $vCenterFilteredEventTypeIdCat = [System.Collections.ArrayList]@()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
         # https://github.com/lamw/vghetto-scripts/blob/master/perl/provisionedVMReport.pl
@@ -1778,16 +1901,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             try {
                 if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat.split("|")[0] -notmatch "nonviworkload|io\.latency|^esx\.audit\.net\.firewall\.config\.changed") {
                     if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
-                        $vCenterFilteredEventTypeId += $vCenterEventInfo.fullFormat.split("|")[0]
+                        $null = $vCenterFilteredEventTypeId.add($vCenterEventInfo.fullFormat.split("|")[0])
                     } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
-                        $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.fullFormat.split("|")[0]
+                        $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.fullFormat.split("|")[0])
                     }
                 } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
-                    $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
+                    $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventInfo collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -1801,8 +1924,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
                 $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] vCenter $vcenter_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -1837,7 +1960,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter $vcenter_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in vCenter $vcenter_name"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in vCenter $vcenter_name"
         }
     }
 
@@ -1895,8 +2018,15 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 		"disk.maxTotalLatency.latest",
 		"virtualdisk.write.average",
 		"virtualdisk.read.average",
-		"net.usage.average"
+        "net.usage.average"
     )
+
+    # $VmMultiMetricsAll = @(
+    #     "virtualdisk.numberWriteAveraged.average",
+    #     "virtualdisk.numberReadAveraged.average",
+    #     "net.received.average",
+    #     "net.transmitted.average"
+    # )
 
     if ($vcenter_vms) {
         try {
@@ -1905,7 +2035,19 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
+
+        # try {
+        #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
+        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        # } catch {
+        #     AltAndCatchFire "VM MultiQueryPerfAll failure"
+        # }
     }
+
+
+
+
+    
 
     try {
         $unmanaged_host = $vcenter_vmhosts
@@ -1945,8 +2087,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name sensors issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name sensors issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     if ($unmanaged_host.overallStatus.value__) {
@@ -1965,8 +2107,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.total", $unmanaged_compute_resource.summary.totalCpu)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.overallStatus", $unmanaged_host_overallStatus)
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name datastores"
@@ -1998,8 +2140,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.datastoreIops", $unmanaged_host_datastore_iops)
                 # }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] datastore processing issue on Unmanaged ESX $esx_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on Unmanaged ESX $esx_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
     }
@@ -2019,8 +2161,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name network metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name network metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     try {
@@ -2036,8 +2178,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name hba metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name hba metrics issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     $UnamagedResourcePoolPrivateMemory = 0
@@ -2143,16 +2285,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.delta", $unmanaged_host_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             try {
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.committed", $unmanaged_host_vm.summary.storage.committed)
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.uncommitted", $unmanaged_host_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -2203,6 +2345,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $unmanaged_host_vm_io_wait = ($VmMultiStats[$PerfCounterTable["cpu.wait.summation"]][$unmanaged_host_vm.moref.value][""] - $VmMultiStats[$PerfCounterTable["cpu.idle.summation"]][$unmanaged_host_vm.moref.value][""]) / $unmanaged_host_vm.config.hardware.numCPU / 20000 * 100 
                         ### https://code.vmware.com/apis/358/vsphere#/doc/cpu_counters.html
                         ### "Total CPU time spent in wait state.The wait total includes time spent the CPU Idle, CPU Swap Wait, and CPU I/O Wait states."
+                        # https://kb.vmware.com/s/article/85393
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.cpu_wait_no_idle", $unmanaged_host_vm_io_wait)
                     }
 
@@ -2219,11 +2362,25 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
                         $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", $unmanaged_host_vm_disk_usage)
+                    } else {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", 0)
                     }
+
+                    # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value]) {
+                    #     $unmanaged_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                    #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskiops", $unmanaged_host_vm_disk_iops)
+                    # }
+
+                    # if ($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.received.average"]][$unmanaged_host_vm.moref.value]) {
+                    #     $unmanaged_host_vm_net_usage = $($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.received.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.transmitted.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                    #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
+                    # }
 
                     if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]) {
                         $unmanaged_host_vm_net_usage = $VmMultiStats[$PerfCounterTable["net.usage.average"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", $unmanaged_host_vm_net_usage)
+                    } else {
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", 0)
                     }
                     
                     if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
@@ -2232,8 +2389,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
                 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"  
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"  
                 }
 
             } elseif ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -2255,8 +2412,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.dead", $unmanaged_host_vms_dead)
 
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $unmanaged_host_h -DateTime $ExecStart
@@ -2265,20 +2422,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = @()
-    $vCenterFilteredEventTypeIdCat = @()
+    $vCenterFilteredEventTypeIdCat = [System.Collections.ArrayList]@()
 
     if ($EventManager.LatestEvent.Key -gt 0) {
 
-        $vCenterFilteredEventTypeId = Get-Content /opt/sexigraf/vsp703.evt
+        $vCenterFilteredEventTypeId = Get-Content /opt/sexigraf/vsp801.evt
 
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
                 if ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
-                    $vCenterFilteredEventTypeIdCat += $vCenterEventInfo.key
+                    $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventInfo collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
 
@@ -2295,12 +2452,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollectorObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpec) -Server $Server
                 $vCenterEventsHistoryCollectorCatObj = Get-View $EventManager.CreateCollectorForEvents($vCenterEventFilterSpecCat) -Server $Server
 
-                $vCenterEventsHistoryCollector = $vCenterEventsHistoryCollectorObj.ReadNextEvents("1000")
-                $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("1000")
+                $vCenterEventsHistoryCollector = $vCenterEventsHistoryCollectorObj.ReadNextEvents("999")
+                $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("999")
 
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [ERROR] $($Error[0])"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -2330,7 +2487,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Unmanaged ESX $esx_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [ERROR] No EventInfo to process in Unmanaged ESX $esx_name"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in Unmanaged ESX $esx_name"
         }
     }
 
