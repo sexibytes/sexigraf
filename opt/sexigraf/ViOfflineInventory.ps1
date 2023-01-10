@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.69"
+$ScriptVersion = "0.9.70"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -365,7 +365,8 @@ if ($ViServersList.count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory files ..."
             $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
         } catch {
-            AltAndCatchFire "VM Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
 
@@ -374,7 +375,8 @@ if ($ViServersList.count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Esx Inventory files ..."
             $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
         } catch {
-            AltAndCatchFire "ESX Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] ESX Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
 
@@ -383,9 +385,72 @@ if ($ViServersList.count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
             $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force
         } catch {
-            AltAndCatchFire "Datastore Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Datastore Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Scanning vm folders ..."
+
+    $vmfolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/vm/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Building vm folders table ..."
+
+    $vmfolders_h = @{}
+    foreach ($vmfolder in $vmfolders) {
+        if (!$vmfolders_h[$vmfolder.basename]) {
+            $vmfolders_h.add($vmfolder.basename,@($vmfolder))
+        } else {
+            $vmfolders_h[$vmfolder.basename] += $vmfolder
+        }
+    }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xvmotioned vms aka DstVmMigratedEvent ..."
+
+    try {
+        $vmfoldersdup = (compare-object $vmfolders.basename $($vmfolders|Select-Object basename -unique).basename|?{$_.SideIndicator -eq "<="}).InputObject
+    } catch {
+        AltAndCatchFire "Compare folders issue"
+    }
+    
+    if ($vmfoldersdup) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated vm folders found across clusters, evaluating mobility ..."
+        foreach ($vmdup in $vmfoldersdup) {
+            if ($vmfolders_h[$vmdup].count -eq 2) {
+
+                $vmdupfolders = $vmfolders_h[$vmdup]
+                $vmdupsrcdir = $vmdupfolders|Sort-Object CreationTimeUtc -Descending|Select-Object -Last 1
+                $vmdupdstdir = $vmdupfolders|Sort-Object CreationTimeUtc -Descending|Select-Object -First 1
+
+                try {
+                    $vmdupsrcwsp = Get-Item $($vmdupsrcdir.FullName + "/storage/committed.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
+                    $vmdupdstwsp = Get-Item $($vmdupdstdir.FullName + "/storage/committed.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] Missing committed.wsp for vm $vmdup ..."
+                    continue
+                }
+
+                if (($vmdupdstdir.CreationTimeUtc -gt $vmdupsrcdir.CreationTimeUtc) -and (($vmdupdstwsp.LastWriteTimeUtc - $vmdupsrcwsp.LastWriteTimeUtc).TotalMinutes -gt 15) -and (($vmdupdstwsp.LastWriteTimeUtc - $vmdupsrcwsp.LastWriteTimeUtc).TotalMinutes -le 90)) {
+                    $vmdupsrcclu = $vmdupsrcdir.FullName.split("/")[-3]
+                    $vmdupdstclu = $vmdupdstdir.FullName.split("/")[-3]
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] VM $vmdup has recently been moved from cluster $vmdupsrcclu to cluster $vmdupdstclu, moving metrics to the new destination ..."
+                    try {
+                        Move-Item $vmdupsrcdir.FullName $vmdupdstdir.FullName -Force
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] moving issue for vm $vmdup ..."
+                        continue
+                    }
+                }
+
+            } else {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Too many folders for vm $vmdup ..."
+            }
+        }
+    } else {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] No duplicated vm folders found"
+    }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] SexiGraf has left the building ..."
 
 } else {
     AltAndCatchFire "No VI server to process"
