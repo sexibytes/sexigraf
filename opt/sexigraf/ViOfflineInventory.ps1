@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.70"
+$ScriptVersion = "0.9.71"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -394,28 +394,24 @@ if ($ViServersList.count -gt 0) {
 
     $vmfolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/vm/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Building vm folders table ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xvmotioned vms aka DstVmMigratedEvent ..."
 
     $vmfolders_h = @{}
+    $vmfoldersdup_h = @{}
     foreach ($vmfolder in $vmfolders) {
         if (!$vmfolders_h[$vmfolder.basename]) {
             $vmfolders_h.add($vmfolder.basename,@($vmfolder))
         } else {
             $vmfolders_h[$vmfolder.basename] += $vmfolder
+            if (!$vmfoldersdup_h[$vmfolder.basename]) {
+                $vmfoldersdup_h.add($vmfolder.basename,"1")
+            }
         }
     }
-
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xvmotioned vms aka DstVmMigratedEvent ..."
-
-    try {
-        $vmfoldersdup = (compare-object $vmfolders.basename $($vmfolders|Select-Object basename -unique).basename|?{$_.SideIndicator -eq "<="}).InputObject
-    } catch {
-        AltAndCatchFire "Compare folders issue"
-    }
     
-    if ($vmfoldersdup) {
+    if ($vmfoldersdup_h) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated vm folders found across clusters, evaluating mobility ..."
-        foreach ($vmdup in $vmfoldersdup) {
+        foreach ($vmdup in $vmfoldersdup_h.keys) {
             if ($vmfolders_h[$vmdup].count -eq 2) {
 
                 $vmdupfolders = $vmfolders_h[$vmdup]
@@ -436,6 +432,16 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] VM $vmdup has recently been moved from cluster $vmdupsrcclu to cluster $vmdupdstclu, moving metrics to the new destination ..."
                     try {
                         Move-Item $vmdupsrcdir.FullName $vmdupdstdir.FullName -Force
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] moving issue for vm $vmdup ..."
+                        continue
+                    }
+                } elseif (($vmdupdstdir.CreationTimeUtc -gt $vmdupsrcdir.CreationTimeUtc) -and (($vmdupdstwsp.LastWriteTimeUtc - $vmdupsrcwsp.LastWriteTimeUtc).TotalMinutes -gt 15) -and (($vmdupdstwsp.LastWriteTimeUtc - $vmdupsrcwsp.LastWriteTimeUtc).TotalMinutes -gt 90)) {
+                    $vmdupsrcclu = $vmdupsrcdir.FullName.split("/")[-3]
+                    $vmdupdstclu = $vmdupdstdir.FullName.split("/")[-3]
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] VM $vmdup has been moved from cluster $vmdupsrcclu to cluster $vmdupdstclu a while ago, merging metrics to the new destination ..."
+                    try {
+                        # Move-Item $vmdupsrcdir.FullName $vmdupdstdir.FullName -Force
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [EROR] moving issue for vm $vmdup ..."
                         continue
