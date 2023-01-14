@@ -500,7 +500,7 @@ if ($ViServersList.count -gt 0) {
     
     if ($EsxFoldersDup_h) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated Esx folders found across clusters, evaluating mobility ..."
-        foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 500)) {
+        foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 50)) {
     
             if ($EsxFolders_h[$EsxDup].count -lt 2) {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] Esx $EsxDup has less than 2 copies, skipping ..."
