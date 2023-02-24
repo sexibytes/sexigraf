@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1008"
+$ScriptVersion = "0.9.1009"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -459,14 +459,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "mem.totalCapacity.average"
     )
 
-    try {
-        $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
-    } catch {
-        AltAndCatchFire "ESX MultiQueryPerfAll failure"
+    if (($vcenter_vmhosts|Measure-Object).Count -gt 0) {
+        try {
+            $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "ESX MultiQueryPerfAll failure"
+        }
+    } else {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] No ESX in vCenter $vcenter_name"
     }
 
-    if (($vcenter_vms|Measure-Object).Count -gt 10000) {
+    if (($vcenter_vms|Measure-Object).Count -eq 0) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] No VMs in vCenter $vcenter_name"
+    } elseif (($vcenter_vms|Measure-Object).Count -gt 10000) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] 10K+ VMs mode for vCenter $vcenter_name"
 
         $VmMultiMetricsR1 = @(
