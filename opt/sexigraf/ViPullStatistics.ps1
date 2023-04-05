@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1007"
+$ScriptVersion = "0.9.1009"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -173,7 +173,7 @@ try {
     Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.$($Server).log" -Append -Confirm:$false -Force -UseMinimalHeader
     Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
     Write-Host "$((Get-Date).ToString("o")) [INFO] ViPullStatistics v$ScriptVersion"
-    if (    $vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))) {
+    if ($vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))) {
         Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force -UseMinimalHeader
         Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
     }
@@ -272,8 +272,18 @@ try {
 try {
     if ($ServiceInstance) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SessionManager & EventManager ..."
-        $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server # Permission to perform this operation was denied. Required privilege 'Sessions.TerminateSession' on managed object with id 'Folder-group-d1'.
-        $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
+        try {
+            $AuthorizationManager = Get-View $ServiceInstance.Content.AuthorizationManager -Server $Server
+            $UserPrivileges = $AuthorizationManager.fetchUserPrivilegeOnEntities($ServiceInstance.Content.RootFolder,$ServerConnection.User).Privileges
+            if ($UserPrivileges -match "Sessions.TerminateSession") {
+                $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server # Permission to perform this operation was denied. Required privilege 'Sessions.TerminateSession' on managed object with id 'Folder-group-d1'.
+            } else {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Sessions.TerminateSession privilege not detected, SessionManager skipped ..."
+            }
+            $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
+        } catch {
+            AltAndCatchFire "AuthorizationManager or  SessionManager check failure"
+        }
     } else {
         AltAndCatchFire "ServiceInstance check failure"
     }
@@ -1882,15 +1892,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name SessionList"
 
     $vcenter_session_list_h = @{}
-    $SessionList = $SessionManager.sessionList
-
-    if ($SessionList) {
-        foreach ($vcenter_session in $SessionList) {
-            $vcenter_session_list_h["vi.$vcenter_name.vi.exec.sessionList.$(NameCleaner $vcenter_session.UserName)"] ++
+    if ($SessionManager) {
+        $SessionList = $SessionManager.sessionList
+        if ($SessionList) {
+            foreach ($vcenter_session in $SessionList) {
+                $vcenter_session_list_h["vi.$vcenter_name.vi.exec.sessionList.$(NameCleaner $vcenter_session.UserName)"] ++
+            }
+            $vcenter_session_list_h["vi.$vcenter_name.vi.exec.sessionCount"] = $($SessionList|Measure-Object).Count
+    
+            Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_session_list_h -DateTime $ExecStart
         }
-        $vcenter_session_list_h["vi.$vcenter_name.vi.exec.sessionCount"] = $($SessionList|Measure-Object).Count
-
-        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_session_list_h -DateTime $ExecStart
     }
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name events"
