@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1009"
+$ScriptVersion = "0.9.1010"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -788,25 +788,33 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             try {
-                $vcenter_cluster_host_power = $HostMultiStats[$PerfCounterTable["power.power.average"]][$vcenter_cluster_host.moref.value][""]
-                if ($vcenter_cluster_host_power -ge 0) {
-                    $vcenter_cluster_hosts_power_usage += $vcenter_cluster_host_power
-                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.power", $vcenter_cluster_host_power)
+                if ($HostMultiStats[$PerfCounterTable["power.power.average"]][$vcenter_cluster_host.moref.value]) {
+                    $vcenter_cluster_host_power = $HostMultiStats[$PerfCounterTable["power.power.average"]][$vcenter_cluster_host.moref.value][""]
+                    if ($vcenter_cluster_host_power -ge 0) {
+                        $vcenter_cluster_hosts_power_usage += $vcenter_cluster_host_power
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.power", $vcenter_cluster_host_power)
+                    }
                 }
 
-                $vcenter_cluster_host_cpu_totalCapacity = $HostMultiStats[$PerfCounterTable["cpu.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
-                if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallCpuUsage -ge 0) {
-                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallCpuUtilization", $($vcenter_cluster_host.summary.quickStats.overallCpuUsage * 100 / $vcenter_cluster_host_cpu_totalCapacity))
+                if ($HostMultiStats[$PerfCounterTable["cpu.totalCapacity.average"]][$vcenter_cluster_host.moref.value]) {
+                    $vcenter_cluster_host_cpu_totalCapacity = $HostMultiStats[$PerfCounterTable["cpu.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
+                    if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallCpuUsage -ge 0) {
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallCpuUtilization", $($vcenter_cluster_host.summary.quickStats.overallCpuUsage * 100 / $vcenter_cluster_host_cpu_totalCapacity))
+                    }
                 }
 
-                $vcenter_cluster_host_mem_totalCapacity = $HostMultiStats[$PerfCounterTable["mem.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
-                if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallMemoryUsage -ge 0) {
-                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallmemUtilization", $($vcenter_cluster_host.summary.quickStats.overallMemoryUsage * 100 / $vcenter_cluster_host_mem_totalCapacity))
+                if ($HostMultiStats[$PerfCounterTable["mem.totalCapacity.average"]][$vcenter_cluster_host.moref.value]) {
+                    $vcenter_cluster_host_mem_totalCapacity = $HostMultiStats[$PerfCounterTable["mem.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
+                    if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallMemoryUsage -ge 0) {
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallmemUtilization", $($vcenter_cluster_host.summary.quickStats.overallMemoryUsage * 100 / $vcenter_cluster_host_mem_totalCapacity))
+                    }
                 }
 
-                $vcenter_cluster_host_cpu_latency = $HostMultiStats[$PerfCounterTable["cpu.latency.average"]][$vcenter_cluster_host.moref.value][""]
-                if ($vcenter_cluster_host_cpu_latency -ge 0) {
-                    $vcenter_cluster_hosts_cpu_latency += $vcenter_cluster_host_cpu_latency
+                if ($HostMultiStats[$PerfCounterTable["cpu.latency.average"]][$vcenter_cluster_host.moref.value]) {
+                    $vcenter_cluster_host_cpu_latency = $HostMultiStats[$PerfCounterTable["cpu.latency.average"]][$vcenter_cluster_host.moref.value][""]
+                    if ($vcenter_cluster_host_cpu_latency -ge 0) {
+                        $vcenter_cluster_hosts_cpu_latency += $vcenter_cluster_host_cpu_latency
+                    }
                 }
 
                 if ($vcenter_cluster_host.overallStatus.value__) {
