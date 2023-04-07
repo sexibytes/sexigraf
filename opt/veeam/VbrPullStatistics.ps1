@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1"
+$ScriptVersion = "0.9.5"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -71,16 +71,18 @@ if ($SessionFile) {
         $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
-        $VbrServices = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/services") -Headers $VbrAuthHeaders
-        if ($($VbrServices.data.name)) {
+        $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?limit=1") -Headers $VbrAuthHeaders
+        if ($($VbrSessions.data)) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
+        } else {
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
         }
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
         Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
     }
     
-    if (!$($VbrServices.data.name)) {
+    if (!$($VbrSessions.data)) {
         try {
             $createstorexml = New-Object -TypeName XML
             $createstorexml.Load($credstore)
@@ -95,10 +97,19 @@ if ($SessionFile) {
             $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
             $VbrBody = @{grant_type = "password";username = $CredStoreLogin;password = $CredStorePassword;refresh_token = "";code = "";use_short_term_refresh = ""}
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
-            if ($($VbrServices.data.name)) {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
-                $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
-                $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
+            if ($VbrConnect.access_token) {
+                $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
+                $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?limit=1") -Headers $VbrAuthHeaders
+                if ($($VbrSessions.data)) {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
+                    $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
+                    $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
+                    $SessionToken = $VbrConnect.access_token
+                } else {
+                    AltAndCatchFire "VbrSessions check failed, check the user permissions!"
+                }
+            } else {
+                AltAndCatchFire "Explicit connection failed, check the stored credentials!"
             }
         } catch {
             AltAndCatchFire "Explicit connection failed, check the stored credentials!"
@@ -108,8 +119,8 @@ if ($SessionFile) {
     AltAndCatchFire "No SessionFile somehow ..."
 }
 
-if ($($VbrServices.data.name) -match "Backup") {
-    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)";"limit" = "9999"}
+if ($($VbrSessions.data)) {
+    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken";"limit" = "9999"}
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
 
     try {
@@ -137,6 +148,6 @@ if ($($VbrServices.data.name) -match "Backup") {
     }
 
 } else {
-    AltAndCatchFire "VbrServices variable check failure"
+    AltAndCatchFire "access_token check failure"
 }
 
