@@ -14,10 +14,15 @@ try {
     $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
     $VbrBody = @{grant_type = "password";username = $username;password = $password;refresh_token = "";code = "";use_short_term_refresh = ""}
     $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
-    $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
-    $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
-    # $VbrConnect.refresh_token
-    Write-Host "Connected to $server"
+    if ($VbrConnect.access_token) {
+        $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
+        $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
+        # $VbrConnect.refresh_token
+        Write-Host "Connected to $server"
+    } else {
+        Write-Host "Connection to $server failed!"
+        exit 1
+    }
 } catch {
     # Invoke-RestMethod: Unable to read data from the transport connection: Connection reset by peer.
     # https://helpcenter.veeam.com/docs/backup/vbr_rest/tls_certificate.html
