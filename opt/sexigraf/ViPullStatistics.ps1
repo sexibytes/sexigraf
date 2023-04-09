@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1010"
+$ScriptVersion = "0.9.1011"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1360,18 +1360,22 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                     $vcenter_cluster_vsan_Ssd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_Ssd_uuid]].name]
                                     $vcenter_cluster_vsan_Ssd_name = $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_Ssd_uuid]
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevRead"])
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevWrite"])
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.domcompmgr.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
+                                    if ($vcenter_cluster_vsan_Ssd_host) {
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevRead"])
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.disk.cache.$vcenter_cluster_vsan_Ssd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["latencyDevWrite"])
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_Ssd_host.vsan.domcompmgr.cache.$vcenter_cluster_vsan_Ssd_name.wbFreePct", $VsanPerfEntityMetric[$vcenter_cluster_vsan_Ssd_uuid]["cache-disk"]["wbFreePct"])
+                                    }
                                 }
     
                                 foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                     $vcenter_cluster_vsan_nonSsd_host = $vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_nonSsd_uuid]].name]
                                     $vcenter_cluster_vsan_nonSsd_name = $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref][$vcenter_cluster_vsan_nonSsd_uuid]
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevRead"])
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevWrite"])
-                                    # $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
-                                    $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.percentUsed", $([INT64]$VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"] * 100 / [INT64]$vcenter_vmhosts_vsan_disk_capa_h[$vcenter_cluster_vsan_nonSsd_uuid]))
+                                    if ($vcenter_cluster_vsan_nonSsd_host) {
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevRead", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevRead"])
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.latencyDevWrite", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["latencyDevWrite"])
+                                        # $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.capacityUsed", $VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"])
+                                        $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_vsan_nonSsd_host.vsan.disk.capacity.$vcenter_cluster_vsan_nonSsd_name.percentUsed", $([INT64]$VsanPerfEntityMetric[$vcenter_cluster_vsan_nonSsd_uuid]["capacity-disk"]["capacityUsed"] * 100 / [INT64]$vcenter_vmhosts_vsan_disk_capa_h[$vcenter_cluster_vsan_nonSsd_uuid]))
+                                    }
                                 }
                             }
 
