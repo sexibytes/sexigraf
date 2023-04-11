@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1012"
+$ScriptVersion = "0.9.1013"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -795,35 +795,55 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.power", $vcenter_cluster_host_power)
                     }
                 }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats power metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
 
+            try {
                 if ($HostMultiStats[$PerfCounterTable["cpu.totalCapacity.average"]][$vcenter_cluster_host.moref.value]) {
                     $vcenter_cluster_host_cpu_totalCapacity = $HostMultiStats[$PerfCounterTable["cpu.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
                     if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallCpuUsage -ge 0) {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallCpuUtilization", $($vcenter_cluster_host.summary.quickStats.overallCpuUsage * 100 / $vcenter_cluster_host_cpu_totalCapacity))
                     }
                 }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats cpu.totalCapacity metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
 
+            try {
                 if ($HostMultiStats[$PerfCounterTable["mem.totalCapacity.average"]][$vcenter_cluster_host.moref.value]) {
                     $vcenter_cluster_host_mem_totalCapacity = $HostMultiStats[$PerfCounterTable["mem.totalCapacity.average"]][$vcenter_cluster_host.moref.value][""]
                     if ($vcenter_cluster_host_cpu_totalCapacity -ge 0 -and $vcenter_cluster_host.summary.quickStats.overallMemoryUsage -ge 0) {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.fatstats.overallmemUtilization", $($vcenter_cluster_host.summary.quickStats.overallMemoryUsage * 100 / $vcenter_cluster_host_mem_totalCapacity))
                     }
                 }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats mem.totalCapacity metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
 
+            try {
                 if ($HostMultiStats[$PerfCounterTable["cpu.latency.average"]][$vcenter_cluster_host.moref.value]) {
                     $vcenter_cluster_host_cpu_latency = $HostMultiStats[$PerfCounterTable["cpu.latency.average"]][$vcenter_cluster_host.moref.value][""]
                     if ($vcenter_cluster_host_cpu_latency -ge 0) {
                         $vcenter_cluster_hosts_cpu_latency += $vcenter_cluster_host_cpu_latency
                     }
                 }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats cpu.latency metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
 
+            try {
                 if ($vcenter_cluster_host.overallStatus.value__) {
                     $vcenter_cluster_host_overallStatus = $vcenter_cluster_host.overallStatus.value__
                 } else {
                     $vcenter_cluster_host_overallStatus = "0"
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats metrics issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats overallStatus metrics issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
 
