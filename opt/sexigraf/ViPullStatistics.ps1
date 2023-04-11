@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1013"
+$ScriptVersion = "0.9.1014"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -842,6 +842,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 } else {
                     $vcenter_cluster_host_overallStatus = "0"
                 }
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats overallStatus metrics issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
@@ -850,12 +851,18 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedCpuFairness", $vcenter_cluster_host.summary.quickStats.distributedCpuFairness) ### ToDo
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedMemoryFairness", $vcenter_cluster_host.summary.quickStats.distributedMemoryFairness) ### ToDo
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name Distributed Fairness quickstats issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
+
+            try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallCpuUsage", $vcenter_cluster_host.summary.quickStats.overallCpuUsage)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallMemoryUsage", $vcenter_cluster_host.summary.quickStats.overallMemoryUsage)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.Uptime", $vcenter_cluster_host.summary.quickStats.uptime)
-                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
+
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name quickstats issue in cluster $vcenter_cluster_name"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name overall quickstats issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
             }
         }
