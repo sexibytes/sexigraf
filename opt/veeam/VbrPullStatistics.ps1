@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.5"
+$ScriptVersion = "0.9.6"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -131,6 +131,16 @@ if ($($VbrSessions.data)) {
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
+    if ($VbrJobsStates.data) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR jobs table ..."
+        $VbrJobsIdTable = @{}
+        foreach ($VbrJob in $VbrJobsStates.data) {
+            try {
+                $VbrJobsIdTable.add($VbrJob.id,$VbrJob)
+            } catch {}
+        }
+    }
+
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
         $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects") -Headers $VbrAuthHeaders
@@ -141,6 +151,7 @@ if ($($VbrSessions.data)) {
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
+        $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
         $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [EROR] objectRestorePoints collect failure"
