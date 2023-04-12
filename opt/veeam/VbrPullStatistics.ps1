@@ -99,8 +99,8 @@ if ($SessionFile) {
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
-                $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?limit=1") -Headers $VbrAuthHeaders
-                if ($($VbrSessions.data)) {
+                $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+                if ($($VbrSessions.pagination)) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
                     $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
                     $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
@@ -151,14 +151,19 @@ if ($($VbrSessions.data)) {
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
-        $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+        # $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
         $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [EROR] objectRestorePoints collect failure"
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
+    Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
+
 } else {
-    AltAndCatchFire "access_token check failure"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Nothing to process in the last 5min on VBR server $server ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Exit"
+    Stop-Transcript
+    exit
 }
 
