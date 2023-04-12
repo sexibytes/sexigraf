@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.73"
+$ScriptVersion = "0.9.74"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -250,9 +250,9 @@ if ($ViServersList.count -gt 0) {
                     $VmCluster = ""
                 }
                 
-                if ($Vm.Guest.GuestId) {
+                if ($Vm.Guest.GuestId.Length -gt 0) {
                     $VmGuestId = $Vm.Guest.GuestId.replace('Guest','')
-                } elseif ($Vm.Config.GuestId) {
+                } elseif ($Vm.Config.GuestId  -gt 0) {
                     $VmGuestId = $Vm.Config.GuestId.replace('Guest','')
                 } else {
                     $VmGuestId = ""
