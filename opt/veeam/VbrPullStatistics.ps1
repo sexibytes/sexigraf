@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.6"
+$ScriptVersion = "0.9.11"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -71,18 +71,18 @@ if ($SessionFile) {
         $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
-        $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?limit=1") -Headers $VbrAuthHeaders
-        if ($($VbrSessions.data)) {
+        $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states?limit=1") -Headers $VbrAuthHeaders
+        if ($($VbrJobsStates.data)) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Connection failure or no job state"
         }
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
-        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
     }
     
-    if (!$($VbrSessions.data)) {
+    if (!$($VbrJobsStates.data)) {
+        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
         try {
             $createstorexml = New-Object -TypeName XML
             $createstorexml.Load($credstore)
@@ -99,14 +99,14 @@ if ($SessionFile) {
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
-                $VbrSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
-                if ($($VbrSessions.pagination)) {
+                $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states?limit=1") -Headers $VbrAuthHeaders
+                if ($($VbrJobsStates.data)) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
                     $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
                     $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
                     $SessionToken = $VbrConnect.access_token
                 } else {
-                    AltAndCatchFire "VbrSessions check failed, check the user permissions!"
+                    AltAndCatchFire "Jobs States check failed, no job state or check the user permissions!"
                 }
             } else {
                 AltAndCatchFire "Explicit connection failed, check the stored credentials!"
@@ -119,51 +119,107 @@ if ($SessionFile) {
     AltAndCatchFire "No SessionFile somehow ..."
 }
 
-if ($($VbrSessions.data)) {
-    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken";"limit" = "9999"}
+if ($($VbrJobsStates.data)) {
+    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
 
     try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR jobs states collect ..."
-        $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR sessions collect ..."
+        $VbrRunningSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?stateFilter=working") -Headers $VbrAuthHeaders
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] VbrJobsStates collect failure"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Sessions collect failure"
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
-    if ($VbrJobsStates.data) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR jobs table ..."
-        $VbrJobsIdTable = @{}
-        foreach ($VbrJob in $VbrJobsStates.data) {
-            try {
-                $VbrJobsIdTable.add($VbrJob.id,$VbrJob)
-            } catch {}
-        }
-    }
-
-    try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
-        $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects") -Headers $VbrAuthHeaders
-    } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR sessions table ..."
+    $VbrRunningSessionsIdTable = @{}
+    foreach ($VbrSession in $VbrRunningSessions.data) {
+        try {
+            $VbrRunningSessionsIdTable.add($VbrSession.id,$VbrSession)
+        } catch {}
     }
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
         # $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
-        $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+        $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?platformNameFilter=VmWare&createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [EROR] objectRestorePoints collect failure"
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
+    if ($VbrObjectRestorePoints5.data.count -gt 0) {
+        # Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
+        # $VbrBackupObjects5 = @{}
+        # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) {
+        #     try {
+        #         $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&nameFilter=" + $($VbrObjectRestorePoint5.name)) -Headers $VbrAuthHeaders
+        #         if ($VbrBackupObjects.data[0].type -eq "VM" -and !$VbrBackupObjects5[$VbrBackupObjects.data[0].name]) {
+        #             $VbrBackupObjects5.Add($VbrBackupObjects.data[0].name,$VbrBackupObjects[0].data)
+        #         }
+        #     } catch {
+        #         Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
+        #         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        #     }
+        # }
+
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
+            $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&limit=9999") -Headers $VbrAuthHeaders
+            if ($VbrBackupObjects.data) {
+                Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR backupObjects table ..."
+                $VbrBackupObjectsTable = @{}
+                foreach ($VbrBackupObject in $VbrBackupObjects.data) {
+                    try {
+                        $VbrBackupObjectsTable.add($VbrBackupObject.name,$VbrBackupObject)
+                    } catch {}
+                }
+            }
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        }
+
+        $VbrObjectRestorePoints5SessionsId = $VbrObjectRestorePoints5.data.backupId|Select-Object -Unique
+
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR Sessions collect ..."
+        $VbrSessions5 = @{}
+        foreach ($VbrObjectRestorePoints5SessionId in $VbrObjectRestorePoints5SessionsId) {
+            try {
+                $VbrObjectRestorePoints5Session = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backups/" + $VbrObjectRestorePoints5SessionId) -Headers $VbrAuthHeaders
+                if ($VbrObjectRestorePoints5Session) {
+                    $VbrSessions5.Add($VbrObjectRestorePoints5SessionId,$VbrObjectRestorePoints5Session)
+                }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
+        }
+
+        $VbrObjectRestorePointTable = @{}
+        
+        $vbrserver_name = NameCleaner $Server
+
+        foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
+            $vcenter_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].path.split("\")[0]
+            $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
+            $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
+            $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.vm.$vm_name"] ++
+            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name"] ++
+        }
+
+        
+        $VbrObjectRestorePointTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
+        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrObjectRestorePointTable -DateTime $ExecStart
+
+    }
+
     Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
 
 } else {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Nothing to process in the last 5min on VBR server $server ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] No Running Jobs on VBR server $server ..."
     Write-Host "$((Get-Date).ToString("o")) [INFO] Exit"
     Stop-Transcript
     exit
 }
-
