@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.13"
+$ScriptVersion = "0.9.15"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -121,24 +121,9 @@ if ($SessionFile) {
 
 if ($($VbrJobsStates.data)) {
     $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
+    $VbrObjectRestorePointTable = @{}
+    $vbrserver_name = NameCleaner $Server
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
-
-    try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR sessions collect ..."
-        $VbrRunningSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
-    } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Sessions collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
-    }
-
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR sessions table ..."
-    $VbrRunningSessionsIdTable = @{}
-    foreach ($VbrSession in $VbrRunningSessions.data) {
-        try {
-            $VbrRunningSessionsIdTable.add($VbrSession.id,$VbrSession)
-            Write-Host $VbrSession #TODO clean
-        } catch {}
-    }
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
@@ -197,12 +182,9 @@ if ($($VbrJobsStates.data)) {
             }
         }
 
-        $VbrObjectRestorePointTable = @{}
-        $vbrserver_name = NameCleaner $Server
-
         foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
             $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
-            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name"] ++
+            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
 
             if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
                 try {
@@ -236,13 +218,36 @@ if ($($VbrJobsStates.data)) {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] No ViVmInventory"
             }
         }
-
-        
-        $VbrObjectRestorePointTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
-        Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrObjectRestorePointTable -DateTime $ExecStart
-
     }
+
+    try {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR ended sessions collect ..."
+        $VbrEndedSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [EROR] Sessions collect failure"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    }
+
+    if ($VbrEndedSessions.data) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing VBR ended sessions ..."
+        foreach ($VbrEndedSession in $VbrEndedSessions.data) {
+            $job_name = NameCleaner $VbrEndedSession.name
+            if ($VbrEndedSession.result.result -eq "Success") {
+                $VbrEndedSessionResult = 0
+            } elseif ($VbrEndedSession.result.result -eq "Warning") {
+                $VbrEndedSessionResult = 1
+            } elseif ($VbrEndedSession.result.result -eq "Failed") {
+                $VbrEndedSessionResult = 2
+            } else {
+                $VbrEndedSessionResult = 3
+            }
+            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.result"] = $VbrEndedSessionResult
+        }
+    }
+
+    $VbrObjectRestorePointTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds #TODO ?
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
+    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrObjectRestorePointTable -DateTime $ExecStart
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
 
