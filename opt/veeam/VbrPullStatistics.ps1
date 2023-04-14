@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.15"
+$ScriptVersion = "0.9.16"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -71,7 +71,7 @@ if ($SessionFile) {
         $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
         Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
-        $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states?limit=1") -Headers $VbrAuthHeaders
+        $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
         if ($($VbrJobsStates.data)) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
         } else {
@@ -99,7 +99,7 @@ if ($SessionFile) {
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
-                $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states?limit=1") -Headers $VbrAuthHeaders
+                $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if ($($VbrJobsStates.data)) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
                     $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
@@ -124,6 +124,20 @@ if ($($VbrJobsStates.data)) {
     $VbrObjectRestorePointTable = @{}
     $vbrserver_name = NameCleaner $Server
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
+
+    foreach ($VbrJobState in $VbrJobsStates.data) {
+        $job_name = NameCleaner $VbrJobState.name
+        if ($VbrJobState.status -eq "running") {
+            $VbrJobStateStatus = 0
+        } elseif ($VbrJobState.status -eq "inactive") {
+            $VbrJobStateStatus = 1
+        } elseif ($VbrJobState.status -eq "disabled") {
+            $VbrJobStateStatus = 2
+        } else {
+            $VbrJobStateStatus = 3
+        }
+        $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.status"] = $VbrJobStateStatus
+    }
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
