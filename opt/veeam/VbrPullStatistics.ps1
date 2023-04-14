@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.11"
+$ScriptVersion = "0.9.13"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -125,7 +125,7 @@ if ($($VbrJobsStates.data)) {
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR sessions collect ..."
-        $VbrRunningSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?stateFilter=working") -Headers $VbrAuthHeaders
+        $VbrRunningSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [EROR] Sessions collect failure"
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
@@ -136,6 +136,7 @@ if ($($VbrJobsStates.data)) {
     foreach ($VbrSession in $VbrRunningSessions.data) {
         try {
             $VbrRunningSessionsIdTable.add($VbrSession.id,$VbrSession)
+            Write-Host $VbrSession #TODO clean
         } catch {}
     }
 
@@ -151,7 +152,7 @@ if ($($VbrJobsStates.data)) {
     if ($VbrObjectRestorePoints5.data.count -gt 0) {
         # Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
         # $VbrBackupObjects5 = @{}
-        # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) {
+        # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) { # Too Slow !!!
         #     try {
         #         $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&nameFilter=" + $($VbrObjectRestorePoint5.name)) -Headers $VbrAuthHeaders
         #         if ($VbrBackupObjects.data[0].type -eq "VM" -and !$VbrBackupObjects5[$VbrBackupObjects.data[0].name]) {
@@ -197,15 +198,43 @@ if ($($VbrJobsStates.data)) {
         }
 
         $VbrObjectRestorePointTable = @{}
-        
         $vbrserver_name = NameCleaner $Server
 
         foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
-            $vcenter_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].path.split("\")[0]
-            $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
             $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
-            $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.vm.$vm_name"] ++
             $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name"] ++
+
+            if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
+                try {
+                    $ViVmInventory = $(Import-Csv -Path /mnt/wfs/inventory/ViVmInventory.csv -ErrorAction Stop)
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] ViVmInventory import issue"
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                }
+
+                if ($ViVmInventory) {
+                    $ViVmInventoryTable = @{}
+                    foreach ($ViVm in $ViVmInventory) {
+                        try {
+                            $ViVmInventoryTable.Add($ViVm.vm,$ViVm)
+                        } catch {}
+                    }
+                } else {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] ViVmInventory import issue"
+                }
+
+                $vcenter_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].path.split("\")[0]
+                $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
+
+                if ($ViVmInventoryTable[$vm_name]) {
+                    $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
+                    $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
+                    $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
+                }
+
+            } else {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] No ViVmInventory"
+            }
         }
 
         
