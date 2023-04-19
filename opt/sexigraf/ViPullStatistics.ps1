@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1014"
+$ScriptVersion = "0.9.1017"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -274,8 +274,11 @@ try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SessionManager & EventManager ..."
         try {
             $AuthorizationManager = Get-View $ServiceInstance.Content.AuthorizationManager -Server $Server
-            $UserPrivileges = $AuthorizationManager.fetchUserPrivilegeOnEntities($ServiceInstance.Content.RootFolder,$ServerConnection.User).Privileges
-            if ($UserPrivileges -match "Sessions.TerminateSession") {
+            $group_d1 = Get-View $ServiceInstance.Content.RootFolder
+            $UserRoleId = $($group_d1.Permission|?{$_.Principal -eq $ServerConnection.User}).RoleId
+            $UserRole = $AuthorizationManager.RoleList|?{$_.RoleId -eq $UserRoleId}
+            # $UserTerminateSessionCheck = $AuthorizationManager.HasUserPrivilegeOnEntities($ServiceInstance.Content.RootFolder,$ServerConnection.User,"Sessions.TerminateSession")
+            if ($UserRole.Privilege -match "Sessions.TerminateSession") {
                 $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server # Permission to perform this operation was denied. Required privilege 'Sessions.TerminateSession' on managed object with id 'Folder-group-d1'.
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Sessions.TerminateSession privilege not detected, SessionManager skipped ..."
@@ -1954,10 +1957,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         }
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name SessionList"
-
-    $vcenter_session_list_h = @{}
     if ($SessionManager) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name SessionList"
+        $vcenter_session_list_h = @{}
         $SessionList = $SessionManager.sessionList
         if ($SessionList) {
             foreach ($vcenter_session in $SessionList) {
