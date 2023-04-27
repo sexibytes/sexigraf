@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.16"
+$ScriptVersion = "0.9.17"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -121,7 +121,7 @@ if ($SessionFile) {
 
 if ($($VbrJobsStates.data)) {
     $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
-    $VbrObjectRestorePointTable = @{}
+    $VbrDataTable = @{}
     $vbrserver_name = NameCleaner $Server
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
 
@@ -136,7 +136,29 @@ if ($($VbrJobsStates.data)) {
         } else {
             $VbrJobStateStatus = 3
         }
-        $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.status"] = $VbrJobStateStatus
+        $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.status"] = $VbrJobStateStatus
+    }
+
+    try {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR repositories states collect ..."
+        $VbrRepositoriesStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupInfrastructure/repositories/states") -Headers $VbrAuthHeaders
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [EROR] repositories states collect failure"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    } 
+
+    if ($VbrRepositoriesStates.data.count -gt 0) {
+        foreach ($VbrRepository in $VbrRepositoriesStates.data) {
+            $VbrRepositoryName = NameCleaner $VbrRepository.name
+
+            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.capacityGB"] = $VbrRepository.capacityGB
+            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.freeGB"] = $VbrRepository.freeGB
+            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.usedSpaceGB"] = $VbrRepository.usedSpaceGB
+            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.freePct"] = $($VbrRepository.freeGB * 100 / $VbrRepository.capacityGB)
+
+        }
+    } else {
+        Write-Host "$((Get-Date).ToString("o")) [WARN] No repositories ?!"
     }
 
     try {
@@ -198,7 +220,7 @@ if ($($VbrJobsStates.data)) {
 
         foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
             $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
-            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
+            $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
 
             if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
                 try {
@@ -224,8 +246,8 @@ if ($($VbrJobsStates.data)) {
 
                 if ($ViVmInventoryTable[$vm_name]) {
                     $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
-                    $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
-                    $VbrObjectRestorePointTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
+                    $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
+                    $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
                 }
 
             } else {
@@ -255,13 +277,13 @@ if ($($VbrJobsStates.data)) {
             } else {
                 $VbrEndedSessionResult = 3
             }
-            $VbrObjectRestorePointTable["veeam.vbr.$vbrserver_name.job.$job_name.result"] = $VbrEndedSessionResult
+            $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.result"] = $VbrEndedSessionResult
         }
     }
 
-    $VbrObjectRestorePointTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds #TODO ?
+    $VbrDataTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds #TODO ?
     Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
-    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrObjectRestorePointTable -DateTime $ExecStart
+    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrDataTable -DateTime $ExecStart
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
 
