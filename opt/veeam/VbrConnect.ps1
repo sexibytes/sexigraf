@@ -16,8 +16,9 @@ try {
     $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
     if ($VbrConnect.access_token) {
         $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
+        $SessionRefresh = "vbr_" + $server.Replace(".","_") + ".dat"
         $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
-        # $VbrConnect.refresh_token
+        $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefresh
         Write-Host "Connected to $server"
     } else {
         Write-Host "Connection to $server failed!"
