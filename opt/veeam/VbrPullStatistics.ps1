@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.18"
+$ScriptVersion = "0.9.19"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -74,21 +74,6 @@ if ($SessionFile) {
         $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
         if ($($VbrJobsStates.data)) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Refreshing Token"
-            $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
-            $SessionRefresh = Get-Content -Path /tmp/$SessionRefreshPath -ErrorAction Stop
-            $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
-            $VbrBody = @{grant_type = "refresh_token";username = "";password = "";refresh_token = $SessionRefresh;code = $SessionToken;use_short_term_refresh = ""}
-            $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
-            if ($VbrConnect.access_token) {
-                $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
-                $SessionRefresh = "vbr_" + $server.Replace(".","_") + ".dat"
-                $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
-                $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefresh
-                $SessionToken = $VbrConnect.access_token
-            } else {
-                Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh failed!"
-            }
         } else {
             Write-Host "$((Get-Date).ToString("o")) [WARN] Connection failure or no job state"
         }
@@ -102,16 +87,18 @@ if ($SessionFile) {
             $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
             $SessionRefresh = Get-Content -Path /tmp/$SessionRefreshPath -ErrorAction Stop
             $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
-            $VbrBody = @{grant_type = "refresh_token";username = "";password = "";refresh_token = $SessionRefresh;code = $SessionToken;use_short_term_refresh = ""}
+            $VbrBody = @{grant_type = "refresh_token";username = "";password = "";refresh_token = $SessionRefresh;code = "";use_short_term_refresh = ""}
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
                 $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
-                $SessionRefresh = "vbr_" + $server.Replace(".","_") + ".dat"
                 $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
-                $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefresh
+                $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefreshPath
                 $SessionToken = $VbrConnect.access_token
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
+                if (!$($VbrJobsStates.data)) {
+                    Write-Host "$((Get-Date).ToString("o")) [WARN] Known issue on v11!"
+                }
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh failed!"
             }
@@ -142,9 +129,9 @@ if ($SessionFile) {
                 if ($($VbrJobsStates.data)) {
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
                     $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
-                    $SessionRefresh = "vbr_" + $server.Replace(".","_") + ".dat"
+                    $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
                     $VbrConnect.access_token | Out-File -FilePath /tmp/$SessionSecretName
-                    $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefresh                    
+                    $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefreshPath                    
                     $SessionToken = $VbrConnect.access_token
                 } else {
                     AltAndCatchFire "Jobs States check failed, no job state or check the user permissions!"
@@ -200,6 +187,9 @@ if ($($VbrJobsStates.data)) {
         }
     } else {
         Write-Host "$((Get-Date).ToString("o")) [WARN] No repositories ?!"
+        # errorCode    message   resourceId
+        # ---------    -------   ----------
+        # AccessDenied Forbidden
     }
 
     try {
