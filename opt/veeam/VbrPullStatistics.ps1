@@ -98,6 +98,7 @@ if ($SessionFile) {
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if (!$($VbrJobsStates.data)) {
                     Write-Host "$((Get-Date).ToString("o")) [WARN] Known issue on v11!"
+                    # https://forums.veeam.com/restful-api-f30/how-to-handle-the-refresh-token-t74916.html
                 }
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh failed!"
