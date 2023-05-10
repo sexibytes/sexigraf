@@ -204,6 +204,14 @@ if ($($VbrJobsStates.data)) {
     }
 
     try {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR ScaleOutRepositories collect ..."
+        $VbrScaleOutRepositories = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupInfrastructure/scaleOutRepositories") -Headers $VbrAuthHeaders
+    } catch {
+        Write-Host "$((Get-Date).ToString("o")) [EROR] ScaleOutRepositories collect failure"
+        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    } 
+
+    try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
         # $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
         $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?platformNameFilter=VmWare&createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
@@ -215,7 +223,7 @@ if ($($VbrJobsStates.data)) {
     if ($VbrObjectRestorePoints5.data) {
         # Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
         # $VbrBackupObjects5 = @{}
-        # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) { # Too Slow !!!
+        # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) {
         #     try {
         #         $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&nameFilter=" + $($VbrObjectRestorePoint5.name)) -Headers $VbrAuthHeaders
         #         if ($VbrBackupObjects.data[0].type -eq "VM" -and !$VbrBackupObjects5[$VbrBackupObjects.data[0].name]) {
@@ -225,11 +233,11 @@ if ($($VbrJobsStates.data)) {
         #         Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
         #         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         #     }
-        # }
+        # } # Too Slow !!!
 
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
-            $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&limit=9999") -Headers $VbrAuthHeaders
+            $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&limit=9999") -Headers $VbrAuthHeaders # TODO limit=9999+ ?
             if ($VbrBackupObjects.data) {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR backupObjects table ..."
                 $VbrBackupObjectsTable = @{}
