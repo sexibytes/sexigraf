@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.20"
+$ScriptVersion = "0.9.21"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -187,6 +187,7 @@ if ($($VbrJobsStates.data)) {
     } 
 
     if ($VbrRepositoriesStates.data) {
+        $VbrRepositoryTable = @{}
         foreach ($VbrRepository in $VbrRepositoriesStates.data) {
             $VbrRepositoryName = NameCleaner $VbrRepository.name
 
@@ -195,6 +196,9 @@ if ($($VbrJobsStates.data)) {
             $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.usedSpaceGB"] = $VbrRepository.usedSpaceGB
             $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.freePct"] = $($VbrRepository.freeGB * 100 / $VbrRepository.capacityGB)
 
+            try {
+                $VbrRepositoryTable.add($VbrRepository.id,$VbrRepository)
+            } catch {}
         }
     } else {
         Write-Host "$((Get-Date).ToString("o")) [WARN] No repositories ?!"
