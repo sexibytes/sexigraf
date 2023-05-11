@@ -1,0 +1,229 @@
+{
+  "annotations": {
+    "list": [
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
+  "id": null,
+  "iteration": 1683841959668,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "aliasColors": {
+        "capacity": "#BF1B00",
+        "uncommitted": "#EAB839",
+        "used": "#0A437C"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "editable": false,
+      "error": false,
+      "fill": 2,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": true,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "maxPerRow": 4,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.4",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": "sobr",
+      "repeatDirection": "h",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:416",
+          "alias": "capacity",
+          "fill": 0,
+          "stack": false
+        },
+        {
+          "$$hashKey": "object:708",
+          "alias": "RealUsedPct",
+          "legend": true,
+          "lines": false,
+          "stack": false,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": "local",
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(veeam.vbr.$vbrserver.sobr.$sobr.usedSpaceGB, 'used')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "hide": false,
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(veeam.vbr.$vbrserver.sobr.$sobr.freeGB, 'free')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(veeam.vbr.$vbrserver.sobr.$sobr.capacityGB, 'capacity')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "hide": false,
+          "refCount": 0,
+          "refId": "D",
+          "target": "aliasByNode(veeam.vbr.$vbrserver.sobr.$sobr.RealUsedPct, 5)",
+          "textEditor": false
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "$sobr usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:410",
+          "format": "decgbytes",
+          "logBase": 1,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:411",
+          "format": "percent",
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "schemaVersion": 35,
+  "style": "light",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": "*",
+        "current": {},
+        "definition": "veeam.vbr.*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "vbrserver",
+        "options": [],
+        "query": "veeam.vbr.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "datasource": "local"
+      },
+      {
+        "allValue": "*",
+        "current": {},
+        "definition": "veeam.vbr.$vbrserver.sobr.*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "sobr",
+        "options": [],
+        "query": "veeam.vbr.$vbrserver.sobr.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "datasource": "local"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "collapse": false,
+    "enable": true,
+    "notice": false,
+    "now": true,
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "status": "Stable",
+    "time_options": [
+      "15m",
+      "1h",
+      "2h",
+      "3h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "3d",
+      "7d",
+      "15d",
+      "30d"
+    ],
+    "type": "timepicker"
+  },
+  "timezone": "browser",
+  "title": "Veeam Multi SOBR Usage",
+  "uid": "ofgN-NyVz",
+  "version": 11,
+  "weekStart": ""
+}
