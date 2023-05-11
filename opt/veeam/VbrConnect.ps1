@@ -6,7 +6,7 @@ param([Parameter (Mandatory=$true)] [string] $server, [Parameter (Mandatory=$tru
 Set-Content -Path Env:HOME -Value '/tmp'
 
 if (!$(Test-Connection -TargetName $server -TcpPort 9419 -TimeoutSeconds 2)) {
-    Write-Host "$server is not answering at TCP:9419"
+    Write-Host "$server is not answering at TCP:9419 check if VeeamBackupRESTSvc is running"
     exit 1
 }
 
