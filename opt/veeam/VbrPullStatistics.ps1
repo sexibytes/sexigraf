@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.21"
+$ScriptVersion = "0.9.22"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -80,7 +80,7 @@ if ($SessionFile) {
                 Write-Host "$((Get-Date).ToString("o")) [WARN] Connection failure or no job state"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Token is about to expire ..."
+            Write-Host "$((Get-Date).ToString("o")) [WARN] Token has expired or is about to ..."
         }
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken or SessionSecretExpiration not found, invalid or connection failure"
@@ -187,6 +187,7 @@ if ($($VbrJobsStates.data)) {
     } 
 
     if ($VbrRepositoriesStates.data) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR repositories processing ..."
         $VbrRepositoryTable = @{}
         foreach ($VbrRepository in $VbrRepositoriesStates.data) {
             $VbrRepositoryName = NameCleaner $VbrRepository.name
@@ -194,7 +195,7 @@ if ($($VbrJobsStates.data)) {
             $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.capacityGB"] = $VbrRepository.capacityGB
             $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.freeGB"] = $VbrRepository.freeGB
             $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.usedSpaceGB"] = $VbrRepository.usedSpaceGB
-            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.freePct"] = $($VbrRepository.freeGB * 100 / $VbrRepository.capacityGB)
+            $VbrDataTable["veeam.vbr.$vbrserver_name.repo.$VbrRepositoryName.RealUsedPct"] = $($VbrRepository.usedSpaceGB * 100 / $($VbrRepository.usedSpaceGB + $VbrRepository.freeGB ))
 
             try {
                 $VbrRepositoryTable.add($VbrRepository.id,$VbrRepository)
@@ -213,7 +214,41 @@ if ($($VbrJobsStates.data)) {
     } catch {
         Write-Host "$((Get-Date).ToString("o")) [EROR] ScaleOutRepositories collect failure"
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
-    } 
+    }
+
+    if ($VbrScaleOutRepositories.data) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] SOBR performanceTier processing ..."
+        foreach ($VbrScaleOutRepository in $VbrScaleOutRepositories.data) {
+            try {
+                $VbrScaleOutRepositoryName = NameCleaner $VbrScaleOutRepository.name
+
+                $VbrSobrNotNormal = $VbrScaleOutRepository.performanceTier.performanceExtents|?{$_.status -ne "Normal"}
+
+                if ($VbrSobrNotNormal.id) {
+                    $VbrSobrNotNormalRepos = $VbrRepositoryTable[$VbrSobrNotNormal.id]
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.capacityGB"] + $($VbrSobrNotNormalRepos|Measure-Object -Sum -Property capacityGB).Sum
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] + $($VbrSobrNotNormalRepos|Measure-Object -Sum -Property usedSpaceGB).Sum
+                }
+
+                $VbrSobrNormal = $VbrScaleOutRepository.performanceTier.performanceExtents|?{$_.status -eq "Normal"}
+                if ($VbrSobrNormal.id) {
+                    $VbrSobrNormalRepos = $VbrRepositoryTable[$VbrSobrNormal.id]
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.capacityGB"] += $($VbrSobrNormalRepos|Measure-Object -Sum -Property capacityGB).Sum
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] += $($VbrSobrNormalRepos|Measure-Object -Sum -Property usedSpaceGB).Sum
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"] = $($VbrSobrNormalRepos|Measure-Object -Sum -Property freeGB).Sum
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] * 100 / $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] + $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"]))
+                } else {
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"] = 0
+                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = 100
+                }
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Issue processing SOBR $($VbrScaleOutRepository.name)"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
+        }
+    } else {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] No SOBR"
+    }
 
     try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
