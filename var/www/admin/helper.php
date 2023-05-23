@@ -27,13 +27,13 @@ function enableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/a
 
 function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addVsanCrontab.sh " . $inputvcenter); }
 
-function enableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/addViCrontab.sh " . $inputvbrserver); }
+function enableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/addVbrCrontab.sh " . $inputvbrserver); }
 
 function disableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvcenter); }
 
 function disableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeVsanCrontab.sh " . $inputvcenter); }
 
-function disableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvbrserver); }
+function disableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/removeVbrCrontab.sh " . $inputvbrserver); }
 
 function enableAutopurge($nbPurgeDays) {
     file_put_contents('./graphite_autopurge', $nbPurgeDays);
