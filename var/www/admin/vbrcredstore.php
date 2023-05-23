@@ -23,7 +23,7 @@ require("helper.php");
                         <th class="col-sm-1">&nbsp;</th>
                 </tr></thead>
         <tbody>
-<?phpenable-vbr
+<?php
         $credstoreData = shell_exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vbrpscredentials.xml -list");
         foreach(preg_split("/((\r?\n)|(\r\n?))/", $credstoreData) as $line) {
                 if (strlen($line) == 0) { continue; }
@@ -34,12 +34,7 @@ require("helper.php");
                         <td>' . $lineObjects[0] . "</td>
                         <td>" . $lineObjects[1] . '</td>
                         <td>***********</td>';
-                        if (isViEnabled($lineObjects[0])) {
-                                echo '                        <td><span class="glyphicon glyphicon-ok-sign" style="color:#5cb85c;font-size:2em;" aria-hidden="true"></span></td>';
-                        } else {
-                                echo '                        <td><span class="glyphicon glyphicon-remove-sign" style="color:#d9534f;font-size:2em;" aria-hidden="true"></span></td>';
-                        }
-                        if (isVsanEnabled($lineObjects[0])) {
+                        if (isVbrEnabled($lineObjects[0])) {
                                 echo '                        <td><span class="glyphicon glyphicon-ok-sign" style="color:#5cb85c;font-size:2em;" aria-hidden="true"></span></td>';
                         } else {
                                 echo '                        <td><span class="glyphicon glyphicon-remove-sign" style="color:#d9534f;font-size:2em;" aria-hidden="true"></span></td>';
@@ -52,7 +47,7 @@ require("helper.php");
                                                 Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">';
-                        if (isViEnabled($lineObjects[0])) {
+                        if (isVbrEnabled($lineObjects[0])) {
                                 echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="disable-vbr">Disable VBR</button></li>';
                         } else {
                                 echo '                          <li><button name="submit" class="btn btn-link btn-xs" value="enable-vbr">Enable VBR</button></li>';
@@ -71,7 +66,6 @@ require("helper.php");
                         <td><input type="text" class="form-control" name="input-vbr" placeholder="VBR IP or FQDN" aria-describedby="vcenter-label"></td>
                         <td><input type="text" class="form-control" name="input-username" placeholder="Username" aria-describedby="username-label"></td>
                         <td><input type="password" class="form-control" name="input-password" placeholder="Password" aria-describedby="password-label"></td>
-                        <td>&nbsp;*</td>
                         <td>&nbsp;*</td>
                         <td><button name="submit" class="btn btn-success" value="addmodify" onclick="document.getElementById('submitmessage').style.display = 'block'">Add</button></td>
                 </form></tr>
@@ -138,8 +132,7 @@ require("helper.php");
                                 echo '  </div>';
                                 break;
                         case "delete-vcentry-confirmed":
-                                disableVi($_POST["input-vbr"]);
-                                disableVsan($_POST["input-vbr"]);
+                                disableVbr($_POST["input-vbr"]);
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>';
@@ -149,7 +142,7 @@ require("helper.php");
                                 echo '<script type="text/javascript">setTimeout(function(){ location.replace("vbrcredstore.php"); }, 1000);</script>';
                                 break;
                         case "enable-vbr":
-                                enableVi($_POST["input-vbr"]);
+                                enableVbr($_POST["input-vbr"]);
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
@@ -158,7 +151,7 @@ require("helper.php");
         <script type="text/javascript">setTimeout(function(){ location.replace("vbrcredstore.php"); }, 1000);</script>';
                                 break;
                         case "disable-vbr":
-                                disableVi($_POST["input-vbr"]);
+                                disableVbr($_POST["input-vbr"]);
                                 echo '  <div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
