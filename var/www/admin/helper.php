@@ -8,6 +8,11 @@ function isViEnabled($inputvcenter) {
     return (file_exists($crontabPath . "vi_" . str_replace(".", "_", $inputvcenter)));
 }
 
+function isVbrEnabled($inputvbrserver) {
+    global $crontabPath;
+    return (file_exists($crontabPath . "vbr_" . str_replace(".", "_", $inputvbrserver)));
+}
+
 function isVsanEnabled($inputvcenter) {
     global $crontabPath;
     return (file_exists($crontabPath . "vsan_" . str_replace(".", "_", $inputvcenter)));
@@ -22,9 +27,13 @@ function enableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/a
 
 function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addVsanCrontab.sh " . $inputvcenter); }
 
+function enableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/addViCrontab.sh " . $inputvbrserver); }
+
 function disableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvcenter); }
 
 function disableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/removeVsanCrontab.sh " . $inputvcenter); }
+
+function disableVbr($inputvbrserver) { shell_exec("sudo /bin/bash /var/www/scripts/removeViCrontab.sh " . $inputvbrserver); }
 
 function enableAutopurge($nbPurgeDays) {
     file_put_contents('./graphite_autopurge', $nbPurgeDays);
