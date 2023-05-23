@@ -54,7 +54,7 @@ require("helper.php");
                         }
                         echo '                          <li role="separator" class="divider"></li>
                                 <li><button name="submit" class="btn btn-link btn-xs" value="delete-vcentry">Delete</button></li>
-                                        </ul>vbrpscredentials.xml
+                                        </ul>
                                 </div>
                         </form></td>
                 </tr>
