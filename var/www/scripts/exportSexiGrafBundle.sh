@@ -25,6 +25,7 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # Retrieve cron entries
     cp /etc/cron.d/vi_* /mnt/wfs/sexigraf-dump/conf/cron.d/
     cp /etc/cron.d/vsan_* /mnt/wfs/sexigraf-dump/conf/cron.d/
+    cp /etc/cron.d/vbr_* /mnt/wfs/sexigraf-dump/conf/cron.d/
 
     # Retrieve version file
     cp /etc/sexigraf_version /mnt/wfs/sexigraf-dump/
