@@ -6,14 +6,14 @@ require("helper.php");
 ?>
         <div class="container"><br/>
                 <div class="panel panel-default">
-                        <div class="panel-heading"><h3 class="panel-title">Credential Store Notes</h3></div>
+                        <div class="panel-heading"><h3 class="panel-title">vSphere Credential Store Notes</h3></div>
                         <div class="panel-body"><ul>
-                                <li>The credential store is used to store credential that will be used for vCenter/ESX query, it use vSphere SDK Credential Store Library</li>
+                                <li>The vSphere credential store is used to store credential that will be used for vCenter/ESX query, it uses vSphere SDK Credential Store Library</li>
                                 <li><font style="color:red;"><i class="glyphicon glyphicon-alert"></i></font> Removing a vCenter/ESX from the credential store will <b><font style="color:red;">NOT delete any collected metrics</font></b>.</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
-                <h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf Credential Store</h2>
+                <h2><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> SexiGraf vSphere Credential Store</h2>
                 <table class="table table-hover">
                 <thead><tr>
                         <th class="col-sm-4">vCenter/ESX address</th>
