@@ -58,6 +58,11 @@ if [ -d "/mnt/wfs/whisper" ]; then
         chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
     fi
 
+    if [ -a "/media/cdrom/conf/vbrpscredentials.xml" ]; then
+        /bin/cp -fR /media/cdrom/conf/vbrpscredentials.xml /mnt/wfs/inventory/vbrpscredentials.xml
+        chown www-data:www-data /mnt/wfs/inventory/vbrpscredentials.xml
+    fi
+
     # Import cron entries
     /bin/cp -fR /media/cdrom/conf/cron.d/* /etc/cron.d/
 
