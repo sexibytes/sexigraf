@@ -52,6 +52,10 @@ if [ -d "/mnt/wfs/whisper" ]; then
         cp /mnt/wfs/inventory/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
     fi
 
+    if [ -a "/mnt/wfs/inventory/vbrpscredentials.xml" ]; then
+        cp /mnt/wfs/inventory/vbrpscredentials.xml /mnt/wfs/sexigraf-dump/conf/vbrpscredentials.xml
+    fi
+
     # create ISO file from export folder
     /usr/bin/genisoimage --allow-limited-size -udf -f -J -joliet-long -r -U -iso-level 4 -o /mnt/wfs/sexigraf-dump.iso /mnt/wfs/sexigraf-dump
     ln -s /mnt/wfs/sexigraf-dump.iso /var/www/admin/sexigraf-dump.iso
