@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1017"
+$ScriptVersion = "0.9.1018"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1983,7 +1983,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         foreach ($vCenterEventInfo in $EventManager.Description.EventInfo) {
             try {
                 if ($vCenterEventInfo.Key -match "EventEx|ExtendedEvent" -and $vCenterEventInfo.fullFormat.split("|")[0] -notmatch "nonviworkload|io\.latency|^esx\.audit\.net\.firewall\.config\.changed") {
-                    if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
+                    if ($vCenterEventInfo.fullFormat.split("|")[0] -match "^esx\.|^com\.vmware\.vc\.ha\.|^com\.vmware\.vc\.HA\.|^vprob\.|^com\.vmware\.vsan\.|^com\.vmware\.vc\.vsan\.|^vob\.hbr\.|^com\.vmware\.vcHms\.|^com\.vmware\.vc\.HardwareSensorEvent") {
                         $null = $vCenterFilteredEventTypeId.add($vCenterEventInfo.fullFormat.split("|")[0])
                     } elseif ($vCenterEventInfo.fullFormat.split("|")[0] -match "^com\.vmware\.vc\." -and $vCenterEventInfo.category -match "warning|error") {
                         $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.fullFormat.split("|")[0])
