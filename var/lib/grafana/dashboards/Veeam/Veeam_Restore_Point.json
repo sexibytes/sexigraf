@@ -243,23 +243,6 @@
         "sort": 0,
         "type": "query",
         "datasource": "local"
-      },
-      {
-        "allValue": "*",
-        "current": {},
-        "definition": "veeam.vi.$vcenter.$cluster.vm.*",
-        "hide": 0,
-        "includeAll": true,
-        "multi": true,
-        "name": "vm",
-        "options": [],
-        "query": "veeam.vi.$vcenter.$cluster.vm.*",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query",
-        "datasource": "local"
       }
     ]
   },
