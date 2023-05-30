@@ -74,6 +74,12 @@
           "refId": "C",
           "target": "aliasByNode(vi.$ViServer.vm.exec.duration, 1, 2)",
           "textEditor": false
+        },
+        {
+          "refCount": 0,
+          "refId": "D",
+          "target": "aliasByNode(veeam.vbr.$VbrServer.exec.duration, 2)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -122,7 +128,8 @@
   "tags": [
     "VM",
     "VI",
-    "vSAN"
+    "vSAN",
+    "Veeam"
   ],
   "templating": {
     "list": [
@@ -140,6 +147,30 @@
         "name": "ViServer",
         "options": [],
         "query": "vi.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": null,
+        "definition": "veeam.vbr.*",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "VbrServer",
+        "options": [],
+        "query": "veeam.vbr.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
