@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.22"
+$ScriptVersion = "0.9.23"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -203,9 +203,6 @@ if ($($VbrJobsStates.data)) {
         }
     } else {
         Write-Host "$((Get-Date).ToString("o")) [WARN] No repositories ?!"
-        # errorCode    message   resourceId
-        # ---------    -------   ----------
-        # AccessDenied Forbidden
     }
 
     try {
@@ -370,7 +367,7 @@ if ($($VbrJobsStates.data)) {
         }
     }
 
-    $VbrDataTable["vi.$vbrserver_name.vi.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds #TODO ?
+    $VbrDataTable["veeam.vbr.$vbrserver_name.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
     Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrDataTable -DateTime $ExecStart
 
