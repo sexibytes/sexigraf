@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.23"
+$ScriptVersion = "0.9.24"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -256,6 +256,9 @@ if ($($VbrJobsStates.data)) {
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
+    $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
+    
+
     if ($VbrObjectRestorePoints5.data) {
         # Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
         # $VbrBackupObjects5 = @{}
@@ -295,7 +298,7 @@ if ($($VbrJobsStates.data)) {
         foreach ($VbrObjectRestorePoints5SessionId in $VbrObjectRestorePoints5SessionsId) {
             try {
                 $VbrObjectRestorePoints5Session = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backups/" + $VbrObjectRestorePoints5SessionId) -Headers $VbrAuthHeaders
-                if ($VbrObjectRestorePoints5Session) {
+                if ($VbrObjectRestorePoints5Session|?{$_.jobId -ne  "00000000-0000-0000-0000-000000000000"}) {
                     $VbrSessions5.Add($VbrObjectRestorePoints5SessionId,$VbrObjectRestorePoints5Session)
                 }
             } catch {
@@ -327,10 +330,10 @@ if ($($VbrJobsStates.data)) {
                     Write-Host "$((Get-Date).ToString("o")) [EROR] ViVmInventory import issue"
                 }
 
-                $vcenter_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].path.split("\")[0]
                 $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
 
                 if ($ViVmInventoryTable[$vm_name]) {
+                    $vcenter_name = NameCleaner $ViVmInventoryTable[$vm_name].vCenter
                     $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
                     $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
                     $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
