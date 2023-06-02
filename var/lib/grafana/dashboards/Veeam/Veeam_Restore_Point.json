@@ -55,7 +55,7 @@
         {
           "datasource": "local",
           "refId": "A",
-          "target": "sortByTotal(aliasByNode(veeam.vbr.$vbrserver.job.$job.objectRestorePoints, 4))"
+          "target": "sortByTotal(aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.objectRestorePoints), 4))"
         }
       ],
       "thresholds": [],
@@ -134,7 +134,7 @@
         {
           "datasource": "local",
           "refId": "A",
-          "target": "groupByNode(veeam.vi.$vcenter.$cluster.vm.$vm.objectRestorePoints, 3, 'total')"
+          "target": "groupByNode(removeEmptySeries(veeam.vi.$vcenter.$cluster.vm.$vm.objectRestorePoints), 3, 'total')"
         }
       ],
       "thresholds": [],
