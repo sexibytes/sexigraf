@@ -406,7 +406,7 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($VmMigratedScan -eq $true) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, ccanning vm folders ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, scanning vm folders ..."
 
         $VmFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/vm/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
 
