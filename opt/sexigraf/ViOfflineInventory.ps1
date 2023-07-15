@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.75"
+$ScriptVersion = "0.9.76"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -363,15 +363,21 @@ if ($ViServersList.count -gt 0) {
     if ($ViVmsInfos) {
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Building Vm Inventory CSV ..."
-            $ViVmsInfosCsv = $ViVmsInfos|Export-Csv -NoTypeInformation -ErrorAction Stop
+            $ViVmsInfosCsv = $ViVmsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
             Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for vCenter,Cluster,VM differences with previous inventory file ..."
-            if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
-                if ($ViVmsInfosCsvDiff = Compare-Object $(Import-Csv -Path /mnt/wfs/inventory/ViVmInventory.csv -ErrorAction Stop) $ViVmsInfosCsv -Property vCenter,Cluster,VM) {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Differences detected with previous inventory file ..."
-                    $VmMigratedScan = $true
+            if (Test-Path -Path /mnt/wfs/inventory/ViVmInventory.csv) {
+                $ViVmsInfosCsvBak = Import-Csv -Path /mnt/wfs/inventory/ViVmInventory.csv -ErrorAction Stop
+                if ($ViVmsInfosCsvBak) {
+                    if (Compare-Object $ViVmsInfosCsvBak $ViVmsInfos -Property vCenter,Cluster,VM) {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Differences detected with previous inventory file ..."
+                        $VmMigratedScan = $true
+                    } else {
+                        $VmMigratedScan = $false
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] No differences detected with previous inventory file ..."
+                    }
                 } else {
-                    $VmMigratedScan = $false
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] No differences detected with previous inventory file ..."
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] Empty Vm Inventory file"
+                    $VmMigratedScan = $true
                 }
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] No existing Vm Inventory file"
@@ -380,17 +386,38 @@ if ($ViServersList.count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory file ..."
             $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.csv -Force -ErrorAction Stop
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] VM Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM Inventory issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
 
     if ($ViEsxsInfos) {
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Esx Inventory files ..."
-            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force -ErrorAction Stop
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Building ESX Inventory CSV ..."
+            $ViEsxsInfosCsv = $ViEsxsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for vCenter,Cluster,ESX differences with previous inventory file ..."
+            if (Test-Path -Path /mnt/wfs/inventory/ViEsxInventory.csv) {
+                $ViEsxsInfosCsvBak = Import-Csv -Path /mnt/wfs/inventory/ViEsxInventory.csv -ErrorAction Stop
+                if ($ViEsxsInfosCsvBak) {
+                    if (Compare-Object $ViEsxsInfosCsvBak $ViEsxsInfos -Property vCenter,Cluster,ESX) {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Differences detected with previous inventory file ..."
+                        $EsxMigratedScan = $true
+                    } else {
+                        $EsxMigratedScan = $false
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] No differences detected with previous inventory file ..."
+                    }
+                } else {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] Empty ESX Inventory file"
+                    $EsxMigratedScan = $true
+                }
+            } else {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] No existing ESX Inventory file"
+                $EsxMigratedScan = $true
+            }
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ESX Inventory file ..."
+            $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force -ErrorAction Stop
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] ESX Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] ESX Inventory issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
@@ -406,7 +433,7 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($VmMigratedScan -eq $true) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, canning vm folders ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, scanning vm folders ..."
 
         $VmFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/vm/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
 
@@ -426,8 +453,8 @@ if ($ViServersList.count -gt 0) {
         }
         
         if ($VmFoldersDup_h) {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated vm folders found across clusters, evaluating mobility ..."
-            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 100)) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicate vm folders found across clusters, evaluating mobility ..."
+            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 500)) {
 
                 if ($VmFolders_h[$VmDup].count -lt 2) {
                     Write-Host "$((Get-Date).ToString("o")) [EROR] VM $VmDup has less than 2 copies, skipping ..."
@@ -504,93 +531,103 @@ if ($ViServersList.count -gt 0) {
         }
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Scanning Esx folders ..."
+    if ($EsxMigratedScan) {
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Inventory differences detected, scanning Esx folders ..."
 
-    $EsxFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/esx/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
-    
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xEsxmotioned Esxs aka DstEsxMigratedEvent ..."
-    
-    $EsxFolders_h = @{}
-    $EsxFoldersDup_h = @{}
-    foreach ($EsxFolder in $EsxFolders) {
-        if (!$EsxFolders_h[$EsxFolder.basename]) {
-            $EsxFolders_h.add($EsxFolder.basename,@($EsxFolder))
-        } else {
-            $EsxFolders_h[$EsxFolder.basename] += $EsxFolder
-            if (!$EsxFoldersDup_h[$EsxFolder.basename]) {
-                $EsxFoldersDup_h.add($EsxFolder.basename,"1")
+        $EsxFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/esx/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
+        
+        Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for *xvmotioned* ESXs aka DstEsxMigratedEvent ..."
+        
+        $EsxFolders_h = @{}
+        $EsxFoldersDup_h = @{}
+        foreach ($EsxFolder in $EsxFolders) {
+            if (!$EsxFolders_h[$EsxFolder.basename]) {
+                $EsxFolders_h.add($EsxFolder.basename,@($EsxFolder))
+            } else {
+                $EsxFolders_h[$EsxFolder.basename] += $EsxFolder
+                if (!$EsxFoldersDup_h[$EsxFolder.basename]) {
+                    $EsxFoldersDup_h.add($EsxFolder.basename,"1")
+                }
             }
         }
-    }
-    
-    if ($EsxFoldersDup_h) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated Esx folders found across clusters, evaluating mobility ..."
-        foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 50)) {
-    
-            if ($EsxFolders_h[$EsxDup].count -lt 2) {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Esx $EsxDup has less than 2 copies, skipping ..."
-                continue
-            } elseif ($EsxFolders_h[$EsxDup].count -gt 2) {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup has more than 2 copies ..."
-            }
-    
-            $EsxDupFolders = $EsxFolders_h[$EsxDup]
-            $EsxDupSrcDir = $($EsxDupFolders|Sort-Object CreationTimeUtc -Descending)[1]
-            $EsxDupDstDir = $($EsxDupFolders|Sort-Object CreationTimeUtc -Descending)[0]
-    
-            try {
-                $EsxDupSrcWsp = Get-Item $($EsxDupSrcDir.FullName + "/quickstats/Uptime.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
-                $EsxDupDstWsp = Get-Item $($EsxDupDstDir.FullName + "/quickstats/Uptime.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
-            } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Missing committed.wsp for Esx $EsxDup ..."
-                continue
-            }
-    
-            if (($EsxDupDstDir.CreationTimeUtc -gt $EsxDupSrcDir.CreationTimeUtc) -and ($EsxDupDstWsp.LastWriteTimeUtc - $EsxDupSrcWsp.LastWriteTimeUtc).TotalMinutes -gt 90) {
-    
-                $EsxDupDstVc = $EsxDupDstDir.FullName.split("/")[5]
-                $EsxDupDstDc = $EsxDupDstDir.FullName.split("/")[6]
-                $EsxDupDstClu = $EsxDupDstDir.FullName.split("/")[7]
-                $EsxDupSrcClu = $EsxDupSrcDir.FullName.split("/")[7]
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup has been moved from cluster $EsxDupSrcClu to cluster $EsxDupDstClu a while ago, merging metrics to the new destination if possible ..."
-                $EsxDupWsps2Mv = Get-ChildItem -Recurse $EsxDupSrcDir.FullName -Filter *.wsp
-                foreach ($EsxDupWsp2Mv in $EsxDupWsps2Mv) {
-                    $WspRelativePath = $($EsxDupWsp2Mv.FullName -split "/Esx/")[1]
-                    $DstWspFullPath = $("/mnt/wfs/whisper/vmw/" + $EsxDupDstVc + "/" + $EsxDupDstDc + "/" + $EsxDupDstClu + "/esx/" + $WspRelativePath)
-                    if (Test-Path $DstWspFullPath) {
-                        try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($EsxDupWsp2Mv.FullName) to $DstWspFullPath"
-                            $EsxDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                            $EsxDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($EsxDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                            $EsxDupWsp2MEsxerg = Invoke-Expression "/usr/local/bin/whisper-merge.py $($EsxDupWsp2Mv.FullName) $DstWspFullPath"
-                            
-                        } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [EROR] $($EsxDupWsp2Mv.FullName) moving issue ..."
-                            continue
-                        }
-                    } else {
-                        try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Creating $DstWspFullPath and moving $($EsxDupWsp2Mv.FullName)"
-                            $EsxDupWspMkDir = New-Item $DstWspFullPath -Force -ErrorAction Stop
-                            $EsxDupWspMv = Move-Item $EsxDupWsp2Mv.FullName $DstWspFullPath -Force -ErrorAction Stop
-                        } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [EROR] $($EsxDupWsp2Mv.FullName) moving issue ..."
-                            continue
+        
+        if ($EsxFoldersDup_h) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicate Esx folders found across clusters, evaluating mobility ..."
+            foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 50)) {
+        
+                if ($EsxFolders_h[$EsxDup].count -lt 2) {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] Esx $EsxDup has less than 2 copies, skipping ..."
+                    continue
+                } elseif ($EsxFolders_h[$EsxDup].count -gt 2) {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup has more than 2 copies ..."
+                }
+        
+                $EsxDupFolders = $EsxFolders_h[$EsxDup]
+                $EsxDupSrcDir = $($EsxDupFolders|Sort-Object CreationTimeUtc -Descending)[1]
+                $EsxDupDstDir = $($EsxDupFolders|Sort-Object CreationTimeUtc -Descending)[0]
+        
+                try {
+                    $EsxDupSrcWsp = Get-Item $($EsxDupSrcDir.FullName + "/quickstats/Uptime.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
+                    $EsxDupDstWsp = Get-Item $($EsxDupDstDir.FullName + "/quickstats/Uptime.wsp")|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc
+                } catch {
+                    Write-Host "$((Get-Date).ToString("o")) [EROR] Missing committed.wsp for Esx $EsxDup ..."
+                    continue
+                }
+        
+                if (($EsxDupDstDir.CreationTimeUtc -gt $EsxDupSrcDir.CreationTimeUtc) -and ($EsxDupDstWsp.LastWriteTimeUtc - $EsxDupSrcWsp.LastWriteTimeUtc).TotalMinutes -gt 90) {
+        
+                    $EsxDupDstVc = $EsxDupDstDir.FullName.split("/")[5]
+                    $EsxDupDstDc = $EsxDupDstDir.FullName.split("/")[6]
+                    $EsxDupDstClu = $EsxDupDstDir.FullName.split("/")[7]
+                    $EsxDupSrcClu = $EsxDupSrcDir.FullName.split("/")[7]
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup has been moved from cluster $EsxDupSrcClu to cluster $EsxDupDstClu a while ago, merging metrics to the new destination if possible ..."
+                    $EsxDupWsps2Mv = Get-ChildItem -Recurse $EsxDupSrcDir.FullName -Filter *.wsp
+                    foreach ($EsxDupWsp2Mv in $EsxDupWsps2Mv) {
+                        $WspRelativePath = $($EsxDupWsp2Mv.FullName -split "/Esx/")[1]
+                        $DstWspFullPath = $("/mnt/wfs/whisper/vmw/" + $EsxDupDstVc + "/" + $EsxDupDstDc + "/" + $EsxDupDstClu + "/esx/" + $WspRelativePath)
+                        if (Test-Path $DstWspFullPath) {
+                            try {
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Checking $DstWspFullPath whisper-info"
+                                $VmDupWspSrcInfo = Invoke-Expression "/usr/local/bin/whisper-info.py $DstWspFullPath"
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Checking $($EsxDupWsp2Mv.FullName) whisper-info"
+                                $EsxDupWsp2MvInfo = Invoke-Expression "/usr/local/bin/whisper-info.py $($EsxDupWsp2Mv.FullName)"
+
+                                if (Compare-Object $VmDupWspSrcInfo $EsxDupWsp2MvInfo) {
+                                    Write-Host "$((Get-Date).ToString("o")) [INFO] Resizing $($EsxDupWsp2Mv.FullName) and $DstWspFullPath"
+                                    $EsxDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                    $EsxDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($EsxDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                }
+
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($EsxDupWsp2Mv.FullName) to $DstWspFullPath"
+                                $EsxDupWsp2MEsxerg = Invoke-Expression "/usr/local/bin/whisper-merge.py $($EsxDupWsp2Mv.FullName) $DstWspFullPath"
+                            } catch {
+                                Write-Host "$((Get-Date).ToString("o")) [EROR] $($EsxDupWsp2Mv.FullName) moving issue ..."
+                                continue
+                            }
+                        } else {
+                            try {
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Creating $DstWspFullPath and moving $($EsxDupWsp2Mv.FullName)"
+                                $EsxDupWspMkDir = New-Item $DstWspFullPath -Force -ErrorAction Stop
+                                $EsxDupWspMv = Move-Item $EsxDupWsp2Mv.FullName $DstWspFullPath -Force -ErrorAction Stop
+                            } catch {
+                                Write-Host "$((Get-Date).ToString("o")) [EROR] $($EsxDupWsp2Mv.FullName) moving issue ..."
+                                continue
+                            }
                         }
                     }
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Removing $($EsxDupSrcDir.FullName)"
+                    try {
+                        Remove-Item -Recurse $($EsxDupSrcDir.FullName) -Force -ErrorAction Stop
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] Removing $($EsxDupSrcDir.FullName) issue ..."
+                    }
+                } else {
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup move is too recent, has clones or has come back to its original location ..."
                 }
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Removing $($EsxDupSrcDir.FullName)"
-                try {
-                    Remove-Item -Recurse $($EsxDupSrcDir.FullName) -Force -ErrorAction Stop
-                } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] Removing $($EsxDupSrcDir.FullName) issue ..."
-                }
-            } else {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Esx $EsxDup move is too recent, has clones or has come back to its original location ..."
             }
+        } else {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] No duplicated Esx folders found"
         }
-    } else {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] No duplicated Esx folders found"
     }
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] SexiGraf has left the building ..."
