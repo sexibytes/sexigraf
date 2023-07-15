@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.74"
+$ScriptVersion = "0.9.75"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -406,7 +406,7 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($VmMigratedScan -eq $true) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, scanning vm folders ..."
+        Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, canning vm folders ..."
 
         $VmFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/vm/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
 
@@ -427,7 +427,7 @@ if ($ViServersList.count -gt 0) {
         
         if ($VmFoldersDup_h) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicated vm folders found across clusters, evaluating mobility ..."
-            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 500)) {
+            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 100)) {
 
                 if ($VmFolders_h[$VmDup].count -lt 2) {
                     Write-Host "$((Get-Date).ToString("o")) [EROR] VM $VmDup has less than 2 copies, skipping ..."
@@ -461,11 +461,19 @@ if ($ViServersList.count -gt 0) {
                         $DstWspFullPath = $("/mnt/wfs/whisper/vmw/" + $VmDupDstVc + "/" + $VmDupDstDc + "/" + $VmDupDstClu + "/vm/" + $WspRelativePath)
                         if (Test-Path $DstWspFullPath) {
                             try {
-                                Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($VmDupWsp2Mv.FullName) to $DstWspFullPath"
-                                $VmDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                                $VmDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($VmDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Checking $DstWspFullPath whisper-info"
+                                $VmDupWspSrcInfo = Invoke-Expression "/usr/local/bin/whisper-info.py $DstWspFullPath"
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Checking $($VmDupWsp2Mv.FullName) whisper-info"
+                                $VmDupWsp2MvInfo = Invoke-Expression "/usr/local/bin/whisper-info.py $($VmDupWsp2Mv.FullName)"
+
+                                if (Compare-Object $VmDupWspSrcInfo $VmDupWsp2MvInfo) {
+                                    Write-Host "$((Get-Date).ToString("o")) [INFO] Resizing $($VmDupWsp2Mv.FullName) and $DstWspFullPath"
+                                    $VmDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                    $VmDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($VmDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                    Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($VmDupWsp2Mv.FullName) to $DstWspFullPath"
+                                }
+
                                 $VmDupWsp2MvMerg = Invoke-Expression "/usr/local/bin/whisper-merge.py $($VmDupWsp2Mv.FullName) $DstWspFullPath"
-                                
                             } catch {
                                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($VmDupWsp2Mv.FullName) moving issue ..."
                                 continue
@@ -500,7 +508,7 @@ if ($ViServersList.count -gt 0) {
 
     $EsxFolders = Get-ChildItem -Directory /mnt/wfs/whisper/vmw/*/*/*/esx/*|Select-Object BaseName, FullName, CreationTimeUtc, LastWriteTimeUtc, LastAccessTimeUtc|Sort-Object LastAccessTimeUtc -Descending
     
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xEsxotioned Esxs aka DstEsxMigratedEvent ..."
+    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for xEsxmotioned Esxs aka DstEsxMigratedEvent ..."
     
     $EsxFolders_h = @{}
     $EsxFoldersDup_h = @{}
