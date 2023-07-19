@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.76"
+$ScriptVersion = "0.9.77"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -432,6 +432,8 @@ if ($ViServersList.count -gt 0) {
         }
     }
 
+    #TODO force scan switch
+
     if ($VmMigratedScan -eq $true) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] VM Inventory differences detected, scanning vm folders ..."
 
@@ -452,9 +454,9 @@ if ($ViServersList.count -gt 0) {
             }
         }
         
-        if ($VmFoldersDup_h) {
+        if ($VmFoldersDup_h.Count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicate vm folders found across clusters, evaluating mobility ..."
-            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 500)) {
+            foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 100)) {
 
                 if ($VmFolders_h[$VmDup].count -lt 2) {
                     Write-Host "$((Get-Date).ToString("o")) [EROR] VM $VmDup has less than 2 copies, skipping ..."
@@ -497,9 +499,9 @@ if ($ViServersList.count -gt 0) {
                                     Write-Host "$((Get-Date).ToString("o")) [INFO] Resizing $($VmDupWsp2Mv.FullName) and $DstWspFullPath"
                                     $VmDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
                                     $VmDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($VmDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                                    Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($VmDupWsp2Mv.FullName) to $DstWspFullPath"
                                 }
 
+                                Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($VmDupWsp2Mv.FullName) to $DstWspFullPath"
                                 $VmDupWsp2MvMerg = Invoke-Expression "/usr/local/bin/whisper-merge.py $($VmDupWsp2Mv.FullName) $DstWspFullPath"
                             } catch {
                                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($VmDupWsp2Mv.FullName) moving issue ..."
@@ -551,9 +553,9 @@ if ($ViServersList.count -gt 0) {
             }
         }
         
-        if ($EsxFoldersDup_h) {
+        if ($EsxFoldersDup_h.Count -gt 0) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Duplicate Esx folders found across clusters, evaluating mobility ..."
-            foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 50)) {
+            foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 10)) {
         
                 if ($EsxFolders_h[$EsxDup].count -lt 2) {
                     Write-Host "$((Get-Date).ToString("o")) [EROR] Esx $EsxDup has less than 2 copies, skipping ..."
