@@ -1,0 +1,1 @@
+37  1    * * *   root /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/xMotionGarbageCollector.ps1 >/dev/null 2>&1
