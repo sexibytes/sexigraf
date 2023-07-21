@@ -1,7 +1,7 @@
 #!/usr/bin/pwsh -Command
 #
 
-$ScriptVersion = "0.9.1"
+$ScriptVersion = "0.9.2"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -70,7 +70,7 @@ if ($VmFolders) {
     
     if ($VmFoldersDup_h.Count -gt 0) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] $($VmFoldersDup_h.Count) Duplicate vm folders found across clusters, evaluating mobility ..."
-        foreach ($VmDup in $($VmFoldersDup_h.keys|Select-Object -first 100)) {
+        foreach ($VmDup in $($VmFoldersDup_h.keys)) {
     
             if ($VmFolders_h[$VmDup].count -lt 2) {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] VM $VmDup has less than 2 copies, skipping ..."
@@ -174,7 +174,7 @@ if ($EsxFolders) {
     
     if ($EsxFoldersDup_h.Count -gt 0) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] $($EsxFoldersDup_h.Count) Duplicate Esx folders found across clusters, evaluating mobility ..."
-        foreach ($EsxDup in $($EsxFoldersDup_h.keys|Select-Object -first 10)) {
+        foreach ($EsxDup in $($EsxFoldersDup_h.keys)) {
     
             if ($EsxFolders_h[$EsxDup].count -lt 2) {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] Esx $EsxDup has less than 2 copies, skipping ..."
