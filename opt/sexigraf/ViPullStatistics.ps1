@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1019"
+$ScriptVersion = "0.9.1020"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -551,7 +551,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $VmMultiMetricsAll = @(
             "virtualdisk.numberWriteAveraged.average",
-            "virtualdisk.numberReadAveraged.average",
+            "virtualdisk.numberReadAveraged.average"
         )
 
         try {
@@ -1126,7 +1126,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     $vcenter_cluster_datastore_hosts = ($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key
 
-                    if($vcenter_cluster_datastore.summary.uncommitted -ge 0) {
+                    if ($vcenter_cluster_datastore.summary.uncommitted -ge 0) {
                         $vcenter_cluster_datastore_uncommitted = $vcenter_cluster_datastore.summary.uncommitted
                     } else {
                         $vcenter_cluster_datastore_uncommitted = 0
@@ -1135,6 +1135,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.capacity", $vcenter_cluster_datastore.summary.capacity)
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.freeSpace", $vcenter_cluster_datastore.summary.freeSpace)
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.uncommitted", $vcenter_cluster_datastore_uncommitted)
+
+                    if ($vcenter_cluster_datastore.summary.capacity -gt 0 -and $vcenter_cluster_datastore.summary.capacity -gt $vcenter_cluster_datastore.summary.freeSpace) {
+                        $vcenter_cluster_datastore_usagepct = ($vcenter_cluster_datastore.summary.capacity - $vcenter_cluster_datastore.summary.freeSpace) * 100 / $vcenter_cluster_datastore.summary.capacity
+                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.usagePct", $vcenter_cluster_datastore_usagepct)
+                    }
 
                     if ($vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name]) {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.vmdkCount", $vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name])
