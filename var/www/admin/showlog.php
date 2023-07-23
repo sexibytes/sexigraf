@@ -259,6 +259,8 @@ $tail = new PHPTail(array(
     "vSAN Statistics" => "/var/log/sexigraf/VsanDisksPullStatistics.log",
     "VI Statistics" => "/var/log/sexigraf/ViPullStatistics.log",
     "VBR Statistics" => "/var/log/sexigraf/VbrPullStatistics.log",
+    "xMotion Garbage Collector" => "/var/log/sexigraf/xMotionGarbageCollector.log",
+    "Whisper Auto Purge" => "/var/log/sexigraf/WhisperAutoPurge.log",
 ));
 
 /**
