@@ -1,11 +1,12 @@
 #!/usr/bin/pwsh -Command
 #
 
-$ScriptVersion = "0.9.2"
+$ScriptVersion = "0.9.3"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
-(Get-Process -Id $pid).PriorityClass = 'BelowNormal'
+(Get-Process -Id $pid).PriorityClass = 'idle'
+# $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
 
 function AltAndCatchFire {
     Param($ExitReason)
@@ -140,7 +141,6 @@ if ($VmFolders) {
                 }
             } else {
                 Write-Host "$((Get-Date).ToString("o")) [INFO] VM $VmDup move is too recent, has clones or has come back to its original location ..."
-                # TODO deal with infinite clones
             }
         }
     } else {
@@ -250,5 +250,5 @@ if ($EsxFolders) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] No duplicated Esx folders found"
     }
 }
-
+Write-Host "$((Get-Date).ToString("o")) [INFO] If you get of lot of clones in this run, you should consider the Autopurge feature"
 Write-Host "$((Get-Date).ToString("o")) [INFO] SexiGraf xMotionGarbageCollector has left the building ..."
