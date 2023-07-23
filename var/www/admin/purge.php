@@ -109,7 +109,7 @@ require("helper.php");
                 </div>
                 <div class="panel panel-warning">
                         <div class="panel-body">
-                        Force purge deleted items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="30" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
+                        Force purge deleted items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="90" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
                         </div>
                 </div>
                 </form>
