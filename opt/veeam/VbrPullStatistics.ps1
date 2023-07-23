@@ -334,7 +334,11 @@ if ($($VbrJobsStates.data)) {
 
                 if ($ViVmInventoryTable[$vm_name]) {
                     $vcenter_name = NameCleaner $ViVmInventoryTable[$vm_name].vCenter
-                    $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
+                    if ($ViVmInventoryTable[$vm_name].Cluster) {
+                        $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
+                    } else {
+                        $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].ESX
+                    }
                     $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
                     $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
                 }
