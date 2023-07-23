@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1018"
+$ScriptVersion = "0.9.1019"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -549,19 +549,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
 
-        # $VmMultiMetricsAll = @(
-        #     "virtualdisk.numberWriteAveraged.average",
-        #     "virtualdisk.numberReadAveraged.average",
-        #     "net.packetsRx.summation",
-        #     "net.packetsTx.summation"
-        # )
+        $VmMultiMetricsAll = @(
+            "virtualdisk.numberWriteAveraged.average",
+            "virtualdisk.numberReadAveraged.average",
+        )
 
-        # try {
-        #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
-        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
-        # } catch {
-        #     AltAndCatchFire "VM MultiQueryPerfAll failure"
-        # }
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerfAll failure"
+        }
 
     }
 
@@ -1059,10 +1057,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskUsage", 0)
                 }
 
-                # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value]) {
-                #     $vcenter_cluster_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
-                #     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskIOPS", $vcenter_cluster_vm_disk_iops)
-                # }
+                if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value]) {
+                    $vcenter_cluster_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.diskIOPS", $vcenter_cluster_vm_disk_iops)
+                }
 
                 # if ($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_cluster_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_cluster_vm.moref.value]) {
                 #     $vcenter_cluster_vm_net_iops = $($($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_cluster_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_cluster_vm.moref.value]).Keys]|Measure-Object -Sum).Sum) / 300
@@ -1889,10 +1887,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskUsage", 0)
                     }
 
-                    # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value]) {
-                    #     $vcenter_standalone_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
-                    #     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskIOPS", $vcenter_standalone_host_vm_disk_iops)
-                    # }
+                    if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value]) {
+                        $vcenter_standalone_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                        $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.diskIOPS", $vcenter_standalone_host_vm_disk_iops)
+                    }
 
                     # if ($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_standalone_host_vm.moref.value]) {
                     #     $vcenter_standalone_host_vm_net_iops = $($($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum) / 300
@@ -2104,12 +2102,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "net.usage.average"
     )
 
-    # $VmMultiMetricsAll = @(
-    #     "virtualdisk.numberWriteAveraged.average",
-    #     "virtualdisk.numberReadAveraged.average",
-    #     "net.packetsRx.summation",
-    #     "net.packetsTx.summation"
-    # )
+    $VmMultiMetricsAll = @(
+        "virtualdisk.numberWriteAveraged.average",
+        "virtualdisk.numberReadAveraged.average"
+    )
 
     if ($vcenter_vms) {
         try {
@@ -2119,12 +2115,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
 
-        # try {
-        #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
-        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
-        # } catch {
-        #     AltAndCatchFire "VM MultiQueryPerfAll failure"
-        # }
+        try {
+            $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
+            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        } catch {
+            AltAndCatchFire "VM MultiQueryPerfAll failure"
+        }
     }
 
     try {
@@ -2444,10 +2440,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskUsage", 0)
                     }
 
-                    # if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value]) {
-                    #     $unmanaged_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
-                    #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskIOPS", $unmanaged_host_vm_disk_iops)
-                    # }
+                    if ($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value]) {
+                        $unmanaged_host_vm_disk_iops = $($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["virtualdisk.numberReadAveraged.average"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["virtualdisk.numberWriteAveraged.average"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum
+                        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.diskIOPS", $unmanaged_host_vm_disk_iops)
+                    }
 
                     # if ($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$unmanaged_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$unmanaged_host_vm.moref.value]) {
                     #     $unmanaged_host_vm_net_iops = $($($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$unmanaged_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$unmanaged_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum) / 300
