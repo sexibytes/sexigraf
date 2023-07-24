@@ -11,6 +11,7 @@ require("helper.php");
                                 <li>This page can be used to purge old and/or unwanted whisper data objects as well as vCenter session files.</li>
                                 <li style="color:red;"><strong><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Beware as this operation cannot be undone, so there is a risk of DATA LOSS if you don't know what you're doing. <span class="glyphicon glyphicon-alert" aria-hidden="true"></span></strong></li>
                                 <li>Autopurge will automatically remove all files not updated since selected days (i.e. deleted vms).</li>
+                                <li>You can check the WhisperAutoPurge log in the Log Viewer panel to follow the process.</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
