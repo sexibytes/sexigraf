@@ -1533,7 +1533,7 @@
           "textEditor": false
         }
       ],
-      "title": "pathState count",
+      "title": "MultipathState Count",
       "type": "timeseries"
     },
     {
