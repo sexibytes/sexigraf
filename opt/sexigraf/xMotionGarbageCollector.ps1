@@ -112,8 +112,8 @@ if ($VmFolders) {
     
                             if (Compare-Object $VmDupWspSrcInfo $VmDupWsp2MvInfo) {
                                 Write-Host "$((Get-Date).ToString("o")) [INFO] Resizing $($VmDupWsp2Mv.FullName) and $DstWspFullPath"
-                                $VmDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                                $VmDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($VmDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                $VmDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                $VmDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($VmDupWsp2Mv.FullName) 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
                             }
     
                             Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($VmDupWsp2Mv.FullName) to $DstWspFullPath"
@@ -215,8 +215,8 @@ if ($EsxFolders) {
     
                             if (Compare-Object $VmDupWspSrcInfo $EsxDupWsp2MvInfo) {
                                 Write-Host "$((Get-Date).ToString("o")) [INFO] Resizing $($EsxDupWsp2Mv.FullName) and $DstWspFullPath"
-                                $EsxDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
-                                $EsxDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($EsxDupWsp2Mv.FullName) 5m:24h 10m:48h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                $EsxDupWspSrcResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $DstWspFullPath 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
+                                $EsxDupWsp2MvResiz = Invoke-Expression "/usr/local/bin/whisper-resize.py $($EsxDupWsp2Mv.FullName) 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup --force"
                             }
     
                             Write-Host "$((Get-Date).ToString("o")) [INFO] Merging $($EsxDupWsp2Mv.FullName) to $DstWspFullPath"
