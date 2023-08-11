@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.24"
+$ScriptVersion = "0.9.25"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -256,7 +256,7 @@ if ($($VbrJobsStates.data)) {
         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
     }
 
-    $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
+    # $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
     
 
     if ($VbrObjectRestorePoints5.data) {
