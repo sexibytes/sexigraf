@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.30"
+$ScriptVersion = "0.9.32"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -348,8 +348,9 @@ if ($($VbrJobsStates.data)) {
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Building $($Server) VBR DataTable and inventory ..."
                 foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
-                    $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
-                    $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
+                    if ($VbrSessions5[$VbrObjectRestorePoint.backupId].name) {
+                        $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
+                        $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
                         $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
                         if ($ViVmInventoryTable[$vm_name]) {
                             $vcenter_name = NameCleaner $ViVmInventoryTable[$vm_name].vCenter
@@ -375,6 +376,7 @@ if ($($VbrJobsStates.data)) {
                                 $VbrVmInventoryTable.add($vm_name,$VbrObjectInventoryInfo)
                             }
                         }
+                    }
                 }
 
                 if ($VbrVmInventoryTable.Values) {
@@ -383,6 +385,13 @@ if ($($VbrJobsStates.data)) {
                         $VbrVmInventoryTable.Values|Sort-Object VM|Export-Csv /mnt/wfs/inventory/VbrInv_$($Server).csv -ErrorAction Stop -Force
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [EROR] VbrVmInventory import issue"
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                    }
+                    Write-Host "$((Get-Date).ToString("o")) [INFO] Import/Export VBR inventories ..."
+                    try {
+                        Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force #TODO sort LastRestorePoint
+                    } catch {
+                        Write-Host "$((Get-Date).ToString("o")) [EROR] Import/Export VBR inventories issue"
                         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                     }
                 } else {
