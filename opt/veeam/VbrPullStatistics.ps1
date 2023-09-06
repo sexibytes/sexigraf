@@ -432,7 +432,7 @@ if ($($VbrJobsStates.data)) {
 
     $VbrDataTable["veeam.vbr.$vbrserver_name.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
     Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
-    # Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrDataTable -DateTime $ExecStart
+    Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrDataTable -DateTime $ExecStart
 
     Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
 
