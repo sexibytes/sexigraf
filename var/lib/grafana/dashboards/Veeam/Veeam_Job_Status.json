@@ -87,7 +87,7 @@
         {
           "datasource": "local",
           "refId": "A",
-          "target": "aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.status), 4)",
+          "target": "sortByName(aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.status), 4), false)",
           "textEditor": false
         }
       ],
