@@ -88,7 +88,7 @@
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.result), 4)"
+          "target": "sortByName(aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.result), 4), false)"
         }
       ],
       "title": "Job Result",
