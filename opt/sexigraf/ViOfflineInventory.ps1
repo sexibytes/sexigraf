@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.80"
+$ScriptVersion = "0.9.81"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -273,12 +273,12 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.Cluster = $VmCluster
                 $ViVmInfo.IP = $VmIpAddress -join " ; "
                 $ViVmInfo.PortGroup = $VmNet -join " ; "
-                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
-                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
+                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,0)
+                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,0)
                 $ViVmInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmInfo.GuestId = $VmGuestId
                 $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,0)
                 $ViVmInfo.PowerState =  $Vm.Runtime.PowerState
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
@@ -324,7 +324,7 @@ if ($ViServersList.count -gt 0) {
                 $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
                 $ViEsxInfo.SerialNumber = $EsxServiceTag
                 $ViEsxInfo.State = $EsxState
-                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
+                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,0)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
                 $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
                 $ViEsxInfo.vmk0Ip = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Ip.IpAddress
@@ -340,9 +340,9 @@ if ($ViServersList.count -gt 0) {
                 $ViDatastoreInfo.vCenter = $ViServer
                 $ViDatastoreInfo.Datastore = $($Datastore.name)
                 $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
-                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,1))
-                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,1))
-                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))
+                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,0))
+                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,0))
+                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,0))
                 $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
