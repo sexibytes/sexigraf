@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1020"
+$ScriptVersion = "0.9.1021"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -463,7 +463,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         "storageAdapter.write.average",
         "power.power.average",
         "datastore.datastoreVMObservedLatency.latest",
-		# "datastore.totalWriteLatency.average",
+		"datastore.totalWriteLatency.average",
 		# "datastore.totalReadLatency.average",
         "datastore.numberWriteAveraged.average",
         "datastore.numberReadAveraged.average",
@@ -1162,6 +1162,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.datastoreVMObservedLatency.latest"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
                         $vcenter_cluster_datastore_latency = GetMedian $vcenter_cluster_datastore_latency_raw
+                        if ($vcenter_cluster_datastore_latency -eq 0) {
+                            $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.totalWriteLatency.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                            $vcenter_cluster_datastore_latency = $(GetMedian $vcenter_cluster_datastore_latency_raw) * 1000
+                        }
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.sizeNormalizedDatastoreLatency", $vcenter_cluster_datastore_latency)
                         $vcenter_cluster_datastores_latency += $vcenter_cluster_datastore_latency
 
