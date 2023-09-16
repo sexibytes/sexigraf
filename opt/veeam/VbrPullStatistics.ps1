@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.32"
+$ScriptVersion = "0.9.34"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -164,7 +164,11 @@ if ($($VbrJobsStates.data)) {
     $vbrserver_name = NameCleaner $Server
     Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
 
+    $VbrJobsStatesTable = @{}
     foreach ($VbrJobState in $VbrJobsStates.data) {
+        try {
+            $VbrJobsStatesTable.add($VbrJobState.id,$VbrJobState)
+        } catch {}
         $job_name = NameCleaner $VbrJobState.name
         if ($VbrJobState.status -eq "running") {
             $VbrJobStateStatus = 0
@@ -348,7 +352,7 @@ if ($($VbrJobsStates.data)) {
 
                 Write-Host "$((Get-Date).ToString("o")) [INFO] Building $($Server) VBR DataTable and inventory ..."
                 foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
-                    if ($VbrSessions5[$VbrObjectRestorePoint.backupId].name) {
+                    if ($VbrJobsStatesTable[$VbrSessions5[$VbrObjectRestorePoint.backupId].jobId]) {
                         $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
                         $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
                         $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
@@ -360,6 +364,7 @@ if ($($VbrJobsStates.data)) {
                                 $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].ESX
                             }
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
+                            $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.restorePointsCount"] ++
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
 
                             $VbrObjectInventoryInfo  = "" | Select-Object VbrServer, JobName, vCenter, Cluster, VM, RestorePointsCount, LastRestorePoint
@@ -389,7 +394,7 @@ if ($($VbrJobsStates.data)) {
                     }
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Import/Export VBR inventories ..."
                     try {
-                        Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force #TODO sort LastRestorePoint
+                        Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Sort-Object LastRestorePoint -Descending | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [EROR] Import/Export VBR inventories issue"
                         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
