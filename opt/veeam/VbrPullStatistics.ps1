@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.34"
+$ScriptVersion = "0.9.35"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -363,8 +363,7 @@ if ($($VbrJobsStates.data)) {
                             } else {
                                 $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].ESX
                             }
-                            $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.objectRestorePoints"] ++
-                            $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.restorePointsCount"] ++
+                            $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.objectRestorePoints"] ++
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
 
                             $VbrObjectInventoryInfo  = "" | Select-Object VbrServer, JobName, vCenter, Cluster, VM, RestorePointsCount, LastRestorePoint
