@@ -134,7 +134,7 @@
         {
           "datasource": "local",
           "refId": "A",
-          "target": "groupByNode(removeEmptySeries(veeam.vi.$vcenter.$cluster.vm.*.objectRestorePoints), 3, 'total')"
+          "target": "groupByNode(removeEmptySeries(veeam.vi.$vcenter.$cluster.objectRestorePoints), 3, 'total')"
         }
       ],
       "thresholds": [],
