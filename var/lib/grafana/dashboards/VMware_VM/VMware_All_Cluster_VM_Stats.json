@@ -652,7 +652,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.diskiops, 5)",
+              "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.vm.$vm.fatstats.diskIOPS, 5)",
               "textEditor": false
             }
           ],
