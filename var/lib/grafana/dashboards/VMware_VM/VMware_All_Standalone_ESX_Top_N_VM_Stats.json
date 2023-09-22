@@ -652,7 +652,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$esx.vm.$vm.fatstats.diskiops, '$N')), 5)",
+              "target": "aliasByNode(sortByMaxima(highest$view(vmw.$vcenter.$datacentre.$esx.vm.$vm.fatstats.diskIOPS, '$N')), 5)",
               "textEditor": true
             }
           ],
