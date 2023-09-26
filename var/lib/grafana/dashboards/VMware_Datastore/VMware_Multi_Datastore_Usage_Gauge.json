@@ -242,7 +242,7 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware Multi Datastore Usage %",
+  "title": "VMware Multi Datastore Gauge",
   "uid": "6e3fb4e8",
   "variables": {
     "list": []
