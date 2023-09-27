@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1023"
+$ScriptVersion = "0.9.1024"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1124,7 +1124,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     $vcenter_cluster_datastores_count ++
 
-                    $vcenter_cluster_datastore_hosts = ($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key
+                    $vcenter_cluster_datastore_hosts = $vcenter_vmhosts_h[$(($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key).value].moref
 
                     if ($vcenter_cluster_datastore.summary.uncommitted -ge 0) {
                         $vcenter_cluster_datastore_uncommitted = $vcenter_cluster_datastore.summary.uncommitted
@@ -1160,7 +1160,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     try {
                         $vcenter_cluster_datastore_uuid = $vcenter_cluster_datastore.summary.url.split("/")[-2]
 
-                        $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.sizeNormalizedDatastoreLatency.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
+                        $vcenter_cluster_datastore_latency_raw = $($HostMultiStats[$PerfCounterTable["datastore.sizeNormalizedDatastoreLatency.average"]][$vcenter_cluster_datastore_hosts.value])|?{$_.count -gt 0}|%{$_[$vcenter_cluster_datastore_uuid]} #347
                         $vcenter_cluster_datastore_latency = GetMedian $vcenter_cluster_datastore_latency_raw
                         if ($vcenter_cluster_datastore_latency -eq 0) {
                             $vcenter_cluster_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.totalWriteLatency.average"]][$vcenter_cluster_datastore_hosts.value]|%{$_[$vcenter_cluster_datastore_uuid]}
