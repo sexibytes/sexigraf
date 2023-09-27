@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1024"
+$ScriptVersion = "0.9.1025"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -668,8 +668,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_hosts_hba_bytesWrite = 0
         $vcenter_cluster_hosts_power_usage = 0
         $vcenter_cluster_hosts_vms_dead = 0
+        $vcenter_cluster_hosts_h = @{}
 
         foreach ($vcenter_cluster_host in $vcenter_vmhosts_h[$vcenter_cluster.Host.value]|?{$_}) {
+
+            $vcenter_cluster_hosts_h.add($vcenter_cluster_host.moref.value,$vcenter_cluster_host)
 
             $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_cluster_host.name.split(".")[0].ToLower() ?
             if ($vcenter_cluster_host_name -match "localhost") {
@@ -1124,7 +1127,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     $vcenter_cluster_datastores_count ++
 
-                    $vcenter_cluster_datastore_hosts = $vcenter_vmhosts_h[$(($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key).value].moref
+                    $vcenter_cluster_datastore_hosts = $vcenter_cluster_hosts_h[$(($vcenter_cluster_datastore.Host|?{$_.mountinfo.Accessible}).key).value].moref
 
                     if ($vcenter_cluster_datastore.summary.uncommitted -ge 0) {
                         $vcenter_cluster_datastore_uncommitted = $vcenter_cluster_datastore.summary.uncommitted
