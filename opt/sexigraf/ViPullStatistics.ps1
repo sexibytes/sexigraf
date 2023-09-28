@@ -227,7 +227,7 @@ if ($SessionFile) {
     }
     
     if (!$($global:DefaultVIServer)) {
-        ### XXX The session is not authenticated
+        ### The session is not authenticated
         # https://github.com/guyrleech/VMware/blob/master/VMware%20GUI.ps1#L2940
         try {
             $createstorexml = New-Object -TypeName XML
@@ -674,7 +674,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
             $vcenter_cluster_hosts_h.add($vcenter_cluster_host.moref.value,$vcenter_cluster_host)
 
-            $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### why not $vcenter_cluster_host.name.split(".")[0].ToLower() ?
+            $vcenter_cluster_host_name = $vcenter_cluster_host.config.network.dnsConfig.hostName.ToLower() ### to avoid esx registered by ip
             if ($vcenter_cluster_host_name -match "localhost") {
                 $vcenter_cluster_host_name = NameCleaner $vcenter_cluster_host.name ### previously vmk0 ip cleaned
 
@@ -687,7 +687,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 if ($vcenter_cluster_host_real_vm_count -gt $vcenter_cluster_host_connected_vm_count) {
                     $vcenter_cluster_hosts_vms_dead += $vcenter_cluster_host_real_vm_count - $vcenter_cluster_host_connected_vm_count
                 }
-                ### XXX use $vcenter_resource_pools_owner_vms_h
+                ### TODO use $vcenter_resource_pools_owner_vms_h ?
             }
 
             if ($vcenter_cluster_host.config.product.version -and $vcenter_cluster_host.config.product.build -and $vcenter_cluster_host.summary.hardware.cpuModel -and $vcenter_cluster_host.summary.hardware.NumCpuPkgs) {
@@ -733,7 +733,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $vcenter_cluster_hosts_net_bytesTx += $vcenter_cluster_host_vmnic_bytesTx
                             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.net.$vcenter_cluster_host_vmnic_name.bytesRx", $vcenter_cluster_host_vmnic_bytesRx)
                             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.net.$vcenter_cluster_host_vmnic_name.bytesTx", $vcenter_cluster_host_vmnic_bytesTx)
-                            $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.net.$vcenter_cluster_host_vmnic_name.linkSpeed", $vcenter_cluster_host_vmnic.linkSpeed.speedMb) ### XXX Still usefull? 
+                            # $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.net.$vcenter_cluster_host_vmnic_name.linkSpeed", $vcenter_cluster_host_vmnic.linkSpeed.speedMb)
                         }
 
                         $vcenter_cluster_host_vmnic_droppedRx = $HostMultiStats[$PerfCounterTable["net.droppedRx.summation"]][$vcenter_cluster_host.moref.value][$vcenter_cluster_host_vmnic_name]
@@ -765,7 +765,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             try {
-                foreach ($vcenter_cluster_host_vmhba in $vcenter_cluster_host.config.storageDevice.hostBusAdapter) { ### TODO filter vmhba based on Config.MultipathState.Path
+                foreach ($vcenter_cluster_host_vmhba in $vcenter_cluster_host.config.storageDevice.hostBusAdapter) {
                     $vcenter_cluster_host_vmhba_name = $vcenter_cluster_host_vmhba.device
                     $vcenter_cluster_host_vmhba_bytesRead = $HostMultiStats[$PerfCounterTable["storageAdapter.read.average"]][$vcenter_cluster_host.moref.value][$vcenter_cluster_host_vmhba_name]
                     $vcenter_cluster_host_vmhba_bytesWrite = $HostMultiStats[$PerfCounterTable["storageAdapter.write.average"]][$vcenter_cluster_host.moref.value][$vcenter_cluster_host_vmhba_name]
@@ -853,8 +853,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             try {
-                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedCpuFairness", $vcenter_cluster_host.summary.quickStats.distributedCpuFairness) ### ToDo
-                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedMemoryFairness", $vcenter_cluster_host.summary.quickStats.distributedMemoryFairness) ### ToDo
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedCpuFairness", $vcenter_cluster_host.summary.quickStats.distributedCpuFairness)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedMemoryFairness", $vcenter_cluster_host.summary.quickStats.distributedMemoryFairness)
             } catch {
                 Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name Distributed Fairness quickstats issue in cluster $vcenter_cluster_name"
                 Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
@@ -956,7 +956,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 foreach ($vcenter_cluster_vm_file in $vcenter_cluster_vm_files) {
-                    if(!$vcenter_cluster_vms_files_dedup[$vcenter_cluster_vm_file.name]) { ### XXX would need name & moref
+                    if(!$vcenter_cluster_vms_files_dedup[$vcenter_cluster_vm_file.name]) { ### TODO would need name & moref
                         $vcenter_cluster_vms_files_dedup[$vcenter_cluster_vm_file.name] = $vcenter_cluster_vm_file.size
                         if ($vcenter_cluster_vm_has_snap -and (($vcenter_cluster_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($vcenter_cluster_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                             $vcenter_cluster_vms_files_dedup_total["snapshotExtent"] += $vcenter_cluster_vm_file.size
@@ -1147,8 +1147,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name]) {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.summary.vmdkCount", $vcenter_cluster_vmdk_per_ds[$vcenter_cluster_datastore_name])
                     }
-
-                    ### XXX if vmdkCount -gt 0
 
                     $vcenter_cluster_datastores_capacity += $vcenter_cluster_datastore.summary.capacity
                     $vcenter_cluster_datastores_freeSpace += $vcenter_cluster_datastore.summary.freeSpace
@@ -1426,8 +1424,6 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
                         }
 
-                        ### XXX add check against multiple vsan datastore on the same cluster
-
                         try {
                             Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
                             # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
@@ -1516,7 +1512,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         try {
                             Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
-                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false) ### XXX #ToDo optimize
+                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false) ### TODO optimize
                             if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                 foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                     if ($ObjectHealth.NumObjects -gt 0) {
@@ -1698,7 +1694,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
 
             try {
-                foreach ($vcenter_standalone_host_vmhba in $vcenter_standalone_host.config.storageDevice.hostBusAdapter) { ### TODO filter vmhba based on Config.MultipathState.Path
+                foreach ($vcenter_standalone_host_vmhba in $vcenter_standalone_host.config.storageDevice.hostBusAdapter) {
                     $vcenter_standalone_host_vmhba_name = $vcenter_standalone_host_vmhba.device
                     $vcenter_standalone_host_vmhba_bytesRead = $HostMultiStats[$PerfCounterTable["storageAdapter.read.average"]][$vcenter_standalone_host.moref.value][$vcenter_standalone_host_vmhba_name]
                     $vcenter_standalone_host_vmhba_bytesWrite = $HostMultiStats[$PerfCounterTable["storageAdapter.write.average"]][$vcenter_standalone_host.moref.value][$vcenter_standalone_host_vmhba_name]
@@ -1794,7 +1790,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
 
                     foreach ($vcenter_standalone_host_vm_file in $vcenter_standalone_host_vm_files) {
-                        if(!$vcenter_standalone_host_vms_files_dedup[$vcenter_standalone_host_vm_file.name]) { ### XXX would need name & moref
+                        if(!$vcenter_standalone_host_vms_files_dedup[$vcenter_standalone_host_vm_file.name]) { ### TODO would need name & moref
                             $vcenter_standalone_host_vms_files_dedup[$vcenter_standalone_host_vm_file.name] = $vcenter_standalone_host_vm_file.size
                             if ($vcenter_standalone_host_vm_has_snap -and (($vcenter_standalone_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($vcenter_standalone_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                                 $vcenter_standalone_host_vms_files_dedup_total["snapshotExtent"] += $vcenter_standalone_host_vm_file.size
@@ -2252,7 +2248,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     try {
-        foreach ($unmanaged_host_vmhba in $unmanaged_host.config.storageDevice.hostBusAdapter) { ### XXX dead paths from config.storageDevice.HostBusAdapter to add
+        foreach ($unmanaged_host_vmhba in $unmanaged_host.config.storageDevice.hostBusAdapter) {
             $unmanaged_host_vmhba_name = $unmanaged_host_vmhba.device
             $unmanaged_host_vmhba_bytesRead = $HostMultiStats[$PerfCounterTable["storageAdapter.read.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmhba_name]
             $unmanaged_host_vmhba_bytesWrite = $HostMultiStats[$PerfCounterTable["storageAdapter.write.average"]][$unmanaged_host.moref.value][$unmanaged_host_vmhba_name]
@@ -2346,7 +2342,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
 
                 foreach ($unmanaged_host_vm_file in $unmanaged_host_vm_files) {
-                    if(!$unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name]) { ### XXX would need name & moref
+                    if(!$unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name]) { ### TODO would need name & moref
                         $unmanaged_host_vms_files_dedup[$unmanaged_host_vm_file.name] = $unmanaged_host_vm_file.size
                         if ($unmanaged_host_vm_has_snap -and (($unmanaged_host_vm_file.name -match '-[0-9]{6}-delta\.vmdk') -or ($unmanaged_host_vm_file.name -match '-[0-9]{6}-sesparse\.vmdk'))) {
                             $unmanaged_host_vms_files_dedup_total["snapshotExtent"] += $unmanaged_host_vm_file.size
