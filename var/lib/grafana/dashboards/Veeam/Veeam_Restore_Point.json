@@ -60,7 +60,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Restore Points Per Jobs",
+      "title": "Restore Points Per Job",
       "tooltip": {
         "shared": true,
         "sort": 2,
