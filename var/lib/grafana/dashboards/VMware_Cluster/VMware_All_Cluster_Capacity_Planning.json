@@ -210,7 +210,7 @@
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-1d",
     "to": "now"
   },
   "templating": {
