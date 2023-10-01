@@ -1,55 +1,5 @@
 {
-    "__inputs": [
-      {
-        "name": "DS_LOCAL",
-        "label": "local",
-        "description": "",
-        "type": "datasource",
-        "pluginId": "graphite",
-        "pluginName": "Graphite"
-      }
-    ],
-    "__elements": [],
-    "__requires": [
-      {
-        "type": "grafana",
-        "id": "grafana",
-        "name": "Grafana",
-        "version": "8.4.4"
-      },
-      {
-        "type": "datasource",
-        "id": "graphite",
-        "name": "Graphite",
-        "version": "1.0.0"
-      },
-      {
-        "type": "panel",
-        "id": "timeseries",
-        "name": "Time series",
-        "version": ""
-      }
-    ],
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "target": {
-            "limit": 100,
-            "matchAny": false,
-            "tags": [],
-            "type": "dashboard"
-          },
-          "type": "dashboard"
-        }
-      ]
-    },
-    "editable": true,
+    "editable": false,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
     "id": null,
@@ -59,10 +9,7 @@
     "panels": [
       {
         "collapsed": false,
-        "datasource": {
-          "type": "graphite",
-          "uid": "${DS_LOCAL}"
-        },
+        "datasource": null,
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -273,10 +220,7 @@
         "repeatDirection": "h",
         "targets": [
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "A",
@@ -284,10 +228,7 @@
             "textEditor": false
           },
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "B",
@@ -295,10 +236,7 @@
             "textEditor": false
           },
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "C",
@@ -306,10 +244,7 @@
             "textEditor": false
           },
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "D",
@@ -317,10 +252,7 @@
             "textEditor": false
           },
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "E",
@@ -328,10 +260,7 @@
             "textEditor": false
           },
           {
-            "datasource": {
-              "type": "graphite",
-              "uid": "${DS_LOCAL}"
-            },
+            "datasource": null,
             "hide": false,
             "refCount": 0,
             "refId": "F",
@@ -353,10 +282,7 @@
           "allFormat": "wildcard",
           "allValue": "*",
           "current": {},
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_LOCAL}"
-          },
+          "datasource": null,
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -379,10 +305,7 @@
           "allFormat": "wildcard",
           "allValue": "*",
           "current": {},
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_LOCAL}"
-          },
+          "datasource": null,
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -405,10 +328,7 @@
           "allFormat": "glob",
           "allValue": "*",
           "current": {},
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_LOCAL}"
-          },
+          "datasource": null,
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -430,7 +350,7 @@
       ]
     },
     "time": {
-      "from": "now-2d",
+      "from": "now-1h",
       "to": "now"
     },
     "timepicker": {
