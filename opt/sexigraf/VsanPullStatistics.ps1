@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.79"
+$ScriptVersion = "0.9.80"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -97,6 +97,8 @@ try {
     Write-Host "$((Get-Date).ToString("o")) [ERROR] Exit"
     exit
 }
+
+AltAndCatchFire "Deprecated script, now integrated to ViPullStatistics"
 
 try {
     Write-Host "$((Get-Date).ToString("o")) [INFO] Importing PowerCli and Graphite PowerShell modules ..."
