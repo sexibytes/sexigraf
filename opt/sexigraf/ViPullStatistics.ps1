@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1028"
+$ScriptVersion = "0.9.1029"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -654,11 +654,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         }
 
         try {
-            if($ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
+            if($ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value] -and $ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numSVMotions", $ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value][""])
             }
 
-            if($ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
+            if($ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value] -and $ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numXVMotions", $ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""])
             }
         } catch {
