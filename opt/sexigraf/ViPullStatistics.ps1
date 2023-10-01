@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1026"
+$ScriptVersion = "0.9.1028"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -605,25 +605,55 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         $vcenter_cluster_h = @{}
 
+        if ($vcenter_resource_pools_h[$vcenter_cluster.moref.value]) {
+            try {
+                $vcenter_cluster_pool_quickstats = $vcenter_resource_pools_h[$vcenter_cluster.moref.value].summary.quickStats
+    
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.ballooned", $vcenter_cluster_pool_quickstats.balloonedMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.compressed", $vcenter_cluster_pool_quickstats.compressedMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.consumedOverhead", $vcenter_cluster_pool_quickstats.consumedOverheadMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.guest", $vcenter_cluster_pool_quickstats.guestMemoryUsage)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.usage", $vcenter_cluster_pool_quickstats.hostMemoryUsage)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.demand", $vcenter_cluster_pool_quickstats.overallCpuDemand)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.usage", $vcenter_cluster_pool_quickstats.overallCpuUsage)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.private", $vcenter_cluster_pool_quickstats.privateMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.shared", $vcenter_cluster_pool_quickstats.sharedMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.swapped", $vcenter_cluster_pool_quickstats.swappedMemory)
+    
+                if ($vcenter_cluster_pool_quickstats.overallCpuUsage -gt 0 -and $vcenter_cluster.summary.effectiveCpu -gt 0) {
+                    $vcenter_cluster_pool_quickstats_cpu = $vcenter_cluster_pool_quickstats.overallCpuUsage * 100 / $vcenter_cluster.summary.effectiveCpu
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.cpu.utilization", $vcenter_cluster_pool_quickstats_cpu)
+                }
+    
+                if ($vcenter_cluster_pool_quickstats.hostMemoryUsage -gt 0 -and $vcenter_cluster.summary.effectiveMemory -gt 0) {
+                    $vcenter_cluster_pool_quickstats_ram = $vcenter_cluster_pool_quickstats.hostMemoryUsage * 100 / $vcenter_cluster.summary.effectiveMemory
+                    $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.mem.utilization", $vcenter_cluster_pool_quickstats_ram)
+                }
+    
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name quickstats collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
+        } else {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
+        }
+
+        if ($vcenter_cluster.summary) {
+            try {
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.effective", $vcenter_cluster.summary.effectiveMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.total", $vcenter_cluster.summary.totalMemory)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.effective", $vcenter_cluster.summary.effectiveCpu)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.total", $vcenter_cluster.summary.totalCpu)
+                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numVmotions", $vcenter_cluster.summary.numVmotions)
+            } catch {
+                Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name summary collect issue"
+                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            }
+        } else {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name summary missing "
+        }
+
         try {
-            $vcenter_cluster_pool_quickstats = $vcenter_resource_pools_h[$vcenter_cluster.moref.value].summary.quickStats
-
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.ballooned", $vcenter_cluster_pool_quickstats.balloonedMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.compressed", $vcenter_cluster_pool_quickstats.compressedMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.consumedOverhead", $vcenter_cluster_pool_quickstats.consumedOverheadMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.guest", $vcenter_cluster_pool_quickstats.guestMemoryUsage)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.usage", $vcenter_cluster_pool_quickstats.hostMemoryUsage)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.demand", $vcenter_cluster_pool_quickstats.overallCpuDemand)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.usage", $vcenter_cluster_pool_quickstats.overallCpuUsage)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.private", $vcenter_cluster_pool_quickstats.privateMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.shared", $vcenter_cluster_pool_quickstats.sharedMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.swapped", $vcenter_cluster_pool_quickstats.swappedMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.effective", $vcenter_cluster.summary.effectiveMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.mem.total", $vcenter_cluster.summary.totalMemory)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.effective", $vcenter_cluster.summary.effectiveCpu)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.total", $vcenter_cluster.summary.totalCpu)
-			$vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numVmotions", $vcenter_cluster.summary.numVmotions)
-
             if($ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numSVMotions", $ClusterMultiStats[$PerfCounterTable["vmop.numSVMotion.latest"]][$vcenter_cluster.moref.value][""])
             }
@@ -631,17 +661,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             if($ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""]) {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numXVMotions", $ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""])
             }
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name xyzMotion collect issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        }
 
-            if ($vcenter_cluster_pool_quickstats.overallCpuUsage -gt 0 -and $vcenter_cluster.summary.effectiveCpu -gt 0) {
-                $vcenter_cluster_pool_quickstats_cpu = $vcenter_cluster_pool_quickstats.overallCpuUsage * 100 / $vcenter_cluster.summary.effectiveCpu
-                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.cpu.utilization", $vcenter_cluster_pool_quickstats_cpu)
-            }
-
-            if ($vcenter_cluster_pool_quickstats.hostMemoryUsage -gt 0 -and $vcenter_cluster.summary.effectiveMemory -gt 0) {
-                $vcenter_cluster_pool_quickstats_ram = $vcenter_cluster_pool_quickstats.hostMemoryUsage * 100 / $vcenter_cluster.summary.effectiveMemory
-                $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.mem.utilization", $vcenter_cluster_pool_quickstats_ram)
-            }
-
+        try {
             if ($vcenter_cluster.summary.NumVmsPerDrsScoreBucket -and $vcenter_cluster.summary.DrsScore) {
                 # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bf660c0a-f060-46e8-a94d-4b5e6ffc77ad/208bc706-e281-49b6-a0ce-b402ec19ef82/SDK/vsphere-ws/docs/ReferenceGuide/vim.ClusterComputeResource.Summary.html#numVmsPerDrsScoreBucket
                 if ($vcenter_cluster.summary.NumVmsPerDrsScoreBucket[0]) {
@@ -672,9 +697,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.DrsScore", $vcenter_cluster.summary.DrsScore)
             }
-
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name DrsScore collect issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
 
