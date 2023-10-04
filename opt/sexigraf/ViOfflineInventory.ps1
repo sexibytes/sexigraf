@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.81"
+$ScriptVersion = "0.9.83"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -361,6 +361,19 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($ViVmsInfos) {
+
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViVmInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Building Vm Inventory CSV ..."
             $ViVmsInfosCsv = $ViVmsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
@@ -385,6 +398,7 @@ if ($ViServersList.count -gt 0) {
             # }
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory file ..."
             $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.csv -Force -ErrorAction Stop
+            $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [EROR] VM Inventory issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
@@ -392,6 +406,19 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($ViEsxsInfos) {
+
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViEsxInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Building ESX Inventory CSV ..."
             $ViEsxsInfosCsv = $ViEsxsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
@@ -416,6 +443,7 @@ if ($ViServersList.count -gt 0) {
             # }
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ESX Inventory file ..."
             $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force -ErrorAction Stop
+            $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [EROR] ESX Inventory issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
@@ -423,9 +451,23 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($ViDatastoresInfos) {
+
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViDsInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
             $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force -ErrorAction Stop
+            $ViDatastoresInfos|Out-File -Path /mnt/wfs/inventory/ViDsInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [EROR] Datastore Export-Csv issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
