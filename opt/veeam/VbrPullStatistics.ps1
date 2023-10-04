@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.35"
+$ScriptVersion = "0.9.36"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -391,9 +391,24 @@ if ($($VbrJobsStates.data)) {
                         Write-Host "$((Get-Date).ToString("o")) [EROR] VbrVmInventory import issue"
                         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
                     }
+
+                    if ($(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")) {
+                        Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating VbrVmInventory.*.csv files ..."
+                        $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+                        If ($ExtraCsvFiles) {
+                            try {
+                                Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                            } catch {
+                                AltAndCatchFire "Cannot remove extra csv files"
+                            }
+                        }
+                    }
+
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Import/Export VBR inventories ..."
                     try {
-                        Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Sort-Object LastRestorePoint -Descending | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force
+                        $VbrVmInventoryCsv = Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Sort-Object LastRestorePoint -Descending
+                        $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force
+                        $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -ErrorAction Stop -Force
                     } catch {
                         Write-Host "$((Get-Date).ToString("o")) [EROR] Import/Export VBR inventories issue"
                         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
