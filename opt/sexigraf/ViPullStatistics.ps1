@@ -1,8 +1,8 @@
 #!/usr/bin/pwsh -Command
 #
-param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
+param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1029"
+$ScriptVersion = "0.9.1031"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -10,18 +10,29 @@ $ExecStart = $(Get-Date).ToUniversalTime()
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 (Get-Process -Id $pid).PriorityClass = 'Idle'
+$SexiMutex = New-Object System.Threading.Mutex($false, "SexiMutex")
+# https://learn-powershell.net/2014/09/30/using-mutexes-to-write-data-to-the-same-logfile-across-processes-with-powershell/
+# https://github.com/ryan-leap/GreenMeansGoMutexDemo
+
+function SexiLogger {
+    param($Text2Log)
+    Write-Host "$((Get-Date).ToString("o")) $Text2Log"
+    $null = $SexiMutex.WaitOne(500)
+    Add-Content -Path "/var/log/sexigraf/ViPullStatistics.log" -Value "$((Get-Date).ToString("o")) $($Server) $Text2Log"
+    $SexiMutex.ReleaseMutex()
+}
 
 function AltAndCatchFire {
-    Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
+    param($ExitReason)
+    SexiLogger "[EROR] $ExitReason"
+    SexiLogger "[EROR] $($Error[0])"
+    SexiLogger "[EROR] Exit"
     Stop-Transcript
     exit
 }
 
 function GetRootDc {
-	Param($child_object)	
+	param($child_object)	
 	if ($xfolders_vcenter_parent_h[$child_object.Parent.value]) {	
 		$Parent_folder = $child_object.Parent.value
 		while ($xfolders_vcenter_type_h[$xfolders_vcenter_parent_h[$Parent_folder]] -notmatch "^Datacenter$") {
@@ -32,7 +43,7 @@ function GetRootDc {
 }
 
 function NameCleaner {
-    Param($NameToClean)
+    param($NameToClean)
     $NameToClean = $NameToClean -replace "[ .]","_"
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
     $NameToClean = $NameToClean.Normalize($NormalizationForm)
@@ -171,20 +182,15 @@ function MultiQueryPerf300 {
 
 try {
     Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.$($Server).log" -Append -Confirm:$false -Force -UseMinimalHeader
-    Start-Transcript -Path "/var/log/sexigraf/ViPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
-    Write-Host "$((Get-Date).ToString("o")) [INFO] ViPullStatistics v$ScriptVersion"
-    if ($vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))) {
-        Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.$($Server).log" -Append -Confirm:$false -Force -UseMinimalHeader
-        Start-Transcript -Path "/var/log/sexigraf/VsanDisksPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
-    }
+    SexiLogger "[INFO] ViPullStatistics v$ScriptVersion"
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [EROR] ViPullStatistics logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
+    SexiLogger "[EROR] ViPullStatistics logging failure"
+    SexiLogger "[EROR] Exit"
     exit
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing PowerCli and Graphite PowerShell modules ..."
+    SexiLogger "[INFO] Importing PowerCli and Graphite PowerShell modules ..."
     Import-Module VMware.VimAutomation.Common, VMware.VimAutomation.Core, VMware.VimAutomation.Sdk, VMware.VimAutomation.Storage
     $PowerCliConfig = Set-PowerCLIConfiguration -ProxyPolicy NoProxy -DefaultVIServerMode Single -InvalidCertificateAction Ignore -ParticipateInCeip:$false -DisplayDeprecationWarnings:$false -Confirm:$false -Scope Session
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
@@ -193,15 +199,15 @@ try {
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another ViPullStatistics for $Server ..."
+    SexiLogger "[INFO] Looking for another ViPullStatistics for $Server ..."
     $DupViPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "ViPullStatistics" -and $_ -match "$Server"}
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupViPullStatisticsProcess|Measure-Object).Count -gt 1) {
         $DupViPullStatisticsProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}).ProcessId[0]
         $DupViPullStatisticsProcessTime = [INT32](ps -p $DupViPullStatisticsProcessId -o etimes).split()[-1]
         if ($DupViPullStatisticsProcessTime -gt 300) {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] ViPullStatistics for $Server is already running for more than 5 minutes!"
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Killing stunned ViPullStatistics for $Server"
+            SexiLogger "[WARN] ViPullStatistics for $Server is already running for more than 5 minutes!"
+            SexiLogger "[WARN] Killing stunned ViPullStatistics for $Server"
             Stop-Process -Id $DupViPullStatisticsProcessId -Force
         } else {
             AltAndCatchFire "ViPullStatistics for $Server is already running!"
@@ -214,16 +220,16 @@ try {
 if ($SessionFile) {
     try {
         $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
-        Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
+        SexiLogger "[INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
         # https://zhengwu.org/validating-connection-result-of-connect-viserver/
         $ServerConnection = Connect-VIServer -Server $Server -Session $SessionToken -Force -ErrorAction Stop
         if ($ServerConnection.IsConnected) {
             # $PwCliContext = Get-PowerCLIContext
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
+            SexiLogger "[INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken not found, invalid or connection failure"
-        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
+        SexiLogger "[WARN] SessionToken not found, invalid or connection failure"
+        SexiLogger "[WARN] Attempting explicit connection ..."
     }
     
     if (!$($global:DefaultVIServer)) {
@@ -243,7 +249,7 @@ if ($SessionFile) {
             $ServerConnection = Connect-VIServer -Server $Server -User $CredStoreLogin -Password $CredStorePassword -Force -ErrorAction Stop
             if ($ServerConnection.IsConnected) {
                 # $PwCliContext = Get-PowerCLIContext
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
+                SexiLogger "[INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
                 $SessionSecretName = "vmw_" + $Server.Replace(".","_") + ".key"
                 $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force
             }
@@ -257,7 +263,7 @@ if ($SessionFile) {
 
 try {
     if ($($global:DefaultVIServer)) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing vCenter/ESX $Server ..."
+        SexiLogger "[INFO] Start processing vCenter/ESX $Server ..."
         $ServiceInstance = Get-View ServiceInstance -Server $Server
         # $ServiceManager = Get-View $ServiceInstance.Content.serviceManager -property "" -Server $Server
         $ServiceInstanceServerClock = $ServiceInstance.CurrentTime()
@@ -271,7 +277,7 @@ try {
 
 try {
     if ($ServiceInstance) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing SessionManager & EventManager ..."
+        SexiLogger "[INFO] Processing SessionManager & EventManager ..."
         try {
             $AuthorizationManager = Get-View $ServiceInstance.Content.AuthorizationManager -Server $Server
             $group_d1 = Get-View $ServiceInstance.Content.RootFolder
@@ -281,7 +287,7 @@ try {
             if ($UserRole.Privilege -match "Sessions.TerminateSession") {
                 $SessionManager = Get-View $ServiceInstance.Content.SessionManager -Property SessionList -Server $Server # Permission to perform this operation was denied. Required privilege 'Sessions.TerminateSession' on managed object with id 'Folder-group-d1'.
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Sessions.TerminateSession privilege not detected, SessionManager skipped ..."
+                SexiLogger "[INFO] Sessions.TerminateSession privilege not detected, SessionManager skipped ..."
             }
             $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
         } catch {
@@ -291,7 +297,7 @@ try {
         AltAndCatchFire "ServiceInstance check failure"
     }
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+    SexiLogger "[EROR] $($Error[0])"
 }
 
 try {
@@ -319,7 +325,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_version = NameCleaner $($ServiceInstance.Content.About.Version + "." + $ServiceInstance.Content.About.Build)
     $vmware_version_h["vi.$vcenter_name.vi.version.vpx.product.$vcenter_version"] ++
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter objects collect ..."
+    SexiLogger "[INFO] vCenter objects collect ..."
 
     try {
         $vcenter_folders = Get-View -ViewType Folder -Property Name, Parent -Server $Server
@@ -334,7 +340,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         AltAndCatchFire "Get-View failure"
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Building objects tables ..."
+    SexiLogger "[INFO] Building objects tables ..."
 
     $vcenter_resource_pools_h = @{}
     $vcenter_resource_pools_owner_vms_h = @{}
@@ -440,7 +446,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 	$script:xfolders_vcenter_parent_h = @{}
 	$script:xfolders_vcenter_type_h = @{}
 
-	Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter objects relationship discover ..."
+	SexiLogger "[INFO] vCenter objects relationship discover ..."
 	
 	foreach ($vcenter_xfolder in [array]$vcenter_datacenters + [array]$vcenter_folders + [array]$vcenter_clusters + [array]$vcenter_resource_pools + [array]$vcenter_vmhosts + [array]$vcenter_pods) {
         try {
@@ -450,7 +456,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         } catch {}
 	}
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Performance metrics collection ..."
+    SexiLogger "[INFO] Performance metrics collection ..."
 
     $HostMultiMetrics = @(
         "net.bytesRx.average",
@@ -475,18 +481,18 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     if (($vcenter_vmhosts|Measure-Object).Count -gt 0) {
         try {
             $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "ESX MultiQueryPerfAll failure"
         }
     } else {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] No ESX in vCenter $vcenter_name"
+        SexiLogger "[INFO] No ESX in vCenter $vcenter_name"
     }
 
     if (($vcenter_vms|Measure-Object).Count -eq 0) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] No VMs in vCenter $vcenter_name"
+        SexiLogger "[INFO] No VMs in vCenter $vcenter_name"
     } elseif (($vcenter_vms|Measure-Object).Count -gt 10000) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] 10K+ VMs mode for vCenter $vcenter_name"
+        SexiLogger "[INFO] 10K+ VMs mode for vCenter $vcenter_name"
 
         $VmMultiMetricsR1 = @(
             "cpu.ready.summation",
@@ -497,7 +503,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR1}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 1st round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All vms multi metrics 1st round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf R1 failure"
         }
@@ -511,7 +517,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetricsR2}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics 2nd round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All vms multi metrics 2nd round collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf R2 failure"
         }
@@ -525,7 +531,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         # try {
         #     $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
-        #     Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+        #     SexiLogger "[INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         # } catch {
         #     AltAndCatchFire "VM MultiQueryPerfAll failure"
         # }
@@ -544,7 +550,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
@@ -556,7 +562,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerfAll failure"
         }
@@ -570,16 +576,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         )
         try {
             $ClusterMultiStatsTime = Measure-Command {$ClusterMultiStats = MultiQueryPerf300 $($vcenter_clusters_h.Values.moref) $ClusterMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
-            Write-Host "$((Get-Date).ToString("o")) [EROR] VM MultiQueryPerf failure"
+            SexiLogger "[EROR] $($Error[0])"
+            SexiLogger "[EROR] VM MultiQueryPerf failure"
         }
     }
 
     if ($ServiceInstance.Content.About.ApiVersion -ge 6.7) {
         if ($vcenter_vmhosts_NodeUuid_name_h.Count -gt 0 -and $vSanPull) {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
+            SexiLogger "[INFO] vCenter ApiVersion is 6.7+ so we can call vSAN API"
             $VsanPerformanceManager = Get-VSANView -Id VsanPerformanceManager-vsan-performance-manager -Server $Server
             $VsanClusterHealthSystem = Get-VSANView -Id VsanVcClusterHealthSystem-vsan-cluster-health-system -Server $Server
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
@@ -587,7 +593,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
             # if ($vcenter_clusters_vsan_efa_h.keys) {
             #     $VsanVcDiskManagementSystem = Get-VSANView -Id VimClusterVsanVcDiskManagementSystem-vsan-disk-management-system -Server $Server
-            #     Write-Host "$((Get-Date).ToString("o")) [INFO] vSAN EFA clusters detected ..."
+            #     SexiLogger "[INFO] vSAN EFA clusters detected ..."
             # }
         }
     }
@@ -598,7 +604,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster = $vcenter_clusters_h[$vcenter_cluster_moref]
             $vcenter_cluster_name = nameCleaner $vcenter_cluster.Name
             $vcenter_cluster_dc_name = nameCleaner $(getRootDc $vcenter_cluster)
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name in datacenter $vcenter_cluster_dc_name"
+            SexiLogger "[INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name in datacenter $vcenter_cluster_dc_name"
         } catch {
             AltAndCatchFire "cluster name cleaning issue"
         }
@@ -631,11 +637,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
     
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name quickstats collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] Cluster $vcenter_cluster_name quickstats collect issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
+            SexiLogger "[EROR] Cluster $vcenter_cluster_name root resource pool not found ?!"
         }
 
         if ($vcenter_cluster.summary) {
@@ -646,11 +652,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.cpu.total", $vcenter_cluster.summary.totalCpu)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numVmotions", $vcenter_cluster.summary.numVmotions)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name summary collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] Cluster $vcenter_cluster_name summary collect issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name summary missing "
+            SexiLogger "[EROR] Cluster $vcenter_cluster_name summary missing "
         }
 
         try {
@@ -662,8 +668,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.numXVMotions", $ClusterMultiStats[$PerfCounterTable["vmop.numXVMotion.latest"]][$vcenter_cluster.moref.value][""])
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name xyzMotion collect issue"
-            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            SexiLogger "[EROR] Cluster $vcenter_cluster_name xyzMotion collect issue"
+            SexiLogger "[EROR] $($Error[0])"
         }
 
         try {
@@ -698,11 +704,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.quickstats.drs.DrsScore", $vcenter_cluster.summary.DrsScore)
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] Cluster $vcenter_cluster_name DrsScore collect issue"
-            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            SexiLogger "[EROR] Cluster $vcenter_cluster_name DrsScore collect issue"
+            SexiLogger "[EROR] $($Error[0])"
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
+        SexiLogger "[INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name hosts in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_hosts_pcpus = 0
         $vcenter_cluster_hosts_vms_moref = @()
@@ -761,8 +767,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host sensors issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -805,8 +811,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name network metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -823,8 +829,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name hba metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -832,8 +838,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h["vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.PathState.$($vcenter_cluster_host_path.PathState)"] ++
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name MultipathState issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name MultipathState issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -845,8 +851,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats power metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name fatstats power metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -857,8 +863,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats cpu.totalCapacity metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name fatstats cpu.totalCapacity metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -869,8 +875,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats mem.totalCapacity metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name fatstats mem.totalCapacity metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -881,8 +887,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats cpu.latency metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name fatstats cpu.latency metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -893,16 +899,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 }
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.overallStatus", $vcenter_cluster_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name fatstats overallStatus metrics issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name fatstats overallStatus metrics issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedCpuFairness", $vcenter_cluster_host.summary.quickStats.distributedCpuFairness)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.distributedMemoryFairness", $vcenter_cluster_host.summary.quickStats.distributedMemoryFairness)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name Distributed Fairness quickstats issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name Distributed Fairness quickstats issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -911,8 +917,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_cluster_host_name.quickstats.Uptime", $vcenter_cluster_host.summary.quickStats.uptime)
 
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_cluster_host_name overall quickstats issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_cluster_host_name overall quickstats issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
 
@@ -938,7 +944,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.power", $vcenter_cluster_hosts_power_usage)
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name vms in datacenter $vcenter_cluster_dc_name"
+        SexiLogger "[INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name vms in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_vms_vcpus = 0
         $vcenter_cluster_vms_vram = 0
@@ -1026,16 +1032,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.delta", $vcenter_cluster_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] VM $vcenter_cluster_vm_name snapshot compute issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.committed", $vcenter_cluster_vm.summary.storage.committed)
                 $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.storage.uncommitted", $vcenter_cluster_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] VM $vcenter_cluster_vm_name storage commit metric issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($vcenter_cluster_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -1156,7 +1162,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.on", $vcenter_cluster_vms_on)
         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.runtime.vm.dead", $vcenter_cluster_hosts_vms_dead)
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
+        SexiLogger "[INFO] Processing vCenter $vcenter_name cluster $vcenter_cluster_name datastores in datacenter $vcenter_cluster_dc_name"
 
         $vcenter_cluster_datastores_count = 0
         $vcenter_cluster_datastores_capacity = 0
@@ -1198,8 +1204,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_cluster_datastores_uncommitted += $vcenter_cluster_datastore_uncommitted
 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue in cluster $vcenter_cluster_name"
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                    SexiLogger "[EROR] datastore processing issue in cluster $vcenter_cluster_name"
+                    SexiLogger "[EROR] $($Error[0])"
                 }
 
                 if ($vcenter_cluster_datastore.summary.type -notmatch "vsan") {
@@ -1221,8 +1227,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.datastore.$vcenter_cluster_datastore_name.iorm.datastoreIops", $vcenter_cluster_datastore_iops)
                         $vcenter_cluster_datastores_iops += $vcenter_cluster_datastore_iops
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive performance metrics for datastore $vcenter_cluster_datastore_name in cluster $vcenter_cluster_name"
-                        Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                        SexiLogger "[WARN] Unable to retreive performance metrics for datastore $vcenter_cluster_datastore_name in cluster $vcenter_cluster_name"
+                        SexiLogger "[WARN] $($Error[0])"
                     }
 
                 } else { # VsanPullStatistics
@@ -1232,7 +1238,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     if ($vcenter_cluster_datastore_vsan_cluster_uuid.replace("-","") -match $vcenter_cluster_datastore_vsan_uuid.replace("-","") -and $vSanPull -and $ServiceInstance.Content.About.ApiVersion -ge 6.7) { # skip vSAN HCI Mesh
                         
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
+                        SexiLogger "[INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
                         # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
                         # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
                         # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
@@ -1253,14 +1259,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
 
                         if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # EFA vSan cluster
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing EFA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
+                            SexiLogger "[INFO] Processing EFA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
                             # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
                             # $VsanHostsAndClusterStoragePoolSpec = New-Object VMware.Vsan.Views.VimVsanHostQueryVsanDisksSpec -property @{vsanDiskType="storagePool"}
                             try {
                                 $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,"physicalDisksHealth",$true,$null,$null,$null)
                             } catch {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                                SexiLogger "[WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
+                                SexiLogger "[WARN] $($Error[0])"
                             }
 
                             if ($ClusterHealthSummary.PhysicalDisksHealth) {
@@ -1280,7 +1286,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-esa-disk-scsifw:$PhysicalDisksHealthVsanUuid";labels=@("latencyDevRead","latencyDevWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                                 }
                             } else {
-                                Write-Host "$((Get-Date).ToString("o")) [WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
+                                SexiLogger "[WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
                             }
                         } else { # Non EFA vSAN cluster
                             # cache-disk disk-group
@@ -1296,11 +1302,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         try {
                             $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+                            SexiLogger "[INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
 
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                            SexiLogger "[WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
                             
                         if ($VsanHostsAndClusterPerfQuery) {
@@ -1466,11 +1472,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             }
 
                         } else {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] Empty VsanPerfQuery in cluster $vcenter_cluster_name"
                         }
 
                         try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SmartStatsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
+                            SexiLogger "[INFO] Start processing SmartStatsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
                             # https://www.virtuallyghetto.com/2017/04/getting-started-wthe-new-powercli-6-5-1-get-vsanview-cmdlet.html
                             # https://github.com/lamw/vghetto-scripts/blob/master/powershell/VSANSmartsData.ps1
                             $VcClusterSmartStatsSummary = $VsanClusterHealthSystem.VsanQueryVcClusterSmartStatsSummary($vcenter_cluster.moref)
@@ -1480,20 +1486,20 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     foreach ($SmartStatsEsxDisk in $SmartStatsEsx.SmartStats) {
                                         $SmartStatsEsxDiskName = NameCleaner $SmartStatsEsxDisk.Disk
                                         foreach ($SmartStatsEsxDiskStats in $SmartStatsEsxDisk.Stats|?{$_.Value -ne $null}) {
-                                            if ($SmartStatsEsxDiskStats.Parameter -and !$vcenter_cluster_h["vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disk.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)"]) {
-                                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disk.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.Parameter)", $($SmartStatsEsxDiskStats.Value))
+                                            if ($SmartStatsEsxDiskStats.parameter -and !$vcenter_cluster_h["vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disk.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.parameter)"]) {
+                                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$SmartStatsEsxName.vsan.disk.smart.$SmartStatsEsxDiskName.$($SmartStatsEsxDiskStats.parameter)", $($SmartStatsEsxDiskStats.Value))
                                             }
                                         }
                                     }
                                 }
                             }
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $vcenter_cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                            SexiLogger "[WARN] Unable to retreive VcClusterSmartStatsSummary in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
 
                         try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing spaceUsageByObjectType in vSAN cluster $vcenter_cluster_name (v6.2+) ..."
+                            SexiLogger "[INFO] Processing spaceUsageByObjectType in vSAN cluster $vcenter_cluster_name (v6.2+) ..."
     
                             $ClusterVsanSpaceUsageReport = $VsanSpaceReportSystem.VsanQuerySpaceUsage($vcenter_cluster.Moref)
                             $ClusterVsanSpaceUsageReportObjList = $ClusterVsanSpaceUsageReport.spaceDetail.spaceUsageByObjectType
@@ -1522,12 +1528,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             #     }
                             # }        
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanQuerySpaceUsage for cluster $vcenter_cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                            SexiLogger "[WARN] Unable to retreive VsanQuerySpaceUsage for cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
 
                         try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing SyncingVsanObjectsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
+                            SexiLogger "[INFO] Start processing SyncingVsanObjectsSummary in cluster $vcenter_cluster_name (v6.7+) ..."
                             # https://vdc-download.vmware.com/vmwb-repository/dcr-public/b21ba11d-4748-4796-97e2-7000e2543ee1/b4a40704-fbca-4222-902c-2500f5a90f3f/vim.cluster.VsanObjectSystem.html#querySyncingVsanObjectsSummary
                             # https://vdc-download.vmware.com/vmwb-repository/dcr-public/9ab58fbf-b389-4e15-bfd4-a915910be724/7872dcb2-3287-40e1-ba00-71071d0e19ff/vim.vsan.VsanSyncReason.html
                             $QuerySyncingVsanObjectsSummary = $VsanObjectSystem.QuerySyncingVsanObjectsSummary($vcenter_cluster.Moref,$(New-Object VMware.Vsan.Views.VsanSyncingObjectFilter -property @{NumberOfObjects="200"}))
@@ -1551,12 +1557,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                             }
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $vcenter_cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                            SexiLogger "[WARN] Unable to retreive SyncingVsanObjectsSummary in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
 
                         try {
-                            Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
+                            SexiLogger "[INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
                             $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false) ### TODO optimize
                             if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                 foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
@@ -1566,8 +1572,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 }        
                             }
                         } catch {
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $vcenter_cluster_name"
-                            Write-Host "$((Get-Date).ToString("o")) [WARN] $($Error[0])"
+                            SexiLogger "[WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
                     }
                 }
@@ -1586,7 +1592,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.superstats.datastore.iops", $vcenter_cluster_datastores_iops)
         }
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Sending cluster, hosts, vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
+        SexiLogger "[INFO] Sending cluster, hosts, vms and datastores metrics to Graphite for cluster $vcenter_cluster_name ..."
         Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_cluster_h -DateTime $ExecStart
     }
 
@@ -1596,7 +1602,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             try {
                 $vcenter_pod_name = NameCleaner $vcenter_pod.Name
                 $vcenter_pod_dc_name = nameCleaner $(getRootDc $vcenter_pod)
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name pod $vcenter_pod_name in datacenter $vcenter_pod_dc_name"
+                SexiLogger "[INFO] Processing vCenter $vcenter_name pod $vcenter_pod_name in datacenter $vcenter_pod_dc_name"
             } catch {
                 AltAndCatchFire "pod name cleaning issue"
             }
@@ -1631,7 +1637,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                 }
                 $vcenter_standalone_host_dc_name = nameCleaner $(getRootDc $vcenter_standalone_pool)
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
+                SexiLogger "[INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
             } catch {
                 AltAndCatchFire "standalone_host name cleaning issue"
             }
@@ -1660,8 +1666,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_standalone_host sensors issue in datacenter $vcenter_standalone_host_dc_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($vcenter_standalone_host.overallStatus) {
@@ -1680,11 +1686,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.cpu.total", $vcenter_standalone_pool.summary.totalCpu)
                 $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.quickstats.overallStatus", $vcenter_standalone_host_overallStatus)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_standalone_host_name quickstats issue in datacenter $vcenter_standalone_host_dc_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name datastores in datacenter $vcenter_standalone_host_dc_name"
+            SexiLogger "[INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name datastores in datacenter $vcenter_standalone_host_dc_name"
 
             foreach ($vcenter_standalone_host_datastore in $vcenter_datastores_h[$vcenter_standalone_pool.Datastore.value]|?{$_}) {
                 if ($vcenter_standalone_host_datastore.summary.accessible) {
@@ -1713,8 +1719,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.datastore.$vcenter_standalone_host_datastore_name.iorm.datastoreIops", $vcenter_standalone_host_datastore_iops)
                         }
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                        SexiLogger "[EROR] datastore processing issue on ESX $vcenter_standalone_host_name in datacenter $vcenter_standalone_host_dc_name"
+                        SexiLogger "[EROR] $($Error[0])"
                     }
                 }
             }
@@ -1734,8 +1740,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_standalone_host_name network metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -1751,8 +1757,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     }
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_standalone_host_name hba metrics issue in datacenter $vcenter_standalone_host_dc_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
@@ -1760,11 +1766,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $vcenter_standalone_host_h["esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.superstats.PathState.$($vcenter_standalone_host_path.PathState)"] ++
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ESX $vcenter_standalone_host_name MultipathState issue in cluster $vcenter_cluster_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ESX $vcenter_standalone_host_name MultipathState issue in cluster $vcenter_cluster_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name vms in datacenter $vcenter_standalone_host_dc_name"
+            SexiLogger "[INFO] Processing vCenter $vcenter_name standalone host $vcenter_standalone_host_name vms in datacenter $vcenter_standalone_host_dc_name"
 
             $StandaloneResourcePoolPrivateMemory = 0
             $StandaloneResourcePoolSharedMemory = 0
@@ -1860,16 +1866,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.delta", $vcenter_standalone_host_vm_snap_size)
                     }
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                    SexiLogger "[EROR] VM $vcenter_standalone_host_vm_name snapshot compute issue standalone host $vcenter_standalone_host_name"
+                    SexiLogger "[EROR] $($Error[0])"
                 }
 
                 try {
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.committed", $vcenter_standalone_host_vm.summary.storage.committed)
                     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.storage.uncommitted", $vcenter_standalone_host_vm.summary.storage.uncommitted)
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                    SexiLogger "[EROR] VM $vcenter_standalone_host_vm_name storage commit metric issue standalone host $vcenter_standalone_host_name"
+                    SexiLogger "[EROR] $($Error[0])"
                 }
 
                 if ($vcenter_standalone_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -2009,7 +2015,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     if ($SessionManager) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name SessionList"
+        SexiLogger "[INFO] Processing vCenter $vcenter_name SessionList"
         $vcenter_session_list_h = @{}
         $SessionList = $SessionManager.sessionList
         if ($SessionList) {
@@ -2022,7 +2028,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         }
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing vCenter $vcenter_name events"
+    SexiLogger "[INFO] Processing vCenter $vcenter_name events"
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = [System.Collections.ArrayList]@()
@@ -2043,8 +2049,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] vCenter $vcenter_name EventInfo collect issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
 
@@ -2058,8 +2064,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollector = $EventManager.QueryEvents($vCenterEventFilterSpec)
                 $vCenterEventsHistoryCollectorCat = $EventManager.QueryEvents($vCenterEventFilterSpecCat)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] vCenter $vcenter_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] vCenter $vcenter_name EventManager QueryEvents issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -2091,10 +2097,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_events_h -DateTime $ExecStart
                 }
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] vCenter $vcenter_name no new event collected"
+                SexiLogger "[INFO] vCenter $vcenter_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in vCenter $vcenter_name"
+            SexiLogger "[EROR] No EventInfo to process in vCenter $vcenter_name"
         }
     }
 
@@ -2102,11 +2108,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vmware_version_h -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] End processing vCenter $vcenter_name"
+    SexiLogger "[INFO] End processing vCenter $vcenter_name"
     
 } elseif ($ServiceInstance.Content.About.ApiType -match "HostAgent") {
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] HostAgent detected, collecting unmanaged objects ..."
+    SexiLogger "[INFO] HostAgent detected, collecting unmanaged objects ..."
 
     $vcenter_name = "_unmanaged_"
     $unmanaged_host_dc_name = "_unmanaged_"
@@ -2124,7 +2130,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         AltAndCatchFire "Get-View failure"
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Performance metrics collection ..."
+    SexiLogger "[INFO] Performance metrics collection ..."
 
     $HostMultiMetrics = @(
         "net.bytesRx.average",
@@ -2139,7 +2145,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     try {
         $HostMultiStatsTime = Measure-Command {$HostMultiStats = MultiQueryPerfAll $($vcenter_vmhosts.moref) $HostMultiMetrics}
-        Write-Host "$((Get-Date).ToString("o")) [INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+        SexiLogger "[INFO] All hosts multi metrics collected in $($HostMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
     } catch {
         AltAndCatchFire "ESX MultiQueryPerfAll failure"
     }
@@ -2163,14 +2169,14 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     if ($vcenter_vms) {
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats = MultiQueryPerf $($vcenter_vms.moref) $VmMultiMetrics}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
+            SexiLogger "[INFO] All vms multi metrics collected in $($VmMultiStatsTime.TotalSeconds) sec for Unmanaged ESX $esx_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerf failure"
         }
 
         try {
             $VmMultiStatsTime = Measure-Command {$VmMultiStats += MultiQueryPerfAll $($vcenter_vms.moref) $VmMultiMetricsAll}
-            Write-Host "$((Get-Date).ToString("o")) [INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
+            SexiLogger "[INFO] All vms multi metrics instanced collected in $($VmMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             AltAndCatchFire "VM MultiQueryPerfAll failure"
         }
@@ -2185,7 +2191,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $unmanaged_host_name = NameCleaner $unmanaged_host.name ### previously vmk0 ip cleaned
 
         }
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name"
+        SexiLogger "[INFO] Processing Unmanaged ESX $esx_name"
     } catch {
         AltAndCatchFire "Unmanaged ESX name cleaning issue"
     }
@@ -2214,8 +2220,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name sensors issue"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Unmanaged ESX $esx_name sensors issue"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     if ($unmanaged_host.overallStatus.value__) {
@@ -2234,11 +2240,11 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.cpu.total", $unmanaged_compute_resource.summary.totalCpu)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.overallStatus", $unmanaged_host_overallStatus)
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Unmanaged ESX $esx_name quickstats issue"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name datastores"
+    SexiLogger "[INFO] Processing Unmanaged ESX $esx_name datastores"
 
     foreach ($unmanaged_host_datastore in $vcenter_datastores) {
         if ($unmanaged_host_datastore.summary.accessible) {
@@ -2267,8 +2273,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.datastore.$unmanaged_host_datastore_name.iorm.datastoreIops", $unmanaged_host_datastore_iops)
                 # }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] datastore processing issue on Unmanaged ESX $esx_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] datastore processing issue on Unmanaged ESX $esx_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
     }
@@ -2288,8 +2294,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name network metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Unmanaged ESX $esx_name network metrics issue"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     try {
@@ -2305,8 +2311,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             }
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name hba metrics issue"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Unmanaged ESX $esx_name hba metrics issue"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     $UnamagedResourcePoolPrivateMemory = 0
@@ -2412,16 +2418,16 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.delta", $unmanaged_host_vm_snap_size)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] VM $unmanaged_host_vm_name snapshot compute issue standalone host $unmanaged_host_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             try {
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.committed", $unmanaged_host_vm.summary.storage.committed)
                 $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.storage.uncommitted", $unmanaged_host_vm.summary.storage.uncommitted)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] VM $unmanaged_host_vm_name storage commit metric issue standalone host $unmanaged_host_name"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOn") {
@@ -2516,8 +2522,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
                 
                 } catch {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"  
+                    SexiLogger "[EROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
+                    SexiLogger "[EROR] $($Error[0])"  
                 }
 
             } elseif ($unmanaged_host_vm.summary.runtime.powerState -eq "poweredOff") {
@@ -2539,13 +2545,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.dead", $unmanaged_host_vms_dead)
 
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name quickstats issue"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Unmanaged ESX $esx_name quickstats issue"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $unmanaged_host_h -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Processing Unmanaged ESX $esx_name events"
+    SexiLogger "[INFO] Processing Unmanaged ESX $esx_name events"
 
     $vcenter_events_h = @{}
     $vCenterFilteredEventTypeId = @()
@@ -2561,8 +2567,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventInfo collect issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] Unmanaged ESX $esx_name EventInfo collect issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
 
@@ -2583,8 +2589,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                 $vCenterEventsHistoryCollectorCat = $vCenterEventsHistoryCollectorCatObj.ReadNextEvents("999")
 
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] Unmanaged ESX $esx_name EventManager QueryEvents issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($vCenterEventsHistoryCollector -or $vCenterEventsHistoryCollectorCat) {
@@ -2611,10 +2617,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vcenter_events_h -DateTime $ExecStart
                 }
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Unmanaged ESX $esx_name no new event collected"
+                SexiLogger "[INFO] Unmanaged ESX $esx_name no new event collected"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] No EventInfo to process in Unmanaged ESX $esx_name"
+            SexiLogger "[EROR] No EventInfo to process in Unmanaged ESX $esx_name"
         }
     }
 
@@ -2622,7 +2628,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $vmware_version_h -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] End processing Unmanaged ESX $esx_name"
+    SexiLogger "[INFO] End processing Unmanaged ESX $esx_name"
 
 } else {
     AltAndCatchFire "$Server is not a vCenter/ESXi!"
