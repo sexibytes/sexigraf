@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1031"
+$ScriptVersion = "0.9.1032"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -10,16 +10,16 @@ $ExecStart = $(Get-Date).ToUniversalTime()
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 (Get-Process -Id $pid).PriorityClass = 'Idle'
-$SexiMutex = New-Object System.Threading.Mutex($false, "SexiMutex")
+$SexiViMutex = New-Object System.Threading.Mutex($false, "SexiViMutex")
 # https://learn-powershell.net/2014/09/30/using-mutexes-to-write-data-to-the-same-logfile-across-processes-with-powershell/
 # https://github.com/ryan-leap/GreenMeansGoMutexDemo
 
 function SexiLogger {
     param($Text2Log)
     Write-Host "$((Get-Date).ToString("o")) $Text2Log"
-    $null = $SexiMutex.WaitOne(500)
+    $null = $SexiViMutex.WaitOne(500)
     Add-Content -Path "/var/log/sexigraf/ViPullStatistics.log" -Value "$((Get-Date).ToString("o")) $($Server) $Text2Log"
-    $SexiMutex.ReleaseMutex()
+    $SexiViMutex.ReleaseMutex()
 }
 
 function AltAndCatchFire {
