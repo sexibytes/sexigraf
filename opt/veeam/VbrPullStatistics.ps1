@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.36"
+$ScriptVersion = "0.9.37"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -10,12 +10,23 @@ $ExecStart = $(Get-Date).ToUniversalTime()
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
 (Get-Process -Id $pid).PriorityClass = 'Idle'
+$SexiVbrMutex = New-Object System.Threading.Mutex($false, "SexiVbrMutex")
+# https://learn-powershell.net/2014/09/30/using-mutexes-to-write-data-to-the-same-logfile-across-processes-with-powershell/
+# https://github.com/ryan-leap/GreenMeansGoMutexDemo
+
+function SexiLogger {
+    param($Text2Log)
+    SexiLogger "$Text2Log"
+    $null = $SexiVbrMutex.WaitOne(500)
+    Add-Content -Path "/var/log/sexigraf/VbrPullStatistics.log" -Value "$((Get-Date).ToString("o")) $($Server) $Text2Log"
+    $SexiVbrMutex.ReleaseMutex()
+}
 
 function AltAndCatchFire {
     Param($ExitReason)
-    Write-Host "$((Get-Date).ToString("o")) [EROR] $ExitReason"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
+    SexiLogger "[EROR] $ExitReason"
+    SexiLogger "[EROR] $($Error[0])"
+    SexiLogger "[EROR] Exit"
     Stop-Transcript
     exit
 }
@@ -32,31 +43,30 @@ function NameCleaner {
 
 try {
     Start-Transcript -Path "/var/log/sexigraf/VbrPullStatistics.$($Server).log" -Append -Confirm:$false -Force -UseMinimalHeader
-    Start-Transcript -Path "/var/log/sexigraf/VbrPullStatistics.log" -Append -Confirm:$false -Force -UseMinimalHeader
-    Write-Host "$((Get-Date).ToString("o")) [INFO] VbrPullStatistics v$ScriptVersion"
+    SexiLogger "[INFO] VbrPullStatistics v$ScriptVersion"
 } catch {
-    Write-Host "$((Get-Date).ToString("o")) [EROR] VbrPullStatistics logging failure"
-    Write-Host "$((Get-Date).ToString("o")) [EROR] Exit"
+    SexiLogger "[EROR] VbrPullStatistics logging failure"
+    SexiLogger "[EROR] Exit"
     exit
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing Graphite PowerShell module ..."
+    SexiLogger "[INFO] Importing Graphite PowerShell module ..."
     Import-Module -Name /usr/local/share/powershell/Modules/Graphite-PowerShell-Functions/Graphite-Powershell.psm1 -Global -Force -SkipEditionCheck
 } catch {
     AltAndCatchFire "Powershell modules import failure"
 }
 
 try {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for another VbrPullStatistics for $Server ..."
+    SexiLogger "[INFO] Looking for another VbrPullStatistics for $Server ..."
     $DupVbrPullStatisticsProcess = Get-PSHostProcessInfo|%{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '}|?{$_ -match "VbrPullStatistics" -and $_ -match "$Server"}
     # https://github.com/PowerShell/PowerShell/issues/13944
     if (($DupVbrPullStatisticsProcess|Measure-Object).Count -gt 1) {
         $DupVbrPullStatisticsProcessId = (Get-PSHostProcessInfo|?{$(Get-Content -LiteralPath "/proc/$($_.ProcessId)/cmdline") -replace "`0", ' '|?{$_ -match "$Server"}}).ProcessId[0]
         $DupVbrPullStatisticsProcessTime = [INT32](ps -p $DupVbrPullStatisticsProcessId -o etimes).split()[-1]
         if ($DupVbrPullStatisticsProcessTime -gt 300) {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] VbrPullStatistics for $Server is already running for more than 5 minutes!"
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Killing stunned VbrPullStatistics for $Server"
+            SexiLogger "[WARN] VbrPullStatistics for $Server is already running for more than 5 minutes!"
+            SexiLogger "[WARN] Killing stunned VbrPullStatistics for $Server"
             Stop-Process -Id $DupVbrPullStatisticsProcessId -Force
         } else {
             AltAndCatchFire "VbrPullStatistics for $Server is already running!"
@@ -71,23 +81,23 @@ if ($SessionFile) {
         $SessionSecretExpiration = "vbr_" + $server.Replace(".","_") + ".exp"
         if ([DateTime]$(Get-Content -Path /tmp/$SessionSecretExpiration) -gt $ExecStart.AddMinutes(5)) {
             $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
-            Write-Host "$((Get-Date).ToString("o")) [INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
+            SexiLogger "[INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
             $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
             $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
             if ($($VbrJobsStates.data)) {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
+                SexiLogger "[INFO] Connected to VBR REST API Server $Server"
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [WARN] Connection failure or no job state"
+                SexiLogger "[WARN] Connection failure or no job state"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Token has expired or is about to ..."
+            SexiLogger "[WARN] Token has expired or is about to ..."
         }
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [WARN] SessionToken or SessionSecretExpiration not found, invalid or connection failure"
+        SexiLogger "[WARN] SessionToken or SessionSecretExpiration not found, invalid or connection failure"
     }
 
     if (!$($VbrJobsStates.data)) {
-        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting token refresh ..."
+        SexiLogger "[WARN] Attempting token refresh ..."
         try {
             $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
             $SessionRefresh = Get-Content -Path /tmp/$SessionRefreshPath -ErrorAction Stop
@@ -104,20 +114,20 @@ if ($SessionFile) {
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if (!$($VbrJobsStates.data)) {
-                    Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh failed!"
-                    Write-Host "$((Get-Date).ToString("o")) [WARN] Known issue on v11!"
+                    SexiLogger "[WARN] Token refresh failed!"
+                    SexiLogger "[WARN] Known issue on v11!"
                     # https://forums.veeam.com/restful-api-f30/how-to-handle-the-refresh-token-t74916.html
                 }
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh failed!"
+                SexiLogger "[WARN] Token refresh failed!"
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [WARN] Token refresh issue!"
+            SexiLogger "[WARN] Token refresh issue!"
         }
     }
     
     if (!$($VbrJobsStates.data)) {
-        Write-Host "$((Get-Date).ToString("o")) [WARN] Attempting explicit connection ..."
+        SexiLogger "[WARN] Attempting explicit connection ..."
         try {
             $createstorexml = New-Object -TypeName XML
             $createstorexml.Load($credstore)
@@ -136,7 +146,7 @@ if ($SessionFile) {
                 $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if ($($VbrJobsStates.data)) {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to VBR REST API Server $Server"
+                    SexiLogger "[INFO] Connected to VBR REST API Server $Server"
                     $SessionSecretName = "vbr_" + $server.Replace(".","_") + ".key"
                     $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
                     $SessionSecretExpiration = "vbr_" + $server.Replace(".","_") + ".exp"
@@ -162,7 +172,7 @@ if ($($VbrJobsStates.data)) {
     $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
     $VbrDataTable = @{}
     $vbrserver_name = NameCleaner $Server
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Start processing VBR Server $Server ..."
+    SexiLogger "[INFO] Start processing VBR Server $Server ..."
 
     $VbrJobsStatesTable = @{}
     foreach ($VbrJobState in $VbrJobsStates.data) {
@@ -183,15 +193,15 @@ if ($($VbrJobsStates.data)) {
     }
 
     try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR repositories states collect ..."
+        SexiLogger "[INFO] VBR repositories states collect ..."
         $VbrRepositoriesStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupInfrastructure/repositories/states") -Headers $VbrAuthHeaders
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] repositories states collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] repositories states collect failure"
+        SexiLogger "[EROR] $($Error[0])"
     } 
 
     if ($VbrRepositoriesStates.data) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR repositories processing ..."
+        SexiLogger "[INFO] VBR repositories processing ..."
         $VbrRepositoryTable = @{}
         foreach ($VbrRepository in $VbrRepositoriesStates.data) {
             $VbrRepositoryName = NameCleaner $VbrRepository.name
@@ -206,19 +216,19 @@ if ($($VbrJobsStates.data)) {
             } catch {}
         }
     } else {
-        Write-Host "$((Get-Date).ToString("o")) [WARN] No repositories ?!"
+        SexiLogger "[WARN] No repositories ?!"
     }
 
     try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR ScaleOutRepositories collect ..."
+        SexiLogger "[INFO] VBR ScaleOutRepositories collect ..."
         $VbrScaleOutRepositories = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupInfrastructure/scaleOutRepositories") -Headers $VbrAuthHeaders
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] ScaleOutRepositories collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] ScaleOutRepositories collect failure"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     if ($VbrScaleOutRepositories.data) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] SOBR performanceTier processing ..."
+        SexiLogger "[INFO] SOBR performanceTier processing ..."
         foreach ($VbrScaleOutRepository in $VbrScaleOutRepositories.data) {
             try {
                 $VbrScaleOutRepositoryName = NameCleaner $VbrScaleOutRepository.name
@@ -243,28 +253,28 @@ if ($($VbrJobsStates.data)) {
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = 100
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] Issue processing SOBR $($VbrScaleOutRepository.name)"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] Issue processing SOBR $($VbrScaleOutRepository.name)"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
     } else {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] No SOBR"
+        SexiLogger "[INFO] No SOBR"
     }
 
     try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR 5min old objectRestorePoints collect ..."
+        SexiLogger "[INFO] VBR 5min old objectRestorePoints collect ..."
         # $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
         $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?platformNameFilter=VmWare&limit=999&createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] objectRestorePoints collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] objectRestorePoints collect failure"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     # $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
     
 
     if ($VbrObjectRestorePoints5.data) {
-        # Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
+        # SexiLogger "[INFO] VBR backupObjects collect ..."
         # $VbrBackupObjects5 = @{}
         # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) {
         #     try {
@@ -273,16 +283,16 @@ if ($($VbrJobsStates.data)) {
         #             $VbrBackupObjects5.Add($VbrBackupObjects.data[0].name,$VbrBackupObjects[0].data)
         #         }
         #     } catch {
-        #         Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
-        #         Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        #         SexiLogger "[EROR] backupObjects collect failure"
+        #         SexiLogger "[EROR] $($Error[0])"
         #     }
         # } # Too Slow !!!
 
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] VBR backupObjects collect ..."
+            SexiLogger "[INFO] VBR backupObjects collect ..."
             $VbrBackupObjects = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backupObjects?platformNameFilter=VmWare&limit=9999") -Headers $VbrAuthHeaders # TODO limit=9999+ ?
             if ($VbrBackupObjects.data) {
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Building VBR backupObjects table ..."
+                SexiLogger "[INFO] Building VBR backupObjects table ..."
                 $VbrBackupObjectsTable = @{}
                 foreach ($VbrBackupObject in $VbrBackupObjects.data) {
                     try {
@@ -291,13 +301,13 @@ if ($($VbrJobsStates.data)) {
                 }
             }
         } catch {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
-            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+            SexiLogger "[EROR] backupObjects collect failure"
+            SexiLogger "[EROR] $($Error[0])"
         }
 
         $VbrObjectRestorePoints5SessionsId = $VbrObjectRestorePoints5.data.backupId|Select-Object -Unique
 
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR Sessions collect ..."
+        SexiLogger "[INFO] VBR Sessions collect ..."
         $VbrSessions5 = @{}
         foreach ($VbrObjectRestorePoints5SessionId in $VbrObjectRestorePoints5SessionsId) {
             try {
@@ -306,18 +316,18 @@ if ($($VbrJobsStates.data)) {
                     $VbrSessions5.Add($VbrObjectRestorePoints5SessionId,$VbrObjectRestorePoints5Session)
                 }
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] backupObjects collect failure"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] backupObjects collect failure"
+                SexiLogger "[EROR] $($Error[0])"
             }
         }
 
         if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Importing VM inventory ..."
+            SexiLogger "[INFO] Importing VM inventory ..."
             try {
                 $ViVmInventory = $(Import-Csv -Path /mnt/wfs/inventory/ViVmInventory.csv -ErrorAction Stop)
             } catch {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ViVmInventory import issue"
-                Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                SexiLogger "[EROR] ViVmInventory import issue"
+                SexiLogger "[EROR] $($Error[0])"
             }
 
             if ($ViVmInventory) {
@@ -329,12 +339,12 @@ if ($($VbrJobsStates.data)) {
                 }
 
                 if (Test-Path /mnt/wfs/inventory/VbrInv_$($Server).csv) {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Importing $($Server) VBR inventory ..."
+                    SexiLogger "[INFO] Importing $($Server) VBR inventory ..."
                     try {
                         $VbrVmInventory = $(Import-Csv -Path /mnt/wfs/inventory/VbrInv_$($Server).csv -ErrorAction Stop)
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] VbrVmInventory import issue"
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                        SexiLogger "[EROR] VbrVmInventory import issue"
+                        SexiLogger "[EROR] $($Error[0])"
                     }
                     if ($ViVmInventory) {
                         $VbrVmInventoryTable = @{}
@@ -350,7 +360,7 @@ if ($($VbrJobsStates.data)) {
                     $VbrVmInventoryTable = @{}
                 }
 
-                Write-Host "$((Get-Date).ToString("o")) [INFO] Building $($Server) VBR DataTable and inventory ..."
+                SexiLogger "[INFO] Building $($Server) VBR DataTable and inventory ..."
                 foreach ($VbrObjectRestorePoint in $VbrObjectRestorePoints5.data) {
                     if ($VbrJobsStatesTable[$VbrSessions5[$VbrObjectRestorePoint.backupId].jobId]) {
                         $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
@@ -384,16 +394,16 @@ if ($($VbrJobsStates.data)) {
                 }
 
                 if ($VbrVmInventoryTable.Values) {
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Exporting $($Server) VBR inventory ..."
+                    SexiLogger "[INFO] Exporting $($Server) VBR inventory ..."
                     try {
                         $VbrVmInventoryTable.Values|Sort-Object VM|Export-Csv /mnt/wfs/inventory/VbrInv_$($Server).csv -ErrorAction Stop -Force
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] VbrVmInventory import issue"
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                        SexiLogger "[EROR] VbrVmInventory import issue"
+                        SexiLogger "[EROR] $($Error[0])"
                     }
 
                     if ($(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")) {
-                        Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating VbrVmInventory.*.csv files ..."
+                        SexiLogger "[INFO] Rotating VbrVmInventory.*.csv files ..."
                         $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
                         If ($ExtraCsvFiles) {
                             try {
@@ -404,36 +414,36 @@ if ($($VbrJobsStates.data)) {
                         }
                     }
 
-                    Write-Host "$((Get-Date).ToString("o")) [INFO] Import/Export VBR inventories ..."
+                    SexiLogger "[INFO] Import/Export VBR inventories ..."
                     try {
                         $VbrVmInventoryCsv = Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Sort-Object LastRestorePoint -Descending
                         $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force
                         $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -ErrorAction Stop -Force
                     } catch {
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] Import/Export VBR inventories issue"
-                        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+                        SexiLogger "[EROR] Import/Export VBR inventories issue"
+                        SexiLogger "[EROR] $($Error[0])"
                     }
                 } else {
-                    Write-Host "$((Get-Date).ToString("o")) [EROR] No VbrVmInventoryTable values ?!"
+                    SexiLogger "[EROR] No VbrVmInventoryTable values ?!"
                 }
             } else {
-                Write-Host "$((Get-Date).ToString("o")) [EROR] ViVmInventory import issue"
+                SexiLogger "[EROR] ViVmInventory import issue"
             }
         } else {
-            Write-Host "$((Get-Date).ToString("o")) [EROR] No ViVmInventory"
+            SexiLogger "[EROR] No ViVmInventory"
         }
     }
 
     try {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] VBR ended sessions collect ..."
+        SexiLogger "[INFO] VBR ended sessions collect ..."
         $VbrEndedSessions = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
-        Write-Host "$((Get-Date).ToString("o")) [EROR] Sessions collect failure"
-        Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        SexiLogger "[EROR] Sessions collect failure"
+        SexiLogger "[EROR] $($Error[0])"
     }
 
     if ($VbrEndedSessions.data) {
-        Write-Host "$((Get-Date).ToString("o")) [INFO] Processing VBR ended sessions ..."
+        SexiLogger "[INFO] Processing VBR ended sessions ..."
         foreach ($VbrEndedSession in $VbrEndedSessions.data) {
             $job_name = NameCleaner $VbrEndedSession.name
             if ($VbrEndedSession.result.result -eq "Success") {
@@ -450,14 +460,14 @@ if ($($VbrJobsStates.data)) {
     }
 
     $VbrDataTable["veeam.vbr.$vbrserver_name.exec.duration"] = $($(Get-Date).ToUniversalTime() - $ExecStart).TotalSeconds
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Sending veeam data to Graphite for VBR server $Server ..."
+    SexiLogger "[INFO] Sending veeam data to Graphite for VBR server $Server ..."
     Send-BulkGraphiteMetrics -CarbonServer 127.0.0.1 -CarbonServerPort 2003 -Metrics $VbrDataTable -DateTime $ExecStart
 
-    Write-Host "$((Get-Date).ToString("o")) [INFO] End of VBR server $server processing ..."
+    SexiLogger "[INFO] End of VBR server $server processing ..."
 
 } else {
-    Write-Host "$((Get-Date).ToString("o")) [INFO] No Running Jobs on VBR server $server ..."
-    Write-Host "$((Get-Date).ToString("o")) [INFO] Exit"
+    SexiLogger "[INFO] No Running Jobs on VBR server $server ..."
+    SexiLogger "[INFO] Exit"
     Stop-Transcript
     exit
 }
