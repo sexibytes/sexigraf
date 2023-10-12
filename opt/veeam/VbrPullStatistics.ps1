@@ -16,7 +16,7 @@ $SexiVbrMutex = New-Object System.Threading.Mutex($false, "SexiVbrMutex")
 
 function SexiLogger {
     param($Text2Log)
-    SexiLogger "$Text2Log"
+    Write-Host "$((Get-Date).ToString("o")) $Text2Log"
     $null = $SexiVbrMutex.WaitOne(500)
     Add-Content -Path "/var/log/sexigraf/VbrPullStatistics.log" -Value "$((Get-Date).ToString("o")) $($Server) $Text2Log"
     $SexiVbrMutex.ReleaseMutex()
