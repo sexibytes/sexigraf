@@ -75,7 +75,7 @@ require("header.php");
                                                                 <i class="glyphicon glyphicon-th-list" style="font-size: 2em;"></i>
                                                         </div>
                                                         <div class="col-xs-10 text-right">
-                                                                <div class="huge">Refresh Inventories</div>
+                                                                <div class="huge">Inventory Refresh & History</div>
                                                         </div>
                                                 </div>
                                         </div>
