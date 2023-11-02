@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = "Refresh SexiGraf VI Offline Inventory";
+$title = "SexiGraf Inventory Refresh & History";
 require("header.php");
 require("helper.php");
 ?>
@@ -55,6 +55,20 @@ require("helper.php");
                 </div>';
         }
 ?>
+
+<?php
+        $dir = "/mnt/wfs/inventory/";
+        chdir($dir);
+        array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
+        foreach($files as $filename) {
+                if ($filename != "." && $filename != ".." && $filename != "vipscredentials.xml" && $filename != "vbrpscredentials.xml") {
+                        $invlist .= '<li><a href="/sexihistory/'.$filename.'">'.$filename.'</a></li>';
+                }
+        }
+?>
+<h1>Inventory History:</h1>
+<ul><?php echo $invlist; ?></ul>
+
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>
