@@ -59,7 +59,7 @@ require("helper.php");
 <?php
         $dir = "/mnt/wfs/inventory/";
         chdir($dir);
-        array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
+        array_multisort(array_map('filemtime', ($files = glob("*.20*.csv"))), SORT_DESC, $files);
         foreach($files as $filename) {
                 if ($filename != "." && $filename != ".." && $filename != "vipscredentials.xml" && $filename != "vbrpscredentials.xml") {
                         $invlist .= '<li><a href="/sexihistory/'.$filename.'">'.$filename.'</a></li>';
