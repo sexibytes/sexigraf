@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.83"
+$ScriptVersion = "0.9.84"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -362,7 +362,7 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViVmsInfos) {
 
-        if ($(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday") {
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViVmInventory.*.csv files ..."
             $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
@@ -407,7 +407,7 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViEsxsInfos) {
 
-        if ($(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday") {
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViEsxInventory.*.csv files ..."
             $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
@@ -452,7 +452,7 @@ if ($ViServersList.count -gt 0) {
 
     if ($ViDatastoresInfos) {
 
-        if ($(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday") {
+        if ($(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViDsInventory.*.csv files ..."
             $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
