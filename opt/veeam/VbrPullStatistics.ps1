@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.37"
+$ScriptVersion = "0.9.38"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -402,7 +402,7 @@ if ($($VbrJobsStates.data)) {
                         SexiLogger "[EROR] $($Error[0])"
                     }
 
-                    if ($(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")) {
+                    if ($(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv") -and $ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
                         SexiLogger "[INFO] Rotating VbrVmInventory.*.csv files ..."
                         $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
                         If ($ExtraCsvFiles) {
