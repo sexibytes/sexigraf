@@ -96,7 +96,7 @@ require("helper.php");
                                         exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/veeam/VbrConnect.ps1 -server " . escapeshellcmd($_POST["input-vbr"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
                                         if ($return_var) {
                                                 $errorHappened = true;
-                                                $errorMessage = "Wrong username/password or no answer at TCP:9419";
+                                                $errorMessage = "Wrong username/password, AccessDenied or no answer at TCP:9419";
                                         }
                                 }
 
