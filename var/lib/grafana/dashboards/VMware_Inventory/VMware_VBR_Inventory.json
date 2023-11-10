@@ -71,7 +71,8 @@
   "style": "dark",
   "tags": [
     "VI",
-    "VM"
+    "VM",
+    "VBR"
   ],
   "templating": {
     "list": []
@@ -85,6 +86,6 @@
   },
   "timezone": "",
   "title": "VMware VBR Inventory",
-  "uid": "iQlLNW57b",
+  "uid": "iQlLNW57c",
   "version": 8
 }
