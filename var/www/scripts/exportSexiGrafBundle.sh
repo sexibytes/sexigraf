@@ -34,19 +34,19 @@ if [ -d "/mnt/wfs/whisper" ]; then
     cp /mnt/wfs/inventory/*.csv /mnt/wfs/sexigraf-dump/
 
     # Retrieve credential store items
-    if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
-        for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/[[:space:]]\+/;/")
-        do
-            vcenter=$(echo $creditem | cut -d ";" -f 1)
-            username=$(echo $creditem | cut -d ";" -f 2)
-            password="/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml get --server $vcenter --username '$username'"
-            password=$(eval "$password" | cut -c 11-)
-            echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
-        done
-    # File encoding
-    openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
-    rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
-    fi
+    # if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
+    #     for creditem in $(/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml list | egrep -v "Server|^$" | sed "s/[[:space:]]\+/;/")
+    #     do
+    #         vcenter=$(echo $creditem | cut -d ";" -f 1)
+    #         username=$(echo $creditem | cut -d ";" -f 2)
+    #         password="/usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml get --server $vcenter --username '$username'"
+    #         password=$(eval "$password" | cut -c 11-)
+    #         echo "$vcenter;$username;$password" >> /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
+    #     done
+    # # File encoding
+    # openssl des3 -salt -in /mnt/wfs/sexigraf-dump/conf/vicredentials.conf -out /mnt/wfs/sexigraf-dump/conf/vicredentials.conf.ss -pass pass:sexigraf
+    # rm -f /mnt/wfs/sexigraf-dump/conf/vicredentials.conf
+    # fi
 
     if [ -a "/mnt/wfs/inventory/vipscredentials.xml" ]; then
         cp /mnt/wfs/inventory/vipscredentials.xml /mnt/wfs/sexigraf-dump/conf/vipscredentials.xml
