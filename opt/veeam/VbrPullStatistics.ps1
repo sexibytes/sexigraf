@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.39"
+$ScriptVersion = "0.9.41"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -366,7 +366,7 @@ if ($($VbrJobsStates.data)) {
                         $job_name = NameCleaner $VbrSessions5[$VbrObjectRestorePoint.backupId].name
                         $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
                         $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
-                        if ($ViVmInventoryTable[$vm_name]) {
+                        if ($ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name]) {
                             $vcenter_name = NameCleaner $ViVmInventoryTable[$vm_name].vCenter
                             if ($ViVmInventoryTable[$vm_name].Cluster) {
                                 $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
@@ -377,17 +377,17 @@ if ($($VbrJobsStates.data)) {
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
 
                             $VbrObjectInventoryInfo  = "" | Select-Object VbrServer, JobName, vCenter, Cluster, VM, RestorePointsCount, LastRestorePoint
-                            $VbrObjectInventoryInfo.VbrServer = $vbrserver_name
-                            $VbrObjectInventoryInfo.JobName = $job_name
-                            $VbrObjectInventoryInfo.vCenter = $vcenter_name
-                            $VbrObjectInventoryInfo.Cluster = $cluster_name
-                            $VbrObjectInventoryInfo.VM = $vm_name
+                            $VbrObjectInventoryInfo.VbrServer = $Server
+                            $VbrObjectInventoryInfo.JobName = $VbrSessions5[$VbrObjectRestorePoint.backupId].name
+                            $VbrObjectInventoryInfo.vCenter = $ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].vCenter
+                            $VbrObjectInventoryInfo.Cluster = $ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].Cluster
+                            $VbrObjectInventoryInfo.VM = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
                             $VbrObjectInventoryInfo.RestorePointsCount = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
                             $VbrObjectInventoryInfo.LastRestorePoint = $VbrObjectRestorePoint.creationTime
-                            if ($VbrVmInventoryTable[$vm_name]) {
-                                $VbrVmInventoryTable[$vm_name] = $VbrObjectInventoryInfo
+                            if ($VbrVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name]) {
+                                $VbrVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name] = $VbrObjectInventoryInfo
                             } else {
-                                $VbrVmInventoryTable.add($vm_name,$VbrObjectInventoryInfo)
+                                $VbrVmInventoryTable.add($VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name,$VbrObjectInventoryInfo)
                             }
                         }
                     }
@@ -418,7 +418,7 @@ if ($($VbrJobsStates.data)) {
                     try {
                         $VbrVmInventoryCsv = Import-Csv $(Get-ChildItem /mnt/wfs/inventory/VbrInv_*.csv).fullname | Sort-Object LastRestorePoint -Descending
                         $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.csv -ErrorAction Stop -Force
-                        if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
+                        if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -eq "1") {
                             $VbrVmInventoryCsv | Export-Csv /mnt/wfs/inventory/VbrVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -ErrorAction Stop -Force
                         }
                     } catch {
