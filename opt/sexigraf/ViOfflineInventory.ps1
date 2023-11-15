@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.85"
+$ScriptVersion = "0.9.86"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -398,7 +398,7 @@ if ($ViServersList.count -gt 0) {
             # }
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory file ..."
             $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.csv -Force -ErrorAction Stop
-            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
+            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -eq "1") {
                 $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
             }
         } catch {
@@ -445,7 +445,7 @@ if ($ViServersList.count -gt 0) {
             # }
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ESX Inventory file ..."
             $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force -ErrorAction Stop
-            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
+            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -eq "1") {
                 $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
             }
         } catch {
@@ -471,7 +471,7 @@ if ($ViServersList.count -gt 0) {
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
             $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force -ErrorAction Stop
-            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -match "1") {
+            if ($ExecStart.DayOfWeek -match "Monday" -and $ExecStart.Hour -eq "1") {
                 $ViDatastoresInfos|Out-File -Path /mnt/wfs/inventory/ViDsInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
             }
         } catch {
