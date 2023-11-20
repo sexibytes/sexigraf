@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1032"
+$ScriptVersion = "0.9.1033"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -290,6 +290,9 @@ try {
                 SexiLogger "[INFO] Sessions.TerminateSession privilege not detected, SessionManager skipped ..."
             }
             $EventManager = Get-View $ServiceInstance.Content.EventManager -Property latestEvent, description -Server $Server
+            if ($vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $Server.Replace(".","_"))) {
+                SexiLogger "[INFO] vSAN collector enabled ..."
+            }
         } catch {
             AltAndCatchFire "AuthorizationManager or  SessionManager check failure"
         }
