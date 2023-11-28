@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.86"
+$ScriptVersion = "0.9.87"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -364,10 +364,10 @@ if ($ViServersList.count -gt 0) {
 
         if ($(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViVmInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
-                    Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                    Get-ChildItem "/mnt/wfs/inventory/$($ExtraCsvFiles.name)" | Remove-Item -Force -Confirm:$false
                 } catch {
                     AltAndCatchFire "Cannot remove extra csv files"
                 }
@@ -411,7 +411,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViEsxInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
@@ -458,7 +458,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViDsInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property Name | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
