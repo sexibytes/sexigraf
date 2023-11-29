@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.42"
+$ScriptVersion = "0.9.43"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -407,7 +407,7 @@ if ($($VbrJobsStates.data)) {
                         $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/VbrVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
                         If ($ExtraCsvFiles) {
                             try {
-                                Get-ChildItem $ExtraCsvFiles.name | Remove-Item -Force -Confirm:$false
+                                Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
                             } catch {
                                 AltAndCatchFire "Cannot remove extra csv files"
                             }
