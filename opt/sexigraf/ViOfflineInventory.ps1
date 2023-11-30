@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.88"
+$ScriptVersion = "0.9.89"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -367,7 +367,7 @@ if ($ViServersList.count -gt 0) {
             $ExtraCsvFiles = Compare-Object  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv")  $(Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
-                    Get-ChildItem "/mnt/wfs/inventory/$($ExtraCsvFiles.FullName)" | Remove-Item -Force -Confirm:$false
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
                 } catch {
                     AltAndCatchFire "Cannot remove extra csv files"
                 }
