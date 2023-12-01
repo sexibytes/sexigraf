@@ -504,7 +504,7 @@
     "list": [
       {
         "allFormat": "wildcard",
-        "allValue": null,
+        "allValue": "*",
         "current": {},
         "datasource": null,
         "definition": "vi.*",
