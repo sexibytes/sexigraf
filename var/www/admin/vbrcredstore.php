@@ -93,7 +93,7 @@ require("helper.php");
                                         $errorHappened = true;
                                         $errorMessage = "Wrong username format, supported format are DOMAIN\USERNAME, USERNAME, USERNAME@DOMAIN.TLD";
                                 } else {
-                                        exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/veeam/VbrConnect.ps1 -server " . escapeshellcmd($_POST["input-vbr"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
+                                        exec("/usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/VbrConnect.ps1 -server " . escapeshellcmd($_POST["input-vbr"]) . " -username " . escapeshellcmd($_POST["input-username"]) . " -password " . escapeshellcmd($_POST["input-password"]), $null, $return_var);
                                         if ($return_var) {
                                                 $errorHappened = true;
                                                 $errorMessage = "Wrong username/password, AccessDenied or no answer at TCP:9419";
