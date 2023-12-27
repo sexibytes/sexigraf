@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1033"
+$ScriptVersion = "0.9.1034"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -572,7 +572,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
     }
 
-    if ($vcenter_clusters_h.Keys) {
+    if ($vcenter_clusters_h.keys.count -gt 0) {
         $ClusterMultiMetrics = @(
             "vmop.numSVMotion.latest",
             "vmop.numXVMotion.latest"
@@ -582,7 +582,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             SexiLogger "[INFO] All Clusters multi metrics collected in $($ClusterMultiStatsTime.TotalSeconds) sec for vCenter $vcenter_name"
         } catch {
             SexiLogger "[EROR] $($Error[0])"
-            SexiLogger "[EROR] VM MultiQueryPerf failure"
+            SexiLogger "[EROR] VM MultiQueryPerf300 failure"
         }
     }
 
@@ -1956,7 +1956,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     # if ($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value] -and $VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_standalone_host_vm.moref.value]) {
                     #     $vcenter_standalone_host_vm_net_iops = $($($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum + $($VmMultiStats[$PerfCounterTable["net.packetsRx.summation"]][$vcenter_standalone_host_vm.moref.value][$($VmMultiStats[$PerfCounterTable["net.packetsTx.summation"]][$vcenter_standalone_host_vm.moref.value]).Keys]|Measure-Object -Sum).Sum) / 300
-                    #     $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netIOPS", $vcenter_standalone_host_vm_net_iops)
+                    #     $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.vm.$vcenter_standalone_host_vm_name.fatstats.netIOPS", $vcenter_standalone_host_vm_net_iops)
                     # }
 
                     if ($VmMultiStats[$PerfCounterTable["net.usage.average"]][$vcenter_standalone_host_vm.moref.value][""]) {
@@ -2318,13 +2318,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
         SexiLogger "[EROR] $($Error[0])"
     }
 
-    $UnamagedResourcePoolPrivateMemory = 0
-    $UnamagedResourcePoolSharedMemory = 0
-    $UnamagedResourcePoolBalloonedMemory = 0
-    $UnamagedResourcePoolCompressedMemory = 0
-    $UnamagedResourcePoolSwappedMemory = 0
-    $UnamagedResourcePoolGuestMemoryUsage = 0
-    $UnamagedResourcePoolConsumedOverheadMemory = 0
+    $UnmanagedResourcePoolPrivateMemory = 0
+    $UnmanagedResourcePoolSharedMemory = 0
+    $UnmanagedResourcePoolBalloonedMemory = 0
+    $UnmanagedResourcePoolCompressedMemory = 0
+    $UnmanagedResourcePoolSwappedMemory = 0
+    $UnmanagedResourcePoolGuestMemoryUsage = 0
+    $UnmanagedResourcePoolConsumedOverheadMemory = 0
 
     $unmanaged_host_vms_vcpus = 0
     $unmanaged_host_vms_vram = 0
@@ -2458,17 +2458,17 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                     if ($unmanaged_host_vm.summary.quickStats.balloonedMemory -gt 0) {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.BalloonedMemory", $unmanaged_host_vm.summary.quickStats.balloonedMemory)
-                        $UnamagedResourcePoolBalloonedMemory += $unmanaged_host_vm.summary.quickStats.balloonedMemory
+                        $UnmanagedResourcePoolBalloonedMemory += $unmanaged_host_vm.summary.quickStats.balloonedMemory
                     }
 
                     if ($unmanaged_host_vm.summary.quickStats.compressedMemory -gt 0) {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.CompressedMemory", $unmanaged_host_vm.summary.quickStats.compressedMemory)
-                        $UnamagedResourcePoolCompressedMemory += $unmanaged_host_vm.summary.quickStats.compressedMemory
+                        $UnmanagedResourcePoolCompressedMemory += $unmanaged_host_vm.summary.quickStats.compressedMemory
                     }
 
                     if ($unmanaged_host_vm.summary.quickStats.swappedMemory -gt 0) {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.quickstats.SwappedMemory", $unmanaged_host_vm.summary.quickStats.swappedMemory)
-                        $UnamagedResourcePoolSwappedMemory += $unmanaged_host_vm.summary.quickStats.swappedMemory
+                        $UnmanagedResourcePoolSwappedMemory += $unmanaged_host_vm.summary.quickStats.swappedMemory
                     }
 
                     if ($VmMultiStats[$PerfCounterTable["cpu.ready.summation"]][$unmanaged_host_vm.moref.value][""]) {
@@ -2493,7 +2493,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]) {
                         $unmanaged_host_vm_disk_latency = $VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.maxTotalLatency", $unmanaged_host_vm_disk_latency)
-                    }
+                    }Unmanaged
 
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
                         $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
@@ -2519,10 +2519,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.netUsage", 0)
                     }
                     
-                    if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnamagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
-                    if ($unmanaged_host_vm.summary.quickStats.GuestMemoryUsage -gt 0) {$UnamagedResourcePoolGuestMemoryUsage += $unmanaged_host_vm.summary.quickStats.GuestMemoryUsage}
-                    if ($unmanaged_host_vm.summary.quickStats.SharedMemory -gt 0) {$UnamagedResourcePoolSharedMemory += $unmanaged_host_vm.summary.quickStats.SharedMemory}
-                    if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnamagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
+                    if ($unmanaged_host_vm.summary.quickStats.privateMemory -gt 0) {$UnmanagedResourcePoolPrivateMemory += $unmanaged_host_vm.summary.quickStats.privateMemory}
+                    if ($unmanaged_host_vm.summary.quickStats.GuestMemoryUsage -gt 0) {$UnmanagedResourcePoolGuestMemoryUsage += $unmanaged_host_vm.summary.quickStats.GuestMemoryUsage}
+                    if ($unmanaged_host_vm.summary.quickStats.SharedMemory -gt 0) {$UnmanagedResourcePoolSharedMemory += $unmanaged_host_vm.summary.quickStats.SharedMemory}
+                    if ($unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory -gt 0) {$UnmanagedResourcePoolConsumedOverheadMemory += $unmanaged_host_vm.summary.quickStats.ConsumedOverheadMemory}
                 
                 } catch {
                     SexiLogger "[EROR] VM $unmanaged_host_vm_name metric issue on unmanaged host $unmanaged_host_name"
@@ -2536,13 +2536,13 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     }
 
     try {
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.ballooned", $UnamagedResourcePoolBalloonedMemory)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.compressed", $UnamagedResourcePoolCompressedMemory)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.consumedOverhead", $UnamagedResourcePoolConsumedOverheadMemory)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.guest", $UnamagedResourcePoolGuestMemoryUsage)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.private", $UnamagedResourcePoolPrivateMemory)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.shared", $UnamagedResourcePoolSharedMemory)
-        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.swapped", $UnamagedResourcePoolSwappedMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.ballooned", $UnmanagedResourcePoolBalloonedMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.compressed", $UnmanagedResourcePoolCompressedMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.consumedOverhead", $UnmanagedResourcePoolConsumedOverheadMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.guest", $UnmanagedResourcePoolGuestMemoryUsage)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.private", $UnmanagedResourcePoolPrivateMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.shared", $UnmanagedResourcePoolSharedMemory)
+        $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.quickstats.mem.swapped", $UnmanagedResourcePoolSwappedMemory)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.total", $($unmanaged_host_vms_on + $unmanaged_host_vms_off))
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.on", $unmanaged_host_vms_on)
         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.runtime.vm.dead", $unmanaged_host_vms_dead)
