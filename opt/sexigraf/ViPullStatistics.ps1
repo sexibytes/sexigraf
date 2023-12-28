@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1034"
+$ScriptVersion = "0.9.1035"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1713,7 +1713,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         if ($vcenter_standalone_host_datastore.summary.type -notmatch "vsan") {
                             $vcenter_standalone_host_datastore_uuid = $vcenter_standalone_host_datastore.summary.url.split("/")[-2]
 
-                            $vcenter_standalone_host_datastore_latency = $HostMultiStats[$PerfCounterTable["datastore.sizeNormalizedDatastoreLatency.latest"]][$vcenter_standalone_host.moref.value][$vcenter_standalone_host_datastore_uuid]
+                            $vcenter_standalone_host_datastore_latency_raw = $HostMultiStats[$PerfCounterTable["datastore.totalWriteLatency.average"]][$vcenter_standalone_host.moref.value][$vcenter_standalone_host_datastore_uuid]
+                            $vcenter_standalone_host_datastore_latency = $(GetMedian $vcenter_standalone_host_datastore_latency_raw) * 1000
                             $vcenter_standalone_host_h.add("esx.$vcenter_name.$vcenter_standalone_host_dc_name.$vcenter_standalone_host_name.datastore.$vcenter_standalone_host_datastore_name.iorm.sizeNormalizedDatastoreLatency", $vcenter_standalone_host_datastore_latency)
 
                             $vcenter_standalone_host_datastore_iops_w = $HostMultiStats[$PerfCounterTable["datastore.numberWriteAveraged.average"]][$vcenter_standalone_host.moref.value][$vcenter_standalone_host_datastore_uuid]
