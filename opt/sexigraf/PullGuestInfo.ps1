@@ -63,6 +63,10 @@ try {
 
             if ($VmwCmdOvfEnvGuest["guestinfo.dns"] -and ([regex]::match($($VmwCmdOvfEnvGuest['guestinfo.dns']), '^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')).Success) {
                 $EtcNetworkInterfaces += " dns-nameservers $($VmwCmdOvfEnvGuest['guestinfo.dns'])"
+            } elseif ($VmwCmdOvfEnvGuest["guestinfo.dns"] -and ([regex]::match($($VmwCmdOvfEnvGuest['guestinfo.dns']), '^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}) ([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')).Success) {
+                $EtcNetworkInterfaces += " dns-nameservers $($VmwCmdOvfEnvGuest['guestinfo.dns'])"
+            } elseif ($VmwCmdOvfEnvGuest["guestinfo.dns"] -and ([regex]::match($($VmwCmdOvfEnvGuest['guestinfo.dns']), '^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}) ([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}) ([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')).Success) {
+                $EtcNetworkInterfaces += " dns-nameservers $($VmwCmdOvfEnvGuest['guestinfo.dns'])"
             }
     
             if ($VmwCmdOvfEnvGuest["guestinfo.domain"] -and ([regex]::match($($VmwCmdOvfEnvGuest['guestinfo.domain']), '([a-zA-Z]+)')).Success) {
