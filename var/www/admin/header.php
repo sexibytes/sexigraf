@@ -39,7 +39,7 @@
                         <li><a href="vbrcredstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> Veeam Credential Store</a></li>
                         <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
                         <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> House Cleaner</a></li>
-                        <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
+                        <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Inventory Refresh & History</a></li>
                         <li><a href="showlog.php"><i class="glyphicon glyphicon-search glyphicon-custom"></i> Log Viewer</a></li>
                         <li><a href="export-import.php"><i class="glyphicon glyphicon-transfer glyphicon-custom"></i> Export / Import</a></li>
                     </ul>
