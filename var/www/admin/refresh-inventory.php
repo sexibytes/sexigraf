@@ -8,7 +8,7 @@ require("helper.php");
                 <div class="panel panel-default">
                         <div class="panel-heading"><h3 class="panel-title">Refresh VI Offline Inventory Notes</h3></div>
                         <div class="panel-body"><ul>
-                                <li>The Static Offline Inventory is automatically schedule to be updated every 1 hour.</li>
+                                <li>The Static VI Offline Inventory is automatically updated every hour.</li>
                                 <li>If you want to force a refresh, you can use this section to perform update</li>
                         </ul></div>
                 </div>
