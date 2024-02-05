@@ -78,7 +78,7 @@
         {
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(veeam.vbr.$VbrServer.exec.duration, 2)",
+          "target": "aliasByNode(veeam.vbr.$VbrServer.exec.duration, 2, 1)",
           "textEditor": false
         }
       ],
