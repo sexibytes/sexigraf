@@ -32,7 +32,7 @@ require("helper.php");
                 <h4><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
                 <span class="sr-only">Warning:</span>
                 Confirmation needed!</h4>
-                You are about to force inventory update. It should be use only for DEBUG purpose as it is already scheduled to run hourly.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
+                You are about to force VI inventory update. It should be use only for DEBUG purpose as it is already scheduled to run hourly.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
                 <form class="form" action="refresh-inventory.php" method="post">
                         <p><button name="submit" class="btn btn-warning" value="refresh-inventory-confirmed">Confirm inventory refresh</button></p>
                 </form>';
@@ -50,7 +50,7 @@ require("helper.php");
                 }
         } else {
                 echo '                        <form class="form" action="refresh-inventory.php" method="post">
-                                <p><button name="submit" class="btn btn-success" value="refresh-inventory">Force Inventory Refresh</button></p>
+                                <p><button name="submit" class="btn btn-success" value="refresh-inventory">Force VI Inventory Refresh</button></p>
                         </form>
                 </div>';
         }
