@@ -1,5 +1,61 @@
 # Changelog
 
+## [0.99j](https://github.com/sexibytes/sexigraf/tree/0.99j) (2024-02-12)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99i...0.99j)
+
+**Implemented enhancements:**
+
+- Fix log files exclusive lock [\#358](https://github.com/sexibytes/sexigraf/issues/358)
+- Adding VMNIC CRC error check [\#344](https://github.com/sexibytes/sexigraf/issues/344)
+- vCenter: privileg check failed for user \(missing permission Sessions.TerminateSession [\#341](https://github.com/sexibytes/sexigraf/issues/341)
+- Mimic com.vmware.vc.vm.DstVmMigratedEvent behaviour in vROps for VMs and ESXs [\#325](https://github.com/sexibytes/sexigraf/issues/325)
+- Add inventory history [\#275](https://github.com/sexibytes/sexigraf/issues/275)
+- add scsi path state count per esx [\#258](https://github.com/sexibytes/sexigraf/issues/258)
+- Rename or Move ESXI - Automatically integrated  [\#243](https://github.com/sexibytes/sexigraf/issues/243)
+- Veeam Backup Integration [\#147](https://github.com/sexibytes/sexigraf/issues/147)
+
+**Fixed bugs:**
+
+- \[EROR\] Cluster xxx root resource pool not found ?! \[EROR\] Cannot index into a null array. [\#357](https://github.com/sexibytes/sexigraf/issues/357)
+- datastoreVMObservedLatency empty \(NFS?\) [\#354](https://github.com/sexibytes/sexigraf/issues/354)
+- No more storage metrics when some cluster members are not responding [\#347](https://github.com/sexibytes/sexigraf/issues/347)
+- Issues in VMware vSAN Disk Latency and VMware vSAN Disk Utilization dashboards [\#343](https://github.com/sexibytes/sexigraf/issues/343)
+- Cluster multi ESX LiteStats -null  [\#342](https://github.com/sexibytes/sexigraf/issues/342)
+
+**Closed issues:**
+
+- Sexigraf "Victory Mine" impacted by Grafana CVE-2023-4822 ? [\#371](https://github.com/sexibytes/sexigraf/issues/371)
+- Add VMware asset version evolution dashboard [\#365](https://github.com/sexibytes/sexigraf/issues/365)
+- Where do you get the data to display com\_vmware\_vc\_authorization\_nopermission? [\#363](https://github.com/sexibytes/sexigraf/issues/363)
+- Error add vcenter [\#362](https://github.com/sexibytes/sexigraf/issues/362)
+- VMware Multi Datastore Usage missing [\#355](https://github.com/sexibytes/sexigraf/issues/355)
+- Export Dashboard data to CSV or Excel using Grafana or poweshell [\#352](https://github.com/sexibytes/sexigraf/issues/352)
+- adding extra retention the first 4 days 30m:96h [\#351](https://github.com/sexibytes/sexigraf/issues/351)
+- vm iops limit affects datastoreVMObservedLatency [\#350](https://github.com/sexibytes/sexigraf/issues/350)
+- CPU ready in Sexigraf for vmware vm does not match the data in Vcenter [\#348](https://github.com/sexibytes/sexigraf/issues/348)
+- Â¿Remove old cluster? [\#346](https://github.com/sexibytes/sexigraf/issues/346)
+- no data [\#345](https://github.com/sexibytes/sexigraf/issues/345)
+- Latest ova for downloading are unavailible  [\#340](https://github.com/sexibytes/sexigraf/issues/340)
+- Problem with export  [\#339](https://github.com/sexibytes/sexigraf/issues/339)
+- Appliance network settings [\#338](https://github.com/sexibytes/sexigraf/issues/338)
+- Protect against 0 vm and/or 0 host in the inventory [\#337](https://github.com/sexibytes/sexigraf/issues/337)
+- Unable to collect performance [\#336](https://github.com/sexibytes/sexigraf/issues/336)
+- Datastores used space metric [\#334](https://github.com/sexibytes/sexigraf/issues/334)
+- OVA Download Link not working [\#333](https://github.com/sexibytes/sexigraf/issues/333)
+- VsanPerfQueryPerf issue [\#332](https://github.com/sexibytes/sexigraf/issues/332)
+- Can't download OVA [\#331](https://github.com/sexibytes/sexigraf/issues/331)
+- After update - Variable "ErrorActionPreference" or common parameter is set to Stop [\#329](https://github.com/sexibytes/sexigraf/issues/329)
+- How to change timezone JST? [\#310](https://github.com/sexibytes/sexigraf/issues/310)
+- ESX LiteStats - Detail? [\#307](https://github.com/sexibytes/sexigraf/issues/307)
+- sexigraf 0.99h : vulnerability moderate on Grafana software \(CVE-2022-24812 Grafana Enterprise fine-grained access control API Key privilege escalation : https://github.com/grafana/grafana/security/advisories/GHSA-82gq-xfg3-5j7v\), need to update it [\#305](https://github.com/sexibytes/sexigraf/issues/305)
+- VMware All Cluster VM Stats: Add Graph of IOPS and Blocksize [\#284](https://github.com/sexibytes/sexigraf/issues/284)
+
+**Merged pull requests:**
+
+- Merge before release 0.99j - St. Olga [\#377](https://github.com/sexibytes/sexigraf/pull/377) ([rschitz](https://github.com/rschitz))
+- Update CHANGELOG.md [\#324](https://github.com/sexibytes/sexigraf/pull/324) ([rschitz](https://github.com/rschitz))
+
 ## [0.99i](https://github.com/sexibytes/sexigraf/tree/0.99i) (2023-01-09)
 
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99h...0.99i)
@@ -291,7 +347,7 @@
 
 **Closed issues:**
 
-- Datacenter names with ÅÄÖ will cause problems [\#114](https://github.com/sexibytes/sexigraf/issues/114)
+- Datacenter names with Ã…Ã„Ã– will cause problems [\#114](https://github.com/sexibytes/sexigraf/issues/114)
 - VSAN Disk Utilization dashboard [\#113](https://github.com/sexibytes/sexigraf/issues/113)
 - Document what the different graphs mean [\#108](https://github.com/sexibytes/sexigraf/issues/108)
 - Only 1 host being discovered [\#104](https://github.com/sexibytes/sexigraf/issues/104)
