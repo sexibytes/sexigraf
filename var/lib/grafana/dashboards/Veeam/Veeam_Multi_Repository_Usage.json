@@ -1,190 +1,194 @@
 {
   "annotations": {
+    "list": [
+    ]
   },
   "editable": false,
-  "gnetId": null,
-  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
   "id": null,
-  "iteration": 1637751058301,
+  "iteration": 1683841959668,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "capacity": "#BF1B00",
+        "uncommitted": "#EAB839",
+        "used": "#0A437C"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
       "editable": false,
       "error": false,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 0,
+      "fill": 2,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 12,
-        "w": 24,
+        "h": 7,
+        "w": 6,
         "x": 0,
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 1,
+      "id": 2,
       "legend": {
-        "avg": false,
+        "avg": true,
         "current": false,
         "max": false,
         "min": false,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 2,
       "links": [],
+      "maxPerRow": 4,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 3,
-      "points": true,
+      "pluginVersion": "8.4.4",
+      "pointradius": 5,
+      "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "repeat": "repo",
+      "repeatDirection": "h",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:416",
+          "alias": "capacity",
+          "fill": 0,
+          "stack": false
+        },
+        {
+          "$$hashKey": "object:708",
+          "alias": "RealUsedPct",
+          "legend": true,
+          "lines": false,
+          "stack": false,
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
+          "datasource": "local",
+          "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(vi.$ViServer.vi.exec.duration, 1, 2)",
+          "target": "alias(veeam.vbr.$vbrserver.repo.$repo.usedSpaceGB, 'used')",
           "textEditor": false
         },
         {
+          "datasource": "local",
+          "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(vi.$ViServer.vsan.exec.duration, 1, 2)",
+          "target": "alias(veeam.vbr.$vbrserver.repo.$repo.freeGB, 'free')",
           "textEditor": false
         },
         {
+          "datasource": "local",
+          "hide": false,
           "refCount": 0,
           "refId": "C",
-          "target": "aliasByNode(vi.$ViServer.vm.exec.duration, 1, 2)",
+          "target": "alias(veeam.vbr.$vbrserver.repo.$repo.capacityGB, 'capacity')",
           "textEditor": false
         },
         {
+          "datasource": "local",
+          "hide": false,
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(veeam.vbr.$VbrServer.exec.duration, 2, 1)",
+          "target": "aliasByNode(veeam.vbr.$vbrserver.repo.$repo.RealUsedPct, 5)",
           "textEditor": false
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Pull Exec Time",
+      "title": "$repo usage",
       "tooltip": {
         "shared": true,
         "sort": 2,
-        "value_type": "cumulative"
+        "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
-          "format": "s",
+          "$$hashKey": "object:410",
+          "format": "decgbytes",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
-          "format": "short",
+          "$$hashKey": "object:411",
+          "format": "percent",
           "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "max": "100",
+          "min": "0",
+          "show": false
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     }
   ],
-  "refresh": false,
-  "schemaVersion": 27,
+  "schemaVersion": 35,
   "style": "light",
-  "tags": [
-    "VM",
-    "VI",
-    "vSAN",
-    "Veeam"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
-        "allValue": null,
+        "allValue": "*",
         "current": {},
-        "datasource": null,
-        "definition": "vi.*",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "name": "ViServer",
-        "options": [],
-        "query": "vi.*",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": null,
         "definition": "veeam.vbr.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
-        "name": "VbrServer",
+        "name": "vbrserver",
         "options": [],
         "query": "veeam.vbr.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
+        "sort": 1,
         "type": "query",
-        "useTags": false
+        "datasource": "local"
+      },
+      {
+        "allValue": "*",
+        "current": {},
+        "definition": "veeam.vbr.$vbrserver.repo.*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "repo",
+        "options": [],
+        "query": "veeam.vbr.$vbrserver.repo.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "datasource": "local"
       }
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-1d",
     "to": "now"
   },
   "timepicker": {
@@ -218,7 +222,8 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "SexiGraf Pull Exec Time",
-  "uid": "cie51Kt7k",
-  "version": 1
+  "title": "Veeam Multi Repository Usage",
+  "uid": "ofgN-MyVz",
+  "version": 11,
+  "weekStart": ""
 }

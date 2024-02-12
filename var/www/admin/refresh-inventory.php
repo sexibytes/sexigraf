@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = "Refresh SexiGraf VI Offline Inventory";
+$title = "SexiGraf Inventory Refresh & History";
 require("header.php");
 require("helper.php");
 ?>
@@ -8,7 +8,7 @@ require("helper.php");
                 <div class="panel panel-default">
                         <div class="panel-heading"><h3 class="panel-title">Refresh VI Offline Inventory Notes</h3></div>
                         <div class="panel-body"><ul>
-                                <li>The Static Offline Inventory is automatically schedule to be updated every 1 hour.</li>
+                                <li>The Static VI Offline Inventory is automatically updated every hour.</li>
                                 <li>If you want to force a refresh, you can use this section to perform update</li>
                         </ul></div>
                 </div>
@@ -32,7 +32,7 @@ require("helper.php");
                 <h4><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
                 <span class="sr-only">Warning:</span>
                 Confirmation needed!</h4>
-                You are about to force inventory update. It should be use only for DEBUG purpose as it is already scheduled to run hourly.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
+                You are about to force VI inventory update. It should be use only for DEBUG purpose as it is already scheduled to run hourly.<br />The process itself can take a few seconds (or minutes depending on your platform size). Are you sure about this? We mean, <strong>really sure</strong>?<br />
                 <form class="form" action="refresh-inventory.php" method="post">
                         <p><button name="submit" class="btn btn-warning" value="refresh-inventory-confirmed">Confirm inventory refresh</button></p>
                 </form>';
@@ -50,11 +50,25 @@ require("helper.php");
                 }
         } else {
                 echo '                        <form class="form" action="refresh-inventory.php" method="post">
-                                <p><button name="submit" class="btn btn-success" value="refresh-inventory">Force Inventory Refresh</button></p>
+                                <p><button name="submit" class="btn btn-success" value="refresh-inventory">Force VI Inventory Refresh</button></p>
                         </form>
                 </div>';
         }
 ?>
+
+<?php
+        $dir = "/mnt/wfs/inventory/";
+        chdir($dir);
+        array_multisort(array_map('filemtime', ($files = glob("*.20*.csv"))), SORT_DESC, $files);
+        foreach($files as $filename) {
+                if ($filename != "." && $filename != ".." && $filename != "vipscredentials.xml" && $filename != "vbrpscredentials.xml") {
+                        $invlist .= '<li><a href="/sexihistory/'.$filename.'">'.$filename.'</a></li>';
+                }
+        }
+?>
+<h1>Inventory History:</h1>
+<ul><?php echo $invlist; ?></ul>
+
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

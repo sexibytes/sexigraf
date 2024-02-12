@@ -10,7 +10,8 @@ require("helper.php");
                         <div class="panel-body"><ul>
                                 <li>This page can be used to purge old and/or unwanted whisper data objects as well as vCenter session files.</li>
                                 <li style="color:red;"><strong><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Beware as this operation cannot be undone, so there is a risk of DATA LOSS if you don't know what you're doing. <span class="glyphicon glyphicon-alert" aria-hidden="true"></span></strong></li>
-                                <li>Autopurge will automatically remove all files that are not updated since selected days (i.e. orphaned vms).</li>
+                                <li>Autopurge will automatically remove all files not updated since selected days (i.e. deleted vms).</li>
+                                <li>You can check the WhisperAutoPurge log in the Log Viewer panel to follow the process.</li>
                                 <li>Please refer to the <a href="http://www.sexigraf.fr/">project website</a> and documentation for more information.</li>
                         </ul></div>
                 </div>
@@ -76,7 +77,7 @@ require("helper.php");
                 </ul>
                 <div class="tab-content" style="padding-top: 10px;">
                         <div role="tabpanel" class="tab-pane fade in active" id="whisper">
-                        ' . php_file_tree_dir_v2("/mnt/wfs/whisper", 2) . '
+                        ' . php_file_tree_dir_v2("/mnt/wfs/whisper", 3) . '
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="vcenter">
                         ' . php_file_tree("/tmp", "dat") . '
@@ -109,7 +110,7 @@ require("helper.php");
                 </div>
                 <div class="panel panel-warning">
                         <div class="panel-body">
-                        Force purge items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="30" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
+                        Force purge deleted items older than <input type="number" id="nb_days_purge" name="nb_days_purge" min="1" value="90" style="width:80px;"> days<br/><button name="submit" class="btn btn-default btn-info" value="force-autopurge">Purge</button>
                         </div>
                 </div>
                 </form>

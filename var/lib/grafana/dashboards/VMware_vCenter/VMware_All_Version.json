@@ -504,14 +504,14 @@
     "list": [
       {
         "allFormat": "wildcard",
-        "allValue": null,
+        "allValue": "*",
         "current": {},
         "datasource": null,
         "definition": "vi.*",
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": true,
         "multiFormat": "glob",

@@ -227,6 +227,7 @@ console.log(e);
                                         <li><a href="index.php"><i class="glyphicon glyphicon-map-marker glyphicon-custom"></i> Summary</a></li>
                                         <li class="divider"></li>
                                         <li><a href="credstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> vSphere Credential Store</a></li>
+                                        <li><a href="vbrcredstore.php"><i class="glyphicon glyphicon-briefcase glyphicon-custom"></i> Veeam Credential Store</a></li>
                                         <li><a href="updater.php"><i class="glyphicon glyphicon-hdd glyphicon-custom"></i> Package Updater</a></li>
                                         <li><a href="purge.php"><i class="glyphicon glyphicon-trash glyphicon-custom"></i> Stats Remover</a></li>
                                         <li><a href="refresh-inventory.php"><i class="glyphicon glyphicon-th-list glyphicon-custom"></i> Refresh Inventory</a></li>
@@ -234,7 +235,7 @@ console.log(e);
                                         <li><a href="export-import.php"><i class="glyphicon glyphicon-transfer glyphicon-custom"></i> Export / Import</a></li>
                                 </ul>
                         </li>
-           </ul>
+            </ul>
         </nav>
         </div>
 
@@ -255,8 +256,10 @@ console.log(e);
 
 $tail = new PHPTail(array(
     "VI Offline Inventory" => "/var/log/sexigraf/ViOfflineInventory.log",
-    "vSAN Statistics" => "/var/log/sexigraf/VsanDisksPullStatistics.log",
     "VI Statistics" => "/var/log/sexigraf/ViPullStatistics.log",
+    "VBR Statistics" => "/var/log/sexigraf/VbrPullStatistics.log",
+    "xMotion Garbage Collector" => "/var/log/sexigraf/xMotionGarbageCollector.log",
+    "Whisper Auto Purge" => "/var/log/sexigraf/WhisperAutoPurge.log",
 ));
 
 /**

@@ -52,7 +52,7 @@
           "lines": true,
           "linewidth": 0,
           "links": [],
-          "nullPointMode": "connected",
+          "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,

@@ -38,24 +38,29 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # chmod 644 /var/www/admin/offline-vminventory.html
 
     # Import credential store items
-    if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
-        openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /tmp/vicredentials.conf -pass pass:sexigraf -md md5
-        # /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -createstore -credstore /mnt/wfs/inventory/vipscredentials.xml
-        for creditem in $(cat /tmp/vicredentials.conf)
-            do
-                vcenter=$(echo $creditem | cut -d ";" -f 1)
-                username=$(echo $creditem | cut -d ";" -f 2)
-                password=$(echo $creditem | cut -d ";" -f 3)
-                # /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
-                /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -add -server $vcenter -username $username -password $password
-        done
-        rm -f /tmp/vicredentials.conf
-        # chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
-    fi
+    # if [ -a "/var/www/.vmware/credstore/vicredentials.xml" ]; then
+    #     openssl des3 -d -salt -in /media/cdrom/conf/vicredentials.conf.ss -out /tmp/vicredentials.conf -pass pass:sexigraf -md md5
+    #     # /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -createstore -credstore /mnt/wfs/inventory/vipscredentials.xml
+    #     for creditem in $(cat /tmp/vicredentials.conf)
+    #         do
+    #             vcenter=$(echo $creditem | cut -d ";" -f 1)
+    #             username=$(echo $creditem | cut -d ";" -f 2)
+    #             password=$(echo $creditem | cut -d ";" -f 3)
+    #             # /usr/lib/vmware-vcli/apps/general/credstore_admin.pl --credstore /var/www/.vmware/credstore/vicredentials.xml add --server $vcenter --username $username --password $password
+    #             /usr/bin/pwsh -NonInteractive -NoProfile -f /opt/sexigraf/CredstoreAdmin.ps1 -credstore /mnt/wfs/inventory/vipscredentials.xml -add -server $vcenter -username $username -password $password
+    #     done
+    #     rm -f /tmp/vicredentials.conf
+    #     # chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
+    # fi
 
     if [ -a "/media/cdrom/conf/vipscredentials.xml" ]; then
         /bin/cp -fR /media/cdrom/conf/vipscredentials.xml /mnt/wfs/inventory/vipscredentials.xml
         chown www-data:www-data /mnt/wfs/inventory/vipscredentials.xml
+    fi
+
+    if [ -a "/media/cdrom/conf/vbrpscredentials.xml" ]; then
+        /bin/cp -fR /media/cdrom/conf/vbrpscredentials.xml /mnt/wfs/inventory/vbrpscredentials.xml
+        chown www-data:www-data /mnt/wfs/inventory/vbrpscredentials.xml
     fi
 
     # Import cron entries
@@ -66,7 +71,11 @@ if [ -d "/mnt/wfs/whisper" ]; then
     # /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vsan_*
     # /bin/sed -i 's/\.dat$/.key >\/dev\/null 2\>\&1/g' /etc/cron.d/vsan_*
 
-    echo "# Virtual SAN has left the building" | tee /etc/cron.d/vsan_* > /dev/null # TODO deal with /etc/cron.d/vsan_*
+    if compgen -G "/etc/cron.d/vsan_*" > /dev/null; then
+        echo "# Virtual SAN has left the building" | tee /etc/cron.d/vsan_*
+    fi
+
+    # TODO rm -rf /mnt/wfs/whisper/vsan/*/*/*/esx/vsan
 
     /bin/sed -i 's/\/usr\/bin\/perl \/root\/ViPullStatistics\.pl --credstore \/var\/www\/\.vmware\/credstore\/vicredentials\.xml --server/\/usr\/bin\/pwsh -NonInteractive -NoProfile -f \/opt\/sexigraf\/ViPullStatistics\.ps1 -credstore \/mnt\/wfs\/inventory\/vipscredentials\.xml -server/g' /etc/cron.d/vi_*
     /bin/sed -i 's/--sessionfile \/tmp\/vpx_/-sessionfile \/tmp\/vmw_/g' /etc/cron.d/vi_*
@@ -80,9 +89,9 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /etc/init.d/grafana-server restart
     apachectl restart
 
-    # 0.99g storage schema change #217
-    # nohup /usr/bin/find -L /mnt/wfs/whisper/vmw/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 80m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/vmw_wsp_resize.log 2>&1 &
-    # nohup /usr/bin/find -L /mnt/wfs/whisper/esx/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 80m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/esx_wsp_resize.log 2>&1 &
+    # 0.99j storage schema change #351
+    # nohup /usr/bin/find -L /mnt/wfs/whisper/vmw/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/vmw_wsp_resize.log 2>&1 &
+    # nohup /usr/bin/find -L /mnt/wfs/whisper/esx/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/esx_wsp_resize.log 2>&1 &
 
     # Inventory Update
     nohup /bin/bash /var/www/scripts/updateInventory.sh &

@@ -3,7 +3,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1589358552655,
+  "iteration": 1587995684562,
   "links": [],
   "panels": [
     {
@@ -15,118 +15,90 @@
         "x": 0,
         "y": 0
       },
-      "id": 5,
+      "id": 6,
       "panels": [],
-      "repeat": "hostname",
-      "title": "$hostname",
+      "repeat": null,
+      "title": "",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
-      "editable": false,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 8,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
-      "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "hideZero": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "maxPerRow": 4,
-      "nullPointMode": "null",
+      "id": 8,
+      "maxPerRow": 6,
       "options": {
-        "dataLinks": []
+        "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 104,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "rgb(31, 255, 0)",
+                  "value": null
+                },
+                {
+                  "color": "rgb(255, 239, 0)",
+                  "value": 70
+                },
+                {
+                  "color": "rgb(255, 115, 0)",
+                  "value": 80
+                },
+                {
+                  "color": "rgb(255, 0, 29)",
+                  "value": 90
+                },
+                {
+                  "color": "rgb(204, 0, 255)",
+                  "value": 99
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
       },
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeat": "type",
+      "pluginVersion": "6.7.1",
+      "repeat": "datastore",
       "repeatDirection": "h",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "hide": false,
-          "refId": "A",
-          "target": "aliasByNode(vmw.$vcenter.$datacentre.$cluster.esx.$hostname.sensor.$type.*, 8)",
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(removeEmptySeries(vmw.$vcenter.$datacentre.$cluster.datastore.$datastore.summary.usagePct), 'usagePct')",
           "textEditor": false
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "$type",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1183",
-          "format": "none",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1184",
-          "format": "none",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "$datastore",
+      "type": "bargauge"
     }
   ],
   "refresh": false,
   "schemaVersion": 22,
   "style": "light",
   "tags": [
-    "ipmi",
-    "fan",
-    "temperature",
-    "voltage"
+    "HDD"
   ],
   "templating": {
     "list": [
@@ -135,9 +107,9 @@
         "allValue": "*",
         "current": {},
         "datasource": "local",
-        "definition": "",
+        "definition": "vmw.*",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "index": -1,
         "label": null,
         "multi": true,
@@ -161,7 +133,7 @@
         "allValue": "*",
         "current": {},
         "datasource": "local",
-        "definition": "",
+        "definition": "vmw.$vcenter.*",
         "hide": 0,
         "includeAll": true,
         "index": -1,
@@ -183,16 +155,16 @@
         "useTags": false
       },
       {
-        "allFormat": "glob",
-        "allValue": null,
+        "allFormat": "wildcard",
+        "allValue": "*",
         "current": {},
         "datasource": "local",
-        "definition": "",
+        "definition": "vmw.$vcenter.$datacentre.*",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "index": -1,
         "label": null,
-        "multi": false,
+        "multi": true,
         "multiFormat": "glob",
         "name": "cluster",
         "options": [],
@@ -209,47 +181,19 @@
         "useTags": false
       },
       {
-        "allFormat": "glob",
-        "allValue": null,
-        "current": {},
-        "datasource": "local",
-        "definition": "",
-        "hide": 0,
-        "hideLabel": false,
-        "includeAll": true,
-        "index": -1,
-        "label": "esx",
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "hostname",
-        "options": [],
-        "query": "vmw.$vcenter.$datacentre.$cluster.esx.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
         "allFormat": "wildcard",
         "allValue": "*",
         "current": {},
         "datasource": "local",
-        "definition": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.sensor.*",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
-        "index": -1,
         "label": null,
         "multi": true,
         "multiFormat": "glob",
-        "name": "type",
+        "name": "datastore",
         "options": [],
-        "query": "vmw.$vcenter.$datacentre.$cluster.esx.$hostname.sensor.*",
+        "query": "vmw.$vcenter.$datacentre.$cluster.datastore.*",
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
@@ -298,10 +242,10 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "VMware Cluster Hardware Sensor",
-  "uid": "t6ZdnHRGk",
+  "title": "VMware Multi Datastore Gauge",
+  "uid": "6e3fb4e8",
   "variables": {
     "list": []
   },
-  "version": 5
+  "version": 14
 }

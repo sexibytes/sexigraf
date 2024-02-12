@@ -1307,105 +1307,6 @@
         }
       },
       {
-        "aliasColors": {
-          "svmotion": "dark-orange",
-          "vmotion": "#052B51",
-          "xvmotion": "super-light-blue"
-        },
-        "bars": true,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "local",
-        "decimals": 0,
-        "editable": false,
-        "error": false,
-        "fill": 4,
-        "fillGradient": 0,
-        "grid": {},
-        "gridPos": {
-          "h": 6,
-          "w": 6,
-          "x": 0,
-          "y": 31
-        },
-        "hiddenSeries": false,
-        "id": 4,
-        "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
-          "show": true,
-          "total": true,
-          "values": true
-        },
-        "lines": false,
-        "linewidth": 2,
-        "links": [],
-        "nullPointMode": "null",
-        "options": {
-          "alertThreshold": true
-        },
-        "percentage": false,
-        "pluginVersion": "8.4.4",
-        "pointradius": 5,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": true,
-        "steppedLine": false,
-        "targets": [
-          {
-            "refId": "A",
-            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion')",
-            "textEditor": false
-          },
-          {
-            "refCount": 0,
-            "refId": "B",
-            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
-            "textEditor": false
-          },
-          {
-            "refCount": 0,
-            "refId": "C",
-            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
-            "textEditor": false
-          }
-        ],
-        "thresholds": [],
-        "timeRegions": [],
-        "title": "vMotion count",
-        "tooltip": {
-          "shared": true,
-          "sort": 2,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "mode": "time",
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "format": "none",
-            "logBase": 1,
-            "min": 0,
-            "show": true
-          },
-          {
-            "format": "short",
-            "logBase": 1,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false
-        }
-      },
-      {
         "aliasColors": {},
         "bars": false,
         "dashLength": 10,
@@ -1419,8 +1320,8 @@
         "grid": {},
         "gridPos": {
           "h": 6,
-          "w": 6,
-          "x": 6,
+          "w": 12,
+          "x": 0,
           "y": 31
         },
         "hiddenSeries": false,
@@ -1670,13 +1571,296 @@
         }
       },
       {
+        "aliasColors": {
+          "svmotion": "dark-orange",
+          "vmotion": "#052B51",
+          "xvmotion": "super-light-blue"
+        },
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "local",
+        "decimals": 0,
+        "editable": false,
+        "error": false,
+        "fill": 4,
+        "fillGradient": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 37
+        },
+        "hiddenSeries": false,
+        "id": 4,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": true,
+          "values": true
+        },
+        "lines": false,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.4.4",
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numVmotions), 'vmotion')",
+            "textEditor": false
+          },
+          {
+            "refCount": 0,
+            "refId": "B",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numSVMotions), 'svmotion')",
+            "textEditor": false
+          },
+          {
+            "refCount": 0,
+            "refId": "C",
+            "target": "alias(nonNegativeDerivative(vmw.$vcenter.$datacentre.$cluster.quickstats.numXVMotions), 'xvmotion')",
+            "textEditor": false
+          }
+        ],
+        "thresholds": [],
+        "timeRegions": [],
+        "title": "vMotion count",
+        "tooltip": {
+          "shared": true,
+          "sort": 2,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "logBase": 1,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 69,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "stepBefore",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "links": [],
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "active"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#56A64B",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "dead"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#E02F44",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "disabled"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#3274D9",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "standby"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#F2CC0C",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "unknown"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#FF780A",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 37
+        },
+        "id": 20,
+        "links": [],
+        "options": {
+          "legend": {
+            "calcs": [
+              "last"
+            ],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "8.4.4",
+        "targets": [
+          {
+            "datasource": "local",
+            "hide": false,
+            "refCount": 0,
+            "refId": "A",
+            "target": "sortBy(groupByNode(removeEmptySeries(vmw.$vcenter.$datacentre.$cluster.superstats.PathState.*), 6, 'total'), 'last', false)",
+            "textEditor": false
+          }
+        ],
+        "title": "MultipathState Count",
+        "type": "timeseries"
+      },
+      {
         "collapsed": false,
         "datasource": "local",
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 37
+          "y": 43
         },
         "id": 17,
         "panels": [],
@@ -1698,7 +1882,7 @@
           "h": 6,
           "w": 12,
           "x": 0,
-          "y": 38
+          "y": 44
         },
         "hiddenSeries": false,
         "id": 11,
@@ -1795,7 +1979,7 @@
           "h": 6,
           "w": 12,
           "x": 12,
-          "y": 38
+          "y": 44
         },
         "hiddenSeries": false,
         "id": 12,

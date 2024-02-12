@@ -1,9 +1,9 @@
-#!/usr/bin/pwsh -Command[EROR]
+#!/usr/bin/pwsh -Command
 #
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.69"
+$ScriptVersion = "0.9.90"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -250,9 +250,9 @@ if ($ViServersList.count -gt 0) {
                     $VmCluster = ""
                 }
                 
-                if ($Vm.Guest.GuestId) {
+                if ($Vm.Guest.GuestId.Length -gt 0) {
                     $VmGuestId = $Vm.Guest.GuestId.replace('Guest','')
-                } elseif ($Vm.Config.GuestId) {
+                } elseif ($Vm.Config.GuestId  -gt 0) {
                     $VmGuestId = $Vm.Config.GuestId.replace('Guest','')
                 } else {
                     $VmGuestId = ""
@@ -273,12 +273,12 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.Cluster = $VmCluster
                 $ViVmInfo.IP = $VmIpAddress -join " ; "
                 $ViVmInfo.PortGroup = $VmNet -join " ; "
-                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,1)
-                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,1)
+                $ViVmInfo.Committed_GB = [math]::round($Vm.Summary.Storage.committed/1GB,0)
+                $ViVmInfo.Allocated_GB = [math]::round(($Vm.Summary.Storage.Committed + $Vm.Summary.Storage.Uncommitted)/1GB,0)
                 $ViVmInfo.MAC = ($Vm.Config.Hardware.Device|?{$_.MacAddress}).MacAddress -join " ; "
                 $ViVmInfo.GuestId = $VmGuestId
                 $ViVmInfo.vCPU = $Vm.Config.Hardware.NumCPU
-                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,1)
+                $ViVmInfo.vRAM_GB = [math]::round($Vm.Config.Hardware.MemoryMB/1KB,0)
                 $ViVmInfo.PowerState =  $Vm.Runtime.PowerState
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
@@ -324,7 +324,7 @@ if ($ViServersList.count -gt 0) {
                 $ViEsxInfo.Model = $Esx.Summary.Hardware.Model
                 $ViEsxInfo.SerialNumber = $EsxServiceTag
                 $ViEsxInfo.State = $EsxState
-                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,1)
+                $ViEsxInfo.RAM_GB = [math]::round($Esx.Summary.Hardware.MemorySize/1GB,0)
                 $ViEsxInfo.CPU = $Esx.Summary.Hardware.CpuModel
                 $ViEsxInfo.Cores = $Esx.Summary.Hardware.NumCpuCores
                 $ViEsxInfo.vmk0Ip = ($Esx.Config.Network.Vnic|?{$_.Device -eq "vmk0"}).Spec.Ip.IpAddress
@@ -340,9 +340,9 @@ if ($ViServersList.count -gt 0) {
                 $ViDatastoreInfo.vCenter = $ViServer
                 $ViDatastoreInfo.Datastore = $($Datastore.name)
                 $ViDatastoreInfo.Type = $($Datastore.Summary.Type)
-                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,1))
-                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,1))
-                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,1))
+                $ViDatastoreInfo.Capacity_GB = $([math]::round($Datastore.Summary.Capacity/1GB,0))
+                $ViDatastoreInfo.FreeSpace_GB = $([math]::round($Datastore.Summary.FreeSpace/1GB,0))
+                $ViDatastoreInfo."Usage_%" = $([math]::round(($Datastore.Summary.Capacity - $Datastore.Summary.FreeSpace) * 100 / $Datastore.Summary.Capacity,0))
                 $ViDatastoreInfo.Url = $($Datastore.Summary.Url)
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
@@ -361,31 +361,132 @@ if ($ViServersList.count -gt 0) {
     }
 
     if ($ViVmsInfos) {
+
+        $ViVmInventories = Get-ChildItem "/mnt/wfs/inventory/ViVmInventory.*.csv"
+
+        if ($ViVmInventories) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViVmInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $ViVmInventories  $($ViVmInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory files ..."
-            $ViVmsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViVmInventory.csv -Force
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Building Vm Inventory CSV ..."
+            $ViVmsInfosCsv = $ViVmsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
+            # Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for vCenter,Cluster,VM differences with previous inventory file ..."
+            # if (Test-Path -Path /mnt/wfs/inventory/ViVmInventory.csv) {
+            #     $ViVmsInfosCsvBak = Import-Csv -Path /mnt/wfs/inventory/ViVmInventory.csv -ErrorAction Stop
+            #     if ($ViVmsInfosCsvBak) {
+            #         if (Compare-Object $ViVmsInfosCsvBak $ViVmsInfos -Property vCenter,Cluster,VM) {
+            #             Write-Host "$((Get-Date).ToString("o")) [INFO] Differences detected with previous inventory file ..."
+            #             $VmMigratedScan = $true
+            #         } else {
+            #             $VmMigratedScan = $false
+            #             Write-Host "$((Get-Date).ToString("o")) [INFO] No differences detected with previous inventory file ..."
+            #         }
+            #     } else {
+            #         Write-Host "$((Get-Date).ToString("o")) [EROR] Empty Vm Inventory file"
+            #         $VmMigratedScan = $true
+            #     }
+            # } else {
+            #     Write-Host "$((Get-Date).ToString("o")) [EROR] No existing Vm Inventory file"
+            #     $VmMigratedScan = $true
+            # }
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Inventory file ..."
+            $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.csv -Force -ErrorAction Stop
+            if ($ExecStart.DayOfWeek -match "Monday" -and !$($ViVmInventories|?{$_.LastWriteTime -gt $ExecStart.AddDays(-1)})) {
+                $ViVmsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViVmInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
+            }
         } catch {
-            AltAndCatchFire "VM Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM Inventory issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
 
     if ($ViEsxsInfos) {
+
+        $ViEsxInventories = Get-ChildItem "/mnt/wfs/inventory/ViEsxInventory.*.csv"
+
+        if ($ViEsxInventories) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViEsxInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $ViEsxInventories  $($ViEsxInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
-            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Esx Inventory files ..."
-            $ViEsxsInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Building ESX Inventory CSV ..."
+            $ViEsxsInfosCsv = $ViEsxsInfos|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
+            # Write-Host "$((Get-Date).ToString("o")) [INFO] Looking for vCenter,Cluster,ESX differences with previous inventory file ..."
+            # if (Test-Path -Path /mnt/wfs/inventory/ViEsxInventory.csv) {
+            #     $ViEsxsInfosCsvBak = Import-Csv -Path /mnt/wfs/inventory/ViEsxInventory.csv -ErrorAction Stop
+            #     if ($ViEsxsInfosCsvBak) {
+            #         if (Compare-Object $ViEsxsInfosCsvBak $ViEsxsInfos -Property vCenter,Cluster,ESX) {
+            #             Write-Host "$((Get-Date).ToString("o")) [INFO] Differences detected with previous inventory file ..."
+            #             $EsxMigratedScan = $true
+            #         } else {
+            #             $EsxMigratedScan = $false
+            #             Write-Host "$((Get-Date).ToString("o")) [INFO] No differences detected with previous inventory file ..."
+            #         }
+            #     } else {
+            #         Write-Host "$((Get-Date).ToString("o")) [EROR] Empty ESX Inventory file"
+            #         $EsxMigratedScan = $true
+            #     }
+            # } else {
+            #     Write-Host "$((Get-Date).ToString("o")) [EROR] No existing ESX Inventory file"
+            #     $EsxMigratedScan = $true
+            # }
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing ESX Inventory file ..."
+            $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.csv -Force -ErrorAction Stop
+            if ($ExecStart.DayOfWeek -match "Monday" -and !$($ViEsxInventories|?{$_.LastWriteTime -gt $ExecStart.AddDays(-1)})) {
+                $ViEsxsInfosCsv|Out-File -Path /mnt/wfs/inventory/ViEsxInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
+            }
         } catch {
-            AltAndCatchFire "ESX Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] ESX Inventory issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
 
     if ($ViDatastoresInfos) {
+
+        $ViDsInventories = Get-ChildItem "/mnt/wfs/inventory/ViDsInventory.*.csv"
+
+        if ($ViDsInventories) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViDsInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $ViDsInventories  $($ViDsInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
         try {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Datastore Inventory files ..."
-            $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force
+            $ViDatastoresInfos|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/ViDsInventory.csv -Force -ErrorAction Stop
+            if ($ExecStart.DayOfWeek -match "Monday" -and !$($ViDsInventories|?{$_.LastWriteTime -gt $ExecStart.AddDays(-1)})) {
+                $ViDatastoresInfos|Out-File -Path /mnt/wfs/inventory/ViDsInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
+            }
         } catch {
-            AltAndCatchFire "Datastore Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] Datastore Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
+
+    Write-Host "$((Get-Date).ToString("o")) [INFO] SexiGraf ViOfflineInventory has left the building ..."
 
 } else {
     AltAndCatchFire "No VI server to process"

@@ -13,7 +13,7 @@ require("header.php");
                                                                 <i class="glyphicon glyphicon-briefcase" style="font-size: 2em;"></i>
                                                         </div>
                                                         <div class="col-xs-10 text-right">
-                                                                <div class="huge">Credential Store</div>
+                                                                <div class="huge">vSphere Credential Store</div>
                                                         </div>
                                                 </div>
                                         </div>
@@ -65,7 +65,7 @@ require("header.php");
                         </a>
                 </div>
         </div>
-        <div class="row" style="margin:0px;padding:30px;">
+        <div class="row" style="margin:0px;padding:30px 30px 0px 30px;">
                 <div class="col-lg-4 col-md-6">
                         <a href="refresh-inventory.php">
                                 <div class="panel panel-yellow">
@@ -75,12 +75,12 @@ require("header.php");
                                                                 <i class="glyphicon glyphicon-th-list" style="font-size: 2em;"></i>
                                                         </div>
                                                         <div class="col-xs-10 text-right">
-                                                                <div class="huge">Refresh Inventory</div>
+                                                                <div class="huge">Inventory Refresh & History</div>
                                                         </div>
                                                 </div>
                                         </div>
                                         <div class="panel-footer">
-                                                <span class="pull-left">The VI Offline Inventory is automatically schedule to be updated every hours. If you want to force a refresh, you can use this section to perform update.</span>
+                                                <span class="pull-left">The VMware and Veeam inventories are automatically updated every hours. If you need to force a refresh sooner, you can use this section to force the update.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
@@ -121,6 +121,28 @@ require("header.php");
                                         </div>
                                         <div class="panel-footer">
                                                 <span class="pull-left">In this page, you'll find a tool to export or import your data from/to another SexiGraf appliance. It will make the appliance update/upgrade/migration easier.</span>
+                                                <div class="clearfix"></div>
+                                        </div>
+                                </div>
+                        </a>
+                </div>
+        </div>
+        <div class="row" style="margin:0px;padding:30px;">
+                <div class="col-lg-4 col-md-6">
+                        <a href="vbrcredstore.php">
+                                <div class="panel panel-warning">
+                                        <div class="panel-heading">
+                                                <div class="row">
+                                                        <div class="col-xs-2">
+                                                                <i class="glyphicon glyphicon-briefcase" style="font-size: 2em;"></i>
+                                                        </div>
+                                                        <div class="col-xs-10 text-right">
+                                                                <div class="huge">Veeam Credential Store</div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="panel-footer">
+                                                <span class="pull-left">In this section, you'll be able to manage your Veeam Backup & Replication Credential Store. This store is used to set up your Backup Server information to allow SexiGraf query what's needed.</span>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>

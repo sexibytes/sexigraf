@@ -1,0 +1,151 @@
+{
+  "annotations": {
+    "list": [
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "iteration": 1683841799856,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "running"
+                },
+                "1": {
+                  "color": "yellow",
+                  "index": 1,
+                  "text": "inactive"
+                },
+                "2": {
+                  "color": "red",
+                  "index": 2,
+                  "text": "disabled"
+                },
+                "3": {
+                  "color": "#808080",
+                  "index": 3,
+                  "text": "unknown"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 31,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "alignValue": "left",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "showValue": "never",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.4.4",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "sortByName(aliasByNode(removeEmptySeries(veeam.vbr.$vbrserver.job.$job.status), 4), false)",
+          "textEditor": false
+        }
+      ],
+      "title": "Job Status",
+      "transformations": [],
+      "type": "state-timeline"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": "*",
+        "current": {},
+        "definition": "veeam.vbr.*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "vbrserver",
+        "options": [],
+        "query": "veeam.vbr.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query",
+        "datasource": "local"
+      },
+      {
+        "allValue": "*",
+        "current": {},
+        "definition": "veeam.vbr.$vbrserver.job.*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "job",
+        "options": [],
+        "query": "veeam.vbr.$vbrserver.job.*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query",
+        "datasource": "local"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Veeam Job Status",
+  "uid": "vo7u77UVk",
+  "version": 5,
+  "weekStart": ""
+}

@@ -6,7 +6,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": "ViVmCsv",
+      "datasource": "ViVbrCsv",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -71,7 +71,8 @@
   "style": "dark",
   "tags": [
     "VI",
-    "VM"
+    "VM",
+    "VBR"
   ],
   "templating": {
     "list": []
@@ -84,7 +85,7 @@
     "hidden": true
   },
   "timezone": "",
-  "title": "VMware VM Inventory",
-  "uid": "iQlLNW57z",
+  "title": "VMware VBR Inventory",
+  "uid": "iQlLNW57c",
   "version": 8
 }
