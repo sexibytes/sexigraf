@@ -30,6 +30,10 @@ Because we love and use pfSense very much since the m0n0wall fork, we decided to
 
 Since the first release we wanted to add a SMART counters dashboard because we were so inspired by the Backblaze reports. But we never found a proper way to get those stats from any kind of NAS so we decided to rely on a custom script that pushes the data to graphite using netcat 😉
 
+## Veeam Backup & Replication
+
+Since Veeam Backup & Replication 11, a new RESTful API for VBR has been introduced so we can now query the VBR servers instead of relying on Veeam Backup Enterprise Manager beeing installed and properly configured. So we figured we should add some Veeam skills to SexiGraf!
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
