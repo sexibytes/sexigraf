@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.44"
+$ScriptVersion = "0.9.45"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -158,7 +158,7 @@ if ($SessionFile) {
                     AltAndCatchFire "Jobs States check failed, no job state or check the user permissions!"
                 }
             } else {
-                AltAndCatchFire "Explicit connection failed, check the stored credentials!"
+                AltAndCatchFire "No access_token, check the stored credentials!"
             }
         } catch {
             AltAndCatchFire "Explicit connection failed, check the stored credentials!"
