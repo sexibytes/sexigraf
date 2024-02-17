@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = "SexiGraf Veeam Credential Store";
+$title = "Veeam Credential Store";
 require("header.php");
 require("helper.php");
 ?>
