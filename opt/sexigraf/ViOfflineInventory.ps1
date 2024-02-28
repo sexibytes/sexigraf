@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.90"
+$ScriptVersion = "0.9.91"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -47,6 +47,19 @@ function GetBlueFolderFullPath {
 			return $VmPathTree = $VmPathTree
 		}
 	}
+}
+
+# https://communities.vmware.com/t5/VMware-PowerCLI-Discussions/Listing-all-snapshots-per-vm-using-get-view/td-p/1835866
+function Get-SnapChild {
+    param([VMware.Vim.VirtualMachineSnapshotTree]$Snapshot)
+    process {
+        $snapshot
+        if($Snapshot.ChildSnapshotList.Count -gt 0) {
+            $Snapshot.ChildSnapshotList | %{
+                Get-SnapChild -Snapshot $_
+            }
+        }
+    }
 }
 
 try {
@@ -99,6 +112,7 @@ try {
     
 if ($ViServersList.count -gt 0) {
     $ViVmsInfos = @()
+    $VmsWithSnapsInfos = @()
     $ViEsxsInfos = @()
     $ViDatastoresInfos = @()
     foreach ($ViServer in $ViServersList) {
@@ -166,7 +180,7 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime, snapshot, LayoutEx.File -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic, Hardware.SystemInfo.SerialNumber -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
             $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
@@ -285,6 +299,29 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.bootTime = $VmBootTime
                 
                 $ViVmsInfos += $ViVmInfo
+
+                try {
+                    if ($Vm.Snapshot.CurrentSnapshot) {
+                        $VmWithSnapsChildren = $Vm.Snapshot.RootSnapshotList|%{Get-SnapChild -Snapshot $_}
+                        $VmWithSnapsOld = @($VmWithSnapsChildren)
+                        $VmWithSnapsSizeGB = [math]::Round(($Vm.LayoutEx.File|?{$_.name -match "-[0-9]{6}-"}|Measure-Object -Property Size -Sum).Sum/1GB,2)
+
+                        $VmWithSnapsInfo = "" | Select-Object vCenter, VM, Cluster, Allocated_GB, SnapChild, SnapSizeGB, NewestSnapTime, OldestSnapTime
+                        $VmWithSnapsInfo.vCenter = $ViVmInfo.vCenter
+                        $VmWithSnapsInfo.VM = $($Vm.name)
+                        $VmWithSnapsInfo.Cluster = $ViVmInfo.Cluster
+                        $VmWithSnapsInfo.Allocated_GB = $ViVmInfo.Committed_GB
+                        $VmWithSnapsInfo.SnapChild = $($VmWithSnapsChildren|Measure-Object).Count
+                        $VmWithSnapsInfo.SnapSizeGB = $VmWithSnapsSizeGB
+                        $VmWithSnapsInfo.NewestSnapTime = $($($VmWithSnapsOld|Sort-Object CreateTime)[0]).CreateTime
+                        $VmWithSnapsInfo.OldestSnapTime = $($($VmWithSnapsOld|Sort-Object CreateTime)[-1]).CreateTime
+
+                        $VmsWithSnapsInfos += $VmWithSnapsInfo
+                    }
+                } catch {
+                    Write-Host -ForegroundColor Red "$((Get-Date).ToString("o")) [EROR] SnapChild issue on VM $($Vm.name)"
+                }
+                
             }
 
             foreach ($Esx in $esxs) {
@@ -405,6 +442,36 @@ if ($ViServersList.count -gt 0) {
             }
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [EROR] VM Inventory issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        }
+    }
+
+    if ($VmsWithSnapsInfos) {
+
+        $ViSnapInventories = Get-ChildItem "/mnt/wfs/inventory/ViSnapInventory.*.csv"
+
+        if ($ViSnapInventories) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViSnapInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $ViSnapInventories  $($ViSnapInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Building Vm Snapshot Inventory CSV ..."
+            $ViSnapInfosCsv = $VmsWithSnapsInfos|Sort-Object SnapSizeGB -Descending|ConvertTo-Csv -NoTypeInformation -ErrorAction Stop
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing Vm Snapshot Inventory file ..."
+            $ViSnapInfosCsv|Out-File -Path /mnt/wfs/inventory/ViSnapInventory.csv -Force -ErrorAction Stop
+            if ($ExecStart.DayOfWeek -match "Monday" -and !$($ViSnapInventories|?{$_.LastWriteTime -gt $ExecStart.AddDays(-1)})) {
+                $ViSnapInfosCsv|Out-File -Path /mnt/wfs/inventory/ViSnapInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
+            }
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] VM Snapshot Inventory issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
