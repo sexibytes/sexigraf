@@ -2513,7 +2513,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                     if ($VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]) {
                         $unmanaged_host_vm_disk_latency = $VmMultiStats[$PerfCounterTable["disk.maxTotalLatency.latest"]][$unmanaged_host_vm.moref.value][""]
                         $unmanaged_host_h.add("esx.$vcenter_name.$unmanaged_host_dc_name.$unmanaged_host_name.vm.$unmanaged_host_vm_name.fatstats.maxTotalLatency", $unmanaged_host_vm_disk_latency)
-                    }Unmanaged
+                    }
 
                     if ($VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] -ge 0 -and $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""] -ge 0) {
                         $unmanaged_host_vm_disk_usage = $VmMultiStats[$PerfCounterTable["virtualdisk.write.average"]][$unmanaged_host_vm.moref.value][""] + $VmMultiStats[$PerfCounterTable["virtualdisk.read.average"]][$unmanaged_host_vm.moref.value][""]
