@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1037"
+$ScriptVersion = "0.9.1038"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -2069,6 +2069,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.fullFormat.split("|")[0])
                     }
                 } elseif ($vCenterEventInfo.category -match "warning|error" -and $vCenterEventInfo.longDescription -match "vim\.event\.") {
+                    $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
+                } elseif ($vCenterEventInfo.longDescription -match "DrsSoftRuleViolationEvent") {
                     $null = $vCenterFilteredEventTypeIdCat.add($vCenterEventInfo.key)
                 }
             } catch {
