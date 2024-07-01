@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.91"
+$ScriptVersion = "0.9.92"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -180,7 +180,7 @@ if ($ViServersList.count -gt 0) {
 
             $DvPgs = Get-View -ViewType DistributedVirtualPortgroup -Property name -Server $ViServer
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
-            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime, snapshot, LayoutEx.File -Server $ViServer
+            $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime, snapshot, LayoutEx.File, Guest.HostName -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic, Hardware.SystemInfo.SerialNumber -Server $ViServer
             $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
             $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
@@ -247,6 +247,12 @@ if ($ViServersList.count -gt 0) {
                 } else {
                     $VmBootTime = ""
                 }
+
+                if ($vm.Guest.HostName) {
+                    $VmGuestHostName = $vm.Guest.HostName
+                } else {
+                    $VmGuestHostName = ""
+                }
                 
                 if ($esxs_h[$vm.Runtime.Host]) {
                     if ($($esxs_h[$vm.Runtime.Host]).config.network.dnsConfig.hostName -notmatch "localhost") {
@@ -279,7 +285,7 @@ if ($ViServersList.count -gt 0) {
                     Write-Host "$((Get-Date).ToString("o")) [WARN] Unable to get blue folder path for $($Vm.name)"
                 }
                 
-                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, Committed_GB, Allocated_GB, MAC, GuestId, vCPU, vRAM_GB, PowerState, vmxPath, Folder, bootTime
+                $ViVmInfo = "" | Select-Object vCenter, VM, ESX, Cluster, IP, PortGroup, Committed_GB, Allocated_GB, MAC, GuestId, vCPU, vRAM_GB, PowerState, vmxPath, Folder, bootTime, GuestHostname
                 
                 $ViVmInfo.vCenter = $ServerConnection.name
                 $ViVmInfo.VM = $Vm.name
@@ -297,6 +303,7 @@ if ($ViServersList.count -gt 0) {
                 $ViVmInfo.vmxPath = $Vm.summary.config.vmPathName
                 $ViVmInfo.Folder = $VmPath
                 $ViVmInfo.bootTime = $VmBootTime
+                $ViVmInfo.GuestHostname = $VmGuestHostName
                 
                 $ViVmsInfos += $ViVmInfo
 
