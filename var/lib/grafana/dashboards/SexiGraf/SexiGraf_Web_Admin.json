@@ -24,12 +24,12 @@
           "mode": "html",
           "span": 12,
           "style": {},
-          "title": "",
+          "title": " ",
           "transparent": true,
+          "hideControls": true,
           "type": "text"
         }
-      ],
-      "title": "Web Admin"
+      ]
     }
   ],
   "time": {
