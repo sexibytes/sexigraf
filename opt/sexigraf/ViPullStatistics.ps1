@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1039"
+$ScriptVersion = "0.9.1040"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1243,6 +1243,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         
                         SexiLogger "[INFO] Start processing VsanPerfQuery in cluster $vcenter_cluster_name (v6.7+) ..."
                         # https://vdc-download.vmware.com/vmwb-repository/dcr-public/bd51bfdb-3107-4a66-9f63-30aa3fae196e/98507723-ab67-4908-88fa-7c99e0743f0f/vim.cluster.VsanPerformanceManager.html#queryVsanPerf
+                        # https://knowledge.broadcom.com/external/article/326812/vsan-performance-graphs-in-the-vsphere-w.html
                         # MethodInvocationException: Exception calling "VsanPerfQueryPerf" with "2" argument(s): "Invalid Argument. Only one wildcard query allowed in query specs." # Config.VsanHostConfig.ClusterInfo.NodeUuid
                         # $VsanPerformanceManager.VsanPerfQueryStatsObjectInformation($vcenter_cluster.moref).VsanHealth
                         $VsanHostsAndClusterPerfQuerySpec = @()
@@ -1585,7 +1586,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         try {
                             SexiLogger "[INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
-                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false) ### TODO optimize
+                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false,$null) ### TODO optimize
                             if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                 foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                     if ($ObjectHealth.NumObjects -gt 0) {
@@ -1596,6 +1597,55 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         } catch {
                             SexiLogger "[WARN] Unable to retreive VsanObjectIdentityAndHealth from cluster $vcenter_cluster_name"
                             SexiLogger "[WARN] $($Error[0])"
+                        }
+
+                        # virtual-machine latencyRead & latencyWrite because of empty maxTotalLatency on vSAN
+                        $VsanHostsAndClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="virtual-machine:*";labels=@("latencyRead","latencyWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+
+                        try {
+                            SexiLogger "[INFO] Start collecting VsanPerfQueryPerf for virtual-machine in cluster $vcenter_cluster_name ..."
+                            $vcenter_cluster_ObjectIdentitiesNamespaces = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,"namespace",$false,$true,$false,$null)
+                            $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
+                            SexiLogger "[INFO] VsanPerfQueryPerf virtual-machine metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+
+                        } catch {
+                            SexiLogger "[WARN] Unable to retreive virtual-machine VsanPerfQuery in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
+                        }
+
+                        if ($vcenter_cluster_ObjectIdentitiesNamespaces.Identities -and $VsanHostsAndClusterPerfQuery) {
+                            SexiLogger "[INFO] Start processing VsanPerfQueryPerf for virtual-machine in cluster $vcenter_cluster_name ..."
+                            $vSanObjectIdentitiesNamespaces = @{}
+
+                            foreach ($vcenter_cluster_ObjectIdentitiesNamespace in $vcenter_cluster_ObjectIdentitiesNamespaces.Identities) {
+                                try {
+                                    $vSanObjectIdentitiesNamespaces.add($vcenter_cluster_ObjectIdentitiesNamespace.VmInstanceUuid, $vcenter_cluster_ObjectIdentitiesNamespace.vm)
+                                } catch {}
+                            }
+
+                            $VsanHostsAndClusterPerfQueryRefIds = @{}
+                            foreach ($VsanHostsAndClusterPerfQueryRefId in $VsanHostsAndClusterPerfQuery) {
+                                $VsanHostsAndClusterPerfQueryUuid = $VsanHostsAndClusterPerfQueryRefId.EntityRefId.split(":")[1]
+                                try {
+                                    $VsanHostsAndClusterPerfQueryRefIds.add($vSanObjectIdentitiesNamespaces[$VsanHostsAndClusterPerfQueryUuid].value,$($VsanHostsAndClusterPerfQueryRefId.Value.Values|sort-object)[-1])
+                                } catch {}
+                                
+                            }
+
+                            if ($VsanHostsAndClusterPerfQueryRefIds) {
+                                SexiLogger "[INFO] adding VsanPerfQueryPerf for virtual-machine in cluster $vcenter_cluster_name ..."
+                                foreach ($VsanHostsAndClusterPerfQueryRefId in $VsanHostsAndClusterPerfQueryRefIds.keys) {
+                                    $vcenter_cluster_vm_name = nameCleaner $vcenter_vms_h[$VsanHostsAndClusterPerfQueryRefId].name
+                                    $vcenter_cluster_vm_vsan_lat = $VsanHostsAndClusterPerfQueryRefIds[$VsanHostsAndClusterPerfQueryRefId] / 1000
+                                    try {
+                                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency", $vcenter_cluster_vm_vsan_lat)
+                                    } catch {
+                                        SexiLogger "[INFO] replacing vSAN latency value for vm $vcenter_cluster_vm_name in cluster $vcenter_cluster_name ..."
+                                        $vcenter_cluster_h.remove("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency")
+                                        $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency", $vcenter_cluster_vm_vsan_lat)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
