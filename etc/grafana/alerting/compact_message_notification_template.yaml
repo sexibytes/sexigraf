@@ -1,0 +1,25 @@
+# config file version
+apiVersion: 1
+
+# List of templates to import or update
+templates:
+  # <int> organization ID, default = 1
+  - orgId: 1
+    # <string, required> name of the template, must be unique
+    name: compact.message
+    # <string, required> content of the template
+    template: |
+        {{- /* Telegram message to use: {{ template "compact.message" . }} */ -}}
+        {{ define "__alerts_list" -}}
+        {{ range . }}
+        {{ if len .Annotations }}
+            {{ range .Annotations.SortedPairs -}}
+            - {{ .Name }}: {{ .Value }}
+            {{ end -}}
+        {{ end }}
+        {{- end -}} {{- /* range */ -}}
+        {{- end -}} {{- /* define __alerts_list */ -}}
+        {{ define "telegram.message" }}
+            {{ if gt (len .Alerts.Firing) 0 }}
+            {{- template "__alerts_list" .Alerts.Firing }}{{ end -}}
+        {{- end -}}
