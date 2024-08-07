@@ -19,7 +19,7 @@ templates:
         {{ end }}
         {{- end -}} {{- /* range */ -}}
         {{- end -}} {{- /* define __alerts_list */ -}}
-        {{ define "telegram.message" }}
+        {{ define "compact.message" }}
             {{ if gt (len .Alerts.Firing) 0 }}
             {{- template "__alerts_list" .Alerts.Firing }}{{ end -}}
         {{- end -}}
