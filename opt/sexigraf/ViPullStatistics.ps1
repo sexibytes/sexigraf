@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1040"
+$ScriptVersion = "0.9.1041"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1262,12 +1262,12 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         # vsan-vnic-net
                         # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
 
-                        if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # EFA vSan cluster
+                        if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # ESA vSan cluster
                             SexiLogger "[INFO] Processing EFA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
                             # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
                             # $VsanHostsAndClusterStoragePoolSpec = New-Object VMware.Vsan.Views.VimVsanHostQueryVsanDisksSpec -property @{vsanDiskType="storagePool"}
                             try {
-                                $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,"physicalDisksHealth",$true,$null,$null,$null)
+                                $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,@("physicalDisksHealth","overallHealth", "healthScore"),$true,$null,$null,$null)
                             } catch {
                                 SexiLogger "[WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
                                 SexiLogger "[WARN] $($Error[0])"
@@ -1292,7 +1292,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             } else {
                                 SexiLogger "[WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
                             }
-                        } else { # Non EFA vSAN cluster
+                        } else { # Non ESA vSAN cluster
                             # cache-disk disk-group
                             foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="cache-disk:$vcenter_cluster_vsan_Ssd_uuid";labels=@("latencyDevRead","latencyDevWrite","wbFreePct");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
@@ -1302,25 +1302,33 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             foreach ($vcenter_cluster_vsan_nonSsd_uuid in $vcenter_clusters_vsan_nonSsd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                 $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="capacity-disk:$vcenter_cluster_vsan_nonSsd_uuid";labels=@("latencyDevRead","latencyDevWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             }
+
+                            try {
+                                $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,@("physicalDisksHealth","overallHealth", "healthScore"),$true,$null,$null,$null)
+                                if ($ClusterHealthSummary.PhysicalDisksHealth) {
+                                    $PhysicalDisksHealthVsanUuidObj = @{}
+                                    foreach ($PhysicalDisksHealthHost in $ClusterHealthSummary.PhysicalDisksHealth) {
+                                        foreach ($PhysicalDisksHealthHostDisk in $PhysicalDisksHealthHost.Disks) {
+                                            if (!$PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthHostDisk.Uuid]) {
+                                                $PhysicalDisksHealthVsanUuidObj.add($PhysicalDisksHealthHostDisk.Uuid,$PhysicalDisksHealthHostDisk)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    SexiLogger "[WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
+                                }
+                            } catch {
+                                SexiLogger "[WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
+                                SexiLogger "[WARN] $($Error[0])"
+                            }
                         }
 
                         try {
-                            $ClusterHealthSummary = $VsanClusterHealthSystem.VsanQueryVcClusterHealthSummary($vcenter_cluster.moref,$null,$null,$false,"physicalDisksHealth",$true,$null,$null,$null)
-                            if ($ClusterHealthSummary.PhysicalDisksHealth) {
-                                $PhysicalDisksHealthVsanUuidObj = @{}
-                                foreach ($PhysicalDisksHealthHost in $ClusterHealthSummary.PhysicalDisksHealth) {
-                                    foreach ($PhysicalDisksHealthHostDisk in $PhysicalDisksHealthHost.Disks) {
-                                        if (!$PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthHostDisk.Uuid]) {
-                                            $PhysicalDisksHealthVsanUuidObj.add($PhysicalDisksHealthHostDisk.Uuid,$PhysicalDisksHealthHostDisk)
-                                        }
-                                    }
-                                }
-                            } else {
-                                SexiLogger "[WARN] Empty vSAN PhysicalDisksHealth in cluster $vcenter_cluster_name"
+                            if ($ClusterHealthSummary.HealthScore -ge 0) {
+                                $vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vsan.healthSummary.healthScore", $($ClusterHealthSummary.HealthScore))
                             }
                         } catch {
-                            SexiLogger "[WARN] Unable to retreive VsanQueryVcClusterHealthSummary in cluster $vcenter_cluster_name"
-                            SexiLogger "[WARN] $($Error[0])"
+                            SexiLogger "[WARN] ClusterHealthSummary HealthScore empty in cluster $vcenter_cluster_name"
                         }
 
                         try {
@@ -1640,7 +1648,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     try {
                                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency", $vcenter_cluster_vm_vsan_lat)
                                     } catch {
-                                        SexiLogger "[INFO] replacing vSAN latency value for vm $vcenter_cluster_vm_name in cluster $vcenter_cluster_name ..."
+                                        # SexiLogger "[INFO] replacing vSAN latency value for vm $vcenter_cluster_vm_name in cluster $vcenter_cluster_name ..." # too verbose sometimes
                                         $vcenter_cluster_h.remove("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency")
                                         $vcenter_cluster_h.add("vmw.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.vm.$vcenter_cluster_vm_name.fatstats.maxTotalLatency", $vcenter_cluster_vm_vsan_lat)
                                     }
