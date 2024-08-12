@@ -91,4 +91,4 @@ groups:
             __panelId__: "3"
             Alert Name: '{{ $values.B.Labels.name}}'
             Alert Value: '{{ $values.B.Value }}'
-          isPaused: false
+          isPaused: true
