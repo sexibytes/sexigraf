@@ -1329,6 +1329,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             }
                         } catch {
                             SexiLogger "[WARN] ClusterHealthSummary HealthScore empty in cluster $vcenter_cluster_name"
+                            SexiLogger "[WARN] $($Error[0])"
                         }
 
                         try {
@@ -1594,7 +1595,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
 
                         try {
                             SexiLogger "[INFO] Start processing VsanObjectIdentityAndHealth in cluster $vcenter_cluster_name ..."
-                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false,$null) ### TODO optimize
+                            $vcenter_cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,$null,$true,$false,$false,$null) ### TODO optimize ?
                             if ($vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                 foreach ($ObjectHealth in $vcenter_cluster_ObjectIdentities.Health.ObjectHealthDetail) {
                                     if ($ObjectHealth.NumObjects -gt 0) {
@@ -1607,11 +1608,10 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             SexiLogger "[WARN] $($Error[0])"
                         }
 
-                        # virtual-machine latencyRead & latencyWrite because of empty maxTotalLatency on vSAN
-                        $VsanHostsAndClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="virtual-machine:*";labels=@("latencyRead","latencyWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
-
                         try {
                             SexiLogger "[INFO] Start collecting VsanPerfQueryPerf for virtual-machine in cluster $vcenter_cluster_name ..."
+                            # virtual-machine latencyRead & latencyWrite because of empty maxTotalLatency on vSAN
+                            $VsanHostsAndClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="virtual-machine:*";labels=@("latencyRead","latencyWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             $vcenter_cluster_ObjectIdentitiesNamespaces = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,"namespace",$false,$true,$false,$null)
                             $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
                             SexiLogger "[INFO] VsanPerfQueryPerf virtual-machine metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
