@@ -711,7 +711,7 @@
             "total": false,
             "values": false
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 2,
           "links": [],
           "nullPointMode": "null",
