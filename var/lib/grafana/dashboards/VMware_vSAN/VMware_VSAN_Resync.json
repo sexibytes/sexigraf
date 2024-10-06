@@ -411,7 +411,7 @@
         {
           "hide": false,
           "refId": "A",
-          "target": "sortByMaxima(aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.ObjectHealthDetail.*, 6))",
+          "target": "sortByMaxima(aliasByNode(currentAbove(vsan.$vcenter.$datacentre.$cluster.vsan.ObjectHealthDetail.*, 0), 6))",
           "textEditor": false
         }
       ],
