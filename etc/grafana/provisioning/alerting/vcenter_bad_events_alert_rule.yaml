@@ -1,0 +1,94 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: VMware
+      folder: VMware vCenter
+      interval: 1m
+      rules:
+        - uid: bfd36945-c73d-42ba-91de-6e42a907f8da
+          title: vCenterBadEvents
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: bc36594f-bcf4-47fc-913e-e418f0814ecd
+              model:
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: A
+                target: vi.*.vi.exec.ExEvent.*.*.*
+                textEditor: true
+            - refId: B
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: sum
+                refId: B
+                settings:
+                    mode: dropNN
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: 1fa61584
+          panelId: 3
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: 1fa61584
+            __panelId__: "3"
+            Alert Name: '{{ $values.B.Labels.name}}'
+            Alert Value: '{{ $values.B.Value }}'
+          isPaused: true

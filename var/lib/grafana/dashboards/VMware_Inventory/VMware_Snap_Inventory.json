@@ -1,0 +1,91 @@
+{
+  "editable": false,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "ViSnapCsv",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 32,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.11",
+      "targets": [
+        {
+          "decimalSeparator": ".",
+          "delimiter": ",",
+          "experimental": {
+            "regex": true
+          },
+          "header": true,
+          "ignoreUnknown": false,
+          "refId": "A",
+          "schema": [
+            {
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "skipRows": 0
+        }
+      ],
+      "title": " ",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "VI",
+    "VM",
+    "Snapshot"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": true
+  },
+  "timezone": "",
+  "title": "VMware VM Snapshot Inventory",
+  "uid": "iQlLNW59z",
+  "version": 8
+}

@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.44"
+$ScriptVersion = "0.9.46"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -158,7 +158,7 @@ if ($SessionFile) {
                     AltAndCatchFire "Jobs States check failed, no job state or check the user permissions!"
                 }
             } else {
-                AltAndCatchFire "Explicit connection failed, check the stored credentials!"
+                AltAndCatchFire "No access_token, check the stored credentials!"
             }
         } catch {
             AltAndCatchFire "Explicit connection failed, check the stored credentials!"
@@ -367,11 +367,11 @@ if ($($VbrJobsStates.data)) {
                         $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.objectRestorePoints"] ++
                         $vm_name = NameCleaner $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name
                         if ($ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name]) {
-                            $vcenter_name = NameCleaner $ViVmInventoryTable[$vm_name].vCenter
-                            if ($ViVmInventoryTable[$vm_name].Cluster) {
-                                $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].Cluster
+                            $vcenter_name = NameCleaner $ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].vCenter
+                            if ($ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].Cluster) {
+                                $cluster_name = NameCleaner $ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].Cluster
                             } else {
-                                $cluster_name = NameCleaner $ViVmInventoryTable[$vm_name].ESX
+                                $cluster_name = NameCleaner $ViVmInventoryTable[$VbrBackupObjectsTable[$VbrObjectRestorePoint.name].name].ESX
                             }
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.objectRestorePoints"] ++
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount

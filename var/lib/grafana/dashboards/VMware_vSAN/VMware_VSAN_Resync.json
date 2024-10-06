@@ -394,7 +394,7 @@
         }
       ],
       "maxPerRow": 1,
-      "nullPointMode": "null",
+      "nullPointMode": "null as zero",
       "options": {
         "alertThreshold": true
       },
@@ -411,7 +411,7 @@
         {
           "hide": false,
           "refId": "A",
-          "target": "sortByMaxima(aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.ObjectHealthDetail.*, 6))",
+          "target": "sortByMaxima(aliasByNode(currentAbove(vsan.$vcenter.$datacentre.$cluster.vsan.ObjectHealthDetail.*, 0), 6))",
           "textEditor": false
         }
       ],
@@ -436,8 +436,8 @@
       "yaxes": [
         {
           "$$hashKey": "object:173",
-          "format": "none",
-          "label": "Objects",
+          "format": "short",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": 0,
@@ -456,6 +456,104 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepBefore",
+            "lineWidth": 4,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 60
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 5,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "VsanObjectHealthState",
+          "url": "https://dp-downloads.broadcom.com/api-content/apis/API_VMA_001/8.0U3/html/vim.cluster.VsanClusterHealthSummary.html#healthScore"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "9.5.21",
+      "targets": [
+        {
+          "datasource": null,
+          "hide": false,
+          "refId": "A",
+          "target": "sortByMaxima(aliasByNode(vsan.$vcenter.$datacentre.$cluster.vsan.healthSummary.healthScore, 6))",
+          "textEditor": false
+        }
+      ],
+      "title": "HealthScore",
+      "type": "timeseries"
     }
   ],
   "refresh": "5m",

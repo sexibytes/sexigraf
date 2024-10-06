@@ -12,6 +12,20 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "panels": [],
+      "repeat": "vbrserver",
+      "title": "$vbrserver",
+      "type": "row"
+    },
+    {
       "aliasColors": {
         "capacity": "#BF1B00",
         "uncommitted": "#EAB839",

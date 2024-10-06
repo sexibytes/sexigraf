@@ -1,9 +1,22 @@
 {
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "editable": false,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 62,
+  "id": null,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "aliasColors": {
@@ -12,9 +25,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -40,9 +59,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -52,19 +72,19 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "refId": "A",
           "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.{cpu-wait,cpu-nice,cpu-interrupt,cpu-nice,cpu-softirq,cpu-steal,cpu-system,cpu-user})",
           "textEditor": false
         },
         {
+"datasource": "local",
           "refId": "B",
           "target": "aliasByMetric(collectd.sexigraf.aggregation-cpu-average.cpu-idle)"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "cpu",
       "tooltip": {
         "shared": true,
@@ -73,9 +93,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -83,21 +101,17 @@
         {
           "format": "percent",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -105,9 +119,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -133,9 +153,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -145,26 +166,28 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "refId": "A",
           "target": "aliasByNode(collectd.sexigraf.memory.memory-used, 3)"
         },
         {
+"datasource": "local",
           "refId": "B",
           "target": "aliasByNode(collectd.sexigraf.memory.memory-cached, 3)"
         },
         {
+"datasource": "local",
           "refId": "C",
           "target": "aliasByNode(collectd.sexigraf.memory.memory-buffered, 3)"
         },
         {
+"datasource": "local",
           "refId": "D",
           "target": "aliasByNode(collectd.sexigraf.memory.memory-free, 3)"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "mem",
       "tooltip": {
         "shared": true,
@@ -173,9 +196,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -183,21 +204,16 @@
         {
           "format": "bytes",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -209,9 +225,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -237,9 +259,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -249,14 +272,13 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "refId": "A",
           "target": "aliasByNode(collectd.sexigraf.load.load.*, 4)"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "load",
       "tooltip": {
         "shared": true,
@@ -265,9 +287,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -275,21 +295,17 @@
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -301,9 +317,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -329,9 +351,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -341,26 +364,27 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "refId": "A",
           "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-reserved, 3)",
           "textEditor": false
         },
         {
+"datasource": "local",
           "hide": false,
           "refId": "B",
           "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-used, 3)",
           "textEditor": false
         },
         {
+"datasource": "local",
           "refId": "C",
           "target": "aliasByNode(collectd.sexigraf.df-root.df_complex-free, 3)",
           "textEditor": false
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "df-root",
       "tooltip": {
         "shared": true,
@@ -369,9 +393,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -379,21 +401,17 @@
         {
           "format": "bytes",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -405,9 +423,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -433,9 +457,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -445,6 +470,7 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "hide": false,
           "refCount": 0,
           "refId": "A",
@@ -452,6 +478,7 @@
           "textEditor": false
         },
         {
+"datasource": "local",
           "hide": false,
           "refCount": 0,
           "refId": "B",
@@ -459,6 +486,7 @@
           "textEditor": false
         },
         {
+"datasource": "local",
           "hide": false,
           "refCount": 0,
           "refId": "C",
@@ -467,9 +495,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "df-wfs",
       "tooltip": {
         "shared": true,
@@ -478,9 +504,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -488,21 +512,17 @@
         {
           "format": "bytes",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -514,9 +534,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "local",
       "editable": false,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -542,9 +568,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "9.5.21",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -566,15 +593,14 @@
       "steppedLine": false,
       "targets": [
         {
+"datasource": "local",
           "refId": "A",
           "target": "aliasByNode(collectd.sexigraf.interface-eth0.if_octets.*, 4)",
           "textEditor": false
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "if",
       "tooltip": {
         "shared": true,
@@ -583,9 +609,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -593,25 +617,22 @@
         {
           "format": "bytes",
           "logBase": 1,
-          "max": null,
           "min": 0,
           "show": true
         },
         {
           "format": "short",
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     }
   ],
-  "schemaVersion": 22,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "light",
   "tags": [],
   "templating": {
@@ -649,6 +670,7 @@
   },
   "timezone": "browser",
   "title": "Home",
-  "uid": "awBlOjXZk",
-  "version": 6
+  "uid": "awBlOjXZj",
+  "version": 1,
+  "weekStart": ""
 }

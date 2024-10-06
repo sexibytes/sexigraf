@@ -1,0 +1,1 @@
+37  1    * * *   root rm -f /var/lib/grafana/png/*.png >/dev/null 2>&1
