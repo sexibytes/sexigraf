@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.99k](https://github.com/sexibytes/sexigraf/tree/0.99k) (2024-10-06)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99j...0.99k)
+
+**Implemented enhancements:**
+
+- Add vSAN "Cluster health score" in the "VMware vSAN Resync & Health" dashboard [\#406](https://github.com/sexibytes/sexigraf/issues/406)
+- auto clean /var/lib/grafana/png/ [\#405](https://github.com/sexibytes/sexigraf/issues/405)
+- add version selector to VMware Evo Version dashboard [\#402](https://github.com/sexibytes/sexigraf/issues/402)
+- add multi row to Veeam Repository dashboards [\#399](https://github.com/sexibytes/sexigraf/issues/399)
+- Handle very restricted user account [\#398](https://github.com/sexibytes/sexigraf/issues/398)
+- Option to use MAC Address instead of Client-ID when using DHCP [\#397](https://github.com/sexibytes/sexigraf/issues/397)
+- add guest OS hostname to vm inventory [\#359](https://github.com/sexibytes/sexigraf/issues/359)
+
+**Fixed bugs:**
+
+- "Invalid dashboard UID in annotation request" on home dashboard [\#404](https://github.com/sexibytes/sexigraf/issues/404)
+- vm names with special characters not correctly handled [\#385](https://github.com/sexibytes/sexigraf/issues/385)
+- vSAN disk capacity not accurate [\#383](https://github.com/sexibytes/sexigraf/issues/383)
+- Vsan data missing - EFA detection faulty [\#382](https://github.com/sexibytes/sexigraf/issues/382)
+
+**Closed issues:**
+
+- no maxTotalLatency on VMs running on vSAN [\#401](https://github.com/sexibytes/sexigraf/issues/401)
+- ESXi standalone not working with 0.99j? [\#384](https://github.com/sexibytes/sexigraf/issues/384)
+- Export report capabilities  [\#380](https://github.com/sexibytes/sexigraf/issues/380)
+- VBR not pulling any info or data [\#378](https://github.com/sexibytes/sexigraf/issues/378)
+- Add snapshot inventory [\#374](https://github.com/sexibytes/sexigraf/issues/374)
+- vsan metrics gone [\#373](https://github.com/sexibytes/sexigraf/issues/373)
+- add shellinabox in the admin panel [\#372](https://github.com/sexibytes/sexigraf/issues/372)
+- add iops per cluster [\#369](https://github.com/sexibytes/sexigraf/issues/369)
+
+**Merged pull requests:**
+
+- Update to 0.99k "Lighthouse Point" [\#408](https://github.com/sexibytes/sexigraf/pull/408) ([rschitz](https://github.com/rschitz))
+
 ## [0.99j](https://github.com/sexibytes/sexigraf/tree/0.99j) (2024-02-12)
 
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99i...0.99j)
