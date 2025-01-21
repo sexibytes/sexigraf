@@ -133,7 +133,7 @@ try {
         Write-Host "$((Get-Date).ToString("o")) [INFO] restarting network ..."
         try {
             Invoke-Expression "systemctl restart networking"
-            Invoke-Expression "systemctl restart resolvconf"
+            Invoke-Expression "systemctl restart systemd-resolved"
             Invoke-Expression "ifdown eth0 --force && ifup eth0 --force"
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [WARN] network restart failure"
