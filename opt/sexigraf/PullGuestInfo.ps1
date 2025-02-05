@@ -143,6 +143,24 @@ try {
     } else {
         Write-Host "$((Get-Date).ToString("o")) [INFO] no network changes ..."
     }
+
+    if ($($VmwCmdOvfEnvGuest['guestinfo.password'])) {
+        try {
+            $rootpass = $($VmwCmdOvfEnvGuest['guestinfo.password'])
+            Invoke-Expression 'echo "root:$rootpass" | chpasswd'
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [WARN] root password set failure"
+        }
+    }
+
+    if ($($VmwCmdOvfEnvGuest['guestinfo.sshkey '])) {
+        try {
+            $rootsshkey = $($VmwCmdOvfEnvGuest['guestinfo.sshkey'])
+            Invoke-Expression 'echo "$rootsshkey" > /root/.ssh/authorized_keys'
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [WARN] root ssh key set failure"
+        }
+    }
     
 } catch {
     Write-Host "$((Get-Date).ToString("o")) [WARN] guestinfo.ovfEnv invoke failure"
