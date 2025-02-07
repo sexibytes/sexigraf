@@ -153,7 +153,7 @@ try {
         }
     }
 
-    if ($($VmwCmdOvfEnvGuest['guestinfo.sshkey '])) {
+    if ($($VmwCmdOvfEnvGuest['guestinfo.sshkey'])) {
         try {
             $rootsshkey = $($VmwCmdOvfEnvGuest['guestinfo.sshkey'])
             Invoke-Expression 'echo "$rootsshkey" > /root/.ssh/authorized_keys'
