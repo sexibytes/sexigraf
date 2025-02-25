@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1042"
+$ScriptVersion = "0.9.1043"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1635,7 +1635,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             foreach ($VsanHostsAndClusterPerfQueryRefId in $VsanHostsAndClusterPerfQuery) {
                                 $VsanHostsAndClusterPerfQueryUuid = $VsanHostsAndClusterPerfQueryRefId.EntityRefId.split(":")[1]
                                 try {
-                                    $VsanHostsAndClusterPerfQueryRefIds.add($vSanObjectIdentitiesNamespaces[$VsanHostsAndClusterPerfQueryUuid].value,$($VsanHostsAndClusterPerfQueryRefId.Value.Values|sort-object)[-1])
+                                    $VsanHostsAndClusterPerfQueryRefIds.add($vSanObjectIdentitiesNamespaces[$VsanHostsAndClusterPerfQueryUuid].value,$($VsanHostsAndClusterPerfQueryRefId.Value.Values|Sort-Object -Descending|Select-Object -First 1).split(",")[0])
                                 } catch {}
                                 
                             }
