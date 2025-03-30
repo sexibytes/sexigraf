@@ -4,5 +4,5 @@ MSTATUS=$?
 
 if [ $MSTATUS -eq 0 ]; then
         mkdir -p /media/cdrom
-        mount /dev/sr0 /media/cdrom
+        mount -t iso9660 /dev/sr0 /media/cdrom
 fi
