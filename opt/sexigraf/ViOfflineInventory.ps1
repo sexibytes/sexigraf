@@ -3,7 +3,7 @@
 
 param([Parameter (Mandatory=$true)] [string] $CredStore)
 
-$ScriptVersion = "0.9.93"
+$ScriptVersion = "0.9.94"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -115,6 +115,7 @@ if ($ViServersList.count -gt 0) {
     $VmsWithSnapsInfos = @()
     $ViEsxsInfos = @()
     $ViDatastoresInfos = @()
+    $AllVsanObjectsDetails = @()
     foreach ($ViServer in $ViServersList) {
         $ViServerCleanName = $ViServer.Replace(".","_")
         $SessionFile = "/tmp/vmw_" + $ViServerCleanName + ".key"
@@ -152,7 +153,7 @@ if ($ViServersList.count -gt 0) {
                 if ($ServerConnection.IsConnected) {
                     # $PwCliContext = Get-PowerCLIContext
                     Write-Host "$((Get-Date).ToString("o")) [INFO] Connected to vCenter $($ServerConnection.Name) version $($ServerConnection.Version) build $($ServerConnection.Build)"
-                    $SessionSecretName = "vmw_" + $ViServer.Replace(".","_") + ".key"
+                    $SessionSecretName = "vmw_" + $ViServerCleanName + ".key"
                     # $ServerConnection.SessionSecret | Out-File -FilePath /tmp/$SessionSecretName -Force # PS>TerminatingError(Out-File): "Access to the path '/tmp/vmw_xxx.key' is denied."
                 }
             } catch {
@@ -174,6 +175,10 @@ if ($ViServersList.count -gt 0) {
             continue
         }
 
+        if ($vSanPull = Test-Path -Path $("/etc/cron.d/vsan_" + $ViServerCleanName)) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] vSAN collector enabled for $ViServer ..."
+        }
+
         if ($ServiceInstance) {
 
             Write-Host "$((Get-Date).ToString("o")) [INFO] Collecting objects in $ViServer ..."
@@ -182,7 +187,7 @@ if ($ViServersList.count -gt 0) {
             $vPgs = Get-View -ViewType Network -Property name -Server $ViServer
             $Vms = Get-View -ViewType virtualmachine -Property name, Parent, Guest.IpAddress, Network, Summary.Storage, Guest.Net, Runtime.Host, Config.Hardware.NumCPU, Config.Hardware.MemoryMB, Config.GuestId, Guest.GuestId, summary.config.vmPathName, Config.Hardware.Device, Runtime.PowerState, Runtime.bootTime, snapshot, LayoutEx.File, Guest.HostName -Server $ViServer
             $esxs = Get-View -ViewType hostsystem -Property name, Config.Product.Version, Config.Product.Build, Summary.Hardware.Model, Summary.Hardware.MemorySize, Summary.Hardware.CpuModel, Summary.Hardware.NumCpuCores, Summary.Hardware.OtherIdentifyingInfo, Parent, runtime.ConnectionState, runtime.InMaintenanceMode, config.network.dnsConfig.hostName, Config.Network.Vnic, Hardware.SystemInfo.SerialNumber -Server $ViServer
-            $clusters = Get-View -ViewType clustercomputeresource -Property name -Server $ViServer
+            $clusters = Get-View -ViewType clustercomputeresource -Property name, ConfigurationEx -Server $ViServer
             $datastores = Get-View -ViewType datastore -Property name, Summary.Type, Summary.Capacity, Summary.FreeSpace, Summary.Url -Server $ViServer
 
             $Datacenters = Get-View -ViewType datacenter -Property Parent, Name -Server $ViServer
@@ -391,7 +396,113 @@ if ($ViServersList.count -gt 0) {
                 
                 $ViDatastoresInfos += $ViDatastoreInfo
             }
-    
+
+            if ($vSanPull) {
+
+                $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $ViServer
+
+                try {
+                    $PbmServiceInstance = Get-SpbmView -Id PbmServiceInstance-ServiceInstance -Server $ViServer
+                    $PbmProfileManager = Get-SpbmView -Id $PbmServiceInstance.PbmRetrieveServiceContent().ProfileManager -Server $ViServer
+                    $PbmProfiles = $PbmProfileManager.PbmRetrieveContent($($PbmProfileManager.PbmQueryProfile($($PbmProfileManager.PbmFetchResourceType()),"REQUIREMENT")))
+                } catch {
+                    Write-Host -ForegroundColor Red "$((Get-Date).ToString("o")) [EROR] PbmProfiles collection issue"
+                }
+
+                $Vms_table = @{}
+                foreach ($Vm in $Vms) {
+                    if (!$Vms_table[$Vm.moref]) {
+                        $Vms_table.add($Vm.moref, $Vm)
+                    }
+                }
+
+                $PbmProfiles_table = @{}
+                foreach ($PbmProfile in $PbmProfiles) {
+                    if (!$PbmProfiles_table[$PbmProfile.ProfileId.UniqueId]) {
+                        $PbmProfiles_table.add($PbmProfile.ProfileId.UniqueId, $PbmProfile.name)
+                    }
+                }
+
+                foreach ($cluster in $clusters|?{$_.ConfigurationEx.VsanConfigInfo.Enabled}) {
+                    $cluster_ObjectIdentities = $VsanObjectSystem.VsanQueryObjectIdentities($cluster.moref,$null,$null,$true,$true,$false)
+
+                    $cluster_ObjectIdentities_table = @{}
+                    foreach ($cluster_ObjectIdentity in $cluster_ObjectIdentities.Identities) {
+                        if (!$cluster_ObjectIdentities_table[$cluster_ObjectIdentity.Uuid]) {
+                            $cluster_ObjectIdentities_table.add($cluster_ObjectIdentity.Uuid, $cluster_ObjectIdentity)
+                        }
+                    }
+
+                    $cluster_ObjectHealthDetail_table = @{}
+                    foreach ($cluster_ObjectHealthDetail in $cluster_ObjectIdentities.Health.ObjectHealthDetail) {
+                        if ($cluster_ObjectHealthDetail.ObjUuids) {
+                            foreach ($cluster_ObjectHealthDetail_ObjUuid in $cluster_ObjectHealthDetail.ObjUuids) {
+                                if (!$cluster_ObjectHealthDetail_table[$cluster_ObjectHealthDetail_ObjUuid]) {
+                                    $cluster_ObjectHealthDetail_table.add($cluster_ObjectHealthDetail_ObjUuid, $cluster_ObjectHealthDetail.Health)
+                                }
+                            }
+                        }
+                    }
+
+                    $cluster_VsanObjectQuerySpec = $cluster_ObjectIdentities.Identities|%{New-Object VMware.Vsan.Views.VsanObjectQuerySpec -Property @{uuid=$_.Uuid}}
+                    $cluster_VsanObjectInformation = $VsanObjectSystem.VosQueryVsanObjectInformation($cluster.moref,$cluster_VsanObjectQuerySpec)
+
+                    $cluster_VsanObjectInformation_table = @{}
+                    foreach ($cluster_VsanObjectInf in $cluster_VsanObjectInformation) {
+                        if (!$cluster_VsanObjectInformation_table[$cluster_VsanObjectInf.VsanObjectUuid]) {
+                            $cluster_VsanObjectInformation_table.add($cluster_VsanObjectInf.VsanObjectUuid, $cluster_VsanObjectInf)
+                        }
+                    }
+
+                    foreach ($cluster_ObjectIdentity_key in $cluster_ObjectIdentities_table.keys) {
+
+                        $VsanObjectDetails = "" | Select-Object vCenter, Cluster, Uuid, Vm, Description, Type, ComplianceStatus, SpbmProfile, Health
+
+                        $VsanObjectDetails.vCenter = $($global:DefaultVIServer.name)
+                        $VsanObjectDetails.Cluster = $($cluster.name)
+
+                        $VsanObjectDetails.Uuid = $cluster_ObjectIdentity_key
+
+                        try {
+                            $VsanObjectDetails.Vm = $($Vms_table[$cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].vm].name)
+                        } catch {
+                            $VsanObjectDetails.Vm = "N/A"
+                        }
+
+                        try {
+                            $VsanObjectDetails.Description = $($cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].Description)
+                        } catch {
+                            $VsanObjectDetails.Description = "N/A"
+                        }
+
+                        try {
+                            $VsanObjectDetails.Type = $($cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].Type)
+                        } catch {
+                            $VsanObjectDetails.Type = "N/A"
+                        }
+
+                        try {
+                            $VsanObjectDetails.ComplianceStatus = $($cluster_VsanObjectInformation_table[$cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].Uuid].SpbmComplianceResult.ComplianceStatus)
+                        } catch {
+                            $VsanObjectDetails.ComplianceStatus = "N/A"
+                        }
+
+                        try {
+                            $VsanObjectDetails.SpbmProfile = $($PbmProfiles_table[$cluster_VsanObjectInformation_table[$cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].Uuid].SpbmProfileUuid])
+                        } catch {
+                            $VsanObjectDetails.SpbmProfile = "N/A"
+                        }
+
+                        try {
+                            $VsanObjectDetails.Health = $($cluster_ObjectHealthDetail_table[$cluster_ObjectIdentities_table[$cluster_ObjectIdentity_key].Uuid])
+                        } catch {
+                            $VsanObjectDetails.Health = "N/A"
+                        }
+
+                        $AllVsanObjectsDetails += $VsanObjectDetails
+                    }
+                }
+            }
         }
         
         $ExecDuration = $($(Get-Date) - $ExecStart).TotalSeconds.ToString().Split(".")[0]
@@ -556,6 +667,34 @@ if ($ViServersList.count -gt 0) {
             }
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [EROR] Datastore Export-Csv issue"
+            Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
+        }
+    }
+
+    if ($AllVsanObjectsDetails) {
+
+        $VsanObjInventories = Get-ChildItem "/mnt/wfs/inventory/VsanObjInventory.*.csv"
+
+        if ($VsanObjInventories) {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating VsanObjInventory.*.csv files ..."
+            $ExtraCsvFiles = Compare-Object  $VsanObjInventories  $($VsanObjInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            If ($ExtraCsvFiles) {
+                try {
+                    Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
+                } catch {
+                    AltAndCatchFire "Cannot remove extra csv files"
+                }
+            }
+        }
+
+        try {
+            Write-Host "$((Get-Date).ToString("o")) [INFO] Writing vSAN Inventory files ..."
+            $AllVsanObjectsDetails|Export-Csv -NoTypeInformation -Path /mnt/wfs/inventory/VsanObjInventory.csv -Force -ErrorAction Stop
+            if ($ExecStart.DayOfWeek -match "Monday" -and !$($VsanObjInventories|?{$_.LastWriteTime -gt $ExecStart.AddDays(-1)})) {
+                $AllVsanObjectsDetails|Out-File -Path /mnt/wfs/inventory/VsanObjInventory.$((Get-Date).ToString("yyyy.MM.dd_hh.mm.ss")).csv -Force -ErrorAction Stop
+            }
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [EROR] vSAN Export-Csv issue"
             Write-Host "$((Get-Date).ToString("o")) [EROR] $($Error[0])"
         }
     }
