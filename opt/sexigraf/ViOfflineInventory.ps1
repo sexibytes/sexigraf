@@ -316,7 +316,7 @@ if ($ViServersList.count -gt 0) {
                     if ($Vm.Snapshot.CurrentSnapshot) {
                         $VmWithSnapsChildren = $Vm.Snapshot.RootSnapshotList|%{Get-SnapChild -Snapshot $_}
                         $VmWithSnapsOld = @($VmWithSnapsChildren)
-                        $VmWithSnapsSizeGB = [math]::Round(($Vm.LayoutEx.File|?{$_.name -match "-[0-9]{6}-"}|Measure-Object -Property Size -Sum).Sum/1GB,2)
+                        $VmWithSnapsSizeGB = [math]::Round(($Vm.LayoutEx.File|?{$_.name -match "-[0-9]{6}-|-[0-9]{6}\."}|Measure-Object -Property Size -Sum).Sum/1GB,2)
 
                         $VmWithSnapsInfo = "" | Select-Object vCenter, VM, Cluster, Allocated_GB, SnapChild, SnapSizeGB, NewestSnapTime, OldestSnapTime
                         $VmWithSnapsInfo.vCenter = $ViVmInfo.vCenter
