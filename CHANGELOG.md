@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.99l](https://github.com/sexibytes/sexigraf/tree/0.99l) (2025-04-10)
+
+[Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99k...0.99l)
+
+**Implemented enhancements:**
+
+- add vsan object details collect in ViOfflineInventory [\#420](https://github.com/sexibytes/sexigraf/issues/420)
+- SexiGraf Appliance, slow network firstboot [\#409](https://github.com/sexibytes/sexigraf/issues/409)
+- include vim.event.DrsSoftRuleViolationEvent in Bad Events [\#389](https://github.com/sexibytes/sexigraf/issues/389)
+- VMware Appliance \(OVA\) enhancements [\#387](https://github.com/sexibytes/sexigraf/issues/387)
+- Handle "Unknown object type" in vSAN Resync & Health dashboard [\#306](https://github.com/sexibytes/sexigraf/issues/306)
+
+**Fixed bugs:**
+
+- exclude restores from the veeam vmware jobs [\#417](https://github.com/sexibytes/sexigraf/issues/417)
+- missing GuestId in Vi Inventory [\#416](https://github.com/sexibytes/sexigraf/issues/416)
+
+**Closed issues:**
+
+- incorrect snapshot size in inventory [\#421](https://github.com/sexibytes/sexigraf/issues/421)
+- Issue with VM Disk Latency with .99k [\#415](https://github.com/sexibytes/sexigraf/issues/415)
+- ESX inventory : add custom column based on vSphere Host Tag [\#414](https://github.com/sexibytes/sexigraf/issues/414)
+- Clear text passwords in syslog [\#413](https://github.com/sexibytes/sexigraf/issues/413)
+- HTTPD Version [\#412](https://github.com/sexibytes/sexigraf/issues/412)
+
+**Merged pull requests:**
+
+- Update to 0.99l “Overwatch Nexus” [\#422](https://github.com/sexibytes/sexigraf/pull/422) ([rschitz](https://github.com/rschitz))
+
 ## [0.99k](https://github.com/sexibytes/sexigraf/tree/0.99k) (2024-10-06)
 
 [Full Changelog](https://github.com/sexibytes/sexigraf/compare/0.99j...0.99k)
