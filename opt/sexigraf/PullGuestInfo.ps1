@@ -132,14 +132,34 @@ try {
     if ($NetworkToReload -eq $true) {
         Write-Host "$((Get-Date).ToString("o")) [INFO] restarting network ..."
         try {
+            Invoke-Expression "ifdown eth0 --force"
+            Invoke-Expression "ip addr flush eth0"
             Invoke-Expression "systemctl restart networking"
-            Invoke-Expression "systemctl restart resolvconf"
-            Invoke-Expression "ifdown eth0 --force && ifup eth0 --force"
+            Invoke-Expression "systemctl restart systemd-resolved"
+            Invoke-Expression "ifup eth0 --force"
         } catch {
             Write-Host "$((Get-Date).ToString("o")) [WARN] network restart failure"
         }
     } else {
         Write-Host "$((Get-Date).ToString("o")) [INFO] no network changes ..."
+    }
+
+    if ($($VmwCmdOvfEnvGuest['guestinfo.password'])) {
+        try {
+            $rootpass = $($VmwCmdOvfEnvGuest['guestinfo.password'])
+            Invoke-Expression 'echo "root:$rootpass" | chpasswd'
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [WARN] root password set failure"
+        }
+    }
+
+    if ($($VmwCmdOvfEnvGuest['guestinfo.sshkey'])) {
+        try {
+            $rootsshkey = $($VmwCmdOvfEnvGuest['guestinfo.sshkey'])
+            Invoke-Expression 'echo "$rootsshkey" > /root/.ssh/authorized_keys'
+        } catch {
+            Write-Host "$((Get-Date).ToString("o")) [WARN] root ssh key set failure"
+        }
     }
     
 } catch {

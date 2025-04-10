@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = "SexiGraf Package Updater";
+$title = "SexiGraf Export/Import";
 require("header.php");
 require("helper.php");
 $tempMountOutput = shell_exec("sudo /bin/bash /var/www/scripts/automountCD.sh");

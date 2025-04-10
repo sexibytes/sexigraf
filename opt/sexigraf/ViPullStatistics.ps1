@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1041"
+$ScriptVersion = "0.9.1043"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -364,7 +364,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
     $vcenter_clusters_vsan_nonSsd_uuid_naa_h = @{}
     $vcenter_vmhosts_vsan_disk_moref_h = @{}
     # $vcenter_vmhosts_vsan_disk_capa_h = @{}
-    $vcenter_clusters_vsan_efa_h = @{}
+    $vcenter_clusters_vsan_esa_h = @{}
     foreach ($vcenter_cluster in $vcenter_clusters) {
         $vcenter_vmhosts_vsan_Ssd_uuid_naa_h = @{}
         $vcenter_vmhosts_vsan_nonSsd_uuid_naa_h = @{}
@@ -375,7 +375,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             if ($vcenter_cluster.ConfigurationEx.VsanHostConfig -and $vSanPull) {
                 if ($vcenter_cluster.ConfigurationEx.VsanHostConfig.VsanEsaEnabled -contains $true) {
                     try {
-                        $vcenter_clusters_vsan_efa_h.add($vcenter_cluster.MoRef.Value,$vcenter_cluster)
+                        $vcenter_clusters_vsan_esa_h.add($vcenter_cluster.MoRef.Value,$vcenter_cluster)
                     } catch {}
                 } else {
                     foreach ($ClusterVsanHostConfig in $vcenter_cluster.ConfigurationEx.VsanHostConfig) {
@@ -594,9 +594,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
             $VsanSpaceReportSystem = Get-VSANView -Id VsanSpaceReportSystem-vsan-cluster-space-report-system -Server $Server
             $VsanObjectSystem = Get-VSANView -Id VsanObjectSystem-vsan-cluster-object-system -Server $Server
             # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
-            # if ($vcenter_clusters_vsan_efa_h.keys) {
+            # if ($vcenter_clusters_vsan_esa_h.keys) {
             #     $VsanVcDiskManagementSystem = Get-VSANView -Id VimClusterVsanVcDiskManagementSystem-vsan-disk-management-system -Server $Server
-            #     SexiLogger "[INFO] vSAN EFA clusters detected ..."
+            #     SexiLogger "[INFO] vSAN ESA clusters detected ..."
             # }
         }
     }
@@ -1262,8 +1262,8 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         # vsan-vnic-net
                         # $VsanHostsAndClusterPerfQuerySpec += New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="vsan-vnic-net:*";labels=@("rxThroughput","txThroughput","rxPackets","txPackets","tcpSackRcvBlocksRate","txPacketsLossRate","tcpSackRexmitsRate","rxPacketsLossRate","tcpHalfopenDropRate","tcpRcvoopackRate","tcpRcvduppackRate","tcpRcvdupackRate","tcpTimeoutDropRate","tcpTxRexmitRate","tcpRxErrRate","tcpSackSendBlocksRate");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock} # "arpDropRate"
 
-                        if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # ESA vSan cluster
-                            SexiLogger "[INFO] Processing EFA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
+                        if ($vcenter_clusters_vsan_esa_h[$vcenter_cluster_moref]) { # ESA vSan cluster
+                            SexiLogger "[INFO] Processing ESA vSAN metrics in cluster $vcenter_cluster_name (v8.0+) ..."
                             # VsanClusterHealthSummary/VsanPhysicalDiskHealthSummary better than VsanManagedDisksInfo since we can query at the cluster level
                             # $VsanHostsAndClusterStoragePoolSpec = New-Object VMware.Vsan.Views.VimVsanHostQueryVsanDisksSpec -property @{vsanDiskType="storagePool"}
                             try {
@@ -1468,7 +1468,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                 if ($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxpkts"] -gt 0) {$vcenter_cluster_h.add("vsan.$vcenter_name.$vcenter_cluster_dc_name.$vcenter_cluster_name.esx.$vcenter_vmhost_NodeUuid_Name.vsan.net.portRxDropsRate", $($VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxDrops"] * 100 / $VsanPerfEntityMetric[$vcenter_vmhost_NodeUuid]["vsan-host-net"]["portRxpkts"]))}
                             }
 
-                            if ($vcenter_clusters_vsan_efa_h[$vcenter_cluster_moref]) { # EFA vSan cluster
+                            if ($vcenter_clusters_vsan_esa_h[$vcenter_cluster_moref]) { # ESA vSan cluster
                                 foreach ($PhysicalDisksHealthVsanUuid in $PhysicalDisksHealthVsanUuidHosts.keys) {
                                     $PhysicalDisksHealthVsanUuidName = NameCleaner $PhysicalDisksHealthVsanUuidObj[$PhysicalDisksHealthVsanUuid].Name
                                     if ($vcenter_vmhosts_short_h[$PhysicalDisksHealthVsanUuidHosts[$PhysicalDisksHealthVsanUuid]]) {
@@ -1479,7 +1479,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                                     }
 
                                 }
-                            } else { # Non EFA vSAN cluster
+                            } else { # Non ESA vSAN cluster
 
                                 foreach ($vcenter_cluster_vsan_Ssd_uuid in $vcenter_clusters_vsan_Ssd_uuid_naa_h[$vcenter_cluster_moref].keys) {
                                     if ($vcenter_vmhosts_short_h[$vcenter_vmhosts_h[$vcenter_vmhosts_vsan_disk_moref_h[$vcenter_cluster_vsan_Ssd_uuid]].name]) {
@@ -1635,7 +1635,7 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             foreach ($VsanHostsAndClusterPerfQueryRefId in $VsanHostsAndClusterPerfQuery) {
                                 $VsanHostsAndClusterPerfQueryUuid = $VsanHostsAndClusterPerfQueryRefId.EntityRefId.split(":")[1]
                                 try {
-                                    $VsanHostsAndClusterPerfQueryRefIds.add($vSanObjectIdentitiesNamespaces[$VsanHostsAndClusterPerfQueryUuid].value,$($VsanHostsAndClusterPerfQueryRefId.Value.Values|sort-object)[-1])
+                                    $VsanHostsAndClusterPerfQueryRefIds.add($vSanObjectIdentitiesNamespaces[$VsanHostsAndClusterPerfQueryUuid].value,$($VsanHostsAndClusterPerfQueryRefId.Value.Values|Sort-Object -Descending|Select-Object -First 1).split(",")[0])
                                 } catch {}
                                 
                             }

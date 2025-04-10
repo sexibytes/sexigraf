@@ -5,5 +5,5 @@
         "EnableScriptBlockLogging": false
         }
     },
-    "LogLevel": "verbose"
+    "LogLevel": "error"
 }
