@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.48"
+$ScriptVersion = "0.9.49"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -247,7 +247,9 @@ if ($($VbrJobsStates.data)) {
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.capacityGB"] += $($VbrSobrNormalRepos|Measure-Object -Sum -Property capacityGB).Sum
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] += $($VbrSobrNormalRepos|Measure-Object -Sum -Property usedSpaceGB).Sum
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"] = $($VbrSobrNormalRepos|Measure-Object -Sum -Property freeGB).Sum
-                    $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] * 100 / $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] + $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"]))
+                    if ($($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] + $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"])) {
+                        $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] * 100 / $($VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.usedSpaceGB"] + $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"]))
+                    }
                 } else {
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.freeGB"] = 0
                     $VbrDataTable["veeam.vbr.$vbrserver_name.sobr.$VbrScaleOutRepositoryName.RealUsedPct"] = 100
