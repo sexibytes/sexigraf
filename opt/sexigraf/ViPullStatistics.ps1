@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1044"
+$ScriptVersion = "0.9.1045"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1332,14 +1332,43 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                             SexiLogger "[WARN] $($Error[0])"
                         }
 
-                        try {
-                            $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
-                            SexiLogger "[INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+                        # https://developer.broadcom.com/xapis/virtual-infrastructure-json-api/latest/sdk/vim25/release/vsan/VsanPerformanceManager/moId/VsanPerfQueryPerf/post/
+                        # In each query, the startTime and endTime must be specified in the query spec. And the suggested time span is less than 24 hours. To query stats for larger time range, please use paging mechanism. For example, split the time range in to smaller ones, and use multiple status queries with smaller time ranges.
+                        # In each query, when there is no wildcard or multi-entity query specified in the parameter querySpecs, the number of items within querySpecs should not exceed 100. When the parameter querySpecs includes more than 100 items, please use the paging mechanism.
+                        # In each query, if there is wildcard query or multi-entity query, the parameter querySpecs can only contain either one wildcard query or one multi-entity query.
 
-                        } catch {
-                            SexiLogger "[WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
-                            SexiLogger "[WARN] $($Error[0])"
+                        $PerfQuerySpecCount = ($VsanHostsAndClusterPerfQuerySpec | Measure-Object).Count
+                        $PerfQuerySpecBatchCount = [Math]::Ceiling($PerfQuerySpecCount / 99)
+
+                        if ($PerfQuerySpecCount -lt 99) {
+                            SexiLogger "[INFO] VsanHostsAndClusterPerfQuerySpec count lower than 99 (single batch)"
+                            try {
+                                $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
+                                SexiLogger "[INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+
+                            } catch {
+                                SexiLogger "[WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
+                                SexiLogger "[WARN] $($Error[0])"
+                            }
+                        } else {
+                            SexiLogger "[INFO] VsanHostsAndClusterPerfQuerySpec count higher than 99 (multiple batch)"
+                            for ($i = 0; $i -lt $PerfQuerySpecCount; $i += 99) {
+                                $end = [Math]::Min($i + 99 - 1, $PerfQuerySpecCount - 1)
+                                # PowerShell slice with range
+                                $batchNum  = [int]([Math]::Floor($i / 99) + 1)
+                                try {
+                                    SexiLogger "[INFO] VsanPerfQueryPerf batch $batchNum/$PerfQuerySpecBatchCount (items $i..$end) for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+                                    $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQueryBatch = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec[$i..$end],$vcenter_cluster.moref)}
+                                    $VsanHostsAndClusterPerfQuery += $VsanHostsAndClusterPerfQueryBatch
+                                    SexiLogger "[INFO] VsanPerfQueryPerf metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
+                                } catch {
+                                    SexiLogger "[WARN] Unable to retreive VsanPerfQuery in cluster $vcenter_cluster_name"
+                                    SexiLogger "[WARN] $($Error[0])"
+                                }
+                            }
                         }
+
+
                             
                         if ($VsanHostsAndClusterPerfQuery) {
                             $VsanPerfEntityMetric = @{}
