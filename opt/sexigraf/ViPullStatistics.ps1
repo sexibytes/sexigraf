@@ -2,7 +2,7 @@
 #
 param([parameter (Mandatory=$true)] [string] $Server, [parameter (Mandatory=$true)] [string] $SessionFile, [parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.1043"
+$ScriptVersion = "0.9.1044"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -1611,9 +1611,9 @@ if ($ServiceInstance.Content.About.ApiType -match "VirtualCenter") {
                         try {
                             SexiLogger "[INFO] Start collecting VsanPerfQueryPerf for virtual-machine in cluster $vcenter_cluster_name ..."
                             # virtual-machine latencyRead & latencyWrite because of empty maxTotalLatency on vSAN
-                            $VsanHostsAndClusterPerfQuerySpec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="virtual-machine:*";labels=@("latencyRead","latencyWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
+                            $VsanHostsAndClusterPerfQuerySpecVm = New-Object VMware.Vsan.Views.VsanPerfQuerySpec -property @{entityRefId="virtual-machine:*";labels=@("latencyRead","latencyWrite");startTime=$ServiceInstanceServerClock_5;endTime=$ServiceInstanceServerClock}
                             $vcenter_cluster_ObjectIdentitiesNamespaces = $VsanObjectSystem.VsanQueryObjectIdentities($vcenter_cluster.moref,$null,"namespace",$false,$true,$false,$null)
-                            $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpec,$vcenter_cluster.moref)}
+                            $VsanHostsAndClusterPerfQueryTime = Measure-Command {$VsanHostsAndClusterPerfQuery = $VsanPerformanceManager.VsanPerfQueryPerf($VsanHostsAndClusterPerfQuerySpecVm,$vcenter_cluster.moref)}
                             SexiLogger "[INFO] VsanPerfQueryPerf virtual-machine metrics collected in $($VsanHostsAndClusterPerfQueryTime.TotalSeconds) sec for vSAN Cluster $vcenter_cluster_name in vCenter $vcenter_name"
 
                         } catch {
