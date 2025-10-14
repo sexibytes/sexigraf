@@ -11,7 +11,7 @@ if (!$(Test-Connection -TargetName $server -TcpPort 9419 -TimeoutSeconds 2)) {
 }
 
 try {
-    $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
+    $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"}
     $VbrBody = @{grant_type = "password";username = $username;password = $password;refresh_token = "";code = "";use_short_term_refresh = ""}
     $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
     if ($VbrConnect.access_token) {
