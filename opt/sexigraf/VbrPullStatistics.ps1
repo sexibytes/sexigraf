@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.49"
+$ScriptVersion = "0.9.50"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -82,7 +82,7 @@ if ($SessionFile) {
         if ([DateTime]$(Get-Content -Path /tmp/$SessionSecretExpiration) -gt $ExecStart.AddMinutes(5)) {
             $SessionToken = Get-Content -Path $SessionFile -ErrorAction Stop
             SexiLogger "[INFO] SessionToken found in SessionFile, attempting connection to $Server ..."
-            $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
+            $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"; "Authorization" = "Bearer $SessionToken"}
             $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
             if ($($VbrJobsStates.data)) {
                 SexiLogger "[INFO] Connected to VBR REST API Server $Server"
@@ -101,7 +101,7 @@ if ($SessionFile) {
         try {
             $SessionRefreshPath = "vbr_" + $server.Replace(".","_") + ".dat"
             $SessionRefresh = Get-Content -Path /tmp/$SessionRefreshPath -ErrorAction Stop
-            $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
+            $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"}
             $VbrBody = @{grant_type = "refresh_token";username = "";password = "";refresh_token = $SessionRefresh;code = "";use_short_term_refresh = ""}
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
@@ -111,7 +111,7 @@ if ($SessionFile) {
                 $VbrConnect.refresh_token | Out-File -FilePath /tmp/$SessionRefreshPath
                 $VbrConnect.".expires".ToUniversalTime().tostring() | Out-File -FilePath /tmp/$SessionSecretExpiration
                 $SessionToken = $VbrConnect.access_token
-                $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
+                $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if (!$($VbrJobsStates.data)) {
                     SexiLogger "[WARN] Token refresh failed!"
@@ -139,11 +139,11 @@ if ($SessionFile) {
             } else {
                 AltAndCatchFire "No $Server entry in CredStore"
             }
-            $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"}
+            $VbrHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"}
             $VbrBody = @{grant_type = "password";username = $CredStoreLogin;password = $CredStorePassword;refresh_token = "";code = "";use_short_term_refresh = ""}
             $VbrConnect = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method POST -Uri $("https://" + $server + ":9419/api/oauth2/token") -Headers $VbrHeaders -ContentType "application/x-www-form-urlencoded" -Body $VbrBody
             if ($VbrConnect.access_token) {
-                $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
+                $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"; "Authorization" = "Bearer $($VbrConnect.access_token)"}
                 $VbrJobsStates = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/jobs/states") -Headers $VbrAuthHeaders
                 if ($($VbrJobsStates.data)) {
                     SexiLogger "[INFO] Connected to VBR REST API Server $Server"
@@ -169,7 +169,7 @@ if ($SessionFile) {
 }
 
 if ($($VbrJobsStates.data)) {
-    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.0-rev1"; "Authorization" = "Bearer $SessionToken"}
+    $VbrAuthHeaders = @{"accept" = "application/json";"x-api-version" = "1.2-rev0"; "Authorization" = "Bearer $SessionToken"}
     $VbrDataTable = @{}
     $vbrserver_name = NameCleaner $Server
     SexiLogger "[INFO] Start processing VBR Server $Server ..."
@@ -266,7 +266,7 @@ if ($($VbrJobsStates.data)) {
     try {
         SexiLogger "[INFO] VBR 5min old objectRestorePoints collect ..."
         # $VbrSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
-        $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/objectRestorePoints?platformNameFilter=VmWare&limit=999&createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+        $VbrObjectRestorePoints5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/restorePoints?platformNameFilter=VmWare&limit=999&createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
     } catch {
         SexiLogger "[EROR] objectRestorePoints collect failure"
         SexiLogger "[EROR] $($Error[0])"
