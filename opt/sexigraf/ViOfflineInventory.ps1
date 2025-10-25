@@ -1,9 +1,9 @@
 #!/usr/bin/pwsh -Command
 #
 
-param([Parameter (Mandatory=$true)] [string] $CredStore)
+param([Parameter (Mandatory=$true)] [string] $CredStore, [Parameter (Mandatory=$false)] [string] $InvWeeks = 10)
 
-$ScriptVersion = "0.9.94"
+$ScriptVersion = "0.9.95"
 
 $ErrorActionPreference = "SilentlyContinue"
 $WarningPreference = "SilentlyContinue"
@@ -521,7 +521,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($ViVmInventories) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViVmInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $ViVmInventories  $($ViVmInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $ViVmInventories  $($ViVmInventories|Sort-Object LastWriteTime | Select-Object -Last $InvWeeks) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
@@ -570,7 +570,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($ViSnapInventories) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViSnapInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $ViSnapInventories  $($ViSnapInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $ViSnapInventories  $($ViSnapInventories|Sort-Object LastWriteTime | Select-Object -Last $InvWeeks) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
@@ -600,7 +600,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($ViEsxInventories) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViEsxInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $ViEsxInventories  $($ViEsxInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $ViEsxInventories  $($ViEsxInventories|Sort-Object LastWriteTime | Select-Object -Last $InvWeeks) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
@@ -649,7 +649,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($ViDsInventories) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating ViDsInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $ViDsInventories  $($ViDsInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $ViDsInventories  $($ViDsInventories|Sort-Object LastWriteTime | Select-Object -Last $InvWeeks) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false
@@ -677,7 +677,7 @@ if ($ViServersList.count -gt 0) {
 
         if ($VsanObjInventories) {
             Write-Host "$((Get-Date).ToString("o")) [INFO] Rotating VsanObjInventory.*.csv files ..."
-            $ExtraCsvFiles = Compare-Object  $VsanObjInventories  $($VsanObjInventories|Sort-Object LastWriteTime | Select-Object -Last 10) -property FullName | ?{$_.SideIndicator -eq "<="}
+            $ExtraCsvFiles = Compare-Object  $VsanObjInventories  $($VsanObjInventories|Sort-Object LastWriteTime | Select-Object -Last $InvWeeks) -property FullName | ?{$_.SideIndicator -eq "<="}
             If ($ExtraCsvFiles) {
                 try {
                     Get-ChildItem $ExtraCsvFiles.FullName | Remove-Item -Force -Confirm:$false

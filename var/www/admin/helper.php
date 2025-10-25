@@ -23,6 +23,12 @@ function isAutopurgeEnabled() {
     return (file_exists($crontabPath . "graphite_autopurge"));
 }
 
+function getInvWeeks(){
+    global $crontabPath;
+    preg_match('/-InvWeeks(?:\s*=\s*|\s+)(\d+)/', file_get_contents($crontabPath . 'ViOfflineInventory'), $m);
+    return (int)$m[1];
+}
+
 function enableVi($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addViCrontab.sh " . $inputvcenter); }
 
 function enableVsan($inputvcenter) { shell_exec("sudo /bin/bash /var/www/scripts/addVsanCrontab.sh " . $inputvcenter); }
@@ -47,6 +53,10 @@ function disableAutopurge() {
 
 function forceAutopurge($nbPurgeDays) {
     shell_exec("sudo /bin/bash /var/www/scripts/forceAutopurge.sh " . $nbPurgeDays);
+}
+
+function setInvWeeks($NewInvWeeks) {
+    shell_exec("sudo /bin/bash /var/www/scripts/modInvWeeksCrontab.sh " . $NewInvWeeks);
 }
 
 function humanFileSize($size,$unit="") {
