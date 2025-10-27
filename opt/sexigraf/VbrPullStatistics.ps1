@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.50"
+$ScriptVersion = "0.9.52"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -272,6 +272,20 @@ if ($($VbrJobsStates.data)) {
         SexiLogger "[EROR] $($Error[0])"
     }
 
+    try {
+        SexiLogger "[INFO] VBR 5min old taskSessions collect ..."
+        $VbrTaskSessionsSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/taskSessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
+        if ($VbrTaskSessionsSessions5.data) {
+            $VbrTaskSessionsSessions5Table = @{}
+            foreach ($VbrTaskSessionsSession in $VbrTaskSessionsSessions5.data) {
+                $VbrTaskSessionsSessions5Table.add($VbrTaskSessionsSession.restorePointId,$VbrTaskSessionsSession)
+            }
+        }
+    } catch {
+        SexiLogger "[EROR] taskSessions collect failure"
+        SexiLogger "[EROR] $($Error[0])"
+    }
+
     # $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
     
 
@@ -378,6 +392,11 @@ if ($($VbrJobsStates.data)) {
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.objectRestorePoints"] ++
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
 
+                            if ($VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id]) {
+                                $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.transferredSize"] = $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.transferredSize
+                                $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.transferredSize"] += $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.transferredSize
+                            }
+
                             $VbrObjectInventoryInfo  = "" | Select-Object VbrServer, JobName, vCenter, Cluster, VM, RestorePointsCount, LastRestorePoint
                             $VbrObjectInventoryInfo.VbrServer = $Server
                             $VbrObjectInventoryInfo.JobName = $VbrSessions5[$VbrObjectRestorePoint.backupId].name
@@ -443,7 +462,7 @@ if ($($VbrJobsStates.data)) {
     try {
         SexiLogger "[INFO] VBR ended sessions collect ..."
         $VbrEndedSessions = @()
-        $VbrEndedSessions += $(Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?typeFilter=Job&endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders).data
+        $VbrEndedSessions += $(Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?typeFilter=BackupJob&endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders).data
         $VbrEndedSessions += $(Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?typeFilter=ConfigurationBackup&endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders).data
         # $VbrEndedSessions += $(Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/sessions?typeFilter=Infrastructure&endedAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders).data
     } catch {
@@ -454,7 +473,7 @@ if ($($VbrJobsStates.data)) {
     if ($VbrEndedSessions) {
         SexiLogger "[INFO] Processing VBR ended sessions ..."
         foreach ($VbrEndedSession in $VbrEndedSessions) {
-            $job_name = NameCleaner $VbrEndedSession.name
+            $job_name = NameCleaner $VbrJobsStatesTable[$VbrEndedSession.jobId].name
             if ($VbrEndedSession.result.result -eq "Success") {
                 $VbrEndedSessionResult = 0
             } elseif ($VbrEndedSession.result.result -eq "Warning") {
