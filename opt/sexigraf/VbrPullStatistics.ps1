@@ -2,7 +2,7 @@
 #
 param([Parameter (Mandatory=$true)] [string] $Server, [Parameter (Mandatory=$true)] [string] $SessionFile, [Parameter (Mandatory=$false)] [string] $CredStore)
 
-$ScriptVersion = "0.9.52"
+$ScriptVersion = "0.9.57"
 
 $ExecStart = $(Get-Date).ToUniversalTime()
 # $stopwatch =  [system.diagnostics.stopwatch]::StartNew()
@@ -175,9 +175,13 @@ if ($($VbrJobsStates.data)) {
     SexiLogger "[INFO] Start processing VBR Server $Server ..."
 
     $VbrJobsStatesTable = @{}
+    $VbrJobssessionIdTable = @{}
     foreach ($VbrJobState in $VbrJobsStates.data) {
         try {
             $VbrJobsStatesTable.add($VbrJobState.id,$VbrJobState)
+        } catch {}
+        try {
+            $VbrJobssessionIdTable.add($VbrJobState.sessionId,$VbrJobState)
         } catch {}
         $job_name = NameCleaner $VbrJobState.name
         if ($VbrJobState.status -eq "running") {
@@ -275,12 +279,6 @@ if ($($VbrJobsStates.data)) {
     try {
         SexiLogger "[INFO] VBR 5min old taskSessions collect ..."
         $VbrTaskSessionsSessions5 = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/taskSessions?createdAfterFilter=" + $(($ExecStart.AddMinutes(-5)).ToString("o"))) -Headers $VbrAuthHeaders
-        if ($VbrTaskSessionsSessions5.data) {
-            $VbrTaskSessionsSessions5Table = @{}
-            foreach ($VbrTaskSessionsSession in $VbrTaskSessionsSessions5.data) {
-                $VbrTaskSessionsSessions5Table.add($VbrTaskSessionsSession.restorePointId,$VbrTaskSessionsSession)
-            }
-        }
     } catch {
         SexiLogger "[EROR] taskSessions collect failure"
         SexiLogger "[EROR] $($Error[0])"
@@ -289,7 +287,7 @@ if ($($VbrJobsStates.data)) {
     # $VbrVmwareServers = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/inventory/vmware/hosts") -Headers $VbrAuthHeaders
     
 
-    if ($VbrObjectRestorePoints5.data) {
+    if ($VbrTaskSessionsSessions5.data) {
         # SexiLogger "[INFO] VBR backupObjects collect ..."
         # $VbrBackupObjects5 = @{}
         # foreach ($VbrObjectRestorePoint5 in $VbrObjectRestorePoints5.data) {
@@ -321,20 +319,31 @@ if ($($VbrJobsStates.data)) {
             SexiLogger "[EROR] $($Error[0])"
         }
 
-        $VbrObjectRestorePoints5SessionsId = $VbrObjectRestorePoints5.data.backupId|Select-Object -Unique
+        if ($VbrObjectRestorePoints5.data) {
 
-        SexiLogger "[INFO] VBR Sessions collect ..."
-        $VbrSessions5 = @{}
-        foreach ($VbrObjectRestorePoints5SessionId in $VbrObjectRestorePoints5SessionsId) {
-            try {
-                $VbrObjectRestorePoints5Session = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backups/" + $VbrObjectRestorePoints5SessionId) -Headers $VbrAuthHeaders
-                if ($VbrObjectRestorePoints5Session|?{$_.jobId -ne  "00000000-0000-0000-0000-000000000000"}) {
-                    $VbrSessions5.Add($VbrObjectRestorePoints5SessionId,$VbrObjectRestorePoints5Session)
+            $VbrObjectRestorePoints5SessionsId = $VbrObjectRestorePoints5.data.backupId|Select-Object -Unique
+
+            SexiLogger "[INFO] VBR Sessions collect ..."
+            $VbrSessions5 = @{}
+            foreach ($VbrObjectRestorePoints5SessionId in $VbrObjectRestorePoints5SessionsId) {
+                try {
+                    $VbrObjectRestorePoints5Session = Invoke-RestMethod -SkipHttpErrorCheck -SkipCertificateCheck -Method GET -Uri $("https://" + $server + ":9419/api/v1/backups/" + $VbrObjectRestorePoints5SessionId) -Headers $VbrAuthHeaders
+                    if ($VbrObjectRestorePoints5Session|?{$_.jobId -ne  "00000000-0000-0000-0000-000000000000"}) {
+                        $VbrSessions5.Add($VbrObjectRestorePoints5SessionId,$VbrObjectRestorePoints5Session)
+                    }
+                } catch {
+                    SexiLogger "[EROR] backupObjects collect failure"
+                    SexiLogger "[EROR] $($Error[0])"
                 }
-            } catch {
-                SexiLogger "[EROR] backupObjects collect failure"
-                SexiLogger "[EROR] $($Error[0])"
             }
+        }
+
+        $VbrTaskSessionsSessions5Table = @{}
+        foreach ($VbrTaskSessionsSession in $VbrTaskSessionsSessions5.data) {
+            $VbrTaskSessionsSessions5Table.add($VbrTaskSessionsSession.restorePointId,$VbrTaskSessionsSession)
+            $VbrTaskSessionsSessionJobName = $VbrJobssessionIdTable[$VbrTaskSessionsSession.sessionId].name
+            # $([regex]::match($VbrTaskSessionsSession.progress.processingRate, '^[0-9]+\.[0-9]+')).Value
+            # $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.transferredSize"] += $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.transferredSize
         }
 
         if (Test-Path /mnt/wfs/inventory/ViVmInventory.csv) {
@@ -392,9 +401,11 @@ if ($($VbrJobsStates.data)) {
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.objectRestorePoints"] ++
                             $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.restorePointsCount"] = $VbrBackupObjectsTable[$VbrObjectRestorePoint.name].restorePointsCount
 
+                            # if ($VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id] -and $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].state -match "Stopped") {
                             if ($VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id]) {
-                                $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.transferredSize"] = $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.transferredSize
-                                $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.transferredSize"] += $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.transferredSize
+                                $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.vm.$vm_name.readSize"] = $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.readSize
+                                $VbrDataTable["veeam.vbr.$vbrserver_name.job.$job_name.readSize"] += $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.readSize
+                                $VbrDataTable["veeam.vi.$vcenter_name.$cluster_name.readSize"] += $VbrTaskSessionsSessions5Table[$VbrObjectRestorePoint.Id].progress.readSize
                             }
 
                             $VbrObjectInventoryInfo  = "" | Select-Object VbrServer, JobName, vCenter, Cluster, VM, RestorePointsCount, LastRestorePoint
@@ -457,6 +468,8 @@ if ($($VbrJobsStates.data)) {
         } else {
             SexiLogger "[EROR] No ViVmInventory"
         }
+    } else {
+        SexiLogger "[INFO] No taskSession to process ..."
     }
 
     try {
