@@ -89,9 +89,10 @@ if [ -d "/mnt/wfs/whisper" ]; then
     /etc/init.d/grafana-server restart
     apachectl restart
 
-    # 0.99j storage schema change #351
-    # nohup /usr/bin/find -L /mnt/wfs/whisper/vmw/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/vmw_wsp_resize.log 2>&1 &
-    # nohup /usr/bin/find -L /mnt/wfs/whisper/esx/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:24h 10m:48h 30m:96h 60m:7d 240m:30d 720m:90d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/esx_wsp_resize.log 2>&1 &
+    # 0.99m Timepicker bug in grafana 8.5.10 #366 fix 
+    nohup /usr/bin/find -L /mnt/wfs/whisper/vmw/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:25h 10m:49h 30m:97h 60m:8d 240m:31d 720m:91d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/vmw_wsp_resize.log 2>&1 &
+    nohup /usr/bin/find -L /mnt/wfs/whisper/esx/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:25h 10m:49h 30m:97h 60m:8d 240m:31d 720m:91d 2880m:1y 5760m:2y 17280m:5y --nobackup \; > /var/log/sexigraf/esx_wsp_resize.log 2>&1 &
+    nohup /usr/bin/find -L /mnt/wfs/whisper/veeam/ -type f \( -name '*.wsp' \) -exec /usr/local/bin/whisper-resize.py {} 5m:8d 10m:31d 15m:91d 30m:121d 120m:1y --nobackup \; > /var/log/sexigraf/esx_wsp_resize.log 2>&1 &
 
     # Inventory Update
     nohup /bin/bash /var/www/scripts/updateInventory.sh &
