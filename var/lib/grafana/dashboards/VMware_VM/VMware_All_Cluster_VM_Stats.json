@@ -727,14 +727,14 @@
           "targets": [
             {
               "refId": "A",
-              "target": "sortByMaxima(aliasByNode(veeam.vi.$vcenter.$cluster.vm.$vm.restorePointsCount, 5))",
+              "target": "sortByMaxima(aliasByNode(veeam.vi.$vcenter.$cluster.vm.$vm.readSize, 5))",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Veeam Backup Restore Points",
+          "title": "Veeam Backup Delta",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -750,7 +750,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "bytes",
               "logBase": 1,
               "max": null,
               "min": 0,
@@ -761,7 +761,7 @@
               "logBase": 1,
               "max": null,
               "min": null,
-              "show": true
+              "show": false
             }
           ]
         }
