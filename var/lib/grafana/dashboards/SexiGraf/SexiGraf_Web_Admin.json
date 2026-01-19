@@ -19,7 +19,7 @@
       "height": "1100px",
       "panels": [
         {
-          "content": "<iframe style=\"border: none\" src=\"/sexiadmin/\" onload=\"this.width=window.innerWidth-120;this.height=window.innerHeight-120;\"></iframe>",
+          "content": "<iframe src=\"/sexiadmin/\" style=\"border:none;width:100%;height:100%\"></iframe>",
           "id": 1,
           "mode": "html",
           "span": 12,
