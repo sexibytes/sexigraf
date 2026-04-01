@@ -361,6 +361,7 @@
         },
         {
           "alias": "datastores",
+          "fillOpacity": 0,
           "lines": false,
           "stack": false,
           "yaxis": 2
@@ -486,6 +487,7 @@
         {
           "alias": "bytesTx",
           "bars": false,
+          "fillOpacity": 0,
           "color": "#0A50A1"
         }
       ],
@@ -590,6 +592,7 @@
       "seriesOverrides": [
         {
           "alias": "hosts",
+          "fillOpacity": 0,
           "bars": false,
           "lines": false,
           "points": false,
@@ -717,6 +720,7 @@
         {
           "alias": "bytesWrite",
           "bars": false,
+          "fillOpacity": 0,
           "color": "#5195CE"
         }
       ],
