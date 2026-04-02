@@ -24,7 +24,8 @@
     {
       "aliasColors": {
         "cpu.usage": "#BF1B00",
-        "mem.usage": "#1F78C1"
+        "mem.usage": "#1F78C1",
+        "mem.allocated": "#A352CC"
       },
       "bars": false,
       "dashLength": 10,
@@ -167,7 +168,8 @@
         "ballooned": "#EAB839",
         "private": "#052B51",
         "shared": "#508642",
-        "zipped": "#6ED0E0"
+        "zipped": "#6ED0E0",
+        "overhead": "#A352CC"
       },
       "bars": false,
       "dashLength": 10,
@@ -349,19 +351,16 @@
         {
           "alias": "capacity",
           "fill": 0,
-          "stack": false
+          "stack": false,
+          "zindex": 3
         },
         {
           "alias": "uncommitted",
           "fill": 1
         },
         {
-          "alias": "capacity",
-          "zindex": 3
-        },
-        {
           "alias": "datastores",
-          "fillOpacity": 0,
+          "fill": 0,
           "lines": false,
           "stack": false,
           "yaxis": 2
@@ -487,7 +486,7 @@
         {
           "alias": "bytesTx",
           "bars": false,
-          "fillOpacity": 0,
+          "fill": 0,
           "color": "#0A50A1"
         }
       ],
@@ -592,7 +591,7 @@
       "seriesOverrides": [
         {
           "alias": "hosts",
-          "fillOpacity": 0,
+          "fill": 0,
           "bars": false,
           "lines": false,
           "points": false,
@@ -720,7 +719,7 @@
         {
           "alias": "bytesWrite",
           "bars": false,
-          "fillOpacity": 0,
+          "fill": 0,
           "color": "#5195CE"
         }
       ],
