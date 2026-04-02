@@ -275,7 +275,10 @@
     "refresh": false,
     "schemaVersion": 35,
     "style": "light",
-    "tags": [],
+    "tags": [
+      "DRS",
+      "VM"
+    ],
     "templating": {
       "list": [
         {
