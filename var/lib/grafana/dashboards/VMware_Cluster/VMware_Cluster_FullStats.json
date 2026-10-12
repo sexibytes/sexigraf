@@ -28,7 +28,8 @@
       {
         "aliasColors": {
           "cpu.usage": "#BF1B00",
-          "mem.usage": "#1F78C1"
+          "mem.usage": "#1F78C1",
+          "mem.allocated": "#A352CC"
         },
         "bars": false,
         "dashLength": 10,
@@ -167,7 +168,8 @@
           "ballooned": "#EAB839",
           "private": "#052B51",
           "shared": "#508642",
-          "zipped": "#6ED0E0"
+          "zipped": "#6ED0E0",
+          "overhead": "#A352CC"
         },
         "bars": false,
         "dashLength": 10,
@@ -342,15 +344,12 @@
           {
             "alias": "capacity",
             "fill": 0,
-            "stack": false
+            "stack": false,
+            "zindex": 3
           },
           {
             "alias": "uncommitted",
             "fill": 1
-          },
-          {
-            "alias": "capacity",
-            "zindex": 3
           }
         ],
         "spaceLength": 10,
@@ -463,6 +462,7 @@
           {
             "alias": "bytesTx",
             "bars": false,
+            "fill": 0,
             "color": "#0A50A1"
           }
         ],
@@ -560,6 +560,7 @@
         "seriesOverrides": [
           {
             "alias": "hosts",
+            "fill": 0,
             "lines": false,
             "stack": false,
             "yaxis": 2
@@ -675,6 +676,7 @@
           {
             "alias": "bytesWrite",
             "bars": false,
+            "fill": 0,
             "color": "#1F78C1"
           }
         ],
@@ -1156,7 +1158,7 @@
           {
             "targetBlank": true,
             "title": "VM DRS Score",
-            "url": "https://blogs.vmware.com/vsphere/2020/05/vsphere-7-a-closer-look-at-the-vm-drs-score.html"
+            "url": "https://nielshagoort.com/2020/05/21/a-closer-look-at-the-vm-drs-score-in-vsphere/"
           }
         ],
         "options": {
