@@ -53,6 +53,7 @@
             },
             {
               "alias": "/bytesTx/",
+              "fill": 0,
               "bars": false,
               "color": "#0A50A1"
             },
