@@ -22,145 +22,180 @@
       "type": "row"
     },
     {
-      "aliasColors": {
-        "cpu.usage": "#BF1B00",
-        "mem.usage": "#1F78C1",
-        "mem.allocated": "#A352CC"
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 100,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu.usage"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BF1B00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mem.allocated"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#A352CC",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mem.usage"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#1F78C1",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillBelowTo",
+                "value": "cpu.usage"
+              }
+            ]
+          }
+        ]
       },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "decimals": 1,
-      "editable": false,
-      "error": false,
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 12,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 1,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
       "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "mem.allocated",
-          "fill": 0,
-          "stack": false
+        "dataLinks": [],
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        {
-          "alias": "cpu.latency",
-          "fill": 0,
-          "stack": false
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      },
+      "pluginVersion": "12.4.12",
       "targets": [
         {
           "hide": true,
+          "refCount": 1,
           "refId": "A",
           "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective)",
           "textEditor": false
         },
         {
           "hide": true,
+          "refCount": 1,
           "refId": "B",
           "target": "sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)",
           "textEditor": false
         },
         {
-          "hide": false,
+          "refCount": 0,
           "refId": "C",
           "target": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), #A), 'cpu.usage')",
           "targetFull": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective)), 'cpu.usage')",
           "textEditor": false
         },
         {
-          "hide": false,
+          "refCount": 0,
           "refId": "D",
-          "target": "alias(diffSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), #B), #C), 'mem.usage')",
-          "targetFull": "alias(diffSeries(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)), alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective)), 'cpu.usage')), 'mem.usage')",
+          "target": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), #B), 'mem.usage')",
+          "targetFull": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.usage), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)), 'mem.usage')",
           "textEditor": false
         },
         {
-          "hide": false,
+          "refCount": 0,
           "refId": "E",
           "target": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM), #B), 'mem.allocated')",
           "targetFull": "alias(asPercent(sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.vRAM), sumSeries(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective)), 'mem.allocated')",
           "textEditor": false
-        },
-        {
-          "hide": false,
-          "refId": "F",
-          "target": "alias(scale(averageSeries(vmw.$vcenter.$datacentre.$cluster.superstats.cpu.latency), 0.01), 'cpu.latency')",
-          "textEditor": false
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "cpu/ram usage",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": 110,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": 110,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
       "aliasColors": {
