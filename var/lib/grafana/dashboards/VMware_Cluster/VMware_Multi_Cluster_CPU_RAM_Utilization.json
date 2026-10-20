@@ -1,338 +1,536 @@
 {
-  "id": null,
-  "title": "VMware Multi Cluster CPU/RAM Utilization",
-  "uid": "b837ab47",
-  "originalTitle": "VMware Multi Cluster CPU/RAM Utilization",
-  "tags": [
-    "CPU",
-    "RAM"
-  ],
-  "style": "light",
-  "timezone": "browser",
   "editable": false,
-  "hideControls": false,
-  "sharedCrosshair": true,
-  "rows": [
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
     {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "panels": [],
+      "repeat": "cluster",
+      "title": "$cluster",
+      "type": "row"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
           },
-          "id": 10,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "demand",
-              "fill": 0,
-              "stack": false
-            }
-          ],
-          "span": 6,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": true,
-              "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000)",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective, 1000000)",
-              "textEditor": false
-            },
-            {
-              "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000), 'demand')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000), 'usage')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(diffSeries(#B, #D), 'effective')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(diffSeries(#A, #B), 'total')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "CPU utilization/demand",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "hertz",
-            "short"
-          ],
-          "scopedVars": {
-            "cluster": {
-              "text": "None",
-              "value": "",
-              "isNone": true,
-              "selected": true
-            }
+          "unit": "rothz"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "demand"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "A",
+                  "mode": "none"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "demand"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "A",
+                  "mode": "none"
+                }
+              }
+            ]
           }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "hide": true,
+          "refId": "A",
+          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.total, 1000000)",
+          "textEditor": false
         },
         {
-          "aliasColors": {
-            "effective": "#6ED0E0",
-            "guest": "#7EB26D",
-            "private": "#EAB839",
-            "total": "#EF843C"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 8,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "guest",
-              "fill": 0,
-              "stack": false
-            }
-          ],
-          "span": 6,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": true,
-              "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.5367431640625e-7)",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'guest')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(diffSeries(#B, #D), 'effective')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(diffSeries(#A, #B), 'total')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "RAM utilization",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "mbytes",
-            "short"
-          ],
-          "scopedVars": {
-            "cluster": {
-              "text": "",
-              "value": "",
-              "isNone": true,
-              "selected": true
-            }
-          }
+          "datasource": "local",
+          "hide": true,
+          "refId": "B",
+          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.effective, 1000000)",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.demand, 1000000), 'demand')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(scale(vmw.$vcenter.$datacentre.$cluster.quickstats.cpu.usage, 1000000), 'usage')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(diffSeries(#B, #D), 'effective')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(diffSeries(#A, #B), 'total')",
+          "textEditor": false
         }
       ],
-      "showTitle": true,
-      "title": "$cluster",
-      "repeat": "cluster",
-      "scopedVars": {
-        "cluster": {
-          "text": "None",
-          "value": "",
-          "isNone": true,
-          "selected": true
-        }
-      }
-    }
-  ],
-  "nav": [
+      "title": "CPU utilization/demand",
+      "type": "timeseries"
+    },
     {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "effective"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "guest"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#7EB26D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "private"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "guest"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "A",
+                  "mode": "none"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "effective"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "guest"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#7EB26D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "private"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "guest"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "A",
+                  "mode": "none"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "hide": true,
+          "refId": "A",
+          "target": "scale(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.total, 9.5367431640625e-7)",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "hide": true,
+          "refId": "B",
+          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.mem.effective",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.guest, 'guest')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(vmw.$vcenter.$datacentre.$cluster.quickstats.mem.private, 'private')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(diffSeries(#B, #D), 'effective')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(diffSeries(#A, #B), 'total')",
+          "textEditor": false
+        }
       ],
-      "status": "Stable",
-      "time_options": [
-        "15m",
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "3d",
-        "7d",
-        "15d",
-        "30d"
-      ],
-      "type": "timepicker"
+      "title": "RAM utilization",
+      "type": "timeseries"
     }
   ],
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [
+  "CPU",
+  "RAM"
+  ],
   "templating": {
     "list": [
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
+        "current": {},
         "includeAll": false,
         "multi": true,
-        "multiFormat": "glob",
         "name": "vcenter",
-        "options": [
-        ],
+        "options": [],
         "query": "vmw.*",
         "refresh": 1,
-        "refresh_on_load": true,
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
+        "current": {},
         "includeAll": true,
         "multi": true,
-        "multiFormat": "glob",
         "name": "datacentre",
-        "options": [
-        ],
+        "options": [],
         "query": "vmw.$vcenter.*",
         "refresh": 1,
-        "refresh_on_load": true,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
+        "current": {},
         "includeAll": true,
         "multi": true,
-        "multiFormat": "glob",
         "name": "cluster",
-        "options": [
-        ],
+        "options": [],
         "query": "vmw.$vcenter.$datacentre.*",
         "refresh": 1,
-        "refresh_on_load": true,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       }
     ]
   },
-  "annotations": {
-    "list": []
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  "refresh": false,
-  "schemaVersion": 6,
+  "timepicker": {
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "VMware Multi Cluster CPU/RAM Utilization",
+  "uid": "ad28fx8",
   "version": 1,
-  "links": []
+  "weekStart": ""
 }

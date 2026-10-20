@@ -79,6 +79,7 @@
         {
           "$$hashKey": "object:545",
           "alias": "bytesWrite",
+          "fill": 0,
           "bars": false,
           "color": "#1F78C1"
         }

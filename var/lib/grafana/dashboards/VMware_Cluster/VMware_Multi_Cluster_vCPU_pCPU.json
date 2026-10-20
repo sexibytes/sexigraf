@@ -1,226 +1,252 @@
 {
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
   "id": null,
-  "title": "VMware Multi Cluster vCPU/pCPU",
-  "uid": "2a7b2427",
-  "originalTitle": "VMware Multi Cluster vCPU/pCPU",
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "local"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/vCPU/i"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6D1F62",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "maxPerRow": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "repeat": "cluster",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "local"
+          },
+          "hide": true,
+          "refId": "A",
+          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "local"
+          },
+          "hide": true,
+          "refId": "B",
+          "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "local"
+          },
+          "refId": "C",
+          "target": "alias(divideSeries(#A, #B), '$cluster.vCPU/pCPU')",
+          "textEditor": true
+        }
+      ],
+      "title": "$cluster",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
   "tags": [
     "vCPU",
     "pCPU"
   ],
-  "style": "light",
-  "timezone": "browser",
-  "editable": false,
-  "hideControls": false,
-  "sharedCrosshair": true,
-  "rows": [
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "150px",
-      "panels": [
-        {
-          "aliasColors": {
-            "numVmotions": "#052B51"
-          },
-          "bars": false,
-          "datasource": null,
-          "decimals": 0,
-          "editable": false,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 1,
-          "leftYAxisLabel": "",
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 3,
-          "links": [],
-          "minSpan": 3,
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "repeat": "cluster",
-          "rightYAxisLabel": "",
-          "scopedVars": {
-            "cluster": {
-              "text": "cluster",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [
-            {
-              "alias": "/vCPU/i",
-              "color": "#6D1F62"
-            }
-          ],
-          "span": 3,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": true,
-              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.vCPUs",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "target": "vmw.$vcenter.$datacentre.$cluster.quickstats.pCPUs",
-              "textEditor": false
-            },
-            {
-              "target": "alias(divideSeries(#A, #B), '$cluster.vCPU/pCPU')"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "$cluster",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "none",
-            "none"
-          ]
-        }
-      ],
-      "repeat": null,
-      "scopedVars": {
-        "cluster": {
-          "selected": true,
-          "text": "cluster",
-          "value": ""
-        }
-      },
-      "showTitle": false,
-      "title": "$cluster"
-    }
-  ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "15m",
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "3d",
-        "7d",
-        "15d",
-        "30d",
-        " 90d"
-      ],
-      "type": "timepicker"
-    }
-  ],
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
   "templating": {
     "list": [
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
+        "current": {},
+        "datasource": {
+          "type": "graphite",
+          "uid": "local"
         },
-        "datasource": "local",
+        "definition": "vmw.*",
         "includeAll": false,
         "multi": true,
-        "multiFormat": "glob",
         "name": "vcenter",
-        "options": [
-        ],
-        "query": "vmw.*",
+        "options": [],
+        "query": {
+          "queryType": "Default",
+          "refId": "A",
+          "target": "vmw.*"
+        },
         "refresh": 1,
-        "refresh_on_load": true,
+        "regex": "",
+        "sort": 0,
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
+        "current": {},
+        "datasource": {
+          "type": "graphite",
+          "uid": "local"
         },
-        "datasource": "local",
+        "definition": "vmw.$vcenter.*",
         "includeAll": true,
         "multi": true,
-        "multiFormat": "glob",
         "name": "datacentre",
-        "options": [
-        ],
-        "query": "vmw.$vcenter.*",
+        "options": [],
+        "query": {
+          "queryType": "Default",
+          "refId": "A",
+          "target": "vmw.$vcenter.*"
+        },
         "refresh": 1,
-        "refresh_on_load": true,
         "regex": "",
+        "sort": 0,
         "type": "query"
       },
       {
-        "allFormat": "wildcard",
         "allValue": "*",
-        "current": {
+        "current": {},
+        "datasource": {
+          "type": "graphite",
+          "uid": "local"
         },
-        "datasource": "local",
+        "definition": "vmw.$vcenter.$datacentre.*",
         "includeAll": true,
         "multi": true,
-        "multiFormat": "glob",
         "name": "cluster",
-        "options": [
-        ],
-        "query": "vmw.$vcenter.$datacentre.*",
+        "options": [],
+        "query": {
+          "queryType": "Default",
+          "refId": "A",
+          "target": "vmw.$vcenter.$datacentre.*"
+        },
         "refresh": 1,
-        "refresh_on_load": true,
         "regex": "",
+        "sort": 0,
         "type": "query"
       }
     ]
   },
-  "annotations": {
-    "list": []
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  "refresh": false,
-  "schemaVersion": 6,
-  "version": 6,
-  "links": []
+  "timepicker": {
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "VMware Multi Cluster vCPU/pCPU",
+  "uid": "2a7b2427",
+  "version": 1
 }

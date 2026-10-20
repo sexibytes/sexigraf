@@ -1,834 +1,2213 @@
 {
-  "id": null,
-  "title": "VMware vSAN Monitor",
-  "uid": "3702580f",
-  "originalTitle": "VMware vSAN Monitor",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "local",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 29,
+      "panels": [],
+      "repeat": "hostname",
+      "title": "$hostname",
+      "type": "row"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "µs"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0f26a",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff6a00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "read"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff6a00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0f26a",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "write"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0f26a",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff6a00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "read"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff6a00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0f26a",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "write"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgRead, 'read')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgWrite, 'write')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgRecWrite, 'recoveryWrite')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latAvgResyncRead, 'resyncRead')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgRead, 'anchorRead')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgRead, 'proxyRead')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "G",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgWrite, 'anchorWrite')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "H",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgWrite, 'proxyWrite')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "I",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgRWResync, 'anchorRWResync')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "J",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgRWResync, 'proxyRWResync')",
+          "textEditor": false
+        }
+      ],
+      "title": "Latencies",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "iops"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff4800",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6be0c5",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff0066",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReadCount"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2C96D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff4800",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRead"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6be0c5",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrite"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff0066",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6ED0E0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EF843C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReadCount"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2C96D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsRead, 'reads')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsWrite, 'writes')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsRecWrite, 'recoveryWrites')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsResyncRead, 'resyncReadCount')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsRead, 'anchorRead')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsRead, 'proxyRead')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "G",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsWrite, 'anchorWrite')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "H",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsWrite, 'proxyWrite')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "I",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsRWResync, 'anchorRWResync')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "J",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsRWResync, 'proxyRWResync')",
+          "textEditor": false
+        }
+      ],
+      "title": "IOPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0A50A1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BF1B00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ffe100",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0a90a1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff2600",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0A50A1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E0752D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BF1B00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0A50A1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BF1B00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResync"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ffe100",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0a90a1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff2600",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0A50A1",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWrites"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E0752D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReads"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#EAB839",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BF1B00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputRead, 'reads')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputWrite, 'writes')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputRecWrite, 'recoveryWrites')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.tputResyncRead, 'resyncReads')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputWrite, 'anchorWrites')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputWrite, 'proxyWrites')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "G",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputRead, 'anchorReads')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "H",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputRead, 'proxyReads')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "I",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputRWResync, 'anchorRWResync')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "J",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputRWResync, 'proxyRWResync')",
+          "textEditor": false
+        }
+      ],
+      "title": "Bandwidth",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResyncCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#890F02",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#CCA300",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C15C17",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResyncCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#b83d00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ffcc00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#e86100",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "readCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#CCA300",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#890F02",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#b4c215",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writeCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C15C17",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorRWResyncCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#890F02",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#CCA300",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "anchorWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C15C17",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyRWResyncCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#b83d00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ffcc00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "proxyWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#e86100",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "readCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#CCA300",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "recoveryWriteCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#890F02",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "resyncReadCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#b4c215",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writeCong"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C15C17",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.readCongestion, 'readCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.writeCongestion, 'writeCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "C",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.recWriteCongestion, 'recoveryWriteCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "D",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.resyncReadCongestion, 'resyncReadCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "E",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorReadCongestion, 'anchorReadCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "F",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyReadCongestion, 'proxyReadCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "G",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorWriteCongestion, 'anchorWriteCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "H",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyWriteCongestion, 'proxyWriteCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "I",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorRWResyncCongestion, 'anchorRWResyncCong')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "J",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyRWResyncCongestion, 'proxyRWResyncCong')",
+          "textEditor": false
+        }
+      ],
+      "title": "Congestion",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OIO"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#967302",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OIO"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#967302",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.oio, 'OIO')",
+          "textEditor": false
+        }
+      ],
+      "title": "Outstanding IO",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "local",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClientCacheRate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff5500",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WriteBufferFree"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BA43A9",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClientCacheRate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff5500",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WriteBufferFree"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#BA43A9",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.12",
+      "targets": [
+        {
+          "datasource": "local",
+          "refId": "A",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.clientCacheHitRate, 'ClientCacheRate')",
+          "textEditor": false
+        },
+        {
+          "datasource": "local",
+          "refId": "B",
+          "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.cache.*.wbFreePct, 'WriteBufferFree')",
+          "textEditor": false
+        }
+      ],
+      "title": "Caches",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "5m",
+  "schemaVersion": 42,
   "tags": [
     "vSAN",
     "HDD",
     "SSD",
     "AF"
   ],
-  "style": "light",
-  "timezone": "browser",
-  "editable": false,
-  "hideControls": false,
-  "sharedCrosshair": true,
-  "rows": [
-    {
-      "collapse": false,
-      "editable": false,
-      "height": "200px",
-      "panels": [
-        {
-          "aliasColors": {
-            "read": "green",
-            "write": "yellow",
-            "resyncRead": "#d0f26a",
-            "recoveryWrite": "#ff6a00",
-            "anchorRead": "green",
-            "anchorWrite": "yellow",
-            "proxyRead": "dark-green",
-            "proxyWrite": "dark-yellow",
-            "anchorRWResync": "#d0f26a",
-            "proxyRWResync": "#ff6a00"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": 0,
-            "threshold1": 20000,
-            "threshold1Color": "rgba(216, 200, 27, 0.15)",
-            "threshold2": 30000,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)",
-            "thresholdLine": false
-          },
-          "id": 2,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgRead, 'read')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgWrite, 'write')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latencyAvgRecWrite, 'recoveryWrite')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.latAvgResyncRead, 'resyncRead')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgRead, 'anchorRead')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgRead, 'proxyRead')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgWrite, 'anchorWrite')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgWrite, 'proxyWrite')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorLatencyAvgRWResync, 'anchorRWResync')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyLatencyAvgRWResync, 'proxyRWResync')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Latencies",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "µs",
-            "µs"
+  "templating": {
+    "list": [
+      {
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
           ]
         },
-        {
-          "aliasColors": {
-            "reads": "#6ED0E0",
-            "recoveryWrites": "#EF843C",
-            "resyncReadCount": "#F2C96D",
-            "writes": "#E24D42",
-            "anchorRead": "#6ED0E0",
-            "anchorRWResync": "#EF843C",
-            "anchorWrite": "#E24D42",
-            "proxyRead": "#6be0c5",
-            "proxyRWResync": "#ff4800",
-            "proxyWrite": "#ff0066"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 1,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsRead, 'reads')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsWrite, 'writes')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsRecWrite, 'recoveryWrites')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.iopsResyncRead, 'resyncReadCount')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsRead, 'anchorRead')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsRead, 'proxyRead')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsWrite, 'anchorWrite')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsWrite, 'proxyWrite')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorIopsRWResync, 'anchorRWResync')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyIopsRWResync, 'proxyRWResync')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "IOPS",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "iops",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "reads": "#0A50A1",
-            "recoveryWrites": "#E0752D",
-            "resyncReads": "#EAB839",
-            "writes": "#BF1B00",
-            "anchorReads": "#0A50A1",
-            "anchorRWResync": "#EAB839",
-            "anchorWrites": "#BF1B00",
-            "proxyReads": "#0a90a1",
-            "proxyRWResync": "#ffe100",
-            "proxyWrites": "#ff2600"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 17,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputRead, 'reads')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputWrite, 'writes')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.throughputRecWrite, 'recoveryWrites')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.tputResyncRead, 'resyncReads')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputWrite, 'anchorWrites')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputWrite, 'proxyWrites')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputRead, 'anchorReads')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputRead, 'proxyReads')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorTputRWResync, 'anchorRWResync')",
-              "textEditor": false
-            },
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyTputRWResync, 'proxyRWResync')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Bandwidth",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "Bps",
-            "Bps"
-          ]
-        },
-        {
-          "aliasColors": {
-            "readCong": "#CCA300",
-            "recoveryWriteCong": "#890F02",
-            "writeCong": "#C15C17",
-            "resyncReadCong": "#b4c215",
-            "anchorReadCong": "#CCA300",
-            "anchorRWResyncCong": "#890F02",
-            "anchorWriteCong": "#C15C17",
-            "proxyReadCong": "#ffcc00",
-            "proxyRWResyncCong": "#b83d00",
-            "proxyWriteCong": "#e86100"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": 15,
-            "threshold1Color": "rgba(216, 200, 27, 0.15)",
-            "threshold2": 20,
-            "threshold2Color": "rgba(234, 112, 112, 0.14)"
-          },
-          "id": 13,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.readCongestion, 'readCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.writeCongestion, 'writeCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.recWriteCongestion, 'recoveryWriteCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.resyncReadCongestion, 'resyncReadCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorReadCongestion, 'anchorReadCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyReadCongestion, 'proxyReadCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorWriteCongestion, 'anchorWriteCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyWriteCongestion, 'proxyWriteCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.anchorRWResyncCongestion, 'anchorRWResyncCong')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.proxyRWResyncCongestion, 'proxyRWResyncCong')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Congestion",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "OIO": "#967302"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 9,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.oio, 'OIO')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Outstanding IO",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "ClientCacheRate": "#ff5500",
-            "WriteBufferFree": "#BA43A9"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": false,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": 100,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": 0,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 28,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "hostname": {
-              "text": "ESX",
-              "value": "",
-              "selected": false
-            }
-          },
-          "seriesOverrides": [],
-          "span": 2,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.clientCacheHitRate, 'ClientCacheRate')",
-              "textEditor": false
-            },
-            {
-              "hide": false,
-              "target": "alias(vsan.$vcenter.$datacentre.$cluster.esx.$hostname.vsan.$layer.cache.*.wbFreePct, 'WriteBufferFree')",
-              "textEditor": false
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Caches",
-          "tooltip": {
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "percent",
-            "none"
-          ]
-        }
-      ],
-      "repeat": "hostname",
-      "scopedVars": {
-        "hostname": {
-          "text": "ESX",
-          "value": "",
-          "selected": false
-        }
+        "includeAll": true,
+        "multi": true,
+        "name": "vcenter",
+        "options": [],
+        "query": "vsan.*",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
       },
-      "showTitle": true,
-      "title": "$hostname"
-    }
-  ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "3d",
-        "7d",
-        "15d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
-  ],
+      {
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "multi": true,
+        "name": "datacentre",
+        "options": [],
+        "query": "vsan.$vcenter.*",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "dc2labclu12x",
+          "value": "dc2labclu12x"
+        },
+        "includeAll": false,
+        "name": "cluster",
+        "options": [],
+        "query": "vsan.$vcenter.$datacentre.*",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
+      },
+      {
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "label": "esx",
+        "multi": true,
+        "name": "hostname",
+        "options": [],
+        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "domclient",
+          "value": "domclient"
+        },
+        "includeAll": false,
+        "name": "layer",
+        "options": [],
+        "query": "domclient,domowner,dom-proxy-owner,domcompmgr",
+        "type": "custom",
+        "valuesFormat": "csv"
+      }
+    ]
+  },
   "time": {
     "from": "now-1h",
     "to": "now"
   },
-  "templating": {
-    "list": [
-      {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "vcenter",
-        "options": [
-        ],
-        "query": "vsan.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
-        "includeAll": true,
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "datacentre",
-        "options": [
-        ],
-        "query": "vsan.$vcenter.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-        },
-        "datasource": "local",
-        "includeAll": false,
-        "multi": false,
-        "multiFormat": "glob",
-        "name": "cluster",
-        "options": [
-        ],
-        "query": "vsan.$vcenter.$datacentre.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allFormat": "wildcard",
-        "allValue": "*",
-        "current": {
-        },
-        "datasource": "local",
-        "hideLabel": false,
-        "includeAll": true,
-        "label": "esx",
-        "multi": true,
-        "multiFormat": "glob",
-        "name": "hostname",
-        "options": [
-        ],
-        "query": "vsan.$vcenter.$datacentre.$cluster.esx.*",
-        "refresh": 1,
-        "refresh_on_load": true,
-        "regex": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "tags": [],
-          "text": "client",
-          "value": "domclient"
-        },
-        "datasource": null,
-        "includeAll": false,
-        "multi": false,
-        "multiFormat": "glob",
-        "name": "layer",
-        "options": [
-          {
-            "selected": true,
-            "text": "client",
-            "value": "domclient"
-          },
-          {
-            "selected": false,
-            "text": "owner",
-            "value": "domowner"
-          },
-          {
-            "selected": false,
-            "text": "proxy",
-            "value": "dom-proxy-owner"
-          },
-          {
-            "selected": false,
-            "text": "disk",
-            "value": "domcompmgr"
-          }
-        ],
-        "query": "domclient,domowner,dom-proxy-owner,domcompmgr",
-        "refresh_on_load": true,
-        "type": "custom"
-      }
+  "timepicker": {
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
     ]
   },
-  "annotations": {
-    "list": []
-  },
-  "refresh": "5m",
-  "schemaVersion": 6,
-  "version": 12,
-  "links": []
+  "timezone": "browser",
+  "title": "VMware vSAN Monitor",
+  "uid": "adf7sbc",
+  "version": 1,
+  "weekStart": ""
 }
