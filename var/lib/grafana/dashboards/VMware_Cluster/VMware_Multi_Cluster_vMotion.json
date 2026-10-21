@@ -113,11 +113,12 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 24,
+        "w": 8,
         "x": 0,
         "y": 0
       },
       "id": 1,
+      "maxPerRow": 3,
       "options": {
         "legend": {
           "calcs": [
@@ -134,7 +135,7 @@
         }
       },
       "repeat": "cluster",
-      "repeatDirection": "v",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
